@@ -66,7 +66,7 @@
     <!-- Sidebar Utama -->
     <aside x-cloak
         :class="mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-        class="fixed inset-y-0 left-0 w-64 bg-bg-brand text-txt-dark-primary flex flex-col h-screen shadow-xl select-none z-50 transition-transform duration-300 ease-in-out">
+        class="fixed inset-y-0 left-0 w-72 bg-bg-brand text-txt-dark-primary flex flex-col h-screen shadow-xl select-none z-50 transition-transform duration-300 ease-in-out">
         
         <!-- Logo Sidebar -->
         <div class="p-6 h-16 border-b border-white/10 flex items-center justify-between shrink-0">
@@ -100,15 +100,155 @@
                 <span>Dashboard</span>
             </a>
 
-            <!-- Master Data -->
-            <a href="{{ route('admin.master-data') }}" 
-            class="flex items-center space-x-3 px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-150 {{ Request::routeIs('admin.master-data') ? 'bg-white/10 text-white shadow-sm border border-white/5' : 'text-txt-dark-secondary hover:bg-white/5 hover:text-white border border-transparent' }} group">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-txt-dark-secondary group-hover:text-white transition-colors">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+            <div
+                x-data="{ open: {{ Request::routeIs('admin.organizers.*', 'admin.volunteers.*') ? 'true' : 'false' }} }"
+                class="space-y-1"
+            >
+                <button
+                    type="button"
+                    @click="open = !open"
+                    class="w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 {{ Request::routeIs('admin.organizers.*', 'admin.volunteers.*') ? 'bg-white/10 text-white shadow-sm border border-white/5' : 'text-txt-dark-secondary hover:bg-white/5 hover:text-white border border-transparent' }}"
+                >
+                    <span class="flex items-center space-x-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.375 9.375 0 0 0 2.625-.372M15 19.128v-3.375m0 3.375a9.375 9.375 0 0 1-7.5 0m7.5 0v-3.375m-7.5 3.375v-3.375m0 0a9.375 9.375 0 0 1 7.5 0M12 10.5a3.375 3.375 0 1 0 0-6.75 3.375 3.375 0 0 0 0 6.75Z" />
+                        </svg>
+
+                        <span>Manajemen User</span>
+                    </span>
+
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="2"
+                        stroke="currentColor"
+                        class="w-4 h-4 transition-transform duration-300"
+                        :class="open ? 'rotate-180' : ''"
+                    >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+
+                <div
+                    x-show="open"
+                    x-cloak
+                    x-transition:enter="transition-all ease-out duration-300"
+                    x-transition:enter-start="opacity-0 -translate-y-2 max-h-0"
+                    x-transition:enter-end="opacity-100 translate-y-0 max-h-40"
+                    x-transition:leave="transition-all ease-in duration-200"
+                    x-transition:leave-start="opacity-100 translate-y-0 max-h-40"
+                    x-transition:leave-end="opacity-0 -translate-y-2 max-h-0"
+                    class="pl-6 pr-2 overflow-hidden"
+                >
+
+                    <a
+                        href="{{ route('admin.organizers.index') }}"
+                        class="block px-4 py-2.5 text-sm transition {{ Request::routeIs('admin.organizers.*') ? 'text-white font-bold' : 'text-txt-dark-secondary hover:text-white' }}"
+                    >
+                        Organizer
+                    </a>
+
+                    <a
+                        href="{{ route('admin.volunteers.index') }}"
+                        class="block px-4 py-2.5 text-sm transition {{ Request::routeIs('admin.volunteers.*') ? 'text-white font-bold' : 'text-txt-dark-secondary hover:text-white' }}"
+                    >
+                        Volunteer
+                    </a>
+
+                </div>
+            </div>
+
+            <a
+                href="{{ route('admin.event-verification.index') }}"
+                class="flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 {{ Request::routeIs('admin.event-verification.*') ? 'bg-white/10 text-white shadow-sm border border-white/5' : 'text-txt-dark-secondary hover:bg-white/5 hover:text-white border border-transparent' }}"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span>Master Data Skill & Event</span>
+
+                <span>Verifikasi Event</span>
             </a>
 
+            <div
+                x-data="{ open: {{ Request::routeIs('admin.master-data.*') ? 'true' : 'false' }} }"
+                class="space-y-1"
+            >
+                <button
+                    @click="open = !open"
+                    class="w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 focus:outline-none cursor-pointer {{ Request::routeIs('admin.master-data.*') ? 'bg-white/10 text-white shadow-sm border border-white/5' : 'text-txt-dark-secondary hover:bg-white/5 hover:text-white border border-transparent' }}"
+                >
+                    <div class="flex items-center space-x-3">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="2"
+                            stroke="currentColor"
+                            class="w-5 h-5"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M4.5 6.75A2.25 2.25 0 016.75 4.5h10.5a2.25 2.25 0 012.25 2.25v10.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 17.25V6.75z"
+                            />
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M8.25 8.25h7.5M8.25 12h7.5M8.25 15.75h4.5"
+                            />
+                        </svg>
+
+                        <span>Master Data</span>
+                    </div>
+
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="2"
+                        stroke="currentColor"
+                        class="w-4 h-4 transition-transform duration-200"
+                        :class="open ? 'rotate-180' : ''"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                        />
+                    </svg>
+                </button>
+
+                <div
+                    x-show="open"
+                    x-cloak
+                    x-transition:enter="transition-all ease-out duration-300"
+                    x-transition:enter-start="opacity-0 -translate-y-2 max-h-0"
+                    x-transition:enter-end="opacity-100 translate-y-0 max-h-40"
+                    x-transition:leave="transition-all ease-in duration-200"
+                    x-transition:leave-start="opacity-100 translate-y-0 max-h-40"
+                    x-transition:leave-end="opacity-0 -translate-y-2 max-h-0"
+                    class="pl-6 pr-2 overflow-hidden"
+                >
+                    <div class="ml-5 pl-3 border-l-2 border-white/10 space-y-1">
+
+                        <a
+                            href="{{ route('admin.master-data.skills.index') }}"
+                            class="flex items-center px-3 py-2.5 text-sm transition-all duration-200 {{ Request::routeIs('admin.master-data.skills.*') ? 'text-white font-bold' : 'text-txt-dark-secondary hover:text-white font-medium' }}"
+                        >
+                            Skill
+                        </a>
+
+                        <a
+                            href="{{ route('admin.master-data.event-categories.index') }}"
+                            class="flex items-center px-3 py-2.5 text-sm transition-all duration-200 {{ Request::routeIs('admin.master-data.event-categories.*') ? 'text-white font-bold' : 'text-txt-dark-secondary hover:text-white font-medium' }}"
+                        >
+                            Kategori Event
+                        </a>
+
+                    </div>
+                </div>
+            </div>
             <!-- Kembali ke Beranda -->
             <a href="{{ url('/') }}" 
             class="flex items-center space-x-3 px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-150 text-txt-dark-secondary hover:bg-white/5 hover:text-white border border-transparent group">
@@ -122,10 +262,10 @@
     </aside>
 
     <!-- Content Wrapper -->
-    <div class="flex-1 lg:pl-64 flex flex-col min-h-screen">    
+    <div class="flex-1 lg:pl-72 flex flex-col min-h-screen">    
         
         <!-- Navbar Top Bar -->
-        <header class="fixed top-0 right-0 left-0 lg:left-64 h-16 bg-white/80 backdrop-blur-md border-b border-slate-100 z-30 select-none">
+        <header class="fixed top-0 right-0 left-0 lg:left-71 h-16 bg-white/80 backdrop-blur-md border-b border-slate-100 z-30 select-none">
             <div class="w-full h-full px-4 sm:px-6 lg:px-8 flex justify-between lg:justify-end items-center">
                 
                 <button @click="mobileSidebarOpen = true" class="p-2 text-slate-600 hover:text-slate-900 lg:hidden focus:outline-none rounded-xl hover:bg-slate-50 cursor-pointer">

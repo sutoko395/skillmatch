@@ -10,11 +10,12 @@ return new class extends Migration
     {
         Schema::create('organizer_profiles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->unique()->constrained()->cascadeOnDelete();
             $table->string('organization_name');
             $table->string('contact_person')->nullable();
             $table->string('phone')->nullable();
-            $table->string('address')->nullable();
+            $table->text('address')->nullable();
+            $table->string('city')->nullable();
             $table->text('description')->nullable();
             $table->string('website')->nullable();
             $table->timestamps();

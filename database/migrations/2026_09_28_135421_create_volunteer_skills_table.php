@@ -10,10 +10,17 @@ return new class extends Migration
     {
         Schema::create('volunteer_skills', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('skill_id')->constrained()->onDelete('cascade');
-            $table->enum('level', ['beginner', 'intermediate', 'advanced', 'expert'])->default('beginner'); // Level skill[cite: 1]
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('skill_id')->constrained()->cascadeOnDelete();
+            $table->enum('level', [
+                'beginner',
+                'intermediate',
+                'advanced',
+                'expert',
+            ])->default('beginner');
             $table->timestamps();
+
+            $table->unique(['user_id', 'skill_id']);
         });
     }
 

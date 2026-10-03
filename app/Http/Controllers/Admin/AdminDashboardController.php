@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Skill;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Models\Event;
 
 class AdminDashboardController extends Controller
 {
@@ -16,12 +16,14 @@ class AdminDashboardController extends Controller
         $totalOrganizers = User::where('role', 'organizer')->count();
         $totalSkills = Skill::count();
         $totalCategories = Category::count();
+        $pendingEvents = Event::where('status', 'pending')->count();
 
         return view('admin.dashboard', compact(
-            'totalVolunteers', 
-            'totalOrganizers', 
-            'totalSkills', 
-            'totalCategories'
+            'totalVolunteers',
+            'totalOrganizers',
+            'totalSkills',
+            'totalCategories',
+            'pendingEvents'
         ));
     }
 }

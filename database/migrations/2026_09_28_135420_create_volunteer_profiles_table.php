@@ -10,11 +10,14 @@ return new class extends Migration
     {
         Schema::create('volunteer_profiles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->unique()->constrained()->cascadeOnDelete();
             $table->string('phone')->nullable();
+            $table->date('birth_date')->nullable();
+            $table->enum('gender', ['male', 'female'])->nullable();
+            $table->string('city')->nullable();
+            $table->text('address')->nullable();
             $table->text('bio')->nullable();
-            $table->string('location')->nullable(); // Malang, Surabaya, dll (untuk matching 20%)[cite: 1]
-            $table->string('availability')->nullable(); // Weekday, Weekend, Full-time (untuk matching 30%)[cite: 1]
+            $table->string('availability')->nullable();
             $table->string('cv_file')->nullable();
             $table->string('portfolio_file')->nullable();
             $table->timestamps();
