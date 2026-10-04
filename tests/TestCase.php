@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Dotenv\Dotenv;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -10,7 +11,7 @@ abstract class TestCase extends BaseTestCase
     {
         $app = parent::createApplication();
         $db = $app['db']->connection();
-        $working = is_file(base_path('.env')) ? \Dotenv\Dotenv::parse(file_get_contents(base_path('.env'))) : [];
+        $working = is_file(base_path('.env')) ? Dotenv::parse(file_get_contents(base_path('.env'))) : [];
         if (! $app->environment('testing') || $app->configurationIsCached()
             || $db->getDriverName() !== 'mysql'
             || $db->getDatabaseName() !== 'skillmatch_testing'
