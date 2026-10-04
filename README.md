@@ -122,7 +122,7 @@ Untuk backup MySQL, gunakan `mysqldump --single-transaction` dengan kredensial l
 
 ## Modul lanjutan dan troubleshooting
 
-- `/admin/dashboard` adalah shell sementara; menu admin baseline dipertahankan. Moderasi, analitik, audit UI, master UI kota/nonaktifkan, serta suspend dengan alasan/audit lengkap tetap A1. Hard delete akun ditolak server.
+- `/admin/dashboard` menampilkan dashboard dasar baseline dengan hitungan nyata Volunteer, Organizer, skill, kategori dan event pending serta aksi cepat. Filter periode, tren dan analitik lengkap belum tersedia; A1 melanjutkan controller/view yang sama. Moderasi, audit UI, master UI kota/nonaktifkan, serta suspend dengan alasan/audit lengkap tetap A1. Hard delete akun ditolak server.
 - Aktivitas pengguna adalah shell dengan tautan profil. A4 mengganti isinya dengan ActivityReadService, notifikasi, screening, assessment dan matching.
 - Event/katalog/paket/Midtrans Sandbox belum diimplementasikan oleh SF; konfigurasi payment belum tersedia (A2).
 - Dokumen privat, download terotorisasi, lamaran/attendance/retensi belum tersedia (A3 dengan integrasi A1). Tidak menjalankan `storage:link` untuk dokumen pribadi.

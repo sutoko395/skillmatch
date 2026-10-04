@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\EventCategoryController;
 use App\Http\Controllers\Admin\EventVerificationController;
 use App\Http\Controllers\Admin\OrganizerController;
@@ -11,7 +12,7 @@ Route::middleware(['auth', 'account.active', 'role:admin', 'verified', 'can:view
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        Route::view('/dashboard', 'admin.foundation')
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])
             ->name('dashboard');
 
         Route::prefix('master-data')

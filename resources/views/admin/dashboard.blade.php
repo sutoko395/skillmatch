@@ -14,9 +14,14 @@
                 Selamat Datang Kembali, <span class="text-indigo-600 font-bold">{{ Auth::user()->name }}</span>!
             </h1>
             <p class="text-xs md:text-sm text-gray-500 font-normal leading-relaxed">
-                Pantau akumulasi pendaftaran Volunteer, aktivitas Organizer, verifikasi event, serta ketersediaan Master Skill sistem SkillMatch.
+                Ringkasan data saat ini: akun Volunteer dan Organizer, master skill, kategori, serta event menunggu verifikasi.
             </p>
         </div>
+    </div>
+
+    <div class="rounded-xl border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-900">
+        <p class="font-semibold">Dashboard dasar</p>
+        <p class="mt-1">Angka di bawah berasal dari database saat halaman dimuat dan mencakup seluruh akun serta master, termasuk yang nonaktif. Filter periode, tren, dan analitik lengkap belum tersedia.</p>
     </div>
 
     {{-- METRICS CARD GRID --}}

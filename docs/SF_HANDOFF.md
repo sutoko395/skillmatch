@@ -37,9 +37,9 @@ Model baru City, AvailabilitySlot, AuditLog. Relasi User::availabilitySlots, Vol
 
 `routes/web.php` memuat admin.php, volunteer.php, organizer.php, auth.php. Route profil tetap GET/POST `/volunteer/profile` dan `/organizer/profile` dengan nama `.profile.edit/update`. Pending final GET `/organizer/profile/pending`; `/organizer/pending` redirect. `/dashboard` mengarahkan sesuai role/verifikasi; dashboard pengguna lama redirect ke aktivitas.
 
-Titik penggantian shell:
+Titik kelanjutan dashboard dan penggantian shell:
 
-- A1: `resources/views/admin/foundation.blade.php` pada `admin.dashboard`. Controller/view dashboard baseline tetap tersimpan sebagai bahan pengembangan, belum menjadi analitik PRD.
+- A1 (koreksi 5 Oktober 2026 sesuai instruksi pengguna): `admin.dashboard` kembali memakai `AdminDashboardController@index` dan `resources/views/admin/dashboard.blade.php`. Hitungan database dan aksi cepat baseline ditampilkan, dengan keterangan bahwa analitik lengkap belum tersedia. View shell `admin/foundation.blade.php` dihapus. A1 memperluas dashboard dasar ini, bukan menggantinya dengan shell; rincian tugas ada pada brief A1 yang diperbarui. Proteksi SF tetap berlaku.
 - A4: `resources/views/shared/activity.blade.php` pada `volunteer.activity.index` dan `organizer.activity.index`; ganti route view dengan controller + ActivityReadService masing-masing role.
 - A2: `resources/views/welcome.blade.php` / home, lalu katalog events.index/show. Navbar hanya menautkan fitur yang sudah ada.
 - A1/A3: pemberitahuan dokumen belum tersedia pada organizer/profile/edit; preview publik admin dihentikan. OrganizerDocument/schema/berkas lama tetap ada untuk migrasi terkontrol.
@@ -72,6 +72,8 @@ Kegagalan awal yang sudah diselesaikan: manifest Vite belum dibuat saat tes rend
 
 ## Gate yang masih memerlukan review
 
+Verifikasi koreksi dashboard admin (5 Oktober 2026): `FoundationAccessTest` lulus **22 tes / 124 assertion**, termasuk view dashboard baseline, lima hitungan sesuai database, aksi cepat, label analitik belum tersedia dan proteksi lintas role. `npm run build`, `view:cache`, `route:list --path=admin/dashboard`, Pint pada file yang diubah dan `git diff --check` berhasil. Percobaan tes dalam sandbox ditolak koneksi; pemeriksaan MySQL dan tes ulang di luar sandbox berhasil pada `skillmatch_testing`. Angka 52/227 di atas adalah bukti suite SF sebelumnya, bukan klaim menjalankan ulang seluruh suite pada koreksi ini. Uji browser visual tetap belum dilakukan.
+
 - **Reviewer anggota lain: belum ditetapkan; tanggal review: belum ada.** Jalankan README dari checkout tip SF pada MySQL kosong dan database tes terpisah, lalu catat hasil di bagian ini. UAT-35/review tim belum lulus.
 - Uji browser visual/keyboard 360/768/1280 dan screenshot: **belum diuji**, browser automation tidak tersedia pada sesi ini. Build dan render HTTP/Blade sudah diuji; keduanya bukan pengganti pengujian visual.
 - SMTP nyata: **belum diuji**; notifikasi auth diuji dengan fake/array mailer. Reviewer dapat memakai SMTP uji atau tautan log lokal.
@@ -91,7 +93,7 @@ Kegagalan awal yang sudah diselesaikan: manifest Vite belum dibuat saat tes rend
 ## Demo/review singkat
 
 1. Ikuti README, migrate/seed pada MySQL kosong, jalankan server + build.
-2. Login admin dari `/login`, periksa shell analitik dan logout POST. Login Volunteer lalu coba `/admin/dashboard` langsung: 403.
+2. Login admin dari `/login`, periksa dashboard dasar: angka sesuai database, aksi cepat, keterangan analitik belum lengkap dan logout POST. Login Volunteer lalu coba `/admin/dashboard` langsung: 403.
 3. Edit profil Volunteer A: pilih kota, skill/level dan interval WIB; simpan lalu buka ulang. Coba skill ganda/akhir lebih awal: validasi menolak tanpa perubahan parsial.
 4. Login Organizer pending/inactive aktif: profil tetap dapat disimpan tanpa dokumen/status akun berubah. Login akun suspended: ditolak. Gunakan akun unverified untuk alur email.
 5. Jalankan PHPUnit dan skrip bukti audit hanya setelah sf-db-check memastikan database tes terpisah. Catat versi, commit, screenshot dan reviewer; jangan mengubah tabel UAT penuh menjadi lulus hanya berdasarkan SF.

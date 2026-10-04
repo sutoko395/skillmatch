@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Event;
 use App\Models\Skill;
 use App\Models\User;
-use App\Models\Event;
 
 class AdminDashboardController extends Controller
 {

@@ -2,6 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Category;
+use App\Models\Event;
+use App\Models\Skill;
 use App\Models\User;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\Gate;
@@ -30,7 +33,17 @@ class FoundationAccessTest extends DatabaseTestCase
         $user = User::factory()->create(['role' => $role, 'organizer_status' => $status, 'email_verified_at' => $verified ? now() : null]);
         $this->post('/login', ['email' => $user->email, 'password' => 'password', 'role' => 'admin'])->assertRedirect($destination);
         $this->assertAuthenticatedAs($user);
-        $this->get($destination)->assertOk();
+        $page = $this->get($destination)->assertOk();
+        if ($role === 'admin') {
+            $page->assertViewIs('admin.dashboard')
+                ->assertViewHas('totalVolunteers', User::where('role', 'volunteer')->count())
+                ->assertViewHas('totalOrganizers', User::where('role', 'organizer')->count())
+                ->assertViewHas('totalSkills', Skill::count())
+                ->assertViewHas('totalCategories', Category::count())
+                ->assertViewHas('pendingEvents', Event::where('status', 'pending')->count())
+                ->assertSee('Aksi Cepat Admin')
+                ->assertSee('analitik lengkap belum tersedia');
+        }
     }
 
     public static function intended(): array
