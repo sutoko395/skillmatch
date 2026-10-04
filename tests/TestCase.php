@@ -10,12 +10,15 @@ abstract class TestCase extends BaseTestCase
     {
         $app = parent::createApplication();
         $db = $app['db']->connection();
-        if (!$app->environment('testing') || $app->configurationIsCached()
+        $working = is_file(base_path('.env')) ? \Dotenv\Dotenv::parse(file_get_contents(base_path('.env'))) : [];
+        if (! $app->environment('testing') || $app->configurationIsCached()
             || $db->getDriverName() !== 'mysql'
             || $db->getDatabaseName() !== 'skillmatch_testing'
+            || ($working['DB_DATABASE'] ?? null) === $db->getDatabaseName()
             || $db->getConfig('url')) {
             throw new \RuntimeException('Tests require uncached MySQL skillmatch_testing, never the working database.');
         }
+
         return $app;
     }
 }

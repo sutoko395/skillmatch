@@ -3,12 +3,9 @@
 namespace Tests\Feature\Auth;
 
 use Tests\DatabaseTestCase;
-use Tests\TestCase;
 
 class RegistrationTest extends DatabaseTestCase
 {
-
-
     public function test_registration_screen_can_be_rendered(): void
     {
         $response = $this->get('/register');

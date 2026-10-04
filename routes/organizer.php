@@ -1,6 +1,8 @@
 <?php
+
 use App\Http\Controllers\Organizer\OrganizerProfileController;
 use Illuminate\Support\Facades\Route;
+
 Route::middleware(['auth', 'account.active', 'role:organizer'])->prefix('organizer')->name('organizer.')->group(function () {
     // Basic profile remains accessible while email/organization verification is pending.
     Route::get('/profile', [OrganizerProfileController::class, 'edit'])->name('profile.edit');

@@ -3,14 +3,11 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
-use Tests\DatabaseTestCase;
 use Illuminate\Support\Facades\Hash;
-use Tests\TestCase;
+use Tests\DatabaseTestCase;
 
 class PasswordUpdateTest extends DatabaseTestCase
 {
-
-
     public function test_password_can_be_updated(): void
     {
         $user = User::factory()->create();

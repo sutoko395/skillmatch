@@ -1,7 +1,9 @@
 <?php
+
 namespace Tests\Feature;
 
 use App\Models\User;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -101,7 +103,7 @@ class FoundationAccessTest extends DatabaseTestCase
         $this->assertTrue($user->is_active);
         $this->assertSame('pending', $user->organizer_status);
         $this->assertNull($user->email_verified_at);
-        Notification::assertSentTo($user, \Illuminate\Auth\Notifications\VerifyEmail::class);
+        Notification::assertSentTo($user, VerifyEmail::class);
     }
 
     public function test_logout_and_profile_policy(): void
@@ -118,9 +120,22 @@ class FoundationAccessTest extends DatabaseTestCase
     public function test_login_is_rate_limited(): void
     {
         $user = User::factory()->create();
-        for ($i = 0; $i < 6; $i++) $response = $this->post('/login', ['email' => $user->email, 'password' => 'wrong']);
+        for ($i = 0; $i < 6; $i++) {
+            $response = $this->post('/login', ['email' => $user->email, 'password' => 'wrong']);
+        }
         $response->assertSessionHasErrors('email');
         $this->post('/login', ['email' => $user->email, 'password' => 'password'])->assertSessionHasErrors('email');
+        $this->assertGuest();
+    }
+
+    public function test_logout_requires_csrf_outside_the_test_bypass(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+        $this->app['env'] = 'local';
+        $this->post('/logout')->assertStatus(419);
+        $this->assertAuthenticatedAs($user);
+        $this->withSession(['_token' => 'csrf-test-only'])->post('/logout', ['_token' => 'csrf-test-only'])->assertRedirect('/login');
         $this->assertGuest();
     }
 }

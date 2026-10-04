@@ -13,6 +13,7 @@ class Skill extends Model
     protected $fillable = [
         'name',
         'category',
+        'is_active',
     ];
 
     public function volunteerSkills(): HasMany

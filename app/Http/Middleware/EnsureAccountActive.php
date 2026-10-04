@@ -11,12 +11,13 @@ class EnsureAccountActive
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user() && !$request->user()->fresh()?->is_active) {
+        if ($request->user() && ! $request->user()->fresh()?->is_active) {
             Auth::guard('web')->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
             abort(403, 'Akun dinonaktifkan. Hubungi administrator.');
         }
+
         return $next($request);
     }
 }

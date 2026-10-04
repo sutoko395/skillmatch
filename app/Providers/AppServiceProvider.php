@@ -2,6 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Category;
+use App\Models\Event;
+use App\Models\Skill;
+use App\Policies\AdminResourcePolicy;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,8 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        foreach ([\App\Models\Skill::class, \App\Models\Category::class, \App\Models\Event::class] as $model) {
-            \Illuminate\Support\Facades\Gate::policy($model, \App\Policies\AdminResourcePolicy::class);
+        foreach ([Skill::class, Category::class, Event::class] as $model) {
+            Gate::policy($model, AdminResourcePolicy::class);
         }
     }
 }

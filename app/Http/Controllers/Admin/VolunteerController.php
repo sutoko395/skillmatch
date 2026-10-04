@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class VolunteerController extends Controller
@@ -16,7 +17,7 @@ class VolunteerController extends Controller
         $status = $request->string('status')->toString();
         $perPage = (int) $request->input('per_page', 10);
 
-        if (!in_array($perPage, [10, 50, 100])) {
+        if (! in_array($perPage, [10, 50, 100])) {
             $perPage = 10;
         }
 
@@ -58,13 +59,13 @@ class VolunteerController extends Controller
 
     public function toggleStatus(User $user): RedirectResponse
     {
-        \Illuminate\Support\Facades\Gate::authorize('manageVolunteer', $user);
+        Gate::authorize('manageVolunteer', $user);
         if ($user->role !== 'volunteer') {
             abort(404);
         }
 
         $user->update([
-            'is_active' => !$user->is_active,
+            'is_active' => ! $user->is_active,
         ]);
 
         return back()->with(
@@ -81,7 +82,7 @@ class VolunteerController extends Controller
             abort(404);
         }
 
-        \Illuminate\Support\Facades\Gate::authorize('delete', $user);
+        Gate::authorize('delete', $user);
 
         return back()->with(
             'success',

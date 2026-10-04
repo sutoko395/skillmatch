@@ -1,17 +1,10 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\EventCategoryController;
-use App\Http\Controllers\Admin\SkillController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Volunteer\VolunteerDashboardController;
-use App\Http\Controllers\Volunteer\VolunteerProfileController;
 use App\Http\Controllers\Admin\EventVerificationController;
 use App\Http\Controllers\Admin\OrganizerController;
+use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Admin\VolunteerController;
-use App\Http\Controllers\Organizer\OrganizerDashboardController;
-use App\Http\Controllers\Organizer\OrganizerProfileController;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'account.active', 'role:admin', 'verified', 'can:viewAdmin,App\Models\User'])
@@ -69,4 +62,3 @@ Route::middleware(['auth', 'account.active', 'role:admin', 'verified', 'can:view
         Route::patch('/event-verification/{event}/reject', [EventVerificationController::class, 'reject'])->can('manage', 'event')
             ->name('event-verification.reject');
     });
-
