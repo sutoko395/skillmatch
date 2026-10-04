@@ -67,6 +67,7 @@ class OrganizerController extends Controller
 
     public function updateStatus(Request $request, User $user): RedirectResponse
     {
+        \Illuminate\Support\Facades\Gate::authorize('manageOrganizer', $user);
         if ($user->role !== 'organizer') {
             abort(404);
         }
@@ -82,7 +83,6 @@ class OrganizerController extends Controller
 
         $user->update([
             'organizer_status' => $status,
-            'is_active' => $status === 'active',
         ]);
 
         return back()->with(
@@ -97,7 +97,7 @@ class OrganizerController extends Controller
             abort(404);
         }
 
-        $user->delete();
+        \Illuminate\Support\Facades\Gate::authorize('delete', $user);
 
         return back()->with(
             'success',

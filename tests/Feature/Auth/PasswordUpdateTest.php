@@ -3,13 +3,13 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\DatabaseTestCase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
-class PasswordUpdateTest extends TestCase
+class PasswordUpdateTest extends DatabaseTestCase
 {
-    use RefreshDatabase;
+
 
     public function test_password_can_be_updated(): void
     {

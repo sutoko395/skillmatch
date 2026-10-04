@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Auth;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\DatabaseTestCase;
 use Tests\TestCase;
 
-class RegistrationTest extends TestCase
+class RegistrationTest extends DatabaseTestCase
 {
-    use RefreshDatabase;
+
 
     public function test_registration_screen_can_be_rendered(): void
     {
@@ -20,12 +20,13 @@ class RegistrationTest extends TestCase
     {
         $response = $this->post('/register', [
             'name' => 'Test User',
+            'role' => 'volunteer',
             'email' => 'test@example.com',
             'password' => 'password',
             'password_confirmation' => 'password',
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $response->assertRedirect(route('verification.notice'));
     }
 }

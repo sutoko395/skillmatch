@@ -19,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        foreach ([\App\Models\Skill::class, \App\Models\Category::class, \App\Models\Event::class] as $model) {
+            \Illuminate\Support\Facades\Gate::policy($model, \App\Policies\AdminResourcePolicy::class);
+        }
     }
 }

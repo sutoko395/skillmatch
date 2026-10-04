@@ -12,7 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->appendToGroup('web', \App\Http\Middleware\EnsureAccountActive::class);
+        $middleware->redirectUsersTo(fn (Request $request) => app(\App\Services\LoginDestination::class)->defaultFor($request->user()));
         $middleware->alias([
+            'account.active' => \App\Http\Middleware\EnsureAccountActive::class,
             'role' => \App\Http\Middleware\RoleMiddleware::class,
             'organizer.active' => \App\Http\Middleware\OrganizerActiveMiddleware::class,
         ]);
