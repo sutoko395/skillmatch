@@ -6,11 +6,7 @@
     
     <title>@yield('title', 'Dashboard') - SkillMatch Admin</title>
 
-    <!-- Font Inter Standar Industri -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    @include('layouts.fonts')
     @vite([
         'resources/css/app.css',
         'resources/js/app.js'
@@ -19,12 +15,10 @@
     <style>
         html { 
             scrollbar-gutter: stable; 
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
-        body:not(.ready) {
-            display: none !important;
-        }
+
 
         [x-cloak] { 
             display: none !important; 
@@ -45,28 +39,24 @@
         }
     </style>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        document.body.classList.add('ready');
-    });
-    </script>
 
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+
+
 </head>
-<body class="h-full overflow-x-hidden font-sans bg-bg-light text-txt-light-primary antialiased" x-data="{ userDropdownOpen: false, mobileSidebarOpen: false }">
+<body class="h-full overflow-x-hidden font-sans bg-bg-light text-txt-light-primary antialiased" x-data="{ userDropdownOpen: false, mobileSidebarOpen: false, desktop: window.innerWidth >= 1024 }" @resize.window="desktop = window.innerWidth >= 1024" @keydown.escape.window="mobileSidebarOpen = false; userDropdownOpen = false; $refs.menu.focus()">
 
     <!-- Overlay Mobile -->
     <div x-show="mobileSidebarOpen" 
          x-cloak
          x-transition:opacity.duration.200ms
-         @click="mobileSidebarOpen = false"
+         @click="mobileSidebarOpen = false; $refs.menu.focus()"
          class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden">
     </div>
 
     <!-- Sidebar Utama -->
-    <aside x-cloak
+    <aside :inert="!desktop && !mobileSidebarOpen"
         :class="mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-        class="fixed inset-y-0 left-0 w-72 bg-bg-brand text-txt-dark-primary flex flex-col h-screen shadow-xl select-none z-50 transition-transform duration-300 ease-in-out">
+        class="-translate-x-full lg:translate-x-0 fixed inset-y-0 left-0 w-72 bg-bg-brand text-txt-dark-primary flex flex-col h-screen shadow-xl select-none z-50 transition-transform duration-300 ease-in-out">
         
         <!-- Logo Sidebar -->
         <div class="p-6 h-16 border-b border-white/10 flex items-center justify-between shrink-0">
@@ -82,7 +72,7 @@
                 </div>
             </a>
 
-            <button @click="mobileSidebarOpen = false" class="text-txt-dark-secondary hover:text-white lg:hidden focus:outline-none p-1 rounded-lg hover:bg-white/5 cursor-pointer">
+            <button aria-label="Tutup navigasi admin" @click="mobileSidebarOpen = false; $refs.menu.focus()" class="text-txt-dark-secondary hover:text-white lg:hidden focus:outline-none p-1 rounded-lg hover:bg-white/5 cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -265,10 +255,10 @@
     <div class="flex-1 lg:pl-72 flex flex-col min-h-screen">    
         
         <!-- Navbar Top Bar -->
-        <header class="fixed top-0 right-0 left-0 lg:left-71 h-16 bg-white/80 backdrop-blur-md border-b border-slate-100 z-30 select-none">
+        <header class="fixed top-0 right-0 left-0 lg:left-72 h-16 bg-white/80 backdrop-blur-md border-b border-slate-100 z-30 select-none">
             <div class="w-full h-full px-4 sm:px-6 lg:px-8 flex justify-between lg:justify-end items-center">
                 
-                <button @click="mobileSidebarOpen = true" class="p-2 text-slate-600 hover:text-slate-900 lg:hidden focus:outline-none rounded-xl hover:bg-slate-50 cursor-pointer">
+                <button x-ref="menu" aria-label="Buka navigasi admin" :aria-expanded="mobileSidebarOpen" @click="mobileSidebarOpen = true" class="p-2 text-slate-600 hover:text-slate-900 lg:hidden focus:outline-none rounded-xl hover:bg-slate-50 cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>
