@@ -1,6 +1,14 @@
-# SkillMatch ? Shared Foundation
+# SkillMatch
 
-Implementasi SF-01?SF-07 dari baseline teman pada commit `8fba603`. Laravel/Blade tetap dipakai; fitur admin lanjutan, event/payment, dokumen privat/lamaran, dan engine aktivitas belum selesai. Lihat [serah-terima dan bukti verifikasi](docs/SF_HANDOFF.md).
+SkillMatch adalah aplikasi web yang dikembangkan untuk menghubungkan Volunteer dengan kegiatan Organizer berdasarkan keterampilan, ketersediaan waktu, dan lokasi.
+
+Aplikasi menggunakan Laravel, Blade, Tailwind CSS 3, Alpine.js, Vite, dan MySQL. Volunteer dan Organizer memakai antarmuka web utama, sementara Admin memiliki panel tersendiri.
+
+## Status aplikasi
+
+Saat ini tersedia beranda, login dan registrasi, verifikasi email/reset password, profil Volunteer beserta skill dan jadwal ketersediaan, profil Organizer, ringkasan profil pengguna, serta dashboard dasar Admin.
+
+Katalog dan pengelolaan kegiatan, pembayaran, lamaran, attendance, assessment dan matching masih dalam pengembangan. Bagian yang belum tersedia ditandai pada antarmuka; aplikasi belum menyediakan seluruh alur kegiatan dari awal sampai akhir.
 
 ## Prasyarat
 
@@ -12,7 +20,7 @@ Implementasi SF-01?SF-07 dari baseline teman pada commit `8fba603`. Laravel/Blad
 
 ## Instalasi baru
 
-Clone repository dan checkout commit SF yang disepakati, lalu masuk folder proyek. Perintah berikut untuk PowerShell:
+Clone repository dan masuk ke folder proyek pada branch atau versi yang akan digunakan. Perintah berikut untuk PowerShell:
 
 ```powershell
 composer install --no-interaction --prefer-dist
@@ -64,17 +72,17 @@ Semua akun memakai password **`SkillMatch-local-2026!`**, khusus lokal dan dilar
 
 | Email | Keadaan / tujuan |
 |---|---|
-| admin@example.test | Admin terverifikasi ? `/admin/dashboard` |
-| organizer-a@example.test, organizer-b@example.test | Organisasi aktif ? `/organizer/aktivitas` |
-| organizer-pending@example.test | Pending ? `/organizer/profile/pending` |
+| admin@example.test | Admin terverifikasi menuju `/admin/dashboard` |
+| organizer-a@example.test, organizer-b@example.test | Organisasi aktif menuju `/organizer/aktivitas` |
+| organizer-pending@example.test | Pending menuju `/organizer/profile/pending` |
 | organizer-inactive@example.test | Revisi/belum terverifikasi; akun tetap aktif dan dapat mengedit profil |
 | organizer-suspended@example.test | Akun nonaktif, login ditolak |
 | organizer-unverified@example.test | Verifikasi email dahulu; profil dasar tetap dapat dibuka |
-| volunteer-a@example.test, volunteer-b@example.test, volunteer-c@example.test | Profil lengkap ? `/volunteer/aktivitas` |
+| volunteer-a@example.test, volunteer-b@example.test, volunteer-c@example.test | Profil lengkap menuju `/volunteer/aktivitas` |
 | volunteer-suspended@example.test | Akun nonaktif, login ditolak |
 | volunteer-unverified@example.test | Verifikasi email dahulu |
 
-Availability demo: 1 November 2026 pukul 09.00?12.00 WIB (02.00?05.00 UTC). Kota Malang/Surabaya, empat level skill. Akun admin dibuat secara internal melalui seeder lokal ini; registrasi publik hanya Volunteer/Organizer. Pembuatan admin produksi belum disediakan.
+Availability demo: 1 November 2026 pukul 09.00-12.00 WIB (02.00-05.00 UTC). Kota Malang/Surabaya, empat level skill. Akun admin dibuat secara internal melalui seeder lokal ini; registrasi publik hanya Volunteer/Organizer. Pembuatan admin produksi belum disediakan.
 
 ## Email autentikasi
 
@@ -107,30 +115,25 @@ php tools/sf-audit-commit-check.php --env=testing
 
 Tes memakai `DatabaseTransactions`, bukan RefreshDatabase. TestCase memeriksa lingkungan, nama database, driver, config cache, DB_URL, dan perbedaan database kerja sebelum transaksi. Migration dilakukan terpisah; tes tidak mereset schema. Skrip audit memakai dua koneksi independen untuk membuktikan commit/rollback nyata dan mempertahankan catatan bukti pada database tes karena audit append-only. Ulangi seeder tanpa reset jika membutuhkan akun demo; jangan berharap seeder mengembalikan perubahan akun yang sudah diedit.
 
-`composer test` juga tersedia dan menjalankan config:clear lalu artisan test. Untuk format, gunakan `php vendor/bin/pint --test <file/folder-yang-diubah>`; baseline di luar SF belum diformat ulang. Hasil SF saat implementasi: 52 tes/227 assertion lulus; build berhasil. Uji browser manual 360/768/1280, SMTP nyata, dan setup oleh anggota lain masih diperlukan (lihat handoff).
+`composer test` juga tersedia dan menjalankan config:clear lalu artisan test. Untuk format, gunakan `php vendor/bin/pint --test <file/folder-yang-diubah>`. Catatan hasil pengujian dan keterbatasannya tersedia dalam [dokumentasi pengembangan](docs/DEVELOPMENT.md).
 
-## Memperbarui baseline berisi data
+## Memperbarui instalasi
 
-1. Backup konsisten database dan berkas; uji pada salinan terlebih dahulu. Migration SF wajib diterapkan juga pada database kerja sebelum membuka halaman Volunteer; migration pada database tes tidak memperbarui database kerja. Perbaikan lokal 5 Oktober 2026 sudah menerapkan schema SF pada database kerja (lihat `docs/SF_HANDOFF.md`); anggota lain tetap perlu memeriksa database masing-masing.
-2. Jalankan `php artisan migrate` setelah mengecek database tujuan. Migration lama tidak diubah. SF menambah cities, city_id nullable, availability_slots, flag master dan audit_logs; FK skill menjadi restrict.
-3. `city` dan `availability` lama dipertahankan. Tidak ada pemetaan kota otomatis dan tidak ada interval buatan dari Weekend/Weekday/Flexibel. Pengguna memilih kota aktif dan mengisi interval nyata.
-4. `is_active=false` lama tidak otomatis diubah: belum dapat dibedakan antara suspensi asli dan efek submit organisasi pada baseline. Reviewer/admin mengklasifikasikan data lama sebelum pemulihan terkontrol A1.
-5. Konversi konfigurasi SQLite ke MySQL tidak memindahkan data. Ekspor/impor terkontrol perlu mempertahankan ID/FK/jumlah record/timestamp; belum diuji pada salinan data kerja nyata.
-6. Dokumen organisasi lama masih mungkin ada di disk public. SF menghentikan upload/preview publik, tetapi tidak memindahkan/menghapus berkas. A1/A3 wajib backup, copy/checksum, migrasi metadata, lalu menutup akses publik sebelum penggunaan nyata.
+Backup database dan berkas terlebih dahulu, periksa database tujuan, lalu ikuti [panduan transisi data](docs/DEVELOPMENT.md#memperbarui-baseline-berisi-data). Migration database tes tidak memperbarui database aplikasi. Jangan mereset database kerja atau mengganti APP_KEY instalasi yang sudah digunakan.
 
-Untuk backup MySQL, gunakan `mysqldump --single-transaction` dengan kredensial lokal melalui mekanisme aman, koordinasikan snapshot berkas, dan hindari DDL selama dump. Restore ke database terpisah, jangan menimpa kerja. Jangan commit dump, token, atau dokumen pribadi. Prosedur restore lengkap dan purge ledger menjadi integrasi A1/A3 yang belum tersedia.
+## Troubleshooting
 
-## Modul lanjutan dan troubleshooting
+- **Tabel `availability_slots` tidak ditemukan:** periksa `php artisan migrate:status` pada environment aplikasi. Setelah backup dan pemeriksaan tujuan, jalankan migration yang pending dengan `php artisan migrate`, lalu `php artisan db:seed --class=MasterDataSeeder`. Jika tabel sudah ada tetapi migration pending, periksa schema dan riwayatnya sebelum melanjutkan.
+- **Unknown database / Access denied:** periksa nama database dan izin akun MySQL lokal. Untuk `could not find driver`, aktifkan PDO MySQL pada PHP CLI/Herd.
+- **APP_KEY kosong:** jalankan `key:generate` hanya untuk instalasi baru. Jangan mengganti key instalasi existing.
+- **Vite manifest hilang:** jalankan `npm ci --ignore-scripts` lalu `npm run build`. Hapus `public/hot` hanya jika itu penanda dev server milik Anda yang sudah berhenti.
+- **Tautan verifikasi gagal:** periksa APP_URL, waktu server dan akun yang sedang login. Mailer log tidak mengirim email ke inbox.
+- **Trigger audit ditolak saat migration:** akun migration memerlukan izin TRIGGER. Jangan menghapus proteksi audit untuk mengatasi kesalahan izin.
+- **Akun nonaktif tidak bisa login:** periksa status dan alasan penonaktifan; jangan mengaktifkan semua akun secara massal.
 
-- `/admin/dashboard` menampilkan dashboard dasar baseline dengan hitungan nyata Volunteer, Organizer, skill, kategori dan event pending serta aksi cepat. Filter periode, tren dan analitik lengkap belum tersedia; A1 melanjutkan controller/view yang sama. Moderasi, audit UI, master UI kota/nonaktifkan, serta suspend dengan alasan/audit lengkap tetap A1. Hard delete akun ditolak server.
-- Aktivitas pengguna mempertahankan gaya kartu baseline dan ringkasan profil nyata milik akun sendiri. Volunteer melihat kelengkapan dari ProfileEligibilityService, skill, kota dan availability WIB; Organizer melihat profil/kontak serta status akun/organisasi. Fitur kegiatan belum tersedia diberi keterangan tanpa statistik palsu. A4 melanjutkan ringkasan ini dengan ActivityReadService, notifikasi, screening, assessment dan matching.
-- Event/katalog/paket/Midtrans Sandbox belum diimplementasikan oleh SF; konfigurasi payment belum tersedia (A2).
-- Beranda `/` mempertahankan hero, tombol Masuk/Daftar dan footer tim dari baseline, memakai navbar SF. Pengguna login diarahkan melalui tujuan role/status yang sah. Katalog dan matching diberi keterangan sedang disiapkan, bukan mengganti seluruh beranda. A2 melanjutkan halaman ini beserta katalog/detail event.
-- Dokumen privat, download terotorisasi, lamaran/attendance/retensi belum tersedia (A3 dengan integrasi A1). Tidak menjalankan `storage:link` untuk dokumen pribadi.
-- SF mengirim email auth sinkron; tidak memerlukan worker/scheduler. Instruksi `queue:work`/`schedule:work` untuk outbox/attempt/retensi baru ditambahkan pemilik modul saat implementasi.
-- Unknown database/Access denied: periksa database dan grant lokal. `could not find driver`: aktifkan PDO MySQL pada PHP CLI/Herd yang dipakai. `sf-db-check` tidak mencetak password.
-- `Table ... availability_slots doesn't exist` saat membuka Volunteer: jalankan `php artisan migrate:status` pada environment aplikasi. Jika migration SF pending, ikuti prosedur backup/upgrade di atas lalu `php artisan migrate` dan `php artisan db:seed --class=MasterDataSeeder`. Jangan memakai `migrate:fresh` atau menjalankan tes pada database kerja. Jika tabel sudah ada tetapi migration masih pending, periksa schema dan riwayat migration terlebih dahulu; jangan menghapus tabel atau menandai migration selesai tanpa verifikasi.
-- APP_KEY kosong: generate hanya untuk instalasi baru atau file testing baru. Vite manifest hilang: `npm ci --ignore-scripts` lalu `npm run build`; hapus `public/hot` hanya jika itu penanda dev server milik Anda yang sudah berhenti.
-- Port 8000/MySQL bentrok: pilih port yang sesuai dan ubah APP_URL/DB_PORT. Signed verification gagal: periksa URL, waktu, hash dan akun yang sedang login.
-- Trigger audit ditolak saat migration: akun migration memerlukan TRIGGER; ikuti kebijakan administrator MySQL untuk binary logging. Jangan menghapus proteksi audit sebagai solusi.
-- Akun nonaktif lama tidak bisa login: periksa keputusan suspensi bersama A1; jangan menjalankan aktivasi massal.
+Email autentikasi saat ini dikirim sinkron; worker/scheduler belum diperlukan untuk alur yang tersedia. Konfigurasi pembayaran dan pemrosesan modul lanjutan belum tersedia. Jangan menjalankan `storage:link` untuk membuka dokumen pribadi kepada publik.
+
+## Dokumentasi
+
+- [Panduan pengembangan dan pembagian tugas](docs/DEVELOPMENT.md).
+- [Spesifikasi produk, desain dan UAT](SkillMatch_Dokumen_Tim_v1.4/README.md).
