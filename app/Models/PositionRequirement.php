@@ -14,7 +14,7 @@ class PositionRequirement extends Model
         'event_position_id',
         'name',
         'description',
-        'is_required',
+        'is_required', 'kind', 'document_type',
     ];
 
     protected function casts(): array

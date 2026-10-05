@@ -25,12 +25,12 @@ Basis implementasi SF berasal dari commit `8fba603`. Gunakan commit fondasi yang
 
 ## Status modul dan kelanjutan pekerjaan
 
-- `/admin/dashboard` menampilkan dashboard dasar baseline dengan hitungan nyata Volunteer, Organizer, skill, kategori dan event pending serta aksi cepat. Filter periode, tren dan analitik lengkap belum tersedia; A1 melanjutkan controller/view yang sama. Moderasi, audit UI, master UI kota/nonaktifkan, serta suspend dengan alasan/audit lengkap tetap A1. Hard delete akun ditolak server.
-- Aktivitas pengguna mempertahankan gaya kartu baseline dan ringkasan profil nyata milik akun sendiri. Volunteer melihat kelengkapan dari ProfileEligibilityService, skill, kota dan availability WIB; Organizer melihat profil/kontak serta status akun/organisasi. Fitur kegiatan belum tersedia diberi keterangan tanpa statistik palsu. A4 melanjutkan ringkasan ini dengan ActivityReadService, notifikasi, screening, assessment dan matching.
-- Event/katalog/paket/Midtrans Sandbox belum diimplementasikan oleh SF; konfigurasi payment belum tersedia (A2).
-- Beranda `/` mempertahankan hero, tombol Masuk/Daftar dan footer tim dari baseline, memakai navbar SF. Pengguna login diarahkan melalui tujuan role/status yang sah. Katalog dan matching diberi keterangan sedang disiapkan, bukan mengganti seluruh beranda. A2 melanjutkan halaman ini beserta katalog/detail event.
-- Dokumen privat, download terotorisasi, lamaran/attendance/retensi belum tersedia (A3 dengan integrasi A1). Tidak menjalankan `storage:link` untuk dokumen pribadi.
-- SF mengirim email auth sinkron; tidak memerlukan worker/scheduler. Instruksi `queue:work`/`schedule:work` untuk outbox/attempt/retensi baru ditambahkan pemilik modul saat implementasi.
+- SF menyediakan fondasi, profil dan layout. Bukti historisnya tetap di SF_HANDOFF.md.
+- A2 sudah menyediakan schema event/posisi/jadwal, pengelolaan draft, katalog/detail, paket/order, adapter Midtrans Sandbox dan UI admin paket/transaksi. Lihat [handoff A2](A2_HANDOFF.md) untuk status verifikasi dan blocker; keberadaan adapter bukan bukti transaksi Sandbox nyata.
+- A1 tetap melanjutkan verifikasi organisasi, moderasi/analitik/konten/master/audit UI. Route moderasi baseline hanya disesuaikan untuk relasi posisi dan pemanggilan pemeriksaan/aktivasi/publikasi A2; tidak dianggap seluruh A1 selesai.
+- A3 menyediakan lamaran, dokumen privat, seleksi, attendance dan EventCancellationService. Pembatalan A2 ditahan sampai layanan ini tersedia.
+- A4 menyediakan validator assessment, notifikasi/outbox dan aktivitas lengkap. Pengajuan/publikasi A2 tidak meloloskan assessment yang belum dapat diperiksa. Audit dan payment ledger dapat direplay ke NotificationService setelah tersedia.
+- Ringkasan profil pengguna dan beranda baseline tetap dipertahankan. Data kegiatan tidak dipalsukan untuk mengisi halaman.
 
 ## Memperbarui baseline berisi data
 
@@ -48,3 +48,27 @@ Untuk backup MySQL, gunakan `mysqldump --single-transaction` dengan kredensial l
 Bukti historis suite SF, build, pemeriksaan akses, perbaikan database lokal dan batas pengujian tersedia di [SF_HANDOFF.md](SF_HANDOFF.md). Angka hasil tes bukan jaminan seluruh modul aplikasi selesai. Review tim, uji visual, SMTP nyata dan integrasi modul yang masih tertunda harus tetap dicatat sebagai belum selesai.
 
 README utama menjelaskan perilaku dan perintah yang dapat digunakan. Pembagian tugas, milestone, bukti per tahap dan blocker integrasi dipelihara di dokumen ini, brief anggota dan handoff masing-masing modul.
+
+## Upgrade event dan pembayaran
+
+Dua migration `2026_10_05_000001_extend_events_for_a2` dan `2026_10_05_000002_create_a2_payments` menambah kolom/tabel sesuai kontrak. `events.status` dipertahankan, event lama diberi unpublished/upcoming. Kota tidak dipetakan otomatis, akhir kegiatan kosong tetap null, jadwal posisi tidak dibuat dari dugaan. Data tersebut perlu diperiksa sebelum pengajuan/publikasi.
+
+Kolom tanggal/jam lama tidak dihapus. `starts_at`/`ends_at` digabung dengan asumsi WIB yang ditetapkan kontrak dan dikonversi ke UTC; deadline lama disalin ke `legacy_registration_deadline` sebelum dikonversi. Jangan menerapkan konversi dua kali secara manual. Minimum skill yang sudah ada pada position_skills tetap menjadi acuan; tidak ada backfill level yang ditebak. FK pemilik event dan induk posisi kini restrict; histori transaksi/entitlement juga restrict.
+
+Backup/restore dan migration telah diuji pada salinan database kerja terpisah, termasuk probe legacy approved dengan kota belum dipetakan dan akhir kosong. Salinan dan dump berisi data lokal tetap privat, tidak di-commit. Database kerja tidak dipakai oleh PHPUnit atau skrip konkurensi. Instruksi instalasi tetap di README utama.
+
+Penambahan interface `AssessmentReadiness::publishedVersion(position)` dijabarkan dalam kontrak dan A2_HANDOFF.md; A4 perlu meninjau/bind implementasinya. Harga Demo Free/Standard hanya fixture lokal, bukan keputusan harga produk.
+
+Setelah pemeriksaan salinan, kedua migration A2 juga sudah diterapkan pada database lokal pemilik workspace dengan backup baru dan pemeriksaan pelestarian data. Anggota lain tetap menjalankan migration pada database masing-masing; lihat bukti akhir A2_HANDOFF.md.
+
+## Beranda publik informatif
+
+Pengembangan beranda tetap milik A2. HomeController menggunakan schema/service publikasi existing untuk pratinjau enam event dengan pendaftaran terbuka dan kapasitas paket. welcome.blade.php menjelaskan produk, manfaat skill/waktu/lokasi, peran, cara mulai dan FAQ; event-card dipakai bersama katalog. Tidak menunggu A3/A4 untuk konten informatif, tetapi tetap menjelaskan status alur lamaran/assessment/matching yang belum terintegrasi. Lihat A2_HANDOFF untuk bukti tes/build/render dan batas review.
+
+## Penyempurnaan tampilan auth
+
+Permintaan pengguna setelah beranda: login/register memakai auth-layout dan auth-password-field, kartu pilihan peran hanya pada registrasi, copy Indonesia, state submit dan toggle password. Backend SF tidak berubah. A1 tetap memiliki pengembangan akun/admin berikutnya. Bukti pemeriksaan khusus di A2_HANDOFF; reset/verifikasi masih menggunakan guest-layout existing.
+
+## Konfigurasi awal paket
+
+DefaultPackageSeeder menambahkan Free, Standard dan Premium sesuai keputusan pengguna (lihat PRD/README) setelah UserSeeder, hanya local/testing. Nilai dapat diubah admin; seeding ulang memakai marker audit agar edit, rename dan nonaktif tidak di-reset. Paket demo tetap fixture terpisah. HomeController/package-card menampilkan harga/limit aktual. Tidak ada migration baru; integrasi assessment, lamaran dan attendance tetap milik A3/A4.

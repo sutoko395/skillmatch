@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -45,11 +46,16 @@ class LoginDestination
             }
         }
         $path = $parts['path'] ?? '';
+        if ($user->role === 'volunteer' && $user->is_active && $user->hasVerifiedEmail()
+            && preg_match('~\A/events/([1-9][0-9]*)/join\z~', $path, $match)
+            && Event::publiclyVisible()->whereKey($match[1])->exists()) {
+            return '/events/'.$match[1];
+        }
         // Exact, object-free GET destinations. Future object routes require their own Policy check.
         $allowed = match ($user->role) {
-            'admin' => ['/admin/dashboard', '/admin/organizers', '/admin/volunteers', '/admin/master-data/skills', '/admin/master-data/event-categories', '/admin/event-verification'],
+            'admin' => ['/admin/packages', '/admin/orders', '/admin/dashboard', '/admin/organizers', '/admin/volunteers', '/admin/master-data/skills', '/admin/master-data/event-categories', '/admin/event-verification'],
             'volunteer' => ['/volunteer/profile', '/volunteer/aktivitas'],
-            'organizer' => ['/organizer/profile', '/organizer/profile/pending', '/organizer/aktivitas'],
+            'organizer' => ['/organizer/events', '/organizer/profile', '/organizer/profile/pending', '/organizer/aktivitas'],
             default => [],
         };
         if (! $user->hasVerifiedEmail()) {

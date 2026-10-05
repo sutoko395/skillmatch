@@ -53,3 +53,17 @@ Gunakan commit shared foundation untuk auth bersama, kota, master skill, layout 
 A2 adalah PIC website utama untuk pengunjung: beranda/landing page, katalog, pencarian/filter dan detail event. SF mengembalikan hero, CTA auth dan footer baseline pada `resources/views/welcome.blade.php`, route `home`, menggunakan layout/navbar bersama. Lanjutkan file itu; jangan membuat ulang beranda atau menggantinya dengan halaman kosong ketika katalog belum selesai.
 
 Pertahankan kontribusi yang berfungsi. Tambahkan tautan Jelajahi Event dan konten kegiatan nyata setelah katalog eligible published tersedia. CTA autentikasi tetap memakai `/login`, `/register` dan redirect role SF. Jangan menampilkan statistik atau kartu event fixture seolah data nyata. A1 mengerjakan panel admin; A4 mengerjakan Aktivitas pengguna, bukan beranda publik. Sertakan regresi beranda guest/login/mobile pada UAT-09/34.
+
+## Hasil implementasi 5 Oktober 2026
+
+Lanjutkan kode existing pada `feature/a2-events-payment`; jangan membuat ulang schema event atau payment. Rincian route/service, migration, fixture, tes dan blocker tersedia pada [A2_HANDOFF](../../../docs/A2_HANDOFF.md). README utama tetap pengantar/setup aplikasi; pembagian tugas di [DEVELOPMENT](../../../docs/DEVELOPMENT.md).
+
+Validator assessment A4, cancellation A3/A4 dan outbox NotificationService belum terintegrasi nyata. A2 memasang titik pemanggilan tanpa fake sukses di runtime. Katalog dan pengelolaan draft sudah dapat dipakai setelah migration, sedangkan publikasi penuh memerlukan dependensi tersebut sesuai kontrak. Adapter Sandbox/fake gateway tidak menjadi bukti pembayaran nyata atau UAT lintas modul selesai.
+
+## Pengembangan beranda lengkap - 5 Oktober 2026
+
+A2 sudah melengkapi HomeController, welcome.blade.php dan event-card bersama katalog: pengenalan platform, pencarian, pratinjau event aktual, skill/waktu/lokasi, panduan kedua peran, FAQ, CTA/footer. Beranda informatif tetap tampil ketika event belum tersedia. Pratinjau hanya event publik dengan pendaftaran terbuka dan kapasitas paket, maksimal enam, tanpa mengklaim matching personal. Hasil pemeriksaan serta batas UAT dicatat pada A2_HANDOFF; modul A3/A4 tetap mengikuti dependensi sebelumnya.
+
+## Paket awal yang disepakati pengguna
+
+Free: gratis/2 posisi/30 lamaran/7 hari. Standard: Rp30.000/5/100/30. Premium: Rp50.000/10/300/60. DefaultPackageSeeder membuat paket tanpa menimpa edit admin; kartu membaca database. Demo Free/Standard tetap fixture terpisah. Admin dapat mengedit nama/harga/limit/status; harga snapshot event/order lama tidak berubah. Paket awal tidak menyelesaikan dependensi A3/A4.

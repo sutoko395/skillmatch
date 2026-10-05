@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->appendToGroup('web', EnsureAccountActive::class);
+        $middleware->validateCsrfTokens(except: ['payments/midtrans/notification']);
         $middleware->redirectUsersTo(fn (Request $request) => app(LoginDestination::class)->defaultFor($request->user()));
         $middleware->alias([
             'account.active' => EnsureAccountActive::class,

@@ -13,8 +13,13 @@ class PositionSkill extends Model
     protected $fillable = [
         'event_position_id',
         'skill_id',
-        'minimum_level',
+        'minimum_level', 'is_required',
     ];
+
+    protected function casts(): array
+    {
+        return ['is_required' => 'boolean'];
+    }
 
     public function position(): BelongsTo
     {

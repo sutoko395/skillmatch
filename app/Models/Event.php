@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Event extends Model
 {
@@ -33,9 +31,36 @@ class Event extends Model
         return [
             'start_date' => 'date',
             'end_date' => 'date',
-            'registration_deadline' => 'date',
+            'registration_deadline' => 'immutable_datetime',
+            'starts_at' => 'immutable_datetime', 'ends_at' => 'immutable_datetime',
+            'registration_opens_at' => 'immutable_datetime', 'published_at' => 'immutable_datetime',
+            'completed_at' => 'immutable_datetime', 'cancelled_at' => 'immutable_datetime', 'submitted_at' => 'immutable_datetime',
+            'package_snapshot' => 'array',
             'verified_at' => 'datetime',
         ];
+    }
+
+    public function cityRecord()
+    {
+        return $this->belongsTo(City::class, 'city_id');
+    }
+
+    public function entitlement()
+    {
+        return $this->hasOne(EventEntitlement::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function scopePubliclyVisible($query)
+    {
+        return $query->where('status', 'approved')->where('publication_status', 'published')
+            ->whereIn('lifecycle_status', ['upcoming', 'ongoing'])->where('ends_at', '>', now())
+            ->whereHas('entitlement', fn ($q) => $q->where(fn ($q) => $q->whereNull('order_id')->orWhereHas('order', fn ($q) => $q->where('status', 'paid')->where('requires_follow_up', false))))->whereHas('organizer', fn ($q) => $q->where('is_active', true)
+            ->where('organizer_status', 'active')->whereNotNull('email_verified_at'));
     }
 
     public function organizer()

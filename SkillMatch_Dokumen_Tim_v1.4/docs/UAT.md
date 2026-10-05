@@ -72,3 +72,35 @@ Tambahan pemeriksaan UAT-02/09/30/34, bukan pengganti skenario P0:
 - A2 menghubungkan beranda ke katalog setelah aturan publikasi/otorisasi terpenuhi; A1 memperluas dashboard tanpa menghilangkan fungsi dasar.
 
 Hasil browser desktop/mobile/keyboard dan review anggota lain masih perlu dicatat; pemulihan beranda tidak otomatis meluluskan UAT-09/30/34/35 penuh. Bukti tes implementasi ada pada handoff aplikasi.
+
+## Bukti parsial A2 - 5 Oktober 2026
+
+Lihat [A2_HANDOFF](../../docs/A2_HANDOFF.md) untuk environment, commit dan hasil aktual. Checklist penerimaan lintas anggota di atas tidak otomatis berubah menjadi lulus.
+
+| Cakupan | Bukti implementasi saat ini | Yang masih diperlukan |
+|---|---|---|
+| UAT-07/08/10 | A2EventTest: konfigurasi, moderasi baseline, Free sekali, snapshot, blokir assessment belum tersedia, paid belum entitled tidak publik | Validator assessment nyata dan review moderasi A1 |
+| UAT-09/34 | Render beranda/katalog/detail, filter dan endpoint visibilitas, Blade/build, intended login lokal | Browser visual/keyboard/mobile |
+| UAT-11/22/31 | Snapshot kontrak, reserve batas paket transaksional dan race dua proses; cancellation mock serta blokir tanpa layanan | Submit/seleksi/cancellation dan attempt nyata A3/A4 |
+| UAT-23/24/25/26 | A2PaymentTest: fake signature/status, nominal/IDR/ref, retry, status terlambat, refund/challenge, audit rollback; race order/reconcile/publish | Satu transaksi Sandbox end-to-end dan callback HTTPS |
+| Notifikasi | Stable key, replay ledger dan rollback dengan collaborator tes | Outbox/worker/delivery A4 |
+
+Uji konkurensi A2 tidak menggantikan uji kuota acceptance/bentrok jadwal A3 atau pengukuran performa keseluruhan. Review tim dan UAT penuh tetap belum selesai.
+
+## Regresi beranda informatif (UAT-09/34) - 5 Oktober 2026
+
+- Guest memahami tujuan platform melalui hero/pengenalan; panduan kedua peran dan FAQ membedakan fitur tersedia dari yang masih dikembangkan.
+- Pencarian beranda menuju katalog menggunakan parameter search; tautan detail, auth, CTA akun dan anchor footer mengarah tujuan yang tersedia.
+- Event draft, belum published, suspended, terminal, berakhir, pemilik nonaktif, pendaftaran belum dibuka/tutup atau kapasitas paket habis tidak masuk pratinjau. Maksimal enam event, urut starts_at/ID; detail waktu berlabel WIB.
+- Tidak ada event eligible: tampil pesan informatif dan CTA katalog; tidak ada statistik nol/testimoni/fixture promosi.
+- Periksa lebar 360/768/1280, fokus dan aktivasi FAQ melalui keyboard, label pencarian dan kontras. Screenshot statis tidak menggantikan seluruh uji keyboard atau UAT lintas modul.
+
+Bukti aktual pemeriksaan dicatat dalam A2_HANDOFF. Checklist UAT keseluruhan belum ditandai lulus.
+
+## Regresi UI masuk/daftar - 5 Oktober 2026
+
+Login dan registrasi diperbarui secara visual. Bukti: 40 tes auth/FoundationAccess lulus (183 assertion), build/Blade sukses, Chrome viewport 360/1280 tanpa overflow. Toggle password terbukti berganti password -> text -> password; login tidak memiliki input role, registrasi hanya Volunteer/Organizer. Periksa juga error server, restore old input, checkbox ingat saya, lupa kata sandi, fokus/radio keyboard dan submit loading pada UAT manual. Pemeriksaan ini tidak meluluskan SMTP atau seluruh audit aksesibilitas.
+
+## Regresi paket awal dan kartu
+
+DefaultPackageTest memeriksa nilai awal sesuai keputusan, seeding ulang setelah rename/edit/nonaktif tanpa reset/duplikasi, perubahan admin tampil pada kartu aktif dan tidak mengubah snapshot order/event lama. Bersama A2EventTest, HomeTest dan RegistrationTest: 24 tes / 183 assertion lulus pada MySQL tes. Pemilihan paket tetap mengikuti limit dan Policy existing; fitur lanjutan yang belum terintegrasi tidak dinyatakan lulus.

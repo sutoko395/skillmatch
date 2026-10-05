@@ -56,13 +56,13 @@ AI/ML, chat real-time, native mobile, proctoring, GPS/biometrik/QR, self check-i
 
 | PIC | Tanggung jawab utama | Hasil demonstrasi |
 |---|---|---|
-| SF — kamu sebelum A4 | Shared foundation: MySQL, auth bersama, profil, layout, audit, seed dan README awal | Fondasi dapat dipakai A1–A4 dan lulus gerbang serah-terima SF. |
+| SF — kamu sebelum A2 | Shared foundation: MySQL, auth bersama, profil, layout, audit, seed dan README awal | Fondasi dapat dipakai A1–A4 dan lulus gerbang serah-terima SF. |
 | A1 | Melanjutkan admin: moderasi, pengguna, master data, audit UI, konten, analitik | Memakai fondasi SF; moderasi bekerja; analitik membaca data nyata. |
 | A2 | Event/posisi/katalog/paket/payment | Event dibuat, disetujui, dibayar bila perlu, kemudian dapat dilamar. |
 | A3 | Lamaran/dokumen/seleksi/attendance/riwayat | Berkas hanya terlihat perekrut terkait, seleksi konsisten, kehadiran masuk riwayat. |
 | A4 | Screening/assessment/matching/aktivitas/notifikasi | Pelamar mendapat alasan screening, menyelesaikan assessment, skor terjelaskan, tugas muncul pada aktivitas. |
 
-SF adalah tahap kerja kamu, bukan anggota kelima. Setelah SF diserahterimakan, kamu kembali ke A4. Rincian ada pada [brief shared foundation](docs/anggota/SHARED_FOUNDATION.md). Ringkasan Aktivitas dan notifikasi tetap milik A4; pemindahan tugas tambahan harus dicatat lebih dahulu. A1 memiliki pekerjaan lama yang cukup luas. A2 mengerjakan UI admin paket/transaksi; A3 menyediakan layanan dokumen yang juga dipakai A1; A4 menyediakan notifikasi yang dipanggil setiap modul. Masing-masing mengerjakan controller, view, validation, policy, migration, seeder dan tes modulnya. Tidak ada satu anggota yang hanya mengerjakan frontend, atau bertanggung jawab memperbaiki semua integrasi.
+SF adalah tahap kerja kamu, bukan anggota kelima. Setelah SF diserahterimakan, kamu melanjutkan A2. Rincian ada pada [brief shared foundation](docs/anggota/SHARED_FOUNDATION.md). Ringkasan Aktivitas dan notifikasi tetap milik A4; pemindahan tugas tambahan harus dicatat lebih dahulu. A1 memiliki pekerjaan lama yang cukup luas. A2 mengerjakan UI admin paket/transaksi; A3 menyediakan layanan dokumen yang juga dipakai A1; A4 menyediakan notifikasi yang dipanggil setiap modul. Masing-masing mengerjakan controller, view, validation, policy, migration, seeder dan tes modulnya. Tidak ada satu anggota yang hanya mengerjakan frontend, atau bertanggung jawab memperbaiki semua integrasi.
 
 Keadilan dinilai dari kompleksitas dan hasil, bukan jumlah menu. Evaluasi setelah milestone kedua: bila ada blokir teknis, anggota yang lebih dahulu selesai membantu pekerjaan terbatas tanpa mengganti pemilik kontrak. Detail ada pada brief anggota.
 
@@ -126,7 +126,7 @@ ID FR-01–22 mempertahankan padanan PRD v1.3; FR-23 ditambahkan untuk memperjel
 - Waktu disimpan konsisten dalam UTC; input dan label UI WIB/Asia Jakarta. Tampilan tanggal tidak menggantikan pemeriksaan timestamp lengkap.
 - Minimal satu posisi, satu skill per posisi, dan assessment valid sebelum pengajuan; daftar syarat membedakan wajib dan preferensi.
 - Setelah published, aturan posisi, jadwal, assessment dan paket dibekukan pada MVP. Perubahan substantif menggunakan pembatalan dan event baru; koreksi teks ringan dapat diaudit tanpa mengubah aturan seleksi. Ini mencegah perubahan skor pelamar yang sudah masuk.
-- Paket per event. Harga/manfaat berasal server dan disnapshot ketika order dibuat. Contoh Free/Standard/Premium hanya fixture demo; admin dapat menonaktifkan paket tanpa mengubah pembelian lama.
+- Paket per event. Harga/manfaat berasal server dan disnapshot ketika order dibuat. Free/Standard/Premium memakai konfigurasi awal yang disepakati pengguna 5 Oktober 2026 (lihat tabel di bawah); admin dapat mengedit atau menonaktifkan paket tanpa mengubah snapshot lama. Paket Demo terpisah tetap hanya fixture.
 - Entitlement mengatur maksimal posisi, maksimal lamaran terkirim per event dan maksimum durasi pembukaan pendaftaran. Draft tidak dihitung; slot lamaran yang sudah terkirim tidak dikembalikan karena withdrawn. Validasi limit dilakukan transaksional.
 - Paket gratis tidak menghasilkan order paid palsu; entitlement gratis diaktifkan sekali setelah approval. Paket berbayar memerlukan pembayaran terverifikasi.
 - Redirect checkout hanya membawa pengguna ke halaman status; server memverifikasi signature/status, order, nominal dan mata uang. Callback ganda/tidak berurutan tidak menggandakan hak atau menurunkan paid karena pesan pending lama.
@@ -212,7 +212,7 @@ Antrean tindakan: organisasi pending, event pending, transaksi perlu diperiksa. 
 | M5 | Attendance → completed → riwayat, analitik, retensi/backup | A3 + A1 |
 | M6 | UAT lintas role, pembayaran ganda, request paralel, responsive, README dan demo | Semua |
 
-Sesudah M1, A1 melanjutkan fitur admin dan kamu mengerjakan A4 termasuk fondasi notifikasi. A2/A3 boleh mulai modul sendiri dengan kontrak dan fixture; integrasi memakai commit SF yang disepakati. Notifikasi lengkap, payment dan dokumen privat A3 bukan syarat selesai SF.
+Sesudah M1, A1 melanjutkan fitur admin dan kamu mengerjakan A2; fondasi notifikasi tetap dikerjakan PIC A4. A2/A3 boleh mulai modul sendiri dengan kontrak dan fixture; integrasi memakai commit SF yang disepakati. Notifikasi lengkap, payment dan dokumen privat A3 bukan syarat selesai SF.
 
 M2 menggunakan fixture entitlement untuk pengembangan lokal yang diberi label; tidak boleh menjadi bypass publikasi di aplikasi final. Payment dapat dikembangkan paralel sejak M1. Jadwal kalender ditentukan tim; tabel ini urutan integrasi, bukan janji durasi.
 
@@ -233,3 +233,21 @@ Menambahkan requirement ke PRD tidak otomatis mengubah README Laravel bawaan. Sa
 Beranda publik dan dashboard admin yang sudah berfungsi dipertahankan serta dikembangkan bertahap. SF tidak mengganti seluruh halaman dengan shell hanya karena fitur lanjutan belum selesai. Keterangan belum tersedia berlaku pada bagian yang memang belum ada, tanpa angka palsu atau klaim matching/payment aktif. Proteksi akses, satu login, dan komponen SF tetap digunakan.
 
 A2 melanjutkan beranda publik (`home`, `welcome.blade.php`), katalog dan detail event; A1 melanjutkan dashboard dasar admin menjadi analitik lengkap. A3 tetap mengerjakan lamaran/dokumen/attendance, A4 tetap aktivitas/assessment/matching/notifikasi. Aktivitas pengguna boleh memakai shell sementara sampai data modul tersedia. Keputusan ini memperjelas pembagian dan pelestarian kontribusi, tidak mengubah schema, status, harga atau rumus. Pemulihan halaman bukan bukti seluruh P0/UAT selesai.
+
+## Beranda publik informatif - 5 Oktober 2026
+
+A2 mengembangkan beranda `home` agar pengunjung memahami tujuan SkillMatch, peran Volunteer/Organizer, dan langkah yang dapat dilakukan. Beranda memuat hero, pencarian judul ke katalog, penjelasan skill/waktu/lokasi, pratinjau event, panduan kedua peran, FAQ dan CTA autentikasi. Teks membedakan kemampuan yang tersedia dari lamaran/assessment/matching/notifikasi yang masih dikembangkan.
+
+Pratinjau maksimal enam event memakai aturan publikasi katalog, ditambah periode pendaftaran terbuka dan kapasitas paket belum habis, diurutkan berdasarkan waktu mulai lalu ID. Kartu memuat informasi aktual, bukan rekomendasi personal atau statistik promosi. Keadaan kosong tetap menjelaskan langkah berikutnya. Pengembangan ini tidak mengubah syarat publikasi, status, harga atau kepemilikan A3/A4.
+
+## Konfigurasi awal paket disepakati - 5 Oktober 2026
+
+Keputusan pengguna berdasarkan gambar paket:
+
+| Paket | Harga per event | Maksimal posisi | Maksimal lamaran terkirim | Hari pendaftaran |
+|---|---:|---:|---:|---:|
+| Free | Gratis | 2 | 30 | 7 |
+| Standard | Rp30.000 | 5 | 100 | 30 |
+| Premium | Rp50.000 | 10 | 300 | 60 |
+
+Ini nilai awal yang dapat diedit admin, bukan konstanta harga checkout. Harga/limit berasal database dan disnapshot saat dipilih/dibeli. Alur screening/assessment/seleksi/dokumen/attendance pada kartu dijelaskan sebagai fitur dalam pengembangan sampai modul A3/A4 terintegrasi.

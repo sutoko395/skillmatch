@@ -6,9 +6,11 @@ Aplikasi menggunakan Laravel, Blade, Tailwind CSS 3, Alpine.js, Vite, dan MySQL.
 
 ## Status aplikasi
 
-Saat ini tersedia beranda, login dan registrasi, verifikasi email/reset password, profil Volunteer beserta skill dan jadwal ketersediaan, profil Organizer, ringkasan profil pengguna, serta dashboard dasar Admin.
+Beranda publik menjelaskan tujuan platform, peran Volunteer/Organizer, cara memulai, FAQ, pencarian dan pratinjau event aktual dengan pendaftaran terbuka. Ketika belum ada event tersedia, beranda tetap menampilkan informasi dan langkah berikutnya.
 
-Katalog dan pengelolaan kegiatan, pembayaran, lamaran, attendance, assessment dan matching masih dalam pengembangan. Bagian yang belum tersedia ditandai pada antarmuka; aplikasi belum menyediakan seluruh alur kegiatan dari awal sampai akhir.
+Saat ini tersedia login dan registrasi, verifikasi email/reset password, profil Volunteer beserta skill dan jadwal ketersediaan, profil Organizer, ringkasan profil pengguna, serta dashboard dasar Admin.
+
+Pengelolaan draft event/posisi/jadwal, katalog event published, paket, order dan integrasi pembayaran Sandbox sudah tersedia. Pengajuan/publikasi masih memerlukan validator assessment; pembatalan memerlukan layanan lamaran/attempt. Lamaran, attendance, assessment, matching dan notifikasi lengkap masih dalam pengembangan. Aplikasi belum menyediakan seluruh alur kegiatan dari awal sampai akhir.
 
 ## Prasyarat
 
@@ -131,7 +133,79 @@ Backup database dan berkas terlebih dahulu, periksa database tujuan, lalu ikuti 
 - **Trigger audit ditolak saat migration:** akun migration memerlukan izin TRIGGER. Jangan menghapus proteksi audit untuk mengatasi kesalahan izin.
 - **Akun nonaktif tidak bisa login:** periksa status dan alasan penonaktifan; jangan mengaktifkan semua akun secara massal.
 
-Email autentikasi saat ini dikirim sinkron; worker/scheduler belum diperlukan untuk alur yang tersedia. Konfigurasi pembayaran dan pemrosesan modul lanjutan belum tersedia. Jangan menjalankan `storage:link` untuk membuka dokumen pribadi kepada publik.
+Email autentikasi dan sinkronisasi pembayaran berjalan sinkron. Worker/scheduler belum diperlukan untuk keduanya; pengiriman notifikasi internal menunggu layanan outbox dan worker modul terkait. Jangan menjalankan `storage:link` untuk membuka dokumen pribadi kepada publik.
+
+## Event dan pembayaran Sandbox
+
+Setelah memperbarui kode, backup database, periksa tujuan dengan `php tools/sf-db-check.php`, lalu jalankan `php artisan migrate`. Dua migration event/payment menambahkan schema tanpa memublikasikan event lama. Detail konversi data tersedia dalam [panduan pengembangan](docs/DEVELOPMENT.md).
+
+Organizer terverifikasi mengelola event melalui **Event Saya**. Urutan konfigurasi: informasi event, posisi/jadwal, assessment, paket, lalu pengajuan moderasi. Admin mengelola harga dan manfaat melalui `/admin/packages` serta transaksi melalui `/admin/orders`. Waktu form dan tampilan menggunakan WIB; penyimpanan menggunakan UTC.
+
+Tambahkan konfigurasi berikut ke `.env` lokal, lalu jalankan `php artisan config:clear`:
+
+```dotenv
+MIDTRANS_SERVER_KEY=
+MIDTRANS_CLIENT_KEY=
+MIDTRANS_IS_PRODUCTION=false
+```
+
+Isi server key dari akun Midtrans **Sandbox**, jangan memakai key produksi atau memasukkannya ke Git/chat. Checkout menggunakan halaman Snap redirect yang dihosting Midtrans; client key tidak diperlukan untuk mode ini. Mode produksi ditolak oleh adapter saat ini.
+
+Atur Payment Notification URL pada dashboard Sandbox ke URL HTTPS aplikasi yang dapat diakses gateway dengan path `/payments/midtrans/notification`. URL localhost tidak dapat dijangkau gateway; endpoint publik/tunnel belum disediakan oleh repository. Bila callback belum terjangkau, tombol **Sinkronkan status** memeriksa pembayaran langsung dari server. Kembali dari checkout tidak mengubah status menjadi paid.
+
+Paket Free tidak membuat order paid. Paket berbayar hanya dapat dibuatkan order setelah approval. Checkout, callback dan sinkronisasi menyimpan status serta hak paket secara idempoten. Pembayaran valid pada event cancelled tetap dicatat untuk tindak lanjut tanpa publikasi; refund otomatis tidak tersedia.
+
+Paket awal untuk local/testing disertakan oleh seeder dasar, dengan harga dan limit yang disepakati:
+
+| Paket | Harga per event | Maksimal posisi | Maksimal lamaran terkirim | Hari pendaftaran |
+|---|---:|---:|---:|---:|
+| Free | Gratis | 2 | 30 | 7 |
+| Standard | Rp30.000 | 5 | 100 | 30 |
+| Premium | Rp50.000 | 10 | 300 | 60 |
+
+Admin dapat mengedit nama, harga, manfaat dan status melalui **Kelola Paket**. Beranda dan pilihan paket Organizer membaca data aktif terbaru; snapshot event/order lama tetap memakai nilai saat dipilih/dibeli. Untuk instalasi existing yang sudah memiliki akun admin aktif/verified, tambahkan paket awal saja:
+
+```powershell
+php artisan db:seed --class=DefaultPackageSeeder
+```
+
+Seeder tidak menimpa edit admin, termasuk rename/nonaktif, saat diulang. Tidak perlu menjalankan ulang seeder akun atau migration untuk paket ini. Fitur screening/assessment/seleksi/dokumen/attendance pada kartu masih dalam pengembangan.
+
+Fixture demo tambahan bersifat opsional, hanya untuk local/testing setelah seeder dasar:
+
+```powershell
+php artisan db:seed --class=A2DemoSeeder
+```
+
+Seeder menambahkan paket berlabel **Demo ... (fixture)** dan event **Demo A2 ...**, bukan harga produksi. Seluruh event demo tetap unpublished. Satu fixture berbayar berstatus approved untuk mengembangkan pembayaran secara terpisah; tidak menyatakan assessment atau moderasi end-to-end sudah tersedia. Seeder tidak menimpa event/paket dengan nama yang sama. Jangan menggunakannya pada deployment publik.
+
+Pengajuan dan publikasi menampilkan alasan penolakan ketika assessment belum dapat divalidasi. Pembatalan juga ditahan selama layanan lamaran/attempt belum tersedia. Status pembayaran yang sudah terverifikasi tetap tersimpan walaupun event belum memenuhi syarat publikasi.
+
+Notifikasi internal belum terkirim selama layanan notifikasi belum terpasang. Setelah tersedia, produsen memakai layanan yang sama dan catatan bisnis dapat diproses ulang:
+
+```powershell
+php artisan a2:retry-notifications
+```
+
+Perintah tersebut meneruskan catatan ke outbox, bukan menggantikan worker pengiriman. Petunjuk worker mengikuti implementasi layanan notifikasi setelah diintegrasikan.
+
+Tes tambahan, hanya setelah konfigurasi MySQL tes benar:
+
+```powershell
+php vendor/bin/phpunit --filter A2
+php tools/a2-concurrency-check.php --env=testing
+```
+
+Skrip konkurensi menolak target selain `skillmatch_testing` dan menyimpan fixture sintetis beserta audit commit untuk bukti pengujian. Jangan mengganti targetnya menjadi database kerja. Tes gateway memakai fake HTTP; itu bukan bukti transaksi Sandbox nyata. Bukti dan bagian yang belum diuji tersedia di [catatan implementasi](docs/A2_HANDOFF.md).
+
+Untuk mencoba gateway nyata secara terpisah, seed `A2DemoSeeder` pada database tes, pastikan `.env.testing` menunjuk MySQL `skillmatch_testing`, lalu jalankan:
+
+```powershell
+php tools/a2-sandbox-check.php --env=testing --checkout
+php tools/a2-sandbox-check.php --env=testing --sync=ID_ORDER_LOKAL
+```
+
+Skrip membaca key Sandbox dari `.env` lokal tanpa mencetaknya dan menolak database kerja. Checkout disimpan dalam `storage/app/private/a2-sandbox-checkout.html` yang diabaikan Git; buka file lokal tersebut untuk memilih metode dan menyelesaikan simulasi. Ganti `ID_ORDER_LOKAL` dengan ID yang dicetak skrip. Sinkronkan lagi setelah simulasi untuk memeriksa status dan entitlement; ulangi untuk memeriksa idempotensi. Sebelum metode dipilih, status gateway mungkin belum tersedia. Setelah timeout checkout, tunggu lima menit sebelum mencoba reference yang sama. Jangan membagikan file checkout atau tokennya. Ini belum menguji callback publik maupun assessment/publikasi lintas modul.
 
 ## Dokumentasi
 

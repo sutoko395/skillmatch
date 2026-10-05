@@ -1,4 +1,4 @@
-# Shared foundation — dikerjakan kamu sebelum A4
+# Shared foundation — dikerjakan kamu sebelum A2
 
 Versi 1.4.2 • 4 Oktober 2026 • Kode tugas: SF • Branch: `feature/shared-foundation`.
 
@@ -20,7 +20,7 @@ Baca [PRD](../../PRD_SkillMatch_Tim.md), [kontrak](../KONTRAK_INTEGRASI.md), [de
 
 - A2 tetap pemilik event/posisi/jadwal posisi/paket/payment; SF tidak membuat migration duplikat.
 - A3 tetap pemilik DocumentStorageService, penyimpanan privat, seleksi dan attendance. A1 mengintegrasikan dokumen organisasi dengan A3. SF tidak membuat layanan upload kedua atau menambahkan ClamAV.
-- A4 tetap pemilik screening, assessment, matching, notifikasi, ActivityReadService dan halaman Ringkasan Aktivitas. Kamu mengerjakannya sesudah SF. Tidak otomatis memindahkan halaman aktivitas ke A1.
+- A4 tetap pemilik screening, assessment, matching, notifikasi, ActivityReadService dan halaman Ringkasan Aktivitas. PIC A4 mengerjakannya setelah fondasi tersedia. Tidak otomatis memindahkan halaman aktivitas ke A1.
 - A1 tetap pemilik fitur admin lanjutan. Sesuai keputusan pengguna 5 Oktober 2026, SF mempertahankan dashboard dasar `/admin/dashboard` yang sudah membaca angka nyata dari database, beserta aksi cepatnya. Bagian analitik yang belum ada diberi keterangan belum tersedia; shell tidak menggantikan fitur baseline yang sudah berfungsi. A1 memperluas dashboard ini sesuai PRD, tanpa angka statistik palsu.
 - Bila halaman aktivitas A4 belum ada, SF menyediakan route/view sementara pada path final dengan keterangan fitur belum tersedia dan tautan profil. Catat file tersebut sebagai pengganti sementara yang nanti dilengkapi A4. Halaman ini bukan bukti FR-18/19 selesai.
 - Fondasi tidak dianggap selesai hanya karena migration tersedia: simpan/baca profil, role middleware, audit dan layout harus dapat digunakan.
@@ -40,7 +40,7 @@ Gunakan branch dasar tim yang benar-benar ada dan telah disepakati; jangan menga
 5. Layout/komponen dapat dipakai ulang dan frontend build berhasil; shell sementara diberi label jelas.
 6. AuditService dapat dipanggil dan mengikuti transaksi; tidak bocor secret.
 7. Tes fondasi dan build memiliki hasil nyata. Jika alat/database belum tersedia, tulis “belum diuji” beserta blocker; gerbang tidak diklaim lulus.
-8. Catat commit serah-terima dan reviewer di template berikut. Setelah ditinjau/diintegrasikan sesuai proses tim, A1 melanjutkan dari commit ini dan kamu pindah ke A4.
+8. Catat commit serah-terima dan reviewer di template berikut. Setelah ditinjau/diintegrasikan sesuai proses tim, A1 melanjutkan dari commit ini dan kamu melanjutkan A2.
 
 | Item | Isian saat implementasi |
 |---|---|

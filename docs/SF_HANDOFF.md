@@ -1,6 +1,6 @@
 # Serah-terima implementasi Shared Foundation
 
-Tanggal bukti: 5 Oktober 2026 (WIB). PIC implementasi: SF, sebelum kembali ke A4. Status: **implementasi siap ditinjau; review tim dan gate serah-terima final belum selesai**.
+Tanggal bukti: 5 Oktober 2026 (WIB). PIC implementasi: SF, sebelum melanjutkan A2. Status: **implementasi siap ditinjau; review tim dan gate serah-terima final belum selesai**.
 
 ## Basis dan commit
 

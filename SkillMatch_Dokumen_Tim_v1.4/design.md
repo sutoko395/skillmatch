@@ -209,3 +209,37 @@ A2 mengembangkan beranda ini dan menghubungkan katalog setelah route/data publik
 ## Pemulihan ringkasan pengguna - 5 Oktober 2026
 
 Aktivitas Volunteer/Organizer memakai kembali sambutan, kartu putih beraksen indigo dan aksi cepat profil dari baseline dalam navbar SF. Tampilkan informasi profil aktual dan interval WIB, bukan dashboard analitik platform. Status akun dan organisasi ditampilkan terpisah. Bagian kegiatan yang belum terintegrasi memakai keterangan; tidak membuat kartu angka nol atau tombol seolah berfungsi.
+
+## Implementasi antarmuka A2 - 5 Oktober 2026
+
+Beranda baseline dipertahankan dengan CTA Jelajahi Event. Katalog memakai navbar publik, filter judul/kategori/kota/tanggal WIB, jumlah hasil nyata, pagination dan kartu 1/2/3 kolom. Detail menampilkan jadwal/skill/kuota/syarat; pengajuan lamaran diberi keadaan belum tersedia sampai route A3 ada. Login Volunteer dapat kembali ke detail yang masih eligible melalui events.join.
+
+Event Saya merupakan daftar operasional, bukan dashboard baru. Informasi Event -> Posisi/Jadwal -> Assessment -> Paket -> Tinjau/Ajukan ditampilkan sebagai urutan teks. Skill/jadwal/syarat berulang memakai Alpine yang sudah dimuat SF; form server tetap memvalidasi seluruh data. Form assessment belum tersedia dan tidak dianggap selesai. Status moderasi/publikasi/pelaksanaan ditampilkan terpisah.
+
+Paket/order dan UI admin paket/transaksi memakai komponen SF serta layout admin existing. Checkout selalu berlabel Sandbox, tidak ada tombol paid manual atau statistik fixture. Event dibatalkan/pembayaran review menampilkan status sebenarnya. Build/render Blade sudah diperiksa; review visual 360/768/1280 dan keyboard masih perlu dilakukan.
+
+## Beranda publik lengkap - 5 Oktober 2026
+
+Beranda memakai hero indigo gelap dengan tipografi putih/indigo terang, ilustrasi komunitas SVG lokal, pencarian dalam permukaan putih, pengenalan produk, tiga prinsip skill/waktu/lokasi, pratinjau event, panduan Volunteer/Organizer, FAQ native details/summary, CTA dan footer tim. Identitas serta judul hero baseline diteruskan. Tidak ada gambar eksternal, testimoni, logo mitra atau angka promosi buatan.
+
+Grid beradaptasi dari satu kolom menjadi dua/tiga kolom. CTA memiliki target sentuh minimal 44px, heading/label/landmark semantik, ilustrasi berjudul, fokus keyboard dari CSS bersama, dan FAQ bekerja tanpa JavaScript. Inter, navbar, Vite dan Alpine tetap memakai layout SF. Komponen `event-card` A2 dipakai oleh beranda dan katalog untuk kategori, Organizer, posisi, kota, jadwal/deadline WIB dan tautan detail.
+
+Event kosong tampil sebagai keadaan informatif, bukan kartu demo. Pratinjau terbatas enam event publik yang pendaftarannya sedang terbuka dan batas lamaran paket belum habis. FAQ serta panduan memberi keterangan fitur lanjutan yang belum tersedia; CTA hanya menuju katalog, auth, redirect akun atau anchor section yang benar-benar ada. Katalog tetap menyediakan hasil/filter/pagination lengkap.
+
+## Tampilan masuk dan registrasi - 5 Oktober 2026
+
+Login/register memakai komponen auth-layout khusus dengan logo SkillMatch, tautan beranda, panel indigo editorial pada desktop, form putih beradius 24px, Inter dan CTA penuh. Pada mobile panel editorial disembunyikan agar form mudah dijangkau. Registrasi menampilkan kartu radio Volunteer/Organizer berlabel; login tetap hanya email/password tanpa pemilih role. State lama role/nama/email dipertahankan setelah validasi; kata sandi tidak diisi kembali.
+
+Komponen auth-password-field memiliki toggle Lihat/Sembunyikan berbasis Alpine existing, aria-pressed/label dan fallback input password jika JavaScript tidak tersedia. Form memakai label/error spesifik, autocomplete, fokus keyboard dan status submit. Tidak ada akun admin publik, login khusus admin, dependency tambahan atau perubahan guard/redirect/backend. Halaman reset/verifikasi tetap memakai guest-layout existing.
+
+## Navigasi paket dan transaksi admin
+
+Kelola Paket dan Transaksi Sandbox berada pada sidebar kiri admin, mengikuti ikon/style menu existing. Penanda aktif memakai admin.packages.* dan admin.orders.* serta aria-current. Sidebar mobile memuat menu yang sama; tautan ganda di atas konten dihapus.
+
+## Nama menu transaksi
+
+Permintaan pengguna: label menu, judul halaman dan title browser admin menggunakan Transaksi. Mode gateway tetap Sandbox; keterangan simulasi tetap berada pada konteks pembayaran/detail, bukan menjadi nama menu. Paket Free/Standard/Premium memerlukan konfigurasi harga dan batas manfaat yang disepakati sebelum diaktifkan.
+
+## Kartu paket berdasarkan keputusan pengguna
+
+Beranda menampilkan kartu Free/Standard/Premium dari paket aktif database: judul, harga besar (Gratis untuk 0), per event, batas posisi/lamaran/hari dan CTA Mulai sebagai Organizer. Tampilan kartu putih berborder/radius mengikuti gambar pengguna dan identitas indigo. Status fitur screening/assessment/seleksi/dokumen/attendance yang belum tersedia tertulis Dalam pengembangan. Admin memiliki Edit paket dan badge status; Organizer memilih dari kartu yang sama. Grid beradaptasi 1/2/3 kolom, tanpa label rekomendasi palsu.

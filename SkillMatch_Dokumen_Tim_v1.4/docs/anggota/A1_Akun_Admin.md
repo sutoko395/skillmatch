@@ -54,3 +54,7 @@ Tidak mengambil engine A4, halaman aktivitas A4, payment A2, upload pelamar atau
 ## Koordinasi beranda - 5 Oktober 2026
 
 Beranda publik (`home` / `welcome.blade.php`) dipulihkan oleh SF dan menjadi pengembangan lanjut A2, bukan pekerjaan pembangunan ulang A1. A1 menjaga konsistensi layout bersama dan dapat mengintegrasikan konten terkelola setelah modul konten tersedia. Dashboard admin tetap dilanjutkan sesuai penyesuaian di atas; aktivitas pengguna tetap A4.
+
+## Pelestarian UI auth bersama - 5 Oktober 2026
+
+Sesuai permintaan pengguna, tampilan login/register telah dirapikan pada branch A2 memakai auth-layout dan auth-password-field. Backend/guard/route dan pengecualian verifikasi SF tetap dipakai. A1 menggunakan tampilan ini saat melanjutkan akun/admin; jangan membuat login khusus admin. Registrasi publik masih terbatas Volunteer/Organizer. Halaman reset/verifikasi belum didesain ulang oleh perubahan ini. Bukti tes/browser tersedia di A2_HANDOFF.
