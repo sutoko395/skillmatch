@@ -69,7 +69,7 @@ class MidtransGateway
         } catch (ConnectionException) {
             throw ValidationException::withMessages(['payment' => 'Status gateway belum dapat diperiksa. Coba sinkronkan kembali.']);
         }
-        if (! $response->successful()) {
+        if (! $response->successful() || (string) $response->json('status_code') === '404') {
             throw ValidationException::withMessages(['payment' => 'Status gateway belum tersedia; transaksi Snap mungkin belum memilih metode pembayaran.']);
         }
         $d = $response->json();

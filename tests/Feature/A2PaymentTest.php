@@ -97,6 +97,19 @@ class A2PaymentTest extends DatabaseTestCase
         $this->assertSame(0, PaymentEvent::where('order_id', $order->id)->count());
     }
 
+    public function test_snap_without_selected_payment_method_keeps_order_pending(): void
+    {
+        [$owner, $event, $order] = $this->order();
+        config(['midtrans.server_key' => 'test-key']);
+        Http::preventStrayRequests();
+        Http::fake(['api.sandbox.midtrans.com/*' => Http::response(['status_code' => '404', 'status_message' => 'Transaction does not exist.'], 200)]);
+        $this->actingAs($owner)->postJson("/organizer/orders/$order->id/sync")
+            ->assertUnprocessable()->assertJsonValidationErrors('payment');
+        $this->assertSame('pending', $order->fresh()->status);
+        $this->assertSame(0, $event->entitlement()->count());
+        $this->assertSame(0, PaymentEvent::where('order_id', $order->id)->count());
+    }
+
     public function test_cancelled_event_receives_payment_history_without_entitlement(): void
     {
         [$owner,$event,$order] = $this->order();
