@@ -12,6 +12,6 @@
 </form></x-section-card>
 <p class="mt-6 text-sm text-slate-600">{{ $events->total() }} event sesuai pencarian.</p>
 <div class="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-@forelse($events as $event)<x-section-card><p class="text-sm text-indigo-700">{{ $event->category->name }}</p><h2 class="mt-2 text-xl font-semibold"><a href="{{ route('events.show',$event) }}">{{ $event->title }}</a></h2><p class="mt-3">{{ $event->cityRecord?->name }} &middot; {{ $event->starts_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</p><p class="mt-2 text-sm">{{ $event->organizer->organizerProfile?->organization_name ?? $event->organizer->name }} &middot; {{ $event->positions_count }} posisi</p><p class="text-sm">Deadline {{ $event->registration_deadline->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</p><p class="mt-2 text-sm text-slate-600">{{ Str::limit($event->description,140) }}</p><a class="mt-4 inline-block text-indigo-700 underline" href="{{ route('events.show',$event) }}">Lihat posisi dan persyaratan</a></x-section-card>
+@forelse($events as $event)<x-event-card :event="$event" />
 @empty<x-empty-state title="Belum ada event yang sesuai" description="Coba ubah filter atau kunjungi kembali nanti." />@endforelse</div><div class="mt-6">{{ $events->links() }}</div>
 @endsection

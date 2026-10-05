@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="@yield('description', 'Jelajahi kegiatan relawan dan kenali kebutuhan posisi melalui SkillMatch.')">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'SkillMatch') · SkillMatch</title>
     @include('layouts.fonts')
