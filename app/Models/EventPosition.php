@@ -17,8 +17,18 @@ class EventPosition extends Model
         'description',
         'quota',
         'min_skill_level',
-        'qualifications',
+        'qualifications', 'required_full_availability', 'required_same_city',
     ];
+
+    protected function casts(): array
+    {
+        return ['required_full_availability' => 'boolean', 'required_same_city' => 'boolean'];
+    }
+
+    public function schedules(): HasMany
+    {
+        return $this->hasMany(PositionSchedule::class);
+    }
 
     public function event(): BelongsTo
     {
