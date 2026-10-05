@@ -1,10 +1,10 @@
 # Brief A4 — screening, assessment, matching, aktivitas
 
-Versi 1.4.2 • PIC: kamu. Baca [PRD](../../PRD_SkillMatch_Tim.md), [kontrak](../KONTRAK_INTEGRASI.md), [design](../../design.md), [UAT](../UAT.md).
+Versi 1.4.2 • PIC: A4. Baca [PRD](../../PRD_SkillMatch_Tim.md), [kontrak](../KONTRAK_INTEGRASI.md), [design](../../design.md), [UAT](../UAT.md).
 
-## Urutan peran kamu
+## Dependensi fondasi bersama
 
-Kerjakan [SF](SHARED_FOUNDATION.md) dahulu pada branch tersendiri. Sesudah gate dan serah-terima, kembali ke A4; fondasi tidak dibuat ulang. Aktivitas dan notifikasi tetap bagian A4.
+Gunakan [SF](SHARED_FOUNDATION.md) yang sudah diimplementasikan; gate/review final tetap mengikuti handoff. Pengguna melanjutkan A2 sesuai keputusan 5 Oktober 2026. PIC A4 melanjutkan modul ini tanpa membuat ulang fondasi; aktivitas dan notifikasi tetap bagian A4.
 
 ## Titik mulai
 
@@ -55,3 +55,9 @@ Beranda publik dipulihkan oleh SF dan dilanjutkan A2; dashboard dasar admin dipe
 ## Pemulihan ringkasan pengguna - 5 Oktober 2026
 
 Aktivitas dasar kini menampilkan ringkasan profil nyata dari controller/view dashboard baseline yang disesuaikan. Volunteer memakai ProfileEligibilityService, skill/kota sendiri dan interval WIB; Organizer memakai profil/kontak/status sendiri. A4 melanjutkan kartu ini dengan data tugas, lamaran, assessment dan notifikasi melalui ActivityReadService, bukan menggantinya dengan shell kosong. Nama route activity.index, navbar dan proteksi SF tetap. Query approved sebagai event tersedia, angka nol hardcoded dan link kosong tidak dipulihkan.
+
+## Integrasi A2 - 5 Oktober 2026
+
+A2 menyediakan `App\Contracts\AssessmentReadiness::publishedVersion(EventPosition): int`. Bind implementasi A4 yang memvalidasi assessment lengkap/published, pertanyaan, opsi, tepat satu kunci, durasi dan versi. Kegagalan melempar ValidationException; binding yang belum tersedia menahan submit/publish dengan pesan jelas. Fake keberhasilan hanya dipasang pada tes A2, tidak di provider aplikasi.
+
+Review interface tersebut bersama A2 sebelum integrasi. A2 sudah memasang pemanggilan NotificationService.enqueue dengan key stabil; `a2:retry-notifications` memproses audit/payment ledger yang tertunda menuju outbox A4. Ini bukan implementasi outbox/delivery atau bukti integrasi notifikasi selesai.

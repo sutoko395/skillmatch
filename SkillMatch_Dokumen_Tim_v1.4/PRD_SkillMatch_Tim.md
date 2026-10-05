@@ -56,13 +56,13 @@ AI/ML, chat real-time, native mobile, proctoring, GPS/biometrik/QR, self check-i
 
 | PIC | Tanggung jawab utama | Hasil demonstrasi |
 |---|---|---|
-| SF — kamu sebelum A4 | Shared foundation: MySQL, auth bersama, profil, layout, audit, seed dan README awal | Fondasi dapat dipakai A1–A4 dan lulus gerbang serah-terima SF. |
+| SF — kamu sebelum A2 | Shared foundation: MySQL, auth bersama, profil, layout, audit, seed dan README awal | Fondasi dapat dipakai A1–A4 dan lulus gerbang serah-terima SF. |
 | A1 | Melanjutkan admin: moderasi, pengguna, master data, audit UI, konten, analitik | Memakai fondasi SF; moderasi bekerja; analitik membaca data nyata. |
 | A2 | Event/posisi/katalog/paket/payment | Event dibuat, disetujui, dibayar bila perlu, kemudian dapat dilamar. |
 | A3 | Lamaran/dokumen/seleksi/attendance/riwayat | Berkas hanya terlihat perekrut terkait, seleksi konsisten, kehadiran masuk riwayat. |
 | A4 | Screening/assessment/matching/aktivitas/notifikasi | Pelamar mendapat alasan screening, menyelesaikan assessment, skor terjelaskan, tugas muncul pada aktivitas. |
 
-SF adalah tahap kerja kamu, bukan anggota kelima. Setelah SF diserahterimakan, kamu kembali ke A4. Rincian ada pada [brief shared foundation](docs/anggota/SHARED_FOUNDATION.md). Ringkasan Aktivitas dan notifikasi tetap milik A4; pemindahan tugas tambahan harus dicatat lebih dahulu. A1 memiliki pekerjaan lama yang cukup luas. A2 mengerjakan UI admin paket/transaksi; A3 menyediakan layanan dokumen yang juga dipakai A1; A4 menyediakan notifikasi yang dipanggil setiap modul. Masing-masing mengerjakan controller, view, validation, policy, migration, seeder dan tes modulnya. Tidak ada satu anggota yang hanya mengerjakan frontend, atau bertanggung jawab memperbaiki semua integrasi.
+SF adalah tahap kerja kamu, bukan anggota kelima. Setelah SF diserahterimakan, kamu melanjutkan A2. Rincian ada pada [brief shared foundation](docs/anggota/SHARED_FOUNDATION.md). Ringkasan Aktivitas dan notifikasi tetap milik A4; pemindahan tugas tambahan harus dicatat lebih dahulu. A1 memiliki pekerjaan lama yang cukup luas. A2 mengerjakan UI admin paket/transaksi; A3 menyediakan layanan dokumen yang juga dipakai A1; A4 menyediakan notifikasi yang dipanggil setiap modul. Masing-masing mengerjakan controller, view, validation, policy, migration, seeder dan tes modulnya. Tidak ada satu anggota yang hanya mengerjakan frontend, atau bertanggung jawab memperbaiki semua integrasi.
 
 Keadilan dinilai dari kompleksitas dan hasil, bukan jumlah menu. Evaluasi setelah milestone kedua: bila ada blokir teknis, anggota yang lebih dahulu selesai membantu pekerjaan terbatas tanpa mengganti pemilik kontrak. Detail ada pada brief anggota.
 
@@ -212,7 +212,7 @@ Antrean tindakan: organisasi pending, event pending, transaksi perlu diperiksa. 
 | M5 | Attendance → completed → riwayat, analitik, retensi/backup | A3 + A1 |
 | M6 | UAT lintas role, pembayaran ganda, request paralel, responsive, README dan demo | Semua |
 
-Sesudah M1, A1 melanjutkan fitur admin dan kamu mengerjakan A4 termasuk fondasi notifikasi. A2/A3 boleh mulai modul sendiri dengan kontrak dan fixture; integrasi memakai commit SF yang disepakati. Notifikasi lengkap, payment dan dokumen privat A3 bukan syarat selesai SF.
+Sesudah M1, A1 melanjutkan fitur admin dan kamu mengerjakan A2; fondasi notifikasi tetap dikerjakan PIC A4. A2/A3 boleh mulai modul sendiri dengan kontrak dan fixture; integrasi memakai commit SF yang disepakati. Notifikasi lengkap, payment dan dokumen privat A3 bukan syarat selesai SF.
 
 M2 menggunakan fixture entitlement untuk pengembangan lokal yang diberi label; tidak boleh menjadi bypass publikasi di aplikasi final. Payment dapat dikembangkan paralel sejak M1. Jadwal kalender ditentukan tim; tabel ini urutan integrasi, bukan janji durasi.
 

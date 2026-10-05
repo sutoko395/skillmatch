@@ -44,7 +44,7 @@ integrasinya dikerjakan. Jangan menambahkan ClamAV atau scanner antivirus.
 | A3 | Lamaran, DocumentStorageService, dokumen privat, seleksi, attendance, riwayat, retensi | feature/a3-applications-attendance |
 | A4 | Screening, assessment, matching, NotificationService, ActivityReadService, Ringkasan Aktivitas | feature/a4-assessment-matching |
 
-SF dikerjakan pengguna sebelum kembali ke A4, bukan anggota kelima. A1 melanjutkan
+SF dikerjakan pengguna sebelum melanjutkan A2, bukan anggota kelima. A1 melanjutkan
 fondasi sesudah serah-terima. Jangan mengulang migration/model/service SF atau
 mengambil seluruh tugas anggota lain. Setiap PIC mengerjakan database, backend,
 tampilan, otorisasi, pengujian, dan dokumentasi untuk modulnya.

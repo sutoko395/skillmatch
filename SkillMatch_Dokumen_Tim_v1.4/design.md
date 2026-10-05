@@ -209,3 +209,11 @@ A2 mengembangkan beranda ini dan menghubungkan katalog setelah route/data publik
 ## Pemulihan ringkasan pengguna - 5 Oktober 2026
 
 Aktivitas Volunteer/Organizer memakai kembali sambutan, kartu putih beraksen indigo dan aksi cepat profil dari baseline dalam navbar SF. Tampilkan informasi profil aktual dan interval WIB, bukan dashboard analitik platform. Status akun dan organisasi ditampilkan terpisah. Bagian kegiatan yang belum terintegrasi memakai keterangan; tidak membuat kartu angka nol atau tombol seolah berfungsi.
+
+## Implementasi antarmuka A2 - 5 Oktober 2026
+
+Beranda baseline dipertahankan dengan CTA Jelajahi Event. Katalog memakai navbar publik, filter judul/kategori/kota/tanggal WIB, jumlah hasil nyata, pagination dan kartu 1/2/3 kolom. Detail menampilkan jadwal/skill/kuota/syarat; pengajuan lamaran diberi keadaan belum tersedia sampai route A3 ada. Login Volunteer dapat kembali ke detail yang masih eligible melalui events.join.
+
+Event Saya merupakan daftar operasional, bukan dashboard baru. Informasi Event -> Posisi/Jadwal -> Assessment -> Paket -> Tinjau/Ajukan ditampilkan sebagai urutan teks. Skill/jadwal/syarat berulang memakai Alpine yang sudah dimuat SF; form server tetap memvalidasi seluruh data. Form assessment belum tersedia dan tidak dianggap selesai. Status moderasi/publikasi/pelaksanaan ditampilkan terpisah.
+
+Paket/order dan UI admin paket/transaksi memakai komponen SF serta layout admin existing. Checkout selalu berlabel Sandbox, tidak ada tombol paid manual atau statistik fixture. Event dibatalkan/pembayaran review menampilkan status sebenarnya. Build/render Blade sudah diperiksa; review visual 360/768/1280 dan keyboard masih perlu dilakukan.

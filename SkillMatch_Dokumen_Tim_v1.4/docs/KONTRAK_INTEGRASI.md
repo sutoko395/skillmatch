@@ -218,3 +218,22 @@ Pemilik awal auth, profil dasar, cities/availability, master schema/seed, layout
 GET `/` tetap bernama `home` dan memakai `resources/views/welcome.blade.php`: beranda baseline dipulihkan melalui layout SF; A2 menjadi pemilik pengembangan lanjut, katalog dan detail. CTA login/daftar tetap memakai auth SF; CTA pengguna terautentikasi melalui `dashboard` yang memeriksa role/status/verifikasi. Jangan membuat auth/layout tandingan.
 
 GET `/admin/dashboard` tetap bernama `admin.dashboard` dan memakai AdminDashboardController@index + admin/dashboard.blade.php. A1 melanjutkan hitungan database/aksi cepat tersebut. Kekurangan analitik lengkap tidak menjadi alasan mengganti dashboard yang berfungsi dengan shell. Shell hanya untuk fitur belum tersedia, terutama aktivitas A4; tidak menandakan modul selesai. Pembagian schema/service dan kontrol akses tidak berubah.
+
+## Rincian implementasi A2 - 5 Oktober 2026 (menunggu review pemilik integrasi)
+
+Implementasi berada pada `feature/a2-events-payment`; bukti/status di [A2_HANDOFF](../../docs/A2_HANDOFF.md). Kontrak status, nama tabel baseline dan guard web dipertahankan. Penugasan pengguna setelah SF adalah A2, tanpa memindahkan kepemilikan A4.
+
+- `AssessmentReadiness::publishedVersion(EventPosition): int` pada App\Contracts adalah titik binding validasi kesiapan A4; mengembalikan versi assessment sah atau melempar ValidationException. Binding belum tersedia berarti submit/publish ditolak, bukan lolos default.
+- A2Dependencies memanggil `EventCancellationService.cancelApplications` A3 secara transaksional. Belum ada layanan berarti cancellation ditolak. A3 meninjau urutan lock dan pengakhiran attempt A4 sebelum integrasi.
+- `EntitlementService.consumeApplication(Event)` memerlukan transaksi submit A3 yang sama, unique application/idempotensi submitted_at diperiksa oleh A3 terlebih dahulu. Lock Volunteer -> event -> entitlement; counter submitted_applications tidak dikurangi ketika withdrawn. Ini batas paket, bukan seleksi kuota posisi.
+- Snapshot paket dipilih dari server untuk konfigurasi/moderasi event dan disalin ke order setelah approved. Event yang sudah diajukan/bertransaksi tidak dapat mengganti paket tanpa alur revisi yang sah; harga/manfaat snapshot tidak berubah ketika admin mengubah paket.
+- `orders`: event_id/package_id, order_ref unik, package_snapshot, amount rupiah integer, currency IDR, status kanonik, paid_at/activated_at, requires_follow_up, revision, checkout_url terenkripsi, checkout_claim/checkout_started_at dan gateway_checked_at. Checkout claim mencegah pemrosesan serentak; tidak menyimpan server key atau respons gateway mentah.
+- `event_entitlements`: event_id unik, order_id nullable unik, package_snapshot, max_positions/max_applications/max_registration_days, submitted_applications dan activated_at. Free memakai order_id null, tidak membuat paid palsu.
+- `payment_events`: order_id, gateway_event_key unik, gateway_status, verified_summary minimum dan notified_at. Replay pembayaran memakai key `payment.verified:<payment_event_id>:1:<recipient_id>`; published/cancelled memakai revision event dari audit. Outbox/delivery tetap A4.
+- Route pendukung baru: GET `/events/{event}/join`, POST `/organizer/events/{event}/package`, POST `/organizer/orders/{order}/checkout`, GET `/admin/orders/{order}`, POST `/admin/orders/{order}/sync`. Callback saja dikecualikan CSRF; tetap wajib signature dan verifikasi status server.
+- Resource posisi menyediakan index/show sebagai redirect terotorisasi ke detail event/anchor posisi. Hapus event terbatas draft awal kosong, belum pernah diajukan, tanpa order/entitlement; histori event tidak dihapus oleh endpoint ini. Paket dinonaktifkan melalui update, bukan hard-delete.
+- Persyaratan baru menggunakan kind manual/document; document_type cv/supporting untuk selaras upload CV/lampiran. Kind manual bukan aturan otomatis membaca isi CV.
+
+Migration tambahan mempertahankan tanggal/jam lama, menyalin legacy_registration_deadline, lalu mengonversi WIB ke UTC secara eksplisit. City dan akhir/jadwal yang tidak diketahui wajib dikoreksi, bukan ditebak. Event approved lama tetap unpublished. Review schema/interface ini bersama A1/A3/A4 belum dinyatakan selesai.
+
+Koreksi judul/deskripsi event published memakai GET/PATCH `/organizer/events/{event}/text` (organizer.events.text/correct-text), allowlist ketat dan audit changed_fields; field jadwal/posisi/paket tidak diterima. Event terminal tidak dapat dikoreksi melalui endpoint ini.

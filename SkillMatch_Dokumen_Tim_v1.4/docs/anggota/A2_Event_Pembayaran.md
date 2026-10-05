@@ -53,3 +53,9 @@ Gunakan commit shared foundation untuk auth bersama, kota, master skill, layout 
 A2 adalah PIC website utama untuk pengunjung: beranda/landing page, katalog, pencarian/filter dan detail event. SF mengembalikan hero, CTA auth dan footer baseline pada `resources/views/welcome.blade.php`, route `home`, menggunakan layout/navbar bersama. Lanjutkan file itu; jangan membuat ulang beranda atau menggantinya dengan halaman kosong ketika katalog belum selesai.
 
 Pertahankan kontribusi yang berfungsi. Tambahkan tautan Jelajahi Event dan konten kegiatan nyata setelah katalog eligible published tersedia. CTA autentikasi tetap memakai `/login`, `/register` dan redirect role SF. Jangan menampilkan statistik atau kartu event fixture seolah data nyata. A1 mengerjakan panel admin; A4 mengerjakan Aktivitas pengguna, bukan beranda publik. Sertakan regresi beranda guest/login/mobile pada UAT-09/34.
+
+## Hasil implementasi 5 Oktober 2026
+
+Lanjutkan kode existing pada `feature/a2-events-payment`; jangan membuat ulang schema event atau payment. Rincian route/service, migration, fixture, tes dan blocker tersedia pada [A2_HANDOFF](../../../docs/A2_HANDOFF.md). README utama tetap pengantar/setup aplikasi; pembagian tugas di [DEVELOPMENT](../../../docs/DEVELOPMENT.md).
+
+Validator assessment A4, cancellation A3/A4 dan outbox NotificationService belum terintegrasi nyata. A2 memasang titik pemanggilan tanpa fake sukses di runtime. Katalog dan pengelolaan draft sudah dapat dipakai setelah migration, sedangkan publikasi penuh memerlukan dependensi tersebut sesuai kontrak. Adapter Sandbox/fake gateway tidak menjadi bukti pembayaran nyata atau UAT lintas modul selesai.
