@@ -11,6 +11,7 @@ Tanggal: 5 Oktober 2026 (WIB). Status: implementasi A2 tersedia untuk ditinjau; 
 - `46ad09c`: UI Organizer, katalog, admin paket/transaksi dan integrasi route.
 - `f282259`: tes, fixture demo, pemeriksaan konkurensi dan perintah replay notifikasi.
 - `b43cb69`: penanganan status Snap belum tersedia, tes regresi, dan alat checkout/sync Sandbox nyata khusus database tes.
+- `e0731df`: beranda informatif lengkap, HomeController, event-card bersama katalog, serta regresi beranda/auth/event.
 - Commit dokumentasi setelah kedua tahap tersebut tercatat pada log branch; gunakan tip A2 saat review, bukan commit tahap antara.
 - Tidak melakukan push, PR, merge atau deployment pada pekerjaan A2 ini. Review tim belum dilakukan.
 
@@ -99,3 +100,17 @@ Sumber resmi diverifikasi 5 Oktober 2026: [Snap integration](https://docs.midtra
 - Konfigurasi server key Sandbox sudah terbaca pada pemeriksaan lanjutan, mode produksi false. Uji checkout/status nyata dilakukan terpisah pada fixture database tes; hasil akhir dicatat di bawah. Callback HTTPS publik belum diuji.
 - Checkout Snap Sandbox nyata berhasil untuk order lokal tes **108** dengan fixture `Demo A2 - Berbayar approved` di `skillmatch_testing`. Koneksi pertama terhalang sandbox eksekusi; setelah izin jaringan dan masa pengunci lima menit, reference yang sama berhasil digunakan. Key/token tidak dicetak atau masuk Git. Tautan checkout tersimpan hanya pada `storage/app/private/a2-sandbox-checkout.html`.
 - Penyelesaian simulasi oleh pengguna dan verifikasi status paid/entitlement nyata masih tertunda. Checkout berhasil bukan bukti pembayaran selesai. Jalankan `php tools/a2-sandbox-check.php --env=testing --sync=108` setelah simulasi, dengan target MySQL tes, lalu ulangi untuk memeriksa receipt/entitlement tetap satu. Script tidak memasang validator assessment palsu; event tetap unpublished sampai syarat A4 terpenuhi.
+
+## Pengembangan lanjutan beranda publik
+
+Beranda kini menjelaskan tujuan produk, prinsip skill/waktu/lokasi, langkah Volunteer/Organizer, FAQ, pencarian ke katalog, CTA auth/akun, dan pratinjau event aktual. Hero indigo dengan ilustrasi SVG komunitas meneruskan identitas dan judul baseline. FAQ memakai details/summary native, tanpa tambahan runtime JavaScript atau dependensi.
+
+GET `/` tetap `home`, kini HomeController, dengan maksimal enam event publiclyVisible yang periode pendaftarannya terbuka dan kapasitas paket masih ada. Urutan starts_at lalu ID; relasi dan positions_count dimuat bersama. Blade `event-card` milik A2 dipakai juga oleh katalog. Keadaan kosong tampil informatif; lamaran/assessment/matching belum diklaim berfungsi. Tidak ada migration atau perubahan data kerja untuk pengembangan beranda ini.
+
+Bukti khusus perubahan beranda:
+
+- **43 tes / 312 assertion lulus**: HomeTest (3 kasus), ExampleTest, FoundationAccessTest dan A2EventTest, pada MySQL skillmatch_testing. Pemeriksaan mencakup event tersembunyi, periode, kapasitas, pemilik nonaktif, batas enam, urutan, serta regresi auth/catalog. Tes beranda menggunakan waktu sintetis 2027 untuk mengisolasi fixture lama dan tetap dalam rentang TIMESTAMP MySQL. Suite A2 sebelumnya 86 tes merupakan bukti tahap sebelum tambahan HomeTest; suite penuh tidak dijalankan ulang karena perubahan terarah.
+- Build Vite sukses, CSS 59.07 kB / JS 55.09 kB; Blade cache berhasil; Pint dan git diff --check lulus.
+- Chrome headless lokal diperiksa memakai viewport eksplisit **360/768/1280 px**: tidak ada overflow horizontal. Screenshot seluruh halaman pada keadaan event kosong tersimpan privat di storage/app/private/a2-home-360.png, a2-home-768.png, a2-home-1280.png. Screenshot 360 awal tanpa emulasi viewport terpotong dan tidak digunakan sebagai bukti mobile; pemeriksaan berikutnya memakai Chrome DevTools Protocol.
+- Fokus summary terverifikasi; **Space membuka FAQ**; seluruh anchor section memiliki target. Pemeriksaan ini bukan audit aksesibilitas lengkap atau UAT browser seluruh modul. Tampilan kartu berisi event diuji melalui render MySQL fixture; pemeriksaan visual browser memakai data lokal dengan keadaan kosong.
+- PRD, design, kontrak, brief A2, UAT, README dan DEVELOPMENT diperbarui. Review tim dan integrasi A3/A4/payment final tetap tertunda sesuai bagian sebelumnya. Tidak melakukan push, PR, merge atau deployment.

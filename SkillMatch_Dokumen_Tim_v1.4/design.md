@@ -217,3 +217,11 @@ Beranda baseline dipertahankan dengan CTA Jelajahi Event. Katalog memakai navbar
 Event Saya merupakan daftar operasional, bukan dashboard baru. Informasi Event -> Posisi/Jadwal -> Assessment -> Paket -> Tinjau/Ajukan ditampilkan sebagai urutan teks. Skill/jadwal/syarat berulang memakai Alpine yang sudah dimuat SF; form server tetap memvalidasi seluruh data. Form assessment belum tersedia dan tidak dianggap selesai. Status moderasi/publikasi/pelaksanaan ditampilkan terpisah.
 
 Paket/order dan UI admin paket/transaksi memakai komponen SF serta layout admin existing. Checkout selalu berlabel Sandbox, tidak ada tombol paid manual atau statistik fixture. Event dibatalkan/pembayaran review menampilkan status sebenarnya. Build/render Blade sudah diperiksa; review visual 360/768/1280 dan keyboard masih perlu dilakukan.
+
+## Beranda publik lengkap - 5 Oktober 2026
+
+Beranda memakai hero indigo gelap dengan tipografi putih/indigo terang, ilustrasi komunitas SVG lokal, pencarian dalam permukaan putih, pengenalan produk, tiga prinsip skill/waktu/lokasi, pratinjau event, panduan Volunteer/Organizer, FAQ native details/summary, CTA dan footer tim. Identitas serta judul hero baseline diteruskan. Tidak ada gambar eksternal, testimoni, logo mitra atau angka promosi buatan.
+
+Grid beradaptasi dari satu kolom menjadi dua/tiga kolom. CTA memiliki target sentuh minimal 44px, heading/label/landmark semantik, ilustrasi berjudul, fokus keyboard dari CSS bersama, dan FAQ bekerja tanpa JavaScript. Inter, navbar, Vite dan Alpine tetap memakai layout SF. Komponen `event-card` A2 dipakai oleh beranda dan katalog untuk kategori, Organizer, posisi, kota, jadwal/deadline WIB dan tautan detail.
+
+Event kosong tampil sebagai keadaan informatif, bukan kartu demo. Pratinjau terbatas enam event publik yang pendaftarannya sedang terbuka dan batas lamaran paket belum habis. FAQ serta panduan memberi keterangan fitur lanjutan yang belum tersedia; CTA hanya menuju katalog, auth, redirect akun atau anchor section yang benar-benar ada. Katalog tetap menyediakan hasil/filter/pagination lengkap.

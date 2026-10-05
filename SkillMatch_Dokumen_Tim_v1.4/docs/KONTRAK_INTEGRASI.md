@@ -237,3 +237,9 @@ Implementasi berada pada `feature/a2-events-payment`; bukti/status di [A2_HANDOF
 Migration tambahan mempertahankan tanggal/jam lama, menyalin legacy_registration_deadline, lalu mengonversi WIB ke UTC secara eksplisit. City dan akhir/jadwal yang tidak diketahui wajib dikoreksi, bukan ditebak. Event approved lama tetap unpublished. Review schema/interface ini bersama A1/A3/A4 belum dinyatakan selesai.
 
 Koreksi judul/deskripsi event published memakai GET/PATCH `/organizer/events/{event}/text` (organizer.events.text/correct-text), allowlist ketat dan audit changed_fields; field jadwal/posisi/paket tidak diterima. Event terminal tidak dapat dikoreksi melalui endpoint ini.
+
+## Integrasi beranda publik - 5 Oktober 2026
+
+GET `/` tetap bernama `home`, kini melalui `HomeController::__invoke` ke `welcome.blade.php`. Controller membaca `Event::publiclyVisible`, `registration_opens_at <= now`, `registration_deadline > now`, dan `submitted_applications < max_applications` pada entitlement. Query meng-eager-load relasi Organizer/profil, kategori/kota, menghitung posisi dan membatasi enam event dengan urutan starts_at/ID. Ini pratinjau pendaftaran terbuka, bukan bypass eligibility lamaran A3 atau engine matching A4.
+
+Komponen Blade A2 `event-card` dipakai beranda/katalog. Form pencarian GET memakai `events.index` dan parameter `search` existing. CTA akun memakai `dashboard` untuk redirect sah SF; navbar/auth tidak menambahkan guard atau pemilih role. Tidak ada migration, route payment, harga atau status baru.

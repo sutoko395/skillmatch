@@ -233,3 +233,9 @@ Menambahkan requirement ke PRD tidak otomatis mengubah README Laravel bawaan. Sa
 Beranda publik dan dashboard admin yang sudah berfungsi dipertahankan serta dikembangkan bertahap. SF tidak mengganti seluruh halaman dengan shell hanya karena fitur lanjutan belum selesai. Keterangan belum tersedia berlaku pada bagian yang memang belum ada, tanpa angka palsu atau klaim matching/payment aktif. Proteksi akses, satu login, dan komponen SF tetap digunakan.
 
 A2 melanjutkan beranda publik (`home`, `welcome.blade.php`), katalog dan detail event; A1 melanjutkan dashboard dasar admin menjadi analitik lengkap. A3 tetap mengerjakan lamaran/dokumen/attendance, A4 tetap aktivitas/assessment/matching/notifikasi. Aktivitas pengguna boleh memakai shell sementara sampai data modul tersedia. Keputusan ini memperjelas pembagian dan pelestarian kontribusi, tidak mengubah schema, status, harga atau rumus. Pemulihan halaman bukan bukti seluruh P0/UAT selesai.
+
+## Beranda publik informatif - 5 Oktober 2026
+
+A2 mengembangkan beranda `home` agar pengunjung memahami tujuan SkillMatch, peran Volunteer/Organizer, dan langkah yang dapat dilakukan. Beranda memuat hero, pencarian judul ke katalog, penjelasan skill/waktu/lokasi, pratinjau event, panduan kedua peran, FAQ dan CTA autentikasi. Teks membedakan kemampuan yang tersedia dari lamaran/assessment/matching/notifikasi yang masih dikembangkan.
+
+Pratinjau maksimal enam event memakai aturan publikasi katalog, ditambah periode pendaftaran terbuka dan kapasitas paket belum habis, diurutkan berdasarkan waktu mulai lalu ID. Kartu memuat informasi aktual, bukan rekomendasi personal atau statistik promosi. Keadaan kosong tetap menjelaskan langkah berikutnya. Pengembangan ini tidak mengubah syarat publikasi, status, harga atau kepemilikan A3/A4.

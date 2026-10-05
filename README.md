@@ -6,7 +6,9 @@ Aplikasi menggunakan Laravel, Blade, Tailwind CSS 3, Alpine.js, Vite, dan MySQL.
 
 ## Status aplikasi
 
-Saat ini tersedia beranda, login dan registrasi, verifikasi email/reset password, profil Volunteer beserta skill dan jadwal ketersediaan, profil Organizer, ringkasan profil pengguna, serta dashboard dasar Admin.
+Beranda publik menjelaskan tujuan platform, peran Volunteer/Organizer, cara memulai, FAQ, pencarian dan pratinjau event aktual dengan pendaftaran terbuka. Ketika belum ada event tersedia, beranda tetap menampilkan informasi dan langkah berikutnya.
+
+Saat ini tersedia login dan registrasi, verifikasi email/reset password, profil Volunteer beserta skill dan jadwal ketersediaan, profil Organizer, ringkasan profil pengguna, serta dashboard dasar Admin.
 
 Pengelolaan draft event/posisi/jadwal, katalog event published, paket, order dan integrasi pembayaran Sandbox sudah tersedia. Pengajuan/publikasi masih memerlukan validator assessment; pembatalan memerlukan layanan lamaran/attempt. Lamaran, attendance, assessment, matching dan notifikasi lengkap masih dalam pengembangan. Aplikasi belum menyediakan seluruh alur kegiatan dari awal sampai akhir.
 

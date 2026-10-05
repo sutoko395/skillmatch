@@ -60,3 +60,7 @@ Backup/restore dan migration telah diuji pada salinan database kerja terpisah, t
 Penambahan interface `AssessmentReadiness::publishedVersion(position)` dijabarkan dalam kontrak dan A2_HANDOFF.md; A4 perlu meninjau/bind implementasinya. Harga Demo Free/Standard hanya fixture lokal, bukan keputusan harga produk.
 
 Setelah pemeriksaan salinan, kedua migration A2 juga sudah diterapkan pada database lokal pemilik workspace dengan backup baru dan pemeriksaan pelestarian data. Anggota lain tetap menjalankan migration pada database masing-masing; lihat bukti akhir A2_HANDOFF.md.
+
+## Beranda publik informatif
+
+Pengembangan beranda tetap milik A2. HomeController menggunakan schema/service publikasi existing untuk pratinjau enam event dengan pendaftaran terbuka dan kapasitas paket. welcome.blade.php menjelaskan produk, manfaat skill/waktu/lokasi, peran, cara mulai dan FAQ; event-card dipakai bersama katalog. Tidak menunggu A3/A4 untuk konten informatif, tetapi tetap menjelaskan status alur lamaran/assessment/matching yang belum terintegrasi. Lihat A2_HANDOFF untuk bukti tes/build/render dan batas review.
