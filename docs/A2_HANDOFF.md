@@ -150,3 +150,7 @@ Bukti: DefaultPackageTest + A2EventTest + HomeTest + RegistrationTest lulus **24
 Pemeriksaan browser kartu paket: Chrome headless viewport 360/1280 px tanpa overflow horizontal, nilai ketiga paket cocok dengan database, CTA publik mempreseleksi Organizer pada registrasi. Screenshot privat a2-packages-360.png/a2-packages-1280.png; hasil ini tidak meluluskan modul A3/A4 atau pembayaran final.
 
 Commit implementasi paket/kartu/tes: 37de24b, branch feature/a2-events-payment. Dokumentasi konfigurasi disepakati berada pada commit berikutnya di log branch. Belum push/PR/review/merge/deployment.
+
+## Sinkronisasi brief A3/A4
+
+Brief A3/A4 telah diselaraskan dengan interface yang benar-benar tersedia: consumeApplication/snapshot/cancellation, binding AssessmentReadiness, NotificationService.enqueue/dedupe/replay, status aktivitas dan paket editable. Tidak mengubah kepemilikan atau status fitur menjadi selesai. Masing-masing brief memuat gate integrasi yang belum diuji nyata dan tautan ke handoff ini. Review pemilik A3/A4 masih diperlukan.

@@ -6,6 +6,8 @@ Versi 1.4.2 • Baca [PRD](../../PRD_SkillMatch_Tim.md), [kontrak](../KONTRAK_IN
 
 Belum ada model/tabel/alur lamaran atau attendance di ZIP. Upload organisasi yang ada bukan upload pelamar. Gunakan pemilik event dari relasi posisi, bukan user ID yang dikirim formulir.
 
+Kondisi setelah A2: schema/model event, posisi, jadwal, paket, order dan entitlement sudah tersedia pada feature/a2-events-payment. Gunakan kode tersebut dan [A2_HANDOFF](../../../docs/A2_HANDOFF.md); jangan membuat tabel/model tandingan. Catatan ZIP adalah baseline historis. Pastikan commit A2 yang disepakati tersedia pada branch kerja; belum dinyatakan merge ke main.
+
 ## Pekerjaan berurutan
 
 | Tahap | Deliverable | Penerimaan |
@@ -56,3 +58,23 @@ Gunakan ProfileEligibilityService, middleware akun/role dan AuditService dari SF
 ## Batas UI setelah koreksi baseline - 5 Oktober 2026
 
 Beranda publik dipertahankan dan dilanjutkan A2; dashboard admin dilanjutkan A1. A3 mengintegrasikan CTA lamaran/dokumen/riwayat ke halaman A2 dan layout SF tanpa mengganti beranda atau mengambil tugas Aktivitas A4. Pemulihan beranda tidak mengubah kontrak submit, Policy dokumen, seleksi atau attendance.
+
+## Integrasi implementasi A2 terbaru - 5 Oktober 2026
+
+### Submit, paket dan snapshot
+
+- Gunakan App\Services\EntitlementService.consumeApplication(Event) dalam transaksi submit yang sama. Kunci Volunteer lalu event, periksa unique application/submitted_at untuk idempotensi sebelum increment. Commit snapshot, dokumen/transisi dan counter bersama; kegagalan submit harus me-rollback counter.
+- Batas max_applications adalah lamaran terkirim per event, bukan kuota accepted per posisi. Withdrawal tidak mengembalikan counter. Kuota posisi dan bentrok jadwal pada seleksi tetap tanggung jawab A3.
+- Free/Standard/Premium sudah memiliki konfigurasi awal yang disepakati pada PRD/kontrak. Admin dapat mengedit harga/limit/status; baca event_entitlements dan snapshot event/order yang berlaku. Jangan hardcode nama tier atau membaca limit paket master terbaru untuk histori pembelian lama. Free tidak memerlukan order paid.
+- PositionSnapshotService.build(EventPosition) menyediakan position_id/event_id/city_id, skills (id/minimum_level/is_required), schedules (start/end ISO UTC), requirements (name/description/kind/document_type/is_required), flag availability/kota, assessment_version dan rule_version match-v1.4. Binding assessment A4 belum tersedia berarti pembentukan snapshot ditolak; fixture/mock hanya untuk tes.
+- Requirement kind manual/document dan document_type cv/supporting mengikuti schema A2. Tetap gunakan DocumentStorageService A3, metadata/disk privat dan Policy per konteks. Struktur kebutuhan dokumen A2 tidak berarti layanan upload sudah tersedia.
+
+### Pembatalan dan UI
+
+Sediakan App\Services\EventCancellationService.cancelApplications(Event, User actor, string reason): void. A2 memanggilnya dalam transaksi pembatalan setelah lock pemilik/event; layanan A3 harus menutup lamaran dan meminta pembatalan attempt A4 secara atomik/idempoten. Review urutan lock bersama A2/A4 terhadap submit/seleksi agar tidak terjadi deadlock; jangan commit terpisah atau menghidupkan kembali state terminal melalui job terlambat. Tanpa layanan ini pembatalan event A2 tetap ditolak.
+
+Katalog/detail dan beranda publik kini sudah tersedia. Integrasikan CTA lamaran pada route kontrak setelah endpoint A3 lengkap dan terotorisasi; jangan menganggap kartu event/CTA menjadi bukti submit berfungsi. Layout/navbar serta login/register baru tetap auth SF satu guard. Aktivitas pengguna tetap A4. Status Dalam pengembangan pada kartu paket hanya diubah setelah fitur nyata tersedia dan dokumen/UAT diselaraskan bersama A2.
+
+### Gate integrasi yang masih diperlukan
+
+Uji submit ulang dan dua proses pada batas lamaran, rollback counter saat dokumen/snapshot gagal, withdrawal tanpa pemulihan limit, perubahan master paket setelah pembelian, akses pemilik/role/status, cancelled menolak submit, serta cancellation bersamaan dengan submit/seleksi/attempt. Mock A3 pada tes A2 dan reserve counter A2 tidak membuktikan semua gate ini lulus. A3 dapat mengerjakan bagian independen dengan fixture kontrak sambil menunggu evaluasi/attempt A4.

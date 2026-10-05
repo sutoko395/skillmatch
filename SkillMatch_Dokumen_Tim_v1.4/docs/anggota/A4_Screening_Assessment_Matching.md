@@ -61,3 +61,27 @@ Aktivitas dasar kini menampilkan ringkasan profil nyata dari controller/view das
 A2 menyediakan `App\Contracts\AssessmentReadiness::publishedVersion(EventPosition): int`. Bind implementasi A4 yang memvalidasi assessment lengkap/published, pertanyaan, opsi, tepat satu kunci, durasi dan versi. Kegagalan melempar ValidationException; binding yang belum tersedia menahan submit/publish dengan pesan jelas. Fake keberhasilan hanya dipasang pada tes A2, tidak di provider aplikasi.
 
 Review interface tersebut bersama A2 sebelum integrasi. A2 sudah memasang pemanggilan NotificationService.enqueue dengan key stabil; `a2:retry-notifications` memproses audit/payment ledger yang tertunda menuju outbox A4. Ini bukan implementasi outbox/delivery atau bukti integrasi notifikasi selesai.
+
+## Integrasi implementasi A2 terbaru - 5 Oktober 2026
+
+### Assessment dan snapshot
+
+Gunakan schema/model EventPosition, PositionSkill, PositionSchedule dan PositionRequirement A2, bukan schema posisi baru. PositionSnapshotService.build memakai skills id/minimum_level/is_required, schedules start/end ISO UTC, requirements kind/document_type/is_required, city_id, flag required_full_availability/required_same_city, assessment_version serta rule_version match-v1.4. A4 harus memproses snapshot immutable saat submit, bukan membaca ulang profil/master yang telah berubah. Tampilkan waktu WIB, simpan/finalisasi dengan otoritas waktu server.
+
+Implementasikan dan bind App\Contracts\AssessmentReadiness::publishedVersion(EventPosition): int. Nilai positif harus berasal versi assessment valid yang benar-benar siap; incomplete melempar ValidationException. Jangan memasang binding sukses konstan untuk membuka publikasi. Review kontrak versi/freeze bersama A2, karena pemeriksaan dipanggil pada pengajuan, publikasi dan snapshot A3. CRUD/entry point assessment Organizer A4 dipasang pada alur posisi/event A2 menggunakan Policy pemilik.
+
+### Paket dan notifikasi
+
+Semua tier awal Free/Standard/Premium memiliki rencana fitur screening/assessment/seleksi yang sama; perbedaan paket adalah harga dan limit posisi/lamaran/hari sesuai PRD. Admin dapat mengubahnya. Jangan menjadikan Free tanpa assessment atau memakai nama paket sebagai bypass screening. Batas submit adalah entitlement A2/A3, bukan rumus matching atau batas attempt baru.
+
+A2Dependencies sudah memanggil App\Services\NotificationService.enqueue(string key, User recipient, array payload). Implementasi A4 harus menggunakan transaksi/outbox dan unique dedupe key, bukan mengirim HTTP/email di dalam transaksi domain. Key A2: `event.published:<event_id>:<revision>:<recipient_id>` atau `event.cancelled:<event_id>:<revision>:<recipient_id>`, serta `payment.verified:<payment_event_id>:1:<recipient_id>`. Replay melalui php artisan a2:retry-notifications harus aman diulang dengan key yang sama. notified_at pada ledger pembayaran berarti diteruskan ke layanan/outbox, bukan bukti delivery. Worker/retry/delivery/read milik A4; trigger lain tetap dipasang PIC modul masing-masing.
+
+### Cancellation, aktivitas dan UI
+
+A3 menyediakan EventCancellationService dan menghubungkannya dengan pembatalan attempt A4 di transaksi event. Attempt/worker terlambat tidak boleh mengubah cancelled/withdrawn/rejected menjadi under_review. Review lock dan idempotensi lintas A2/A3/A4 sebelum mengklaim pembatalan terintegrasi.
+
+ActivityReadService membaca status sumber events/orders/applications milik pengguna yang sah. approved bukan published dan redirect checkout bukan paid. Pertahankan ringkasan profil serta navbar SF; tambah tugas nyata, tanpa angka hardcoded atau dashboard analitik pengguna. Beranda/kartu paket publik serta UI paket/transaksi tetap A2, panel analitik admin A1. Login/register sudah dirapikan tetapi guard/route/redirect tetap SF.
+
+### Gate integrasi yang masih diperlukan
+
+Uji assessment incomplete menahan submit/publish, versi snapshot tetap setelah edit, kesiapan valid membuka alur sesuai seluruh syarat publikasi, replay/outbox ganda tidak menggandakan notifikasi, rollback domain/outbox konsisten, attempt cancelled tidak hidup lagi, serta aktivitas hanya membaca data pengguna yang berwenang. Tes mock A4 pada A2 bukan bukti gate ini lulus. Harga/limit awal dan bukti A2 tersedia di [A2_HANDOFF](../../../docs/A2_HANDOFF.md); pastikan commit A2 disepakati tersedia pada branch A4, tidak mengasumsikan sudah merge ke main.
