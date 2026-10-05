@@ -58,6 +58,9 @@ class EventCategoryController extends Controller
 
     public function destroy(Category $category)
     {
+        if ($category->events()->exists()) {
+            return back()->withErrors(['master' => 'Data masih direferensikan. Gunakan penonaktifan melalui pengelolaan master setelah tersedia.']);
+        }
         $category->delete();
 
         return back()->with('success', 'Kategori event berhasil dihapus.');

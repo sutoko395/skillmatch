@@ -42,12 +42,16 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role, // Simpan role ke database
+            'is_active' => true,
+            'organizer_status' => 'pending',
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        $request->session()->regenerate();
+
+        return redirect()->route('verification.notice');
     }
 }

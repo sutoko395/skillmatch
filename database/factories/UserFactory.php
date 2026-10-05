@@ -25,6 +25,9 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'role' => 'volunteer',
+            'is_active' => true,
+            'organizer_status' => 'pending',
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),

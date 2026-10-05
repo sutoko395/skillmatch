@@ -1,4 +1,5 @@
 <x-guest-layout>
+    <h1 class="mb-6 text-2xl font-semibold">Masuk ke SkillMatch</h1>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
@@ -44,4 +45,5 @@
             </x-primary-button>
         </div>
     </form>
+    <p class="mt-6 text-sm">Belum punya akun? <a class="text-indigo-700 underline" href="{{ route('register') }}">Daftar Volunteer / Organizer</a></p>
 </x-guest-layout>

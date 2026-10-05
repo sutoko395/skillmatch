@@ -15,8 +15,10 @@ $maxWidth = [
 @endphp
 
 <div
+    role="dialog" aria-modal="true" :aria-hidden="!show"
     x-data="{
         show: @js($show),
+        returnFocus: null,
         focusables() {
             // All focusable element types...
             let selector = 'a, button, input:not([type=\'hidden\']), textarea, select, details, [tabindex]:not([tabindex=\'-1\'])'
@@ -33,10 +35,12 @@ $maxWidth = [
     }"
     x-init="$watch('show', value => {
         if (value) {
+            returnFocus = document.activeElement;
             document.body.classList.add('overflow-y-hidden');
             {{ $attributes->has('focusable') ? 'setTimeout(() => firstFocusable().focus(), 100)' : '' }}
         } else {
             document.body.classList.remove('overflow-y-hidden');
+            returnFocus?.focus();
         }
     })"
     x-on:open-modal.window="$event.detail == '{{ $name }}' ? show = true : null"

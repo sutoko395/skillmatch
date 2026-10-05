@@ -587,17 +587,7 @@
 
                                         </div>
 
-                                        <button
-                                            type="button"
-                                            @click="
-                                                documentPreview = '{{ \Illuminate\Support\Facades\Storage::disk('public')->url($document->file_path) }}';
-                                                documentName = '{{ addslashes($document->document_name) }}';
-                                                documentType = '{{ strtolower(pathinfo($document->file_path, PATHINFO_EXTENSION)) }}';
-                                            "
-                                            class="px-3 py-2 rounded-lg bg-indigo-50 text-indigo-600 text-xs font-semibold hover:bg-indigo-100 transition"
-                                        >
-                                            Lihat Dokumen
-                                        </button>
+                                        <span class="text-sm text-slate-600">Unduhan privat belum tersedia</span>
 
                                     </div>
 

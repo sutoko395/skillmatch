@@ -5,9 +5,13 @@ namespace App\Http\Controllers\Organizer;
 use App\Http\Controllers\Controller;
 use App\Models\OrganizerDocument;
 use App\Models\OrganizerProfile;
+use App\Models\User;
+use App\Services\AuditService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class OrganizerProfileController extends Controller
@@ -15,6 +19,7 @@ class OrganizerProfileController extends Controller
     public function edit(Request $request): View
     {
         $user = $request->user();
+        Gate::authorize('updateProfile', $user);
 
         $profile = OrganizerProfile::where('user_id', $user->id)->first();
 
@@ -32,6 +37,7 @@ class OrganizerProfileController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $user = $request->user();
+        Gate::authorize('updateProfile', $user);
 
         $validated = $request->validate([
             'organization_name' => ['required', 'string', 'max:255'],
@@ -40,52 +46,32 @@ class OrganizerProfileController extends Controller
             'email' => ['required', 'email', 'max:255'],
             'address' => ['required', 'string', 'max:1000'],
             'city' => ['required', 'string', 'max:255'],
-            'website' => ['nullable', 'string', 'max:255'],
+            'website' => ['nullable', 'url:http,https', 'max:255'],
             'description' => ['required', 'string', 'max:1000'],
-            'documents' => ['required', 'array', 'min:1'],
-            'documents.*.type' => ['required', 'string', 'max:100'],
-            'documents.*.name' => ['required', 'string', 'max:255'],
-            'documents.*.file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
+            'documents' => ['prohibited'],
+            'is_active' => ['prohibited'],
+            'organizer_status' => ['prohibited'],
+            'user_id' => ['prohibited'],
         ]);
 
-        OrganizerProfile::updateOrCreate(
-            ['user_id' => $user->id],
-            [
-                'organization_name' => $validated['organization_name'],
-                'contact_person' => $validated['contact_person'],
-                'phone' => $validated['phone'],
-                'email' => $validated['email'],
-                'address' => $validated['address'],
-                'city' => $validated['city'],
-                'website' => $validated['website'] ?? null,
-                'description' => $validated['description'],
-            ]
-        );
+        DB::transaction(function () use ($user, $validated) {
+            $locked = User::whereKey($user->id)->lockForUpdate()->firstOrFail();
+            abort_unless($locked->is_active && $locked->role === 'organizer', 403);
+            $profile = $locked->organizerProfile;
+            if ($profile && $locked->organizer_status === 'active' && $profile->organization_name !== $validated['organization_name']) {
+                throw ValidationException::withMessages(['organization_name' => 'Perubahan identitas organisasi terverifikasi menunggu alur verifikasi ulang. Hubungi administrator.']);
+            }
+            $profile = $locked->organizerProfile()->updateOrCreate(['user_id' => $locked->id], $validated);
+            app(AuditService::class)->record($locked, 'organizer.profile.updated', $profile, ['after' => ['changed_fields' => array_keys($validated)]]);
+        });
 
-        foreach ($validated['documents'] as $document) {
-            $path = $document['file']->store('organizer-documents', 'public');
-
-            OrganizerDocument::create([
-                'user_id' => $user->id,
-                'document_type' => $document['type'],
-                'document_name' => $document['name'],
-                'file_path' => $path,
-            ]);
-        }
-
-        $user->update([
-            'organizer_status' => 'pending',
-            'is_active' => false,
-        ]);
-
-        return redirect()
-            ->route('organizer.profile.pending')
-            ->with('success', 'Pengajuan verifikasi berhasil dikirim.');
+        return redirect()->route('organizer.profile.edit')->with('success', 'Profil organisasi berhasil disimpan.');
     }
 
     public function pending(Request $request)
     {
         $user = $request->user();
+        Gate::authorize('updateProfile', $user);
 
         if ($user->organizer_status === 'active') {
             return redirect()->route('organizer.dashboard');

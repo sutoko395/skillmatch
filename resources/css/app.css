@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+[x-cloak] { display: none !important; }
+@layer base {
+    :focus-visible { @apply outline outline-2 outline-offset-2 outline-indigo-500; }
+    input:not([type=checkbox]):not([type=radio]), select, button { min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0.01ms !important; } }

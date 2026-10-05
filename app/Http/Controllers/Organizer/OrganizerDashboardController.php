@@ -12,6 +12,6 @@ class OrganizerDashboardController extends Controller
     {
         $user = $request->user();
 
-        return view('organizer.dashboard', compact('user'));
+        return view('organizer.dashboard', ['user' => $user, 'profile' => $user->organizerProfile]);
     }
 }

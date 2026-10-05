@@ -9,6 +9,9 @@
         </div>
     @endif
 
+    @if(auth()->user()->role === 'organizer')
+        <p class="my-4"><a class="text-indigo-700 underline" href="{{ route('organizer.profile.edit') }}">Lengkapi profil organisasi sambil menunggu verifikasi email</a></p>
+    @endif
     <div class="mt-4 flex items-center justify-between">
         <form method="POST" action="{{ route('verification.send') }}">
             @csrf

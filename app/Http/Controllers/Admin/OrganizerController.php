@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class OrganizerController extends Controller
@@ -16,7 +17,7 @@ class OrganizerController extends Controller
         $status = $request->string('status')->toString();
         $perPage = (int) $request->input('per_page', 10);
 
-        if (!in_array($perPage, [10, 50, 100])) {
+        if (! in_array($perPage, [10, 50, 100])) {
             $perPage = 10;
         }
 
@@ -67,6 +68,7 @@ class OrganizerController extends Controller
 
     public function updateStatus(Request $request, User $user): RedirectResponse
     {
+        Gate::authorize('manageOrganizer', $user);
         if ($user->role !== 'organizer') {
             abort(404);
         }
@@ -82,7 +84,6 @@ class OrganizerController extends Controller
 
         $user->update([
             'organizer_status' => $status,
-            'is_active' => $status === 'active',
         ]);
 
         return back()->with(
@@ -97,7 +98,7 @@ class OrganizerController extends Controller
             abort(404);
         }
 
-        $user->delete();
+        Gate::authorize('delete', $user);
 
         return back()->with(
             'success',

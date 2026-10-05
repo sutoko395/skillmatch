@@ -16,6 +16,7 @@ class VolunteerProfile extends Model
         'birth_date',
         'gender',
         'city',
+        'city_id',
         'address',
         'bio',
         'availability',
@@ -33,5 +34,10 @@ class VolunteerProfile extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function cityRecord(): BelongsTo
+    {
+        return $this->belongsTo(City::class, 'city_id');
     }
 }

@@ -60,6 +60,9 @@ class SkillController extends Controller
 
     public function destroy(Skill $skill)
     {
+        if ($skill->volunteerSkills()->exists() || $skill->positionSkills()->exists()) {
+            return back()->withErrors(['master' => 'Data masih direferensikan. Gunakan penonaktifan melalui pengelolaan master setelah tersedia.']);
+        }
         $skill->delete();
 
         return back()->with('success', 'Skill berhasil dihapus.');
