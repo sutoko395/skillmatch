@@ -48,7 +48,7 @@ Titik kelanjutan dashboard dan penggantian shell:
 
 ## Bukti yang dijalankan
 
-Lingkungan: Windows PowerShell, PHP 8.4.24, Composer 2.8.11, Node 24.14.1, npm 11.11.0, MySQL 8.0.30, InnoDB. Database kerja `db_skillmatch` tidak di-migrate/reset. Tes hanya pada `skillmatch_testing`; tidak ada migrate:fresh/RefreshDatabase.
+Lingkungan: Windows PowerShell, PHP 8.4.24, Composer 2.8.11, Node 24.14.1, npm 11.11.0, MySQL 8.0.30, InnoDB. Pada implementasi awal database kerja belum di-migrate; upgrade lokal 5 Oktober 2026 tercatat di bawah. Tes otomatis hanya pada `skillmatch_testing`; tidak ada migrate:fresh/RefreshDatabase.
 
 | Pemeriksaan | Hasil aktual |
 |---|---|
@@ -81,7 +81,7 @@ Verifikasi koreksi dashboard admin (5 Oktober 2026): `FoundationAccessTest` lulu
 - **Reviewer anggota lain: belum ditetapkan; tanggal review: belum ada.** Jalankan README dari checkout tip SF pada MySQL kosong dan database tes terpisah, lalu catat hasil di bagian ini. UAT-35/review tim belum lulus.
 - Uji browser visual/keyboard 360/768/1280 dan screenshot: **belum diuji**, browser automation tidak tersedia pada sesi ini. Build dan render HTTP/Blade sudah diuji; keduanya bukan pengganti pengujian visual.
 - SMTP nyata: **belum diuji**; notifikasi auth diuji dengan fake/array mailer. Reviewer dapat memakai SMTP uji atau tautan log lokal.
-- Migration/import pada salinan data kerja nyata serta backup/restore: **belum diuji**. Fixture legacy diperiksa, tetapi belum menjadi bukti migrasi semua data pengguna.
+- Backup MySQL lokal, restore salinan dan migration SF pada data kerja telah diperiksa pada 5 Oktober 2026 (lihat catatan di bawah). Pemulihan berkas privat, perpindahan SQLite ke MySQL dan prosedur disaster recovery lengkap tetap **belum diuji**.
 - Audit dependensi keamanan Composer/npm: **belum dijalankan**; install/validate/build bukan audit advisori.
 - Tidak melakukan push, PR, merge, deployment, atau mengklaim aplikasi penuh/P0/UAT lulus.
 
@@ -95,6 +95,18 @@ Verifikasi koreksi dashboard admin (5 Oktober 2026): `FoundationAccessTest` lulu
 | A4 | Screening/assessment/matching/notifikasi/ActivityReadService dan melengkapi aktivitas kegiatan sambil mempertahankan ringkasan profil. Pakai DTO ProfileEligibilityService, snapshot kontrak, audit transaksi dan layout SF; belum dikerjakan di scope ini. |
 
 ## Demo/review singkat
+
+### Perbaikan akses Volunteer lokal — 5 Oktober 2026
+
+- Basis kode: `2772b39`, branch `feature/shared-foundation`. Error `42S02` terjadi karena database kerja belum memiliki `availability_slots`; kedua migration SF masih pending meskipun database tes sudah dimigrasikan.
+- Backup `mysqldump --single-transaction` tersimpan lokal di `storage/app/private/sf-before-upgrade-20261005_050541.sql` (diabaikan Git). Dump berhasil direstore ke database salinan terpisah; tidak ada reset database kerja.
+- Runner percobaan sempat membawa konfigurasi nama koneksi asli ke koneksi salinan: DDL terpasang pada database kerja, sedangkan riwayat migration masuk ke salinan. Setelah nama koneksi diperbaiki, kedua migration dijalankan pada salinan. Seluruh DDL tujuh tabel terdampak, FK, unique/check constraint dan trigger audit dicocokkan dengan database kerja sebelum dua catatan migration kerja direkonsiliasi dalam transaksi. Tidak ada tabel kerja yang dihapus atau migration lama yang diubah.
+- Hash seluruh kolom data lama dibandingkan terhadap salinan backup sebelum seed (selain riwayat migration dan sesi yang dapat berubah saat aplikasi dipakai): cocok. MasterDataSeeder menambahkan referensi yang belum ada; UserSeeder tidak dijalankan, akun/password/status lama tidak diubah oleh perbaikan ini.
+- `migrate:status`: kedua migration SF berstatus Ran, batch 2. Permintaan melalui HTTP kernel dengan autentikasi akun Volunteer lama menghasilkan HTTP 200 untuk `/volunteer/aktivitas` dan `/volunteer/profile`. Ini pemeriksaan server, bukan uji browser visual.
+- Regresi `php vendor/bin/phpunit --filter ActivityProfileSummaryTest` pada MySQL `skillmatch_testing`: **2 tes / 24 assertion lulus**. `git diff --check` berhasil.
+- Tidak ada perubahan kode frontend pada perbaikan database ini; build frontend tidak diulang. Review tim, push, merge dan deployment belum dilakukan.
+
+### Langkah review anggota
 
 1. Ikuti README, migrate/seed pada MySQL kosong, jalankan server + build.
 2. Login admin dari `/login`, periksa dashboard dasar: angka sesuai database, aksi cepat, keterangan analitik belum lengkap dan logout POST. Login Volunteer lalu coba `/admin/dashboard` langsung: 403.

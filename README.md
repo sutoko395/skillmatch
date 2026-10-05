@@ -111,7 +111,7 @@ Tes memakai `DatabaseTransactions`, bukan RefreshDatabase. TestCase memeriksa li
 
 ## Memperbarui baseline berisi data
 
-1. Backup konsisten database dan berkas; uji pada salinan terlebih dahulu. Migration SF belum dijalankan terhadap database kerja pada sesi implementasi.
+1. Backup konsisten database dan berkas; uji pada salinan terlebih dahulu. Migration SF wajib diterapkan juga pada database kerja sebelum membuka halaman Volunteer; migration pada database tes tidak memperbarui database kerja. Perbaikan lokal 5 Oktober 2026 sudah menerapkan schema SF pada database kerja (lihat `docs/SF_HANDOFF.md`); anggota lain tetap perlu memeriksa database masing-masing.
 2. Jalankan `php artisan migrate` setelah mengecek database tujuan. Migration lama tidak diubah. SF menambah cities, city_id nullable, availability_slots, flag master dan audit_logs; FK skill menjadi restrict.
 3. `city` dan `availability` lama dipertahankan. Tidak ada pemetaan kota otomatis dan tidak ada interval buatan dari Weekend/Weekday/Flexibel. Pengguna memilih kota aktif dan mengisi interval nyata.
 4. `is_active=false` lama tidak otomatis diubah: belum dapat dibedakan antara suspensi asli dan efek submit organisasi pada baseline. Reviewer/admin mengklasifikasikan data lama sebelum pemulihan terkontrol A1.
@@ -129,6 +129,7 @@ Untuk backup MySQL, gunakan `mysqldump --single-transaction` dengan kredensial l
 - Dokumen privat, download terotorisasi, lamaran/attendance/retensi belum tersedia (A3 dengan integrasi A1). Tidak menjalankan `storage:link` untuk dokumen pribadi.
 - SF mengirim email auth sinkron; tidak memerlukan worker/scheduler. Instruksi `queue:work`/`schedule:work` untuk outbox/attempt/retensi baru ditambahkan pemilik modul saat implementasi.
 - Unknown database/Access denied: periksa database dan grant lokal. `could not find driver`: aktifkan PDO MySQL pada PHP CLI/Herd yang dipakai. `sf-db-check` tidak mencetak password.
+- `Table ... availability_slots doesn't exist` saat membuka Volunteer: jalankan `php artisan migrate:status` pada environment aplikasi. Jika migration SF pending, ikuti prosedur backup/upgrade di atas lalu `php artisan migrate` dan `php artisan db:seed --class=MasterDataSeeder`. Jangan memakai `migrate:fresh` atau menjalankan tes pada database kerja. Jika tabel sudah ada tetapi migration masih pending, periksa schema dan riwayat migration terlebih dahulu; jangan menghapus tabel atau menandai migration selesai tanpa verifikasi.
 - APP_KEY kosong: generate hanya untuk instalasi baru atau file testing baru. Vite manifest hilang: `npm ci --ignore-scripts` lalu `npm run build`; hapus `public/hot` hanya jika itu penanda dev server milik Anda yang sudah berhenti.
 - Port 8000/MySQL bentrok: pilih port yang sesuai dan ubah APP_URL/DB_PORT. Signed verification gagal: periksa URL, waktu, hash dan akun yang sedang login.
 - Trigger audit ditolak saat migration: akun migration memerlukan TRIGGER; ikuti kebijakan administrator MySQL untuk binary logging. Jangan menghapus proteksi audit sebagai solusi.
