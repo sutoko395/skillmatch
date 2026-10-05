@@ -64,6 +64,25 @@
     @endif
     <p class="mt-5 text-sm leading-relaxed text-slate-600">Detail kegiatan sudah dapat dijelajahi. Pengajuan lamaran, assessment, dan pencocokan relawan masih dalam pengembangan.</p>
 </section>
+<section id="paket" aria-labelledby="packages-title" class="pb-14">
+    <p class="text-xs font-bold uppercase tracking-widest text-indigo-700">PAKET UNTUK ORGANIZER</p>
+    <h2 id="packages-title" class="mt-3 text-3xl font-bold text-slate-900">Pilih ruang untuk kegiatan Anda.</h2>
+    <p class="mt-3 max-w-2xl leading-relaxed text-slate-600">Paket per event dengan batas posisi, lamaran terkirim, dan periode pendaftaran. Harga dan manfaat mengikuti konfigurasi terbaru dari admin.</p>
+    <div class="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        @forelse($packages as $package)
+        <x-package-card :package="$package" :show-future-features="true">
+            @guest
+            <a href="{{ route('register', ['role' => 'organizer']) }}" class="inline-flex min-h-[44px] w-full items-center justify-center rounded-xl border border-indigo-200 px-4 py-3 text-sm font-semibold text-indigo-700 hover:bg-indigo-50">Mulai sebagai Organizer</a>
+            @else
+            <a href="{{ auth()->user()->role === 'organizer' && auth()->user()->organizer_status === 'active' ? route('organizer.events.create') : route('dashboard') }}" class="inline-flex min-h-[44px] w-full items-center justify-center rounded-xl border border-indigo-200 px-4 py-3 text-sm font-semibold text-indigo-700 hover:bg-indigo-50">{{ auth()->user()->role === 'organizer' && auth()->user()->organizer_status === 'active' ? 'Siapkan event' : 'Buka akun saya' }}</a>
+            @endguest
+        </x-package-card>
+        @empty
+        <p class="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-600">Paket sedang disiapkan. Silakan kunjungi kembali nanti.</p>
+        @endforelse
+    </div>
+    <p class="mt-5 text-sm leading-relaxed text-slate-600">Pembayaran berbayar saat ini berupa simulasi. Paket gratis tidak memerlukan pembayaran. Alur lamaran, assessment, seleksi, dokumen privat, dan attendance masih dalam pengembangan.</p>
+</section>
 <section id="cara-kerja" aria-labelledby="journey-title" class="rounded-3xl bg-white p-6 ring-1 ring-slate-200 sm:p-10">
     <div class="max-w-2xl"><p class="text-xs font-bold uppercase tracking-widest text-indigo-700">DUA PERAN, SATU RUANG KOLABORASI</p><h2 id="journey-title" class="mt-3 text-3xl font-bold text-slate-900">Mulai dari peran Anda.</h2><p class="mt-3 leading-relaxed text-slate-600">Volunteer membawa keterampilan. Organizer menyiapkan kegiatan dan kebutuhan relawan.</p></div>
     <div class="mt-9 grid gap-8 lg:grid-cols-2">

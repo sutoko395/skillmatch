@@ -14,7 +14,7 @@ class PackageController extends Controller
     {
         Gate::authorize('manage', Package::class);
 
-        return view('admin.packages.index', ['packages' => Package::orderBy('name')->paginate(15)]);
+        return view('admin.packages.index', ['packages' => Package::orderBy('price')->orderBy('id')->paginate(15)]);
     }
 
     public function create()

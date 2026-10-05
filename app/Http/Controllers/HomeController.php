@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Package;
 
 class HomeController extends Controller
 {
@@ -15,6 +16,8 @@ class HomeController extends Controller
             ->with(['cityRecord', 'category', 'organizer.organizerProfile'])->withCount('positions')
             ->orderBy('starts_at')->orderBy('id')->limit(6)->get();
 
-        return view('welcome', compact('events'));
+        $packages = Package::where('is_active', true)->orderBy('price')->orderBy('id')->get();
+
+        return view('welcome', compact('events', 'packages'));
     }
 }
