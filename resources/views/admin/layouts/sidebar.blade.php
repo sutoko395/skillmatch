@@ -80,7 +80,7 @@
         </div>
 
         <!-- Navigation Menu -->
-        <nav class="flex-1 p-4 space-y-1.5 overflow-y-auto hierarchy-scroll">
+        <nav aria-label="Navigasi admin" class="flex-1 p-4 space-y-1.5 overflow-y-auto hierarchy-scroll">
             
             <a href="{{ route('admin.dashboard') }}" 
             class="flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 {{ Request::routeIs('admin.dashboard') ? 'bg-white/10 text-white shadow-sm border border-white/5' : 'text-txt-dark-secondary hover:bg-white/5 hover:text-white border border-transparent' }} group">
@@ -239,6 +239,24 @@
                     </div>
                 </div>
             </div>
+            <a href="{{ route('admin.packages.index') }}"
+               @if(Request::routeIs('admin.packages.*')) aria-current="page" @endif
+               class="flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 {{ Request::routeIs('admin.packages.*') ? 'bg-white/10 text-white shadow-sm border border-white/5' : 'text-txt-dark-secondary hover:bg-white/5 hover:text-white border border-transparent' }}">
+                <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m12 3 9 5-9 5-9-5 9-5Zm-9 5v8l9 5 9-5V8M12 13v8" />
+                </svg>
+                <span>Kelola Paket</span>
+            </a>
+
+            <a href="{{ route('admin.orders.index') }}"
+               @if(Request::routeIs('admin.orders.*')) aria-current="page" @endif
+               class="flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 {{ Request::routeIs('admin.orders.*') ? 'bg-white/10 text-white shadow-sm border border-white/5' : 'text-txt-dark-secondary hover:bg-white/5 hover:text-white border border-transparent' }}">
+                <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Zm0 3h18M7 15h3" />
+                </svg>
+                <span>Transaksi Sandbox</span>
+            </a>
+
             <!-- Kembali ke Beranda -->
             <a href="{{ url('/') }}" 
             class="flex items-center space-x-3 px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-150 text-txt-dark-secondary hover:bg-white/5 hover:text-white border border-transparent group">
@@ -309,7 +327,6 @@
         </header>
 
         <main class="flex-1 pt-24 px-4 sm:px-6 lg:px-8 pb-8">
-            <nav aria-label="Paket dan transaksi" class="mb-6 flex flex-wrap gap-4 text-sm text-indigo-700"><a href="{{ route('admin.packages.index') }}">Kelola paket</a><a href="{{ route('admin.orders.index') }}">Transaksi Sandbox</a></nav>
             @yield('content')
         </main>
         
