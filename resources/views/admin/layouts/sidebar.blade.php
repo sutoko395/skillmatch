@@ -254,7 +254,7 @@
                 <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Zm0 3h18M7 15h3" />
                 </svg>
-                <span>Transaksi Sandbox</span>
+                <span>Transaksi</span>
             </a>
 
             <!-- Kembali ke Beranda -->

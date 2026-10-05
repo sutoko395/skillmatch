@@ -235,3 +235,7 @@ Komponen auth-password-field memiliki toggle Lihat/Sembunyikan berbasis Alpine e
 ## Navigasi paket dan transaksi admin
 
 Kelola Paket dan Transaksi Sandbox berada pada sidebar kiri admin, mengikuti ikon/style menu existing. Penanda aktif memakai admin.packages.* dan admin.orders.* serta aria-current. Sidebar mobile memuat menu yang sama; tautan ganda di atas konten dihapus.
+
+## Nama menu transaksi
+
+Permintaan pengguna: label menu, judul halaman dan title browser admin menggunakan Transaksi. Mode gateway tetap Sandbox; keterangan simulasi tetap berada pada konteks pembayaran/detail, bukan menjadi nama menu. Paket Free/Standard/Premium memerlukan konfigurasi harga dan batas manfaat yang disepakati sebelum diaktifkan.

@@ -126,3 +126,7 @@ Bukti: **40 tes / 183 assertion lulus** (tests/Feature/Auth dan FoundationAccess
 ## Koreksi navigasi admin
 
 Kelola Paket dan Transaksi Sandbox dipindahkan dari navigasi atas konten ke sidebar admin, sebelum Lihat Website Utama. Ikon, state aktif wildcard dan aria-current mengikuti layout existing; drawer mobile memakai sidebar yang sama. Route/Policy/backend tidak berubah. Blade cache dan build berhasil; A2EventTest lulus 17 tes / 121 assertion. Review visual drawer mobile perubahan ini belum dilakukan.
+
+## Penyesuaian nama transaksi dan permintaan paket
+
+Label sidebar serta judul/title browser daftar transaksi kini Transaksi. Gateway tetap Sandbox dan label simulasi pada pembayaran/detail tetap menjelaskan mode aktual. Pengguna meminta paket Free, Standard dan Premium; harga, maksimum posisi/lamaran/hari belum ditentukan sehingga pembuatan paket aktif menunggu konfigurasi tersebut. Paket demo existing tidak diubah menjadi harga produk.
