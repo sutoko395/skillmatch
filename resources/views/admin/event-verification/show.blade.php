@@ -94,7 +94,7 @@
                         </p>
 
                         <p class="mt-1 text-sm font-semibold text-slate-700">
-                            {{ optional($event->registration_deadline)->format('d M Y') }}
+                            {{ $event->registration_deadline?->setTimezone('Asia/Jakarta')->format('d M Y H:i') }} WIB
                         </p>
                     </div>
 
@@ -104,7 +104,7 @@
                         </p>
 
                         <p class="mt-1 text-sm font-semibold text-slate-700">
-                            {{ optional($event->start_date)->format('d M Y') }}
+                            {{ $event->starts_at?->setTimezone('Asia/Jakarta')->format('d M Y H:i') ?? 'Perlu dilengkapi' }} WIB
                         </p>
                     </div>
 
@@ -114,7 +114,7 @@
                         </p>
 
                         <p class="mt-1 text-sm font-semibold text-slate-700">
-                            {{ optional($event->end_date)->format('d M Y') }}
+                            {{ $event->ends_at?->setTimezone('Asia/Jakarta')->format('d M Y H:i') ?? 'Perlu dilengkapi' }} WIB
                         </p>
                     </div>
 
@@ -152,27 +152,30 @@
                                 </div>
 
                                 <span class="inline-flex w-fit px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-600 text-xs font-bold">
-                                    {{ $position->min_skill_level }}
+                                    Level mengikuti setiap skill
                                 </span>
 
                             </div>
 
-                            @if($position->skills->count())
+                            @if($position->positionSkills->count())
                                 <div class="mt-4">
                                     <p class="text-xs font-semibold text-slate-400 mb-2">
                                         Skill Dibutuhkan
                                     </p>
 
                                     <div class="flex flex-wrap gap-2">
-                                        @foreach($position->skills as $skill)
+                                        @foreach($position->positionSkills as $skill)
                                             <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-xs font-semibold">
-                                                {{ $skill->name }}
+                                                {{ $skill->skill->name }} / {{ $skill->minimum_level }} ({{ $skill->is_required ? 'wajib' : 'preferensi' }})
                                             </span>
                                         @endforeach
                                     </div>
                                 </div>
                             @endif
 
+                            @foreach($position->schedules as $schedule)
+                                <p class="mt-3 text-sm text-slate-600">{{ $schedule->starts_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} - {{ $schedule->ends_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</p>
+                            @endforeach
                             @if($position->requirements->count())
                                 <div class="mt-4">
                                     <p class="text-xs font-semibold text-slate-400 mb-2">

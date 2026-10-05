@@ -309,6 +309,7 @@
         </header>
 
         <main class="flex-1 pt-24 px-4 sm:px-6 lg:px-8 pb-8">
+            <nav aria-label="Paket dan transaksi" class="mb-6 flex flex-wrap gap-4 text-sm text-indigo-700"><a href="{{ route('admin.packages.index') }}">Kelola paket</a><a href="{{ route('admin.orders.index') }}">Transaksi Sandbox</a></nav>
             @yield('content')
         </main>
         

@@ -15,6 +15,44 @@ use Illuminate\Validation\ValidationException;
 
 class EventService
 {
+    public function correctText(Event $event, User $actor, array $input): void
+    {
+        DB::transaction(function () use ($event, $actor, $input) {
+            $actor = User::lockForUpdate()->findOrFail($actor->id);
+            $event = Event::lockForUpdate()->findOrFail($event->id);
+            Gate::forUser($actor)->authorize('update', $event);
+            if (! $event->published_at || in_array($event->lifecycle_status, ['completed', 'cancelled'])) {
+                throw ValidationException::withMessages(['event' => 'Koreksi teks hanya untuk event yang pernah dipublikasikan dan belum terminal.']);
+            }
+            if (array_diff(array_keys($input), ['title', 'description', '_token', '_method'])) {
+                throw ValidationException::withMessages(['event' => 'Koreksi ini hanya menerima judul dan deskripsi, bukan aturan kegiatan.']);
+            }
+            $data = Validator::make($input, ['title' => 'required|string|max:255', 'description' => 'required|string|max:10000'])->validate();
+            $event->fill($data);
+            if (! $event->isDirty()) {
+                return;
+            }
+            $fields = array_keys($event->getDirty());
+            $event->forceFill(['revision' => $event->revision + 1])->save();
+            app(AuditService::class)->record($actor, 'event.text_corrected', $event, ['after' => ['changed_fields' => $fields, 'revision' => $event->revision]], 'text_correction');
+        }, 3);
+    }
+
+    public function removeDraft(Event $event, User $actor): void
+    {
+        DB::transaction(function () use ($event, $actor) {
+            $actor = User::lockForUpdate()->findOrFail($actor->id);
+            $event = Event::lockForUpdate()->findOrFail($event->id);
+            Gate::forUser($actor)->authorize('update', $event);
+            $this->editable($event);
+            if ($event->status !== 'draft' || $event->submitted_at || $event->positions()->exists()) {
+                throw ValidationException::withMessages(['event' => 'Hanya draft awal tanpa posisi dan tanpa histori pengajuan yang dapat dihapus.']);
+            }
+            app(AuditService::class)->record($actor, 'event.draft_deleted', $event);
+            $event->delete();
+        }, 3);
+    }
+
     public function editable(Event $event): void
     {
         if ($event->published_at || ! in_array($event->status, ['draft', 'rejected']) || $event->lifecycle_status !== 'upcoming' || $event->orders()->exists() || $event->entitlement()->exists()) {

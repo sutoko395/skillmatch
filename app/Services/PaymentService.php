@@ -43,17 +43,18 @@ class PaymentService
 
     public function checkout(Order $order, User $actor): Order
     {
+        app(MidtransGateway::class)->assertConfigured();
         $claim = (string) Str::uuid();
         $order = DB::transaction(function () use ($order, $actor, $claim) {
             User::lockForUpdate()->findOrFail($order->event->organizer_id);
             $event = Event::lockForUpdate()->findOrFail($order->event_id);
             $order = Order::lockForUpdate()->findOrFail($order->id);
             Gate::forUser($actor->fresh())->authorize('update', $event);
+            if ($event->status !== 'approved' || $event->lifecycle_status !== 'upcoming' || $event->publication_status === 'suspended' || $event->ends_at <= now()) {
+                throw ValidationException::withMessages(['payment' => 'Event tidak dapat dibayar.']);
+            }
             if ($order->checkout_url || $order->status !== 'pending') {
                 return $order;
-            }
-            if ($event->status !== 'approved' || $event->lifecycle_status !== 'upcoming' || $event->ends_at <= now()) {
-                throw ValidationException::withMessages(['payment' => 'Event tidak dapat dibayar.']);
             }
             if ($order->checkout_claim && $order->checkout_started_at > now()->subMinutes(5)) {
                 throw ValidationException::withMessages(['payment' => 'Checkout sedang diproses. Muat ulang halaman status.']);
@@ -107,6 +108,7 @@ class PaymentService
                     'verified_summary' => ['status' => $result->status, 'currency' => $result->currency, 'amount' => $result->amount]])->save();
                 $entitlement = $event->entitlement()->lockForUpdate()->first();
                 $previous = $order->status;
+                $alreadyPaid = (bool) $order->paid_at;
                 // Late pending/failed/expired messages never erase historical payment.
                 $next = $order->paid_at ? ($result->status === 'review_required' ? 'review_required' : $order->status) : $result->status;
                 $order->forceFill(['status' => $next, 'gateway_checked_at' => now(), 'revision' => $order->revision + 1]);
@@ -115,9 +117,9 @@ class PaymentService
                     if ($order->status !== 'review_required') {
                         $order->status = 'paid';
                     }
-                    if (in_array($event->lifecycle_status, ['cancelled', 'completed']) || ($entitlement && $entitlement->order_id !== $order->id)) {
-                        $order->requires_follow_up = true;
-                    }
+                    $order->requires_follow_up = in_array($event->lifecycle_status, ['cancelled', 'completed'])
+                        || ($entitlement && $entitlement->order_id !== $order->id)
+                        || ($alreadyPaid && $previous === 'review_required');
                 }
                 if ($result->status === 'review_required') {
                     $order->requires_follow_up = true;

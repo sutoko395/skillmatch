@@ -10,6 +10,7 @@
         Kenalkan skill, ketersediaan waktu, dan lokasi Anda untuk mempersiapkan kontribusi bersama Organizer dan Volunteer.
     </p>
     <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <a href="{{ route('events.index') }}" class="rounded-lg border border-indigo-300 bg-white px-8 py-3 font-bold text-indigo-700 transition hover:bg-indigo-50">Jelajahi Event</a>
         @auth
             <a href="{{ route('dashboard') }}" class="rounded-lg bg-indigo-600 px-8 py-3 font-bold text-white shadow-sm transition hover:bg-indigo-700">
                 {{ auth()->user()->role === 'admin' ? 'Buka Dashboard Admin' : 'Buka Aktivitas' }}
@@ -20,7 +21,7 @@
         @endauth
     </div>
     <p class="mx-auto mt-8 max-w-2xl text-sm text-slate-600">
-        Pendaftaran dan pengisian profil sudah tersedia. Katalog event dan pencocokan relawan sedang disiapkan.
+        Jelajahi kegiatan yang sudah dipublikasikan dan lengkapi profil Anda. Pengajuan lamaran dan pencocokan relawan masih dalam pengembangan.
     </p>
 </section>
 <footer class="border-t border-gray-200 py-6 text-center text-sm text-gray-600">

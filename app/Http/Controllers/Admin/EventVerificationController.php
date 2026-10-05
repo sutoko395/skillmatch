@@ -4,8 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Models\User;
+use App\Services\AuditService;
+use App\Services\EntitlementService;
+use App\Services\EventConfiguration;
+use App\Services\EventPublicationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class EventVerificationController extends Controller
@@ -47,8 +54,9 @@ class EventVerificationController extends Controller
         $event->load([
             'organizer',
             'category',
-            'positions.skills',
+            'positions.positionSkills.skill',
             'positions.requirements',
+            'positions.schedules',
         ]);
 
         return view('admin.event-verification.show', compact('event'));
@@ -56,19 +64,23 @@ class EventVerificationController extends Controller
 
     public function approve(Event $event): RedirectResponse
     {
-        if ($event->status !== 'pending') {
-            return back()->with('error', 'Event ini sudah diproses.');
+        DB::transaction(function () use ($event) {
+            User::lockForUpdate()->findOrFail($event->organizer_id);
+            $event = Event::lockForUpdate()->findOrFail($event->id);
+            abort_unless($event->status === 'pending', 409, 'Event sudah diproses.');
+            app(EventConfiguration::class)->assertValid($event);
+            $event->update(['status' => 'approved', 'verification_note' => null, 'verified_at' => now()]);
+            app(AuditService::class)->record(auth()->user(), 'event.approved', $event, ['after' => ['status' => 'approved']]);
+            app(EntitlementService::class)->activate($event);
+        }, 3);
+        try {
+            app(EventPublicationService::class)->publish($event->fresh(), auth()->user());
+        } catch (ValidationException) { /* Approval retained; paid package still awaits verified payment. */
         }
-
-        $event->update([
-            'status' => 'approved',
-            'verification_note' => null,
-            'verified_at' => now(),
-        ]);
 
         return redirect()
             ->route('admin.event-verification.index')
-            ->with('success', 'Event berhasil disetujui dan sekarang dapat ditampilkan kepada volunteer.');
+            ->with('success', 'Event disetujui. Publikasi tetap mengikuti kelengkapan dan hak paket.');
     }
 
     public function reject(Request $request, Event $event): RedirectResponse
@@ -81,15 +93,13 @@ class EventVerificationController extends Controller
             ],
         ]);
 
-        if ($event->status !== 'pending') {
-            return back()->with('error', 'Event ini sudah diproses.');
-        }
-
-        $event->update([
-            'status' => 'rejected',
-            'verification_note' => $validated['verification_note'],
-            'verified_at' => now(),
-        ]);
+        DB::transaction(function () use ($event, $validated) {
+            User::lockForUpdate()->findOrFail($event->organizer_id);
+            $event = Event::lockForUpdate()->findOrFail($event->id);
+            abort_unless($event->status === 'pending', 409, 'Event sudah diproses.');
+            $event->update(['status' => 'rejected', 'verification_note' => $validated['verification_note'], 'verified_at' => now()]);
+            app(AuditService::class)->record(auth()->user(), 'event.rejected', $event, ['after' => ['status' => 'rejected']], 'revision_required');
+        }, 3);
 
         return redirect()
             ->route('admin.event-verification.index')

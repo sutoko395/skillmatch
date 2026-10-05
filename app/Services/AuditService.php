@@ -25,7 +25,7 @@ class AuditService
             $result = [];
             foreach (Arr::only($data, self::FIELDS) as $key => $value) {
                 if ($key === 'changed_fields') {
-                    $result[$key] = array_values(array_intersect((array) $value, ['name', 'phone', 'birth_date', 'gender', 'address', 'bio', 'city_id', 'skills', 'availability_slots', 'organization_name', 'contact_person', 'email', 'city', 'website', 'description']));
+                    $result[$key] = array_values(array_intersect((array) $value, ['title', 'name', 'phone', 'birth_date', 'gender', 'address', 'bio', 'city_id', 'skills', 'availability_slots', 'organization_name', 'contact_person', 'email', 'city', 'website', 'description']));
                 } elseif (is_bool($value) || is_int($value) || $value === null || (is_string($value) && strlen($value) <= 64 && preg_match('/\A[a-zA-Z0-9_. :+\-]+\z/', $value))) {
                     $result[$key] = $value;
                 }

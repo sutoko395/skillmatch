@@ -9,6 +9,11 @@ use Illuminate\Validation\ValidationException;
 
 class MidtransGateway
 {
+    public function assertConfigured(): void
+    {
+        $this->key();
+    }
+
     private function key(): string
     {
         if (config('midtrans.is_production') || ! config('midtrans.server_key')) {

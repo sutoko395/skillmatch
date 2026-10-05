@@ -11,3 +11,6 @@ require __DIR__.'/admin.php';
 require __DIR__.'/volunteer.php';
 require __DIR__.'/organizer.php';
 require __DIR__.'/auth.php';
+
+require __DIR__.'/public.php';
+require __DIR__.'/a2.php';
