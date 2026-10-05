@@ -3,35 +3,23 @@
 namespace App\Http\Controllers\Volunteer;
 
 use App\Http\Controllers\Controller;
-use App\Models\Event;
+use App\Services\ProfileEligibilityService;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class VolunteerDashboardController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, ProfileEligibilityService $profiles): View
     {
         $user = $request->user();
+        $eligibility = $profiles->check($user);
 
-        $volunteerProfile = $user->volunteerProfile;
-
-        $totalSkills = $user->volunteerSkills()->count();
-
-        $totalEvents = Event::where('status', 'approved')
-            ->whereDate('registration_deadline', '>=', now()->toDateString())
-            ->count();
-
-        $profileCompleted = $volunteerProfile
-            && $volunteerProfile->phone
-            && $volunteerProfile->city
-            && $volunteerProfile->availability
-            && $totalSkills > 0;
-
-        return view('volunteer.dashboard', compact(
-            'user',
-            'volunteerProfile',
-            'totalSkills',
-            'totalEvents',
-            'profileCompleted'
-        ));
+        return view('volunteer.dashboard', [
+            'user' => $user,
+            'volunteerProfile' => $user->volunteerProfile,
+            'eligibility' => $eligibility,
+            'skills' => $user->volunteerSkills,
+            'slots' => $user->availabilitySlots->sortBy('starts_at'),
+        ]);
     }
 }

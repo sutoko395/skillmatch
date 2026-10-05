@@ -56,3 +56,7 @@ Kriteria SF berfokus fondasi. UAT keseluruhan dan README final tetap kewajiban s
 ## Pelestarian beranda - keputusan 5 Oktober 2026
 
 SF mempertahankan beranda baseline yang sudah berfungsi: hero, CTA Masuk/Daftar dan footer tim di `welcome.blade.php`, dengan layout/navbar SF. Katalog/matching yang belum tersedia cukup dijelaskan sebagai keterangan bagian; jangan mengganti seluruh beranda dengan shell. A2 melanjutkan beranda/katalog/detail, A1 melanjutkan dashboard admin, A4 mengisi shell aktivitas. Catat pemulihan dan bukti regresi pada handoff; tidak ada perubahan schema atau reset database.
+
+## Pemulihan ringkasan pengguna - 5 Oktober 2026
+
+SF memulihkan gaya kartu dan informasi profil berguna dari dashboard pengguna pada route Aktivitas final. Kelengkapan Volunteer memakai ProfileEligibilityService; kota/skill/availability dan kontak/status Organizer dibaca dari pemilik sesi. Sidebar/route dashboard lama tidak dihidupkan kembali; route lama tetap redirect. Ringkasan kegiatan penuh tetap A4. Angka nol hardcoded, link kosong dan query Event approved sebagai published tidak dipakai.

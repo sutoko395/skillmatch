@@ -205,3 +205,7 @@ Hapus `body:not(.ready){display:none}` dari layout ZIP. Gunakan x-cloak hanya pa
 Pertahankan hero beranda baseline "Hubungkan Talent Relawan dengan Event Terbaik", identitas indigo, tombol Masuk/Daftar dan footer tim. Gunakan layout/navbar SF agar Inter dan Alpine tetap dimuat sekali. Pengguna yang login melihat CTA menuju tujuan sah sesuai role/status melalui redirect bersama; jangan menyebut halaman pengguna sebagai dashboard analitik. Teks promosi tidak mengklaim engine matching yang belum tersedia sudah berfungsi. Pemberitahuan katalog/matching yang belum tersedia hanya keterangan pendukung, bukan pengganti seluruh beranda.
 
 A2 mengembangkan beranda ini dan menghubungkan katalog setelah route/data publik memenuhi kontrak. A1 mempertahankan kartu hitungan database dan aksi cepat admin, kemudian menambah analitik periode, tren dan state. Tidak mengembalikan sidebar pengguna, login terpisah, statistik dummy atau tautan kosong dari baseline.
+
+## Pemulihan ringkasan pengguna - 5 Oktober 2026
+
+Aktivitas Volunteer/Organizer memakai kembali sambutan, kartu putih beraksen indigo dan aksi cepat profil dari baseline dalam navbar SF. Tampilkan informasi profil aktual dan interval WIB, bukan dashboard analitik platform. Status akun dan organisasi ditampilkan terpisah. Bagian kegiatan yang belum terintegrasi memakai keterangan; tidak membuat kartu angka nol atau tombol seolah berfungsi.

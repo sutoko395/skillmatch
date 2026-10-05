@@ -67,3 +67,7 @@ Keputusan pengguna 5 Oktober 2026: `home` tetap merender welcome.blade.php denga
 `@extends('layouts.public')` / `layouts.user` memakai `@section('title')` dan `@section('content')`. `admin.layouts.sidebar` tetap shell admin. Komponen Breeze tetap dasar input/tombol/modal; wrapper baru: page-header, section-card, button, form-field, status-badge, empty-state, flash, confirm-dialog. Font dari layouts/fonts; Alpine hanya resources/js/app.js.
 
 Form-field menerima name/label/value/type/required/helper dan optional slot kontrol khusus. Gunakan ID kontrol sesuai name agar label/error terhubung. Wrapper button menerima variant primary/secondary/danger. Confirm-dialog membungkus modal Breeze; isi form, CSRF, alasan dan tindakan tetap milik modul. Flash dirender shell user; admin dapat memakai komponen yang sama tanpa menduplikasi pesan.
+
+## Pemulihan ringkasan pengguna - 5 Oktober 2026
+
+Route aktivitas kini memanggil VolunteerDashboardController/OrganizerDashboardController dengan view dashboard legacy yang disesuaikan ke layouts.user. Semua data berasal dari user sesi; query user_id tidak menentukan pemilik. Volunteer menggunakan ProfileEligibilityService tanpa mendefinisikan ulang kelengkapan. Availability adalah interval profil, bukan penugasan event; lima interval pertama ditampilkan dengan keterangan jumlah jika lebih. A4 melanjutkan informasi kegiatan; belum ada ActivityReadService lengkap.

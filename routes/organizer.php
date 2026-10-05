@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Organizer\OrganizerDashboardController;
 use App\Http\Controllers\Organizer\OrganizerProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -11,6 +12,6 @@ Route::middleware(['auth', 'account.active', 'role:organizer'])->prefix('organiz
     Route::redirect('/pending', '/organizer/profile/pending');
     Route::middleware(['verified', 'organizer.active'])->group(function () {
         Route::redirect('/dashboard', '/organizer/aktivitas')->name('dashboard');
-        Route::view('/aktivitas', 'shared.activity')->name('activity.index');
+        Route::get('/aktivitas', [OrganizerDashboardController::class, 'index'])->name('activity.index');
     });
 });

@@ -123,7 +123,7 @@ Untuk backup MySQL, gunakan `mysqldump --single-transaction` dengan kredensial l
 ## Modul lanjutan dan troubleshooting
 
 - `/admin/dashboard` menampilkan dashboard dasar baseline dengan hitungan nyata Volunteer, Organizer, skill, kategori dan event pending serta aksi cepat. Filter periode, tren dan analitik lengkap belum tersedia; A1 melanjutkan controller/view yang sama. Moderasi, audit UI, master UI kota/nonaktifkan, serta suspend dengan alasan/audit lengkap tetap A1. Hard delete akun ditolak server.
-- Aktivitas pengguna adalah shell dengan tautan profil. A4 mengganti isinya dengan ActivityReadService, notifikasi, screening, assessment dan matching.
+- Aktivitas pengguna mempertahankan gaya kartu baseline dan ringkasan profil nyata milik akun sendiri. Volunteer melihat kelengkapan dari ProfileEligibilityService, skill, kota dan availability WIB; Organizer melihat profil/kontak serta status akun/organisasi. Fitur kegiatan belum tersedia diberi keterangan tanpa statistik palsu. A4 melanjutkan ringkasan ini dengan ActivityReadService, notifikasi, screening, assessment dan matching.
 - Event/katalog/paket/Midtrans Sandbox belum diimplementasikan oleh SF; konfigurasi payment belum tersedia (A2).
 - Beranda `/` mempertahankan hero, tombol Masuk/Daftar dan footer tim dari baseline, memakai navbar SF. Pengguna login diarahkan melalui tujuan role/status yang sah. Katalog dan matching diberi keterangan sedang disiapkan, bukan mengganti seluruh beranda. A2 melanjutkan halaman ini beserta katalog/detail event.
 - Dokumen privat, download terotorisasi, lamaran/attendance/retensi belum tersedia (A3 dengan integrasi A1). Tidak menjalankan `storage:link` untuk dokumen pribadi.

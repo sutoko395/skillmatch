@@ -50,4 +50,8 @@ Tidak menjadi penanggung jawab semua merge, bug, atau instalasi anggota. Tidak m
 
 ## Batas UI setelah koreksi baseline - 5 Oktober 2026
 
-Beranda publik dipulihkan oleh SF dan dilanjutkan A2; dashboard dasar admin dipertahankan untuk A1. A4 tetap mengganti shell Aktivitas Volunteer/Organizer dengan tugas dan data pemilik nyata, serta mengerjakan assessment/matching/notifikasi. Gunakan navbar SF; jangan menghidupkan kembali dashboard analitik/sidebar pengguna. Pemulihan beranda bukan bukti engine matching atau aktivitas sudah selesai.
+Beranda publik dipulihkan oleh SF dan dilanjutkan A2; dashboard dasar admin dipertahankan untuk A1. A4 tetap melengkapi ringkasan profil pada Aktivitas Volunteer/Organizer dengan tugas dan data kegiatan pemilik nyata, serta mengerjakan assessment/matching/notifikasi. Gunakan navbar SF; jangan menghidupkan kembali dashboard analitik/sidebar pengguna. Pemulihan beranda bukan bukti engine matching atau aktivitas sudah selesai.
+
+## Pemulihan ringkasan pengguna - 5 Oktober 2026
+
+Aktivitas dasar kini menampilkan ringkasan profil nyata dari controller/view dashboard baseline yang disesuaikan. Volunteer memakai ProfileEligibilityService, skill/kota sendiri dan interval WIB; Organizer memakai profil/kontak/status sendiri. A4 melanjutkan kartu ini dengan data tugas, lamaran, assessment dan notifikasi melalui ActivityReadService, bukan menggantinya dengan shell kosong. Nama route activity.index, navbar dan proteksi SF tetap. Query approved sebagai event tersedia, angka nol hardcoded dan link kosong tidak dipulihkan.
