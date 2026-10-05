@@ -225,3 +225,9 @@ Beranda memakai hero indigo gelap dengan tipografi putih/indigo terang, ilustras
 Grid beradaptasi dari satu kolom menjadi dua/tiga kolom. CTA memiliki target sentuh minimal 44px, heading/label/landmark semantik, ilustrasi berjudul, fokus keyboard dari CSS bersama, dan FAQ bekerja tanpa JavaScript. Inter, navbar, Vite dan Alpine tetap memakai layout SF. Komponen `event-card` A2 dipakai oleh beranda dan katalog untuk kategori, Organizer, posisi, kota, jadwal/deadline WIB dan tautan detail.
 
 Event kosong tampil sebagai keadaan informatif, bukan kartu demo. Pratinjau terbatas enam event publik yang pendaftarannya sedang terbuka dan batas lamaran paket belum habis. FAQ serta panduan memberi keterangan fitur lanjutan yang belum tersedia; CTA hanya menuju katalog, auth, redirect akun atau anchor section yang benar-benar ada. Katalog tetap menyediakan hasil/filter/pagination lengkap.
+
+## Tampilan masuk dan registrasi - 5 Oktober 2026
+
+Login/register memakai komponen auth-layout khusus dengan logo SkillMatch, tautan beranda, panel indigo editorial pada desktop, form putih beradius 24px, Inter dan CTA penuh. Pada mobile panel editorial disembunyikan agar form mudah dijangkau. Registrasi menampilkan kartu radio Volunteer/Organizer berlabel; login tetap hanya email/password tanpa pemilih role. State lama role/nama/email dipertahankan setelah validasi; kata sandi tidak diisi kembali.
+
+Komponen auth-password-field memiliki toggle Lihat/Sembunyikan berbasis Alpine existing, aria-pressed/label dan fallback input password jika JavaScript tidak tersedia. Form memakai label/error spesifik, autocomplete, fokus keyboard dan status submit. Tidak ada akun admin publik, login khusus admin, dependency tambahan atau perubahan guard/redirect/backend. Halaman reset/verifikasi tetap memakai guest-layout existing.

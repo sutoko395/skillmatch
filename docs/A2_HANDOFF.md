@@ -114,3 +114,11 @@ Bukti khusus perubahan beranda:
 - Chrome headless lokal diperiksa memakai viewport eksplisit **360/768/1280 px**: tidak ada overflow horizontal. Screenshot seluruh halaman pada keadaan event kosong tersimpan privat di storage/app/private/a2-home-360.png, a2-home-768.png, a2-home-1280.png. Screenshot 360 awal tanpa emulasi viewport terpotong dan tidak digunakan sebagai bukti mobile; pemeriksaan berikutnya memakai Chrome DevTools Protocol.
 - Fokus summary terverifikasi; **Space membuka FAQ**; seluruh anchor section memiliki target. Pemeriksaan ini bukan audit aksesibilitas lengkap atau UAT browser seluruh modul. Tampilan kartu berisi event diuji melalui render MySQL fixture; pemeriksaan visual browser memakai data lokal dengan keadaan kosong.
 - PRD, design, kontrak, brief A2, UAT, README dan DEVELOPMENT diperbarui. Review tim dan integrasi A3/A4/payment final tetap tertunda sesuai bagian sebelumnya. Tidak melakukan push, PR, merge atau deployment.
+
+## Penyempurnaan login dan registrasi
+
+Commit implementasi: `07f8fe0` pada feature/a2-events-payment. Commit dokumentasi berikutnya tersedia di log branch; belum push/PR/review/merge/deploy.
+
+Permintaan pengguna memperbarui UI masuk/daftar: panel editorial indigo desktop, logo/navigation SkillMatch, form responsif, label Indonesia, kartu role registrasi, toggle password dan status submit. Komponen baru auth-layout/auth-password-field memuat Vite/Alpine sekali. Backend, route, guard, Policy, migration dan data kerja tidak berubah. Form login tanpa pemilih role; registrasi hanya Volunteer/Organizer dan mempertahankan old input non-password. A1 melanjutkan modul akun dengan auth SF existing.
+
+Bukti: **40 tes / 183 assertion lulus** (tests/Feature/Auth dan FoundationAccessTest), Blade cache dan build sukses (CSS 61.97 kB / JS 55.09 kB). Chrome headless diperiksa pada login/register dengan viewport **360 dan 1280 px**, tanpa overflow horizontal. Toggle kata sandi berfungsi dua arah; jumlah role pada login nol dan pada registrasi dua. Screenshot tersimpan privat di storage/app/private/a2-auth-*.png. Tidak menjalankan suite penuh ulang; SMTP, aksesibilitas lengkap, serta review tim tetap tertunda. Reset/verifikasi memakai guest-layout lama.
