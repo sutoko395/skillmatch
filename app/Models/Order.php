@@ -8,6 +8,8 @@ class Order extends Model
 {
     protected $fillable = [];
 
+    protected $hidden = ['checkout_url', 'checkout_claim'];
+
     protected function casts(): array
     {
         return ['package_snapshot' => 'array', 'amount' => 'integer', 'paid_at' => 'immutable_datetime', 'activated_at' => 'immutable_datetime', 'checkout_started_at' => 'immutable_datetime', 'gateway_checked_at' => 'immutable_datetime', 'requires_follow_up' => 'boolean', 'checkout_url' => 'encrypted'];

@@ -59,7 +59,7 @@ class Event extends Model
     {
         return $query->where('status', 'approved')->where('publication_status', 'published')
             ->whereIn('lifecycle_status', ['upcoming', 'ongoing'])->where('ends_at', '>', now())
-            ->whereHas('entitlement')->whereHas('organizer', fn ($q) => $q->where('is_active', true)
+            ->whereHas('entitlement', fn ($q) => $q->where(fn ($q) => $q->whereNull('order_id')->orWhereHas('order', fn ($q) => $q->where('status', 'paid')->where('requires_follow_up', false))))->whereHas('organizer', fn ($q) => $q->where('is_active', true)
             ->where('organizer_status', 'active')->whereNotNull('email_verified_at'));
     }
 

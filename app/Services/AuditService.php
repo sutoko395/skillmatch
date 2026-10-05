@@ -10,7 +10,7 @@ use Illuminate\Support\Arr;
 class AuditService
 {
     // Only structured operational data. Never accept whole request/model payloads or document bodies.
-    private const FIELDS = ['is_active', 'organizer_status', 'status', 'publication_status', 'lifecycle_status', 'city_id', 'skill_id', 'level', 'starts_at', 'ends_at', 'revision', 'changed_fields'];
+    private const FIELDS = ['is_active', 'organizer_status', 'status', 'publication_status', 'lifecycle_status', 'city_id', 'skill_id', 'level', 'starts_at', 'ends_at', 'revision', 'changed_fields', 'price', 'max_positions', 'max_applications', 'max_registration_days'];
 
     public function record(?User $actor, string $action, Model $subject, array $changes = [], ?string $reason = null): AuditLog
     {

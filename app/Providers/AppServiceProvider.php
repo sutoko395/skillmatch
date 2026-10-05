@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Event;
 use App\Models\Skill;
 use App\Policies\AdminResourcePolicy;
+use App\Policies\EventPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,7 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        foreach ([Skill::class, Category::class, Event::class] as $model) {
+        Gate::policy(Event::class, EventPolicy::class);
+        foreach ([Skill::class, Category::class] as $model) {
             Gate::policy($model, AdminResourcePolicy::class);
         }
     }
