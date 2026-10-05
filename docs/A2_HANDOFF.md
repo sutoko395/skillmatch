@@ -130,3 +130,23 @@ Kelola Paket dan Transaksi Sandbox dipindahkan dari navigasi atas konten ke side
 ## Penyesuaian nama transaksi dan permintaan paket
 
 Label sidebar serta judul/title browser daftar transaksi kini Transaksi. Gateway tetap Sandbox dan label simulasi pada pembayaran/detail tetap menjelaskan mode aktual. Pengguna meminta paket Free, Standard dan Premium; harga, maksimum posisi/lamaran/hari belum ditentukan sehingga pembuatan paket aktif menunggu konfigurasi tersebut. Paket demo existing tidak diubah menjadi harga produk.
+
+## Paket awal berdasarkan gambar pengguna
+
+Keputusan terbaru menggantikan usulan konfigurasi sebelumnya dan mengakhiri blocker angka paket:
+
+| Paket | Harga per event | Maksimal posisi | Maksimal lamaran terkirim | Hari pendaftaran |
+|---|---:|---:|---:|---:|
+| Free | Gratis | 2 | 30 | 7 |
+| Standard | Rp30.000 | 5 | 100 | 30 |
+| Premium | Rp50.000 | 10 | 300 | 60 |
+
+DefaultPackageSeeder terhubung ke DatabaseSeeder setelah UserSeeder, local/testing saja. Paket dibuat melalui PackageService dengan audit dan marker seed; pengulangan tidak membuat ulang paket yang di-rename atau mengaktifkan kembali yang dinonaktifkan. Paket existing bernama sama tidak ditimpa. Tidak ada migration baru, reset, atau perubahan fixture pembayaran/order lama.
+
+Ketiga paket sudah dibuat pada db_skillmatch lokal dengan nilai di atas; seeder dijalankan dua kali dan pembacaan database memverifikasi nilai/is_active true. Seed tidak menjalankan ulang akun/profil/master. HomeController membaca paket aktif urut harga/ID; package-card dipakai beranda/admin/Organizer. CTA registrasi mempreseleksi Organizer dari allowlist tanpa membuat admin atau mengganti role akun yang login. Fitur A3/A4 tetap diberi Dalam pengembangan.
+
+Bukti: DefaultPackageTest + A2EventTest + HomeTest + RegistrationTest lulus **24 tes / 183 assertion** pada MySQL terpisah. Tes membuktikan admin dapat edit harga/limit, kartu aktif membaca perubahan, paket nonaktif tidak tampil dan snapshot order/event lama tetap semula. Seeding ulang setelah rename/edit/nonaktif tidak menimpa data. Build sukses (CSS 62.11 kB / JS 55.09 kB), Blade cache sukses. Paket demo sebelumnya tetap terpisah dan tidak diubah menjadi harga produksi.
+
+Pemeriksaan browser kartu paket: Chrome headless viewport 360/1280 px tanpa overflow horizontal, nilai ketiga paket cocok dengan database, CTA publik mempreseleksi Organizer pada registrasi. Screenshot privat a2-packages-360.png/a2-packages-1280.png; hasil ini tidak meluluskan modul A3/A4 atau pembayaran final.
+
+Commit implementasi paket/kartu/tes: 37de24b, branch feature/a2-events-payment. Dokumentasi konfigurasi disepakati berada pada commit berikutnya di log branch. Belum push/PR/review/merge/deployment.

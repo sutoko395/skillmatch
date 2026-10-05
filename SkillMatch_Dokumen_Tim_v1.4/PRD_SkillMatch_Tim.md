@@ -126,7 +126,7 @@ ID FR-01–22 mempertahankan padanan PRD v1.3; FR-23 ditambahkan untuk memperjel
 - Waktu disimpan konsisten dalam UTC; input dan label UI WIB/Asia Jakarta. Tampilan tanggal tidak menggantikan pemeriksaan timestamp lengkap.
 - Minimal satu posisi, satu skill per posisi, dan assessment valid sebelum pengajuan; daftar syarat membedakan wajib dan preferensi.
 - Setelah published, aturan posisi, jadwal, assessment dan paket dibekukan pada MVP. Perubahan substantif menggunakan pembatalan dan event baru; koreksi teks ringan dapat diaudit tanpa mengubah aturan seleksi. Ini mencegah perubahan skor pelamar yang sudah masuk.
-- Paket per event. Harga/manfaat berasal server dan disnapshot ketika order dibuat. Contoh Free/Standard/Premium hanya fixture demo; admin dapat menonaktifkan paket tanpa mengubah pembelian lama.
+- Paket per event. Harga/manfaat berasal server dan disnapshot ketika order dibuat. Free/Standard/Premium memakai konfigurasi awal yang disepakati pengguna 5 Oktober 2026 (lihat tabel di bawah); admin dapat mengedit atau menonaktifkan paket tanpa mengubah snapshot lama. Paket Demo terpisah tetap hanya fixture.
 - Entitlement mengatur maksimal posisi, maksimal lamaran terkirim per event dan maksimum durasi pembukaan pendaftaran. Draft tidak dihitung; slot lamaran yang sudah terkirim tidak dikembalikan karena withdrawn. Validasi limit dilakukan transaksional.
 - Paket gratis tidak menghasilkan order paid palsu; entitlement gratis diaktifkan sekali setelah approval. Paket berbayar memerlukan pembayaran terverifikasi.
 - Redirect checkout hanya membawa pengguna ke halaman status; server memverifikasi signature/status, order, nominal dan mata uang. Callback ganda/tidak berurutan tidak menggandakan hak atau menurunkan paid karena pesan pending lama.
@@ -239,3 +239,15 @@ A2 melanjutkan beranda publik (`home`, `welcome.blade.php`), katalog dan detail 
 A2 mengembangkan beranda `home` agar pengunjung memahami tujuan SkillMatch, peran Volunteer/Organizer, dan langkah yang dapat dilakukan. Beranda memuat hero, pencarian judul ke katalog, penjelasan skill/waktu/lokasi, pratinjau event, panduan kedua peran, FAQ dan CTA autentikasi. Teks membedakan kemampuan yang tersedia dari lamaran/assessment/matching/notifikasi yang masih dikembangkan.
 
 Pratinjau maksimal enam event memakai aturan publikasi katalog, ditambah periode pendaftaran terbuka dan kapasitas paket belum habis, diurutkan berdasarkan waktu mulai lalu ID. Kartu memuat informasi aktual, bukan rekomendasi personal atau statistik promosi. Keadaan kosong tetap menjelaskan langkah berikutnya. Pengembangan ini tidak mengubah syarat publikasi, status, harga atau kepemilikan A3/A4.
+
+## Konfigurasi awal paket disepakati - 5 Oktober 2026
+
+Keputusan pengguna berdasarkan gambar paket:
+
+| Paket | Harga per event | Maksimal posisi | Maksimal lamaran terkirim | Hari pendaftaran |
+|---|---:|---:|---:|---:|
+| Free | Gratis | 2 | 30 | 7 |
+| Standard | Rp30.000 | 5 | 100 | 30 |
+| Premium | Rp50.000 | 10 | 300 | 60 |
+
+Ini nilai awal yang dapat diedit admin, bukan konstanta harga checkout. Harga/limit berasal database dan disnapshot saat dipilih/dibeli. Alur screening/assessment/seleksi/dokumen/attendance pada kartu dijelaskan sebagai fitur dalam pengembangan sampai modul A3/A4 terintegrasi.

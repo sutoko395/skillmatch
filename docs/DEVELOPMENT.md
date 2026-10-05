@@ -68,3 +68,7 @@ Pengembangan beranda tetap milik A2. HomeController menggunakan schema/service p
 ## Penyempurnaan tampilan auth
 
 Permintaan pengguna setelah beranda: login/register memakai auth-layout dan auth-password-field, kartu pilihan peran hanya pada registrasi, copy Indonesia, state submit dan toggle password. Backend SF tidak berubah. A1 tetap memiliki pengembangan akun/admin berikutnya. Bukti pemeriksaan khusus di A2_HANDOFF; reset/verifikasi masih menggunakan guest-layout existing.
+
+## Konfigurasi awal paket
+
+DefaultPackageSeeder menambahkan Free, Standard dan Premium sesuai keputusan pengguna (lihat PRD/README) setelah UserSeeder, hanya local/testing. Nilai dapat diubah admin; seeding ulang memakai marker audit agar edit, rename dan nonaktif tidak di-reset. Paket demo tetap fixture terpisah. HomeController/package-card menampilkan harga/limit aktual. Tidak ada migration baru; integrasi assessment, lamaran dan attendance tetap milik A3/A4.

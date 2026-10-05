@@ -155,6 +155,22 @@ Atur Payment Notification URL pada dashboard Sandbox ke URL HTTPS aplikasi yang 
 
 Paket Free tidak membuat order paid. Paket berbayar hanya dapat dibuatkan order setelah approval. Checkout, callback dan sinkronisasi menyimpan status serta hak paket secara idempoten. Pembayaran valid pada event cancelled tetap dicatat untuk tindak lanjut tanpa publikasi; refund otomatis tidak tersedia.
 
+Paket awal untuk local/testing disertakan oleh seeder dasar, dengan harga dan limit yang disepakati:
+
+| Paket | Harga per event | Maksimal posisi | Maksimal lamaran terkirim | Hari pendaftaran |
+|---|---:|---:|---:|---:|
+| Free | Gratis | 2 | 30 | 7 |
+| Standard | Rp30.000 | 5 | 100 | 30 |
+| Premium | Rp50.000 | 10 | 300 | 60 |
+
+Admin dapat mengedit nama, harga, manfaat dan status melalui **Kelola Paket**. Beranda dan pilihan paket Organizer membaca data aktif terbaru; snapshot event/order lama tetap memakai nilai saat dipilih/dibeli. Untuk instalasi existing yang sudah memiliki akun admin aktif/verified, tambahkan paket awal saja:
+
+```powershell
+php artisan db:seed --class=DefaultPackageSeeder
+```
+
+Seeder tidak menimpa edit admin, termasuk rename/nonaktif, saat diulang. Tidak perlu menjalankan ulang seeder akun atau migration untuk paket ini. Fitur screening/assessment/seleksi/dokumen/attendance pada kartu masih dalam pengembangan.
+
 Fixture demo tambahan bersifat opsional, hanya untuk local/testing setelah seeder dasar:
 
 ```powershell

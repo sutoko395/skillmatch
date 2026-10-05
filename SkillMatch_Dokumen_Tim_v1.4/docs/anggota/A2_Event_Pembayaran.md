@@ -63,3 +63,7 @@ Validator assessment A4, cancellation A3/A4 dan outbox NotificationService belum
 ## Pengembangan beranda lengkap - 5 Oktober 2026
 
 A2 sudah melengkapi HomeController, welcome.blade.php dan event-card bersama katalog: pengenalan platform, pencarian, pratinjau event aktual, skill/waktu/lokasi, panduan kedua peran, FAQ, CTA/footer. Beranda informatif tetap tampil ketika event belum tersedia. Pratinjau hanya event publik dengan pendaftaran terbuka dan kapasitas paket, maksimal enam, tanpa mengklaim matching personal. Hasil pemeriksaan serta batas UAT dicatat pada A2_HANDOFF; modul A3/A4 tetap mengikuti dependensi sebelumnya.
+
+## Paket awal yang disepakati pengguna
+
+Free: gratis/2 posisi/30 lamaran/7 hari. Standard: Rp30.000/5/100/30. Premium: Rp50.000/10/300/60. DefaultPackageSeeder membuat paket tanpa menimpa edit admin; kartu membaca database. Demo Free/Standard tetap fixture terpisah. Admin dapat mengedit nama/harga/limit/status; harga snapshot event/order lama tidak berubah. Paket awal tidak menyelesaikan dependensi A3/A4.

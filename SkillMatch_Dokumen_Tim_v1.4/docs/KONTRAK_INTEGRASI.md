@@ -243,3 +243,9 @@ Koreksi judul/deskripsi event published memakai GET/PATCH `/organizer/events/{ev
 GET `/` tetap bernama `home`, kini melalui `HomeController::__invoke` ke `welcome.blade.php`. Controller membaca `Event::publiclyVisible`, `registration_opens_at <= now`, `registration_deadline > now`, dan `submitted_applications < max_applications` pada entitlement. Query meng-eager-load relasi Organizer/profil, kategori/kota, menghitung posisi dan membatasi enam event dengan urutan starts_at/ID. Ini pratinjau pendaftaran terbuka, bukan bypass eligibility lamaran A3 atau engine matching A4.
 
 Komponen Blade A2 `event-card` dipakai beranda/katalog. Form pencarian GET memakai `events.index` dan parameter `search` existing. CTA akun memakai `dashboard` untuk redirect sah SF; navbar/auth tidak menambahkan guard atau pemilih role. Tidak ada migration, route payment, harga atau status baru.
+
+## Paket awal Free/Standard/Premium
+
+Konfigurasi disepakati pengguna: Free 0/2 posisi/30 lamaran/7 hari; Standard 30000/5/100/30; Premium 50000/10/300/60. DefaultPackageSeeder (local/testing) membuat melalui PackageService dan audit; marker package.default_seeded dengan reason initial_free/initial_standard/initial_premium menjaga edit, rename dan nonaktif admin ketika diulang. Paket existing bernama sama diadopsi tanpa menimpa konfigurasi. DatabaseSeeder memanggil seeder setelah UserSeeder. Tidak ada migration baru.
+
+HomeController membaca paket aktif dari database, urut harga/ID. Komponen package-card dipakai beranda, pilihan paket Organizer dan admin; state is_active hanya ditampilkan admin. GET register?role=organizer mempreseleksi radio publik yang diizinkan, bukan mengubah role akun existing. Validasi POST masih hanya volunteer/organizer. Paket nonaktif tidak tampil/dapat dipilih ulang; snapshot lama tetap dipertahankan.
