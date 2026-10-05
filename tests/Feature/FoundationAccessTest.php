@@ -34,6 +34,9 @@ class FoundationAccessTest extends DatabaseTestCase
         $this->post('/login', ['email' => $user->email, 'password' => 'password', 'role' => 'admin'])->assertRedirect($destination);
         $this->assertAuthenticatedAs($user);
         $page = $this->get($destination)->assertOk();
+        $this->get('/')->assertOk()
+            ->assertSee('Hubungkan Talent Relawan dengan Event Terbaik')
+            ->assertSee($role === 'admin' ? 'Buka Dashboard Admin' : 'Buka Aktivitas');
         if ($role === 'admin') {
             $page->assertViewIs('admin.dashboard')
                 ->assertViewHas('totalVolunteers', User::where('role', 'volunteer')->count())

@@ -50,3 +50,7 @@ Demo: login bersama sebagai admin, review organizer, revisi/approve event, pengg
 ## Batas tugas
 
 Tidak mengambil engine A4, halaman aktivitas A4, payment A2, upload pelamar atau attendance A3. Integrasi menjadi tanggung jawab tiap pemilik modul; kontribusi lama tetap dihitung.
+
+## Koordinasi beranda - 5 Oktober 2026
+
+Beranda publik (`home` / `welcome.blade.php`) dipulihkan oleh SF dan menjadi pengembangan lanjut A2, bukan pekerjaan pembangunan ulang A1. A1 menjaga konsistensi layout bersama dan dapat mengintegrasikan konten terkelola setelah modul konten tersedia. Dashboard admin tetap dilanjutkan sesuai penyesuaian di atas; aktivitas pengguna tetap A4.

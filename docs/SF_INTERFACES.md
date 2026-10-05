@@ -62,6 +62,8 @@ Policy bersama: UserPolicy untuk profil sendiri, panel admin, target role penggu
 
 ## Layout
 
+Keputusan pengguna 5 Oktober 2026: `home` tetap merender welcome.blade.php dengan hero/CTA/footer baseline dalam layouts.public. CTA login/register memakai auth bersama; CTA akun yang sudah login memakai route dashboard sebagai redirect role/status, bukan menampilkan dashboard analitik pengguna. A2 melanjutkan beranda/katalog, A1 melanjutkan dashboard admin yang dipertahankan. Shell hanya untuk bagian yang belum tersedia, bukan pengganti halaman berfungsi. Tidak ada perubahan DTO, schema atau layanan akibat pemulihan UI ini.
+
 `@extends('layouts.public')` / `layouts.user` memakai `@section('title')` dan `@section('content')`. `admin.layouts.sidebar` tetap shell admin. Komponen Breeze tetap dasar input/tombol/modal; wrapper baru: page-header, section-card, button, form-field, status-badge, empty-state, flash, confirm-dialog. Font dari layouts/fonts; Alpine hanya resources/js/app.js.
 
 Form-field menerima name/label/value/type/required/helper dan optional slot kontrol khusus. Gunakan ID kontrol sesuai name agar label/error terhubung. Wrapper button menerima variant primary/secondary/danger. Confirm-dialog membungkus modal Breeze; isi form, CSRF, alasan dan tindakan tetap milik modul. Flash dirender shell user; admin dapat memakai komponen yang sama tanpa menduplikasi pesan.

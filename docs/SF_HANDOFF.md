@@ -22,7 +22,7 @@ Tanggal bukti: 5 Oktober 2026 (WIB). PIC implementasi: SF, sebelum kembali ke A4
 | SF-02 | Login bersama semua role, register tanpa admin, email verification/reset, throttle, logout/CSRF, invalidasi sesi akun nonaktif, intended URL terbatas pada hak akses. |
 | SF-03 | Profil Volunteer simpan-baca, kota master, skill distinct/empat level, availability WIB → UTC, ProfileEligibilityService dan transaksi atomik. Master referensi tidak dihapus berantai. |
 | SF-04 | Profil/kontak Organizer dapat disimpan tanpa upload dan tanpa mengubah status akun/organisasi; pending/inactive tetap dapat melengkapi profil. Nama organisasi terverifikasi menunggu alur verifikasi ulang A1. |
-| SF-05 | Navbar pengguna, sidebar admin baseline diperbaiki, komponen bersama, Inter dan Alpine satu kali, shell final tanpa angka palsu. |
+| SF-05 | Navbar pengguna, sidebar admin baseline diperbaiki, komponen bersama, Inter dan Alpine satu kali. Setelah koreksi pengguna, beranda dan dashboard dasar dipertahankan; shell hanya untuk fitur belum tersedia seperti aktivitas A4. |
 | SF-06 | AuditService + audit_logs append-only (model/trigger), payload minimum aman, rollback bersama bisnis, bukti commit dari koneksi independen. |
 | SF-07 | Seeder master/demo seluruh role/status, README nyata, database guard dan bukti pengujian. Reviewer anggota lain belum tersedia. |
 
@@ -41,7 +41,7 @@ Titik kelanjutan dashboard dan penggantian shell:
 
 - A1 (koreksi 5 Oktober 2026 sesuai instruksi pengguna): `admin.dashboard` kembali memakai `AdminDashboardController@index` dan `resources/views/admin/dashboard.blade.php`. Hitungan database dan aksi cepat baseline ditampilkan, dengan keterangan bahwa analitik lengkap belum tersedia. View shell `admin/foundation.blade.php` dihapus. A1 memperluas dashboard dasar ini, bukan menggantinya dengan shell; rincian tugas ada pada brief A1 yang diperbarui. Proteksi SF tetap berlaku.
 - A4: `resources/views/shared/activity.blade.php` pada `volunteer.activity.index` dan `organizer.activity.index`; ganti route view dengan controller + ActivityReadService masing-masing role.
-- A2: `resources/views/welcome.blade.php` / home, lalu katalog events.index/show. Navbar hanya menautkan fitur yang sudah ada.
+- A2 (koreksi 5 Oktober 2026): `resources/views/welcome.blade.php` / home kembali berisi hero baseline, CTA Masuk/Daftar atau tujuan role/status, dan footer tim dalam layout publik SF. Keterangan katalog/matching sedang disiapkan hanya menjadi informasi pendukung. A2 melanjutkan beranda, lalu katalog events.index/show; jangan mengganti beranda yang berfungsi dengan shell. Navbar hanya menautkan fitur yang sudah ada.
 - A1/A3: pemberitahuan dokumen belum tersedia pada organizer/profile/edit; preview publik admin dihentikan. OrganizerDocument/schema/berkas lama tetap ada untuk migrasi terkontrol.
 - Compatibility layout organizer/volunteer sidebar kini meneruskan layouts.user. Layout app/nav lama tidak lagi memanggil route profil yang tidak terdaftar.
 - Controller mati `app/Http/Controllers/Volunteer/ProfileController.php` dihapus setelah pencarian tidak menemukan route pemanggil; namespace sebelumnya gagal PSR-4. Controller profil aktif baseline tetap dikembangkan.
@@ -72,6 +72,8 @@ Kegagalan awal yang sudah diselesaikan: manifest Vite belum dibuat saat tes rend
 
 ## Gate yang masih memerlukan review
 
+Verifikasi pemulihan beranda dan sinkronisasi dokumen (5 Oktober 2026): `FoundationAccessTest.php` + `ExampleTest.php` lulus **23 tes / 149 assertion** pada MySQL tes terpisah. Tes memeriksa hero/CTA guest dan CTA admin/Volunteer/Organizer sesudah login, beserta regresi akses SF. Build Vite, kompilasi Blade, Pint pada tes yang diubah dan pemeriksaan diff berhasil. Tidak ada perubahan schema/data, reset, push, merge atau deployment. Uji visual browser masih belum dilakukan. Beranda baseline dipulihkan memakai layout SF, bukan klaim katalog/matching sudah tersedia. Paket spesifikasi 1.4.2 kini memuat keputusan pengguna bertanggal 5 Oktober pada PRD/kontrak/desain/baseline/prompt/UAT dan semua brief, tanpa mengubah status bisnis atau pembagian modul.
+
 Verifikasi koreksi dashboard admin (5 Oktober 2026): `FoundationAccessTest` lulus **22 tes / 124 assertion**, termasuk view dashboard baseline, lima hitungan sesuai database, aksi cepat, label analitik belum tersedia dan proteksi lintas role. `npm run build`, `view:cache`, `route:list --path=admin/dashboard`, Pint pada file yang diubah dan `git diff --check` berhasil. Percobaan tes dalam sandbox ditolak koneksi; pemeriksaan MySQL dan tes ulang di luar sandbox berhasil pada `skillmatch_testing`. Angka 52/227 di atas adalah bukti suite SF sebelumnya, bukan klaim menjalankan ulang seluruh suite pada koreksi ini. Uji browser visual tetap belum dilakukan.
 
 - **Reviewer anggota lain: belum ditetapkan; tanggal review: belum ada.** Jalankan README dari checkout tip SF pada MySQL kosong dan database tes terpisah, lalu catat hasil di bagian ini. UAT-35/review tim belum lulus.
@@ -86,7 +88,7 @@ Verifikasi koreksi dashboard admin (5 Oktober 2026): `FoundationAccessTest` lulu
 | PIC | Pekerjaan berikutnya / blocker |
 |---|---|
 | A1 | Review SF dan README; verifikasi organisasi/dokumen privat/revisi/nama identitas; suspend/reactivate beralasan + audit; master CRUD/nonaktifkan termasuk kota; moderasi event, analitik, konten/settings/audit UI, README final. Admin baseline masih perlu integrasi audit/notifikasi/transaksi; relasi moderasi `positions.skills` lama masih harus diganti sesuai kontrak A2. |
-| A2 | Event/posisi/jadwal/snapshot, approved bukan published, katalog, paket dan Midtrans Sandbox; aturan FK histori event sesuai kepemilikan schema. |
+| A2 | Lanjutkan beranda baseline, event/posisi/jadwal/snapshot, approved bukan published, katalog/detail, paket dan Midtrans Sandbox; aturan FK histori event sesuai kepemilikan schema. |
 | A3 | DocumentStorageService privat, migrasi berkas organisasi bersama A1, aplikasi/seleksi/attendance/riwayat/retensi/restore. **Berkas public lama tetap blocker penggunaan nyata** meski SF sudah menghentikan upload/preview publik. |
 | A4 | Screening/assessment/matching/notifikasi/ActivityReadService dan mengganti shell aktivitas. Pakai DTO ProfileEligibilityService, snapshot kontrak, audit transaksi dan layout SF; belum dikerjakan di scope ini. |
 

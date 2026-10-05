@@ -52,3 +52,7 @@ Gunakan branch dasar tim yang benar-benar ada dan telah disepakati; jangan menga
 | Batas pekerjaan / blocker A1–A4 | Belum diisi |
 
 Kriteria SF berfokus fondasi. UAT keseluruhan dan README final tetap kewajiban semua pemilik modul, dikoordinasikan A1. Jangan menandai seluruh UAT-35 lulus hanya karena setup fondasi berhasil.
+
+## Pelestarian beranda - keputusan 5 Oktober 2026
+
+SF mempertahankan beranda baseline yang sudah berfungsi: hero, CTA Masuk/Daftar dan footer tim di `welcome.blade.php`, dengan layout/navbar SF. Katalog/matching yang belum tersedia cukup dijelaskan sebagai keterangan bagian; jangan mengganti seluruh beranda dengan shell. A2 melanjutkan beranda/katalog/detail, A1 melanjutkan dashboard admin, A4 mengisi shell aktivitas. Catat pemulihan dan bukti regresi pada handoff; tidak ada perubahan schema atau reset database.
