@@ -8,7 +8,12 @@ use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Admin\VolunteerController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth', 'account.active', 'role:admin', 'verified', 'can:viewAdmin,App\Models\User'])
+Route::middleware([
+    'auth',
+    'account.active',
+    'role:admin',
+    'can:viewAdmin,App\Models\User'
+    ])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

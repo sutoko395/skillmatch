@@ -6,7 +6,7 @@ use App\Http\Controllers\Organizer\OrderController;
 use App\Http\Controllers\Organizer\PositionController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth', 'account.active', 'role:organizer', 'verified', 'organizer.active'])->prefix('organizer')->name('organizer.')->group(function () {
+Route::middleware(['auth', 'account.active', 'role:organizer', 'organizer.active'])->prefix('organizer')->name('organizer.')->group(function () {
     Route::resource('events', EventController::class);
     Route::get('events/{event}/text', [EventController::class, 'text'])->name('events.text');
     Route::patch('events/{event}/text', [EventController::class, 'correctText'])->name('events.correct-text');

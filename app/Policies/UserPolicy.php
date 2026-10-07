@@ -13,7 +13,7 @@ class UserPolicy
 
     public function viewAdmin(User $actor): bool
     {
-        return $actor->is_active && $actor->role === 'admin' && $actor->hasVerifiedEmail();
+        return $actor->is_active && $actor->role === 'admin';
     }
 
     public function manageVolunteer(User $actor, User $subject): bool
@@ -28,6 +28,6 @@ class UserPolicy
 
     public function delete(User $actor, User $subject): bool
     {
-        return false; // Account history must be retained; A1 supplies suspension with reason/audit.
+        return false;
     }
 }

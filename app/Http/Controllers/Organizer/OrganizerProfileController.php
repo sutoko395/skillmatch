@@ -37,44 +37,95 @@ class OrganizerProfileController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $user = $request->user();
+
         Gate::authorize('updateProfile', $user);
 
         $validated = $request->validate([
             'organization_name' => ['required', 'string', 'max:255'],
             'contact_person' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:30'],
-            'email' => ['required', 'email', 'max:255'],
             'address' => ['required', 'string', 'max:1000'],
             'city' => ['required', 'string', 'max:255'],
             'website' => ['nullable', 'url:http,https', 'max:255'],
             'description' => ['required', 'string', 'max:1000'],
-            'documents' => ['prohibited'],
-            'is_active' => ['prohibited'],
-            'organizer_status' => ['prohibited'],
-            'user_id' => ['prohibited'],
+            'ktp' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
         ]);
 
-        DB::transaction(function () use ($user, $validated) {
-            $locked = User::whereKey($user->id)->lockForUpdate()->firstOrFail();
-            abort_unless($locked->is_active && $locked->role === 'organizer', 403);
+        DB::transaction(function () use ($user, $validated, $request) {
+            $locked = User::whereKey($user->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            abort_unless(
+                $locked->is_active && $locked->role === 'organizer',
+                403
+            );
+
             $profile = $locked->organizerProfile;
-            if ($profile && $locked->organizer_status === 'active' && $profile->organization_name !== $validated['organization_name']) {
-                throw ValidationException::withMessages(['organization_name' => 'Perubahan identitas organisasi terverifikasi menunggu alur verifikasi ulang. Hubungi administrator.']);
+
+            if (
+                $profile &&
+                $locked->organizer_status === 'active' &&
+                $profile->organization_name !== $validated['organization_name']
+            ) {
+                throw ValidationException::withMessages([
+                    'organization_name' => 'Perubahan identitas organisasi terverifikasi menunggu layanan verifikasi ulang. Hubungi administrator.',
+                ]);
             }
-            $profile = $locked->organizerProfile()->updateOrCreate(['user_id' => $locked->id], $validated);
-            app(AuditService::class)->record($locked, 'organizer.profile.updated', $profile, ['after' => ['changed_fields' => array_keys($validated)]]);
+
+            $profile = $locked->organizerProfile()->updateOrCreate(
+                ['user_id' => $locked->id],
+                [
+                    'organization_name' => $validated['organization_name'],
+                    'contact_person' => $validated['contact_person'],
+                    'phone' => $validated['phone'],
+                    'email' => $locked->email,
+                    'address' => $validated['address'],
+                    'city' => $validated['city'],
+                    'website' => $validated['website'] ?? null,
+                    'description' => $validated['description'],
+                ]
+            );
+
+            $path = $request->file('ktp')->store(
+                'organizers/'.$locked->id.'/documents'
+            );
+
+            $locked->organizerDocuments()->create([
+                'document_type' => 'ktp',
+                'document_name' => $request->file('ktp')->getClientOriginalName(),
+                'file_path' => $path,
+            ]);
+
+            $locked->update([
+                'organizer_status' => 'pending',
+            ]);
+
+            app(AuditService::class)->record(
+                $locked,
+                'organizer.profile.updated',
+                $profile,
+                [
+                    'after' => [
+                        'changed_fields' => array_keys($validated),
+                    ],
+                ]
+            );
         });
 
-        return redirect()->route('organizer.profile.edit')->with('success', 'Profil organisasi berhasil disimpan.');
+        return redirect()
+            ->route('organizer.profile.pending')
+            ->with('success', 'Data Organizer berhasil dikirim dan sedang menunggu verifikasi admin.');
     }
 
-    public function pending(Request $request)
+    public function pending(Request $request): View|RedirectResponse
     {
         $user = $request->user();
+
         Gate::authorize('updateProfile', $user);
 
         if ($user->organizer_status === 'active') {
-            return redirect()->route('organizer.dashboard');
+            return redirect()->route('organizer.activity.index');
         }
 
         return view('organizer.profile.pending', compact('user'));

@@ -7,7 +7,14 @@
 <form method="POST" action="{{ route('organizer.profile.update') }}" class="space-y-6" data-saving-form>
 @csrf
 <x-section-card class="space-y-5">
-    <x-form-field name="organization_name" label="Nama organisasi" :value="$profile?->organization_name" required :readonly="$user->organizer_status === 'active' && $profile" helper="Perubahan nama organisasi terverifikasi menunggu layanan verifikasi ulang." />
+    <x-form-field
+        name="email"
+        label="Email"
+        type="email"
+        :value="$user->email"
+        readonly
+        required
+    />
     @foreach(['contact_person' => 'Penanggung jawab', 'phone' => 'Telepon', 'email' => 'Email kontak', 'address' => 'Alamat', 'city' => 'Kota'] as $name => $label)
         <x-form-field :name="$name" :label="$label" :value="$profile?->$name" :type="$name === 'email' ? 'email' : 'text'" required />
     @endforeach
