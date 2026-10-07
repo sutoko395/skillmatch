@@ -55,8 +55,6 @@ class RegisteredUserController extends Controller
             return redirect()->route('organizer.profile.edit');
         }
 
-        event(new Registered($user));
-
-        return redirect()->route('verification.notice');
+        return redirect('/volunteer/aktivitas');
     }
 }

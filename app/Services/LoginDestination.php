@@ -10,25 +10,17 @@ class LoginDestination
 {
     public function defaultFor(User $user): string
     {
-        if ($user->role === 'organizer') {
-            if (! $user->organizerProfile) {
-                return '/organizer/profile';
-            }
-
-            if ($user->organizer_status !== 'active') {
-                return '/organizer/profile/pending';
-            }
-
-            return '/organizer/aktivitas';
-        }
-
-        if (! $user->hasVerifiedEmail()) {
-            return '/verify-email';
-        }
-
         return match ($user->role) {
+            'organizer' => ! $user->organizerProfile
+                ? '/organizer/profile'
+                : ($user->organizer_status === 'active'
+                    ? '/organizer/aktivitas'
+                    : '/organizer/profile/pending'),
+
             'admin' => '/admin/dashboard',
+
             'volunteer' => '/volunteer/aktivitas',
+
             default => '/login',
         };
     }
@@ -36,6 +28,11 @@ class LoginDestination
     public function resolve(Request $request): string
     {
         $user = $request->user();
+
+        if (! $user) {
+            return '/login';
+        }
+
         $fallback = $this->defaultFor($user);
 
         $intended = $request->session()->pull('url.intended');
@@ -89,16 +86,19 @@ class LoginDestination
                 '/admin/master-data/event-categories',
                 '/admin/event-verification',
             ],
+
             'volunteer' => [
                 '/volunteer/profile',
                 '/volunteer/aktivitas',
             ],
+
             'organizer' => [
                 '/organizer/profile',
                 '/organizer/profile/pending',
                 '/organizer/aktivitas',
                 '/organizer/events',
             ],
+
             default => [],
         };
 
@@ -115,6 +115,8 @@ class LoginDestination
             }
         }
 
-        return in_array($path, $allowed, true) ? $path : $fallback;
+        return in_array($path, $allowed, true)
+            ? $path
+            : $fallback;
     }
 }

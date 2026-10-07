@@ -1,40 +1,149 @@
-@extends('layouts.user')
-@section('title', 'Aktivitas Organizer')
+@extends('organizer.layouts.sidebar')
+
+@section('title', 'Dashboard Organizer')
+
 @section('content')
-<div class="mx-auto max-w-7xl space-y-6">
-    <x-section-card class="md:p-8">
-        <p class="mb-2 text-sm font-medium text-indigo-700">Aktivitas Organizer</p>
-        <h1 class="text-2xl font-semibold text-gray-900 md:text-3xl">Selamat Datang Kembali, <span class="font-bold text-indigo-600">{{ $user->name }}</span>!</h1>
-        <p class="mt-3 text-slate-600">Tinjau informasi organisasi dan kontak untuk mempersiapkan kegiatan Anda.</p>
+<div class="w-full max-w-7xl mx-auto space-y-6">
+
+    <div>
+        <h1 class="text-2xl font-bold text-slate-800">
+            Dashboard Organizer
+        </h1>
+
+        <p class="mt-1 text-sm text-slate-500">
+            Kelola organisasi dan kegiatan Anda melalui panel Organizer.
+        </p>
+    </div>
+
+    <x-section-card class="p-6 md:p-7">
+        <p class="text-sm font-medium text-indigo-700">
+            Selamat datang kembali
+        </p>
+
+        <h2 class="mt-2 text-2xl font-bold text-slate-800 md:text-3xl">
+            {{ $user->name }}
+        </h2>
+
+        <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
+            Kelola organisasi, event, posisi, dan kebutuhan relawan Anda dari satu tempat.
+        </p>
     </x-section-card>
-    <div class="grid gap-6 lg:grid-cols-3">
-        <x-section-card class="lg:col-span-2">
-            <h2 class="text-lg font-bold">Profil Organisasi</h2>
+
+    <div class="grid gap-5 lg:grid-cols-3">
+
+        <x-section-card class="p-6 lg:col-span-2">
+            <h2 class="text-lg font-bold text-slate-800">
+                Profil Organisasi
+            </h2>
+
             @if($profile)
-                <p class="mt-4 break-words text-xl font-semibold text-indigo-700">{{ $profile->organization_name }}</p>
-                <dl class="mt-4 grid gap-4 text-sm sm:grid-cols-2">
-                    @foreach(['contact_person' => 'Penanggung jawab', 'city' => 'Kota', 'phone' => 'Telepon', 'email' => 'Email kontak'] as $field => $label)
-                        <div><dt class="text-slate-600">{{ $label }}</dt><dd class="mt-1 break-words font-medium">{{ $profile->$field ?: 'Belum diisi' }}</dd></div>
-                    @endforeach
-                </dl>
-                @if($profile->description)<p class="mt-5 whitespace-pre-line break-words text-sm text-slate-700">{{ $profile->description }}</p>@endif
+                <div class="mt-5">
+                    <p class="break-words text-xl font-bold text-indigo-700">
+                        {{ $profile->organization_name }}
+                    </p>
+
+                    <dl class="mt-5 grid gap-x-8 gap-y-5 text-sm sm:grid-cols-2">
+                        @foreach([
+                            'contact_person' => 'Penanggung jawab',
+                            'city' => 'Kota',
+                            'phone' => 'Telepon',
+                            'email' => 'Email',
+                        ] as $field => $label)
+                            <div>
+                                <dt class="text-slate-500">
+                                    {{ $label }}
+                                </dt>
+
+                                <dd class="mt-1 break-words font-semibold text-slate-800">
+                                    {{ $profile->$field ?: 'Belum diisi' }}
+                                </dd>
+                            </div>
+                        @endforeach
+                    </dl>
+
+                    @if($profile->description)
+                        <div class="mt-6 border-t border-slate-100 pt-5">
+                            <p class="whitespace-pre-line break-words text-sm leading-6 text-slate-600">
+                                {{ $profile->description }}
+                            </p>
+                        </div>
+                    @endif
+                </div>
             @else
-                <p class="mt-4 text-slate-600">Profil organisasi belum diisi. Lengkapi identitas dan kontak Anda.</p>
+                <div class="mt-5 rounded-xl bg-slate-50 p-5">
+                    <p class="text-sm leading-6 text-slate-600">
+                        Profil organisasi belum diisi. Lengkapi identitas dan kontak organisasi Anda.
+                    </p>
+                </div>
             @endif
         </x-section-card>
-        <x-section-card>
-            <h2 class="text-lg font-bold">Status Organizer</h2>
-            <dl class="mt-4 space-y-4 text-sm">
-                <div><dt class="mb-2 text-slate-600">Akun</dt><dd><x-status-badge :status="$user->is_active ? 'success' : 'inactive'">{{ $user->is_active ? 'Aktif' : 'Nonaktif' }}</x-status-badge></dd></div>
-                <div><dt class="mb-2 text-slate-600">Verifikasi organisasi</dt><dd><x-status-badge :status="$user->organizer_status">{{ ['active' => 'Terverifikasi', 'pending' => 'Menunggu verifikasi', 'inactive' => 'Belum terverifikasi'][$user->organizer_status] }}</x-status-badge></dd></div>
+
+        <x-section-card class="p-6">
+            <h2 class="text-lg font-bold text-slate-800">
+                Status Organizer
+            </h2>
+
+            <dl class="mt-5 space-y-5 text-sm">
+                <div>
+                    <dt class="mb-2 text-slate-500">
+                        Status akun
+                    </dt>
+
+                    <dd>
+                        <x-status-badge :status="$user->is_active ? 'success' : 'inactive'">
+                            {{ $user->is_active ? 'Aktif' : 'Nonaktif' }}
+                        </x-status-badge>
+                    </dd>
+                </div>
+
+                <div>
+                    <dt class="mb-2 text-slate-500">
+                        Verifikasi organisasi
+                    </dt>
+
+                    <dd>
+                        <x-status-badge :status="$user->organizer_status">
+                            {{ [
+                                'active' => 'Terverifikasi',
+                                'pending' => 'Menunggu verifikasi',
+                                'inactive' => 'Belum terverifikasi',
+                            ][$user->organizer_status] }}
+                        </x-status-badge>
+                    </dd>
+                </div>
             </dl>
-            <p class="mt-4 text-sm text-slate-600">Status organisasi tidak menandakan semua fitur pengelolaan kegiatan sudah tersedia.</p>
         </x-section-card>
     </div>
-    <x-section-card>
-        <h2 class="text-lg font-bold">Aksi Cepat Organizer</h2>
-        <a href="{{ route('organizer.profile.edit') }}" class="mt-4 inline-flex rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white hover:bg-indigo-700">Perbarui Profil Organisasi</a>
+
+    <x-section-card class="p-6">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h2 class="text-lg font-bold text-slate-800">
+                    Aksi Cepat
+                </h2>
+
+                <p class="mt-1 text-sm text-slate-500">
+                    Akses fitur utama Organizer.
+                </p>
+            </div>
+
+            <div class="flex flex-wrap gap-3">
+                <a
+                    href="{{ route('organizer.events.index') }}"
+                    class="inline-flex items-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                >
+                    Kelola Event
+                </a>
+
+                <a
+                    href="{{ route('organizer.profile.edit') }}"
+                    class="inline-flex items-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                >
+                    Profil Organisasi
+                </a>
+            </div>
+        </div>
     </x-section-card>
-    <x-empty-state title="Pengelolaan kegiatan belum tersedia" description="Pembuatan event, daftar pelamar, seleksi dan pelaksanaan kegiatan sedang disiapkan. Informasi dan tindakan terkait akan tersedia setelah modul tersebut terintegrasi." />
+
 </div>
 @endsection

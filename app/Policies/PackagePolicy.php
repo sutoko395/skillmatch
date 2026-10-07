@@ -8,6 +8,7 @@ class PackagePolicy
 {
     public function manage(User $user): bool
     {
-        return $user->is_active && $user->hasVerifiedEmail() && $user->role === 'admin';
+        return $user->is_active
+            && $user->role === 'admin';
     }
 }
