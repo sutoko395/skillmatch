@@ -8,6 +8,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
+use App\Models\OrganizerDocument;
+use Illuminate\Support\Facades\Storage;
 
 class OrganizerController extends Controller
 {
@@ -98,11 +100,44 @@ class OrganizerController extends Controller
             abort(404);
         }
 
-        Gate::authorize('delete', $user);
+        Gate::authorize('manageOrganizer', $user);
+
+        $documents = $user->organizerDocuments()->get();
+
+        foreach ($documents as $document) {
+            if ($document->file_path) {
+                Storage::delete($document->file_path);
+            }
+
+            $document->delete();
+        }
+
+        $user->organizerProfile()?->delete();
+        $user->delete();
 
         return back()->with(
             'success',
             'Akun Organizer berhasil dihapus.'
+        );
+    }
+
+    public function viewDocument(Request $request, OrganizerDocument $document)
+    {
+        Gate::authorize('manageOrganizer', $document->user);
+
+        abort_unless(
+            $document->document_type === 'ktp',
+            404
+        );
+
+        abort_unless(
+            Storage::exists($document->file_path),
+            404
+        );
+
+        return Storage::response(
+            $document->file_path,
+            $document->document_name
         );
     }
 }

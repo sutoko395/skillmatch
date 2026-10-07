@@ -20,6 +20,10 @@ Route::middleware([
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])
             ->name('dashboard');
 
+        Route::get(
+            '/organizers/documents/{document}/view', [OrganizerController::class, 'viewDocument']
+        )->name('organizers.documents.view');
+
         Route::prefix('master-data')
             ->name('master-data.')
             ->group(function () {

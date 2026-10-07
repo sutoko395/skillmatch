@@ -18,6 +18,9 @@ Route::middleware([
     Route::get('/profile/pending', [OrganizerProfileController::class, 'pending'])
         ->name('profile.pending');
 
+    Route::get('/profile/documents/{document}/view', [OrganizerProfileController::class, 'viewDocument'])
+        ->name('profile.documents.view');
+
     Route::redirect('/pending', '/organizer/profile/pending');
 
     Route::middleware('organizer.active')->group(function () {

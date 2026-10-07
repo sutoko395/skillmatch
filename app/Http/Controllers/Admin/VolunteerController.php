@@ -60,6 +60,7 @@ class VolunteerController extends Controller
     public function toggleStatus(User $user): RedirectResponse
     {
         Gate::authorize('manageVolunteer', $user);
+
         if ($user->role !== 'volunteer') {
             abort(404);
         }
@@ -82,7 +83,9 @@ class VolunteerController extends Controller
             abort(404);
         }
 
-        Gate::authorize('delete', $user);
+        Gate::authorize('manageVolunteer', $user);
+
+        $user->delete();
 
         return back()->with(
             'success',

@@ -572,25 +572,29 @@
                             <div class="mt-4 space-y-3">
 
                                 @forelse($organizer->organizerDocuments as $document)
-
-                                    <div class="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 p-4">
-
-                                        <div>
-
-                                            <p class="font-semibold text-slate-800">
+                                    <div class="flex items-center justify-between gap-4 rounded-xl border border-slate-100 bg-slate-50 p-4">
+                                        <div class="min-w-0">
+                                            <p class="truncate font-semibold text-slate-800">
                                                 {{ $document->document_name }}
                                             </p>
 
-                                            <p class="mt-1 text-xs text-slate-500">
+                                            <p class="mt-1 text-xs uppercase text-slate-500">
                                                 {{ $document->document_type }}
                                             </p>
-
                                         </div>
 
-                                        <span class="text-sm text-slate-600">Unduhan privat belum tersedia</span>
-
+                                        <button
+                                            type="button"
+                                            @click="
+                                                documentPreview = '{{ route('admin.organizers.documents.view', $document) }}';
+                                                documentName = @js($document->document_name);
+                                                documentType = '{{ strtolower(pathinfo($document->file_path, PATHINFO_EXTENSION)) }}';
+                                            "
+                                            class="shrink-0 inline-flex items-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                                        >
+                                            Lihat Dokumen
+                                        </button>
                                     </div>
-
                                 @empty
 
                                     <div class="rounded-xl bg-amber-50 border border-amber-100 px-4 py-4 text-sm text-amber-700">
