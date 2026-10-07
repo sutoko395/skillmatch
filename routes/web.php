@@ -14,7 +14,10 @@ Route::get(
         app(LoginDestination::class)->defaultFor($request->user())
     )
 )
-    ->middleware(['auth', 'account.active'])
+    ->middleware([
+        'auth',
+        'account.active',
+    ])
     ->name('dashboard');
 
 require __DIR__.'/admin.php';

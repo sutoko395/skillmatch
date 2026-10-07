@@ -8,17 +8,26 @@ Route::middleware([
     'auth',
     'account.active',
     'role:volunteer',
-])->prefix('volunteer')->name('volunteer.')->group(function () {
+])
+    ->prefix('volunteer')
+    ->name('volunteer.')
+    ->group(function () {
 
-    Route::redirect('/dashboard', '/volunteer/aktivitas')
-        ->name('dashboard');
+        Route::redirect('/dashboard', '/volunteer/aktivitas')
+            ->name('dashboard');
 
-    Route::get('/aktivitas', [VolunteerDashboardController::class, 'index'])
-        ->name('activity.index');
+        Route::get(
+            '/aktivitas',
+            [VolunteerDashboardController::class, 'index']
+        )->name('activity.index');
 
-    Route::get('/profile', [VolunteerProfileController::class, 'edit'])
-        ->name('profile.edit');
+        Route::get(
+            '/profile',
+            [VolunteerProfileController::class, 'edit']
+        )->name('profile.edit');
 
-    Route::post('/profile', [VolunteerProfileController::class, 'update'])
-        ->name('profile.update');
-});
+        Route::post(
+            '/profile',
+            [VolunteerProfileController::class, 'update']
+        )->name('profile.update');
+    });
