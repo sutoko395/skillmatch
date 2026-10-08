@@ -44,4 +44,9 @@ class EventPosition extends Model
     {
         return $this->hasMany(PositionRequirement::class);
     }
+
+    public function applications(): HasMany
+    {
+        return $this->hasMany(Application::class, 'event_position_id');
+    }
 }

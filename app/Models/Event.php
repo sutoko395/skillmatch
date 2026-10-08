@@ -102,4 +102,9 @@ class Event extends Model
                     ->where('organizer_status', 'active');
             });
     }
+
+    public function applications()
+    {
+        return $this->hasMany(Application::class);
+    }
 }

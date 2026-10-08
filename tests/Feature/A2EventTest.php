@@ -92,7 +92,7 @@ class A2EventTest extends DatabaseTestCase
         $this->get('/events?search=nomatchunique')->assertDontSee($event->title);
         $this->get('/events?city_id=999999')->assertDontSee($event->title);
         $this->get('/events?date='.$event->starts_at->setTimezone('Asia/Jakarta')->format('Y-m-d'))->assertSee($event->title);
-        $this->get("/events/$event->id")->assertOk()->assertSee('WIB')->assertSee('Pengajuan lamaran belum tersedia');
+        $this->get("/events/$event->id")->assertOk()->assertSee('WIB')->assertSee('Masuk untuk melamar');
         $owner->update(['is_active' => false]);
         $this->get("/events/$event->id")->assertNotFound();
         $this->get('/events')->assertDontSee($event->title);

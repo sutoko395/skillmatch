@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AvailabilitySlot extends Model
 {
-    protected $fillable = ['starts_at', 'ends_at'];
+    protected $fillable = ['user_id', 'starts_at', 'ends_at'];
 
     protected $casts = ['starts_at' => 'immutable_datetime', 'ends_at' => 'immutable_datetime'];
 
