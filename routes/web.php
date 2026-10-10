@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DocumentDownloadController;
 use App\Http\Controllers\HomeController;
 use App\Services\LoginDestination;
 use Illuminate\Http\Request;
@@ -19,6 +20,10 @@ Route::get(
         'account.active',
     ])
     ->name('dashboard');
+
+Route::get('/documents/{document}/download', [DocumentDownloadController::class, 'download'])
+    ->middleware(['auth', 'account.active'])
+    ->name('documents.download');
 
 require __DIR__.'/admin.php';
 require __DIR__.'/volunteer.php';

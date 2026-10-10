@@ -22,8 +22,15 @@ trait A2Fixture
         $skill = Skill::firstOrCreate(['name' => 'A2 test skill'], ['is_active' => true]);
         $package = Package::create(['name' => 'A2 Test '.uniqid(), 'price' => $price, 'max_positions' => 2, 'max_applications' => 1, 'max_registration_days' => 30, 'is_active' => true]);
         $event = app(EventService::class)->save($owner, [
-            'package_id' => $package->id,
-            'title' => 'A2 Test '.uniqid(), 'description' => 'Kegiatan uji', 'location' => 'Lokasi uji', 'city_id' => $city->id, 'category_id' => $category->id,
+
+           'package_id' => $package->id,
+'title' => 'A2 Test '.uniqid(),
+'description' => 'Kegiatan uji',
+'location' => 'Lokasi uji',
+'city' => $city->name,
+'city_id' => $city->id,
+'category_id' => $category->id,
+
             'starts_at' => now()->addDays(10)->format('Y-m-d').'T09:00', 'ends_at' => now()->addDays(10)->format('Y-m-d').'T17:00',
             'registration_opens_at' => now()->subDay()->format('Y-m-d').'T00:00', 'registration_deadline' => now()->addDays(9)->format('Y-m-d').'T23:00',
         ]);

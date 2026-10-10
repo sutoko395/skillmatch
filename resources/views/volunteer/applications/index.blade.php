@@ -1,4 +1,4 @@
-@extends('layouts.user')
+@extends('volunteer.layouts.sidebar')
 @section('title', 'Lamaran Saya')
 @section('content')
 <div class="mx-auto max-w-7xl space-y-6">

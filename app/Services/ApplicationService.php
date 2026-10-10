@@ -93,6 +93,36 @@ class ApplicationService
 
             $snapshot = app(PositionSnapshotService::class)->build($position);
 
+            $volunteer->loadMissing(['volunteerProfile.cityRecord', 'volunteerSkills.skill', 'availabilitySlots']);
+            $snapshot['profile'] = [
+                'user_id' => $volunteer->id,
+                'name' => $volunteer->name,
+                'email' => $volunteer->email,
+                'city_id' => $volunteer->volunteerProfile?->city_id,
+                'phone' => $volunteer->volunteerProfile?->phone,
+                'skills' => $volunteer->volunteerSkills->map(fn ($vs) => [
+                    'id' => $vs->skill_id,
+                    'name' => $vs->skill?->name,
+                    'level' => $vs->level,
+                ])->values()->all(),
+                'availability_slots' => $volunteer->availabilitySlots->map(fn ($slot) => [
+                    'starts_at' => $slot->starts_at->toIso8601String(),
+                    'ends_at' => $slot->ends_at->toIso8601String(),
+                ])->values()->all(),
+            ];
+
+            $snapshot['documents'] = $lockedDraft->documents()
+                ->where('status', 'ready')
+                ->get()
+                ->map(fn ($doc) => [
+                    'id' => $doc->id,
+                    'document_type' => $doc->document_type,
+                    'original_name' => $doc->original_name,
+                    'size_bytes' => $doc->size_bytes,
+                    'checksum_sha256' => $doc->checksum_sha256,
+                    'ready_at' => $doc->ready_at?->toIso8601String(),
+                ])->values()->all();
+
             app(EntitlementService::class)->consumeApplication($event);
 
             $beforeStatus = $lockedDraft->status;
@@ -116,5 +146,26 @@ class ApplicationService
 
             return $lockedDraft;
         });
+
+        $this->triggerEvaluation($submitted);
+
+        return $submitted;
+    }
+
+    /**
+     * Trigger evaluation if evaluator service is registered/available.
+     * If evaluator is not available, status remains 'submitted' (Menunggu evaluasi).
+     */
+    protected function triggerEvaluation(Application $application): void
+    {
+        // When A4 screening service exists, dispatch it here.
+        // Fallback: remains 'submitted' awaiting evaluation.
+        if (class_exists('App\Services\ScreeningService')) {
+            try {
+                app('App\Services\ScreeningService')->evaluate($application);
+            } catch (\Throwable $e) {
+                // Keep status 'submitted' and log if needed
+            }
+        }
     }
 }

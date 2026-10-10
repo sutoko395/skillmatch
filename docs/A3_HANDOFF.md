@@ -1,123 +1,131 @@
-# Serah-terima A3 — Tahap 1: Draft dan Submit Lamaran
+# Serah-terima A3 — Tahap 2: Fondasi Lamaran dan Dokumen Privat
 
-Tanggal: 7 Oktober 2026 (WIB).
-Status: Implementasi Tahap 1 A3 (Draft dan Submit Lamaran) telah selesai dan terverifikasi 100% lulus pengujian unit/feature test.
+Tanggal: 10 Oktober 2026 (WIB).
+Status: Implementasi Tahap 2 A3 (Fondasi Lamaran, Dokumen Privat, Snapshot Immutable, dan Daftar/Detail Volunteer & Organizer) telah selesai dan terverifikasi **100% lulus pengujian feature test** pada MySQL `skillmatch_testing`.
+
+---
 
 ## 1. Branch dan Lingkup Pekerjaan
 
 - **Branch**: `feature/a3-applications-attendance`
-- **Lingkup Tahap 1**: Fitur pembuatan draft lamaran dan submit lamaran idempoten/transaksional oleh Volunteer.
-- **Tugas Tahap Berikutnya** (belum dikerjakan pada tahap ini): Dokumen privat, seleksi, attendance, completion/riwayat, retensi dan recovery.
+- **Lingkup Tahap 2**:
+  1. Schema dan model dokumen privat pelamar (`application_documents`).
+  2. Layanan domain `DocumentStorageService`: penyimpanan disk privat, nama acak, verifikasi MIME isi & ekstensi, kompensasi kegagalan penyimpanan, dan download attachment terotorisasi.
+  3. Submit lamaran dengan snapshot immutable profil dan dokumen, timestamp `submitted_at`, counter entitlement atomik, rollback kegagalan, dan fallback status `submitted` ("Menunggu evaluasi") bila evaluator A4 belum tersedia.
+  4. Antarmuka UI Volunteer: unggah dokumen, hapus dokumen draft, lihat daftar dokumen tersimpan, unduh attachment, dan submit.
+  5. Antarmuka UI Organizer: halaman daftar pelamar (`organizer.applications.index`) dan detail lamaran pelamar (`organizer.applications.show`) dengan preview profil kandidat dan download berkas resmi pelamar.
+- **Tugas Tahap Berikutnya**: Tahap 4 Seleksi (accept/reject kuota/bentrok jadwal), Tahap 5 Attendance, Tahap 6 Completion/riwayat, Tahap 7 Retensi & pembatalan event.
 
 ---
 
 ## 2. Schema dan Model
 
 ### Migration
-`database/migrations/2026_10_06_000001_create_applications_table.php`
+`database/migrations/2026_10_06_000002_create_application_documents_table.php`
 
-### Tabel `applications`
+### Tabel `application_documents`
 | Kolom | Tipe Data | Atribut / Constraint | Keterangan |
 |---|---|---|---|
-| `id` | bigint unsigned | Primary Key, Auto Increment | ID unik lamaran |
-| `event_id` | bigint unsigned | Foreign Key (`events.id`), `restrictOnDelete` | ID Event |
-| `event_position_id` | bigint unsigned | Foreign Key (`event_positions.id`), `restrictOnDelete` | ID Posisi Event |
-| `volunteer_id` | bigint unsigned | Foreign Key (`users.id`), `restrictOnDelete` | ID Volunteer |
-| `status` | varchar(32) | Default `'draft'` | Status kanonik (`draft`, `submitted`, `under_review`, dsb.) |
-| `snapshot_json` | json | Nullable | Snapshot posisi & syarat saat submit |
-| `submitted_at` | timestamp | Nullable | Timestamp saat lamaran dikirim |
-| `decision_at` | timestamp | Nullable | Timestamp keputusan seleksi |
-| `decision_by` | bigint unsigned | Foreign Key (`users.id`), `nullOnDelete` | Admin / Organizer pengambil keputusan |
-| `decision_reason` | text | Nullable | Alasan keputusan seleksi |
-| `revision` | int unsigned | Default `0` | Versi revisi lamaran |
-| `created_at` / `updated_at` | timestamp | Nullable | Timestamps Laravel |
+| `id` | bigint unsigned | Primary Key, Auto Increment | ID unik dokumen |
+| `application_id` | bigint unsigned | Foreign Key (`applications.id`), `cascadeOnDelete` | ID Lamaran |
+| `uploader_id` | bigint unsigned | Foreign Key (`users.id`), `restrictOnDelete` | ID Pengunggah (Volunteer) |
+| `document_type` | varchar(32) | `'cv'`, `'supporting'` | Jenis dokumen |
+| `disk` | varchar(32) | Default `'private'` | Disk penyimpanan privat |
+| `storage_key` | varchar(255) | Path acak relatif di disk privat | Lokasi penyimpanan fisik |
+| `original_name` | varchar(255) | Nama file asli saat diunggah | Nama file attachment |
+| `mime_type` | varchar(100) | MIME type hasil inspeksi konten | MIME type valid |
+| `size_bytes` | bigint unsigned | Ukuran byte (maksimal 5 MB) | Ukuran file |
+| `checksum_sha256` | varchar(64) | SHA-256 hash | Integritas file |
+| `status` | varchar(32) | Default `'ready'` | `'ready'`, `'purged'`, `'missing'` |
+| `ready_at` | timestamp | Nullable | Timestamp siap diakses |
+| `purged_at` | timestamp | Nullable | Timestamp retensi pembersihan |
+| `timestamps` | timestamp | Nullable | Timestamps Laravel |
 
-- **Unique Constraint**: `unique(['volunteer_id', 'event_id'])` (Satu Volunteer maksimal memiliki 1 lamaran per event).
+- **Indeks**: `['application_id', 'document_type']`, `['application_id', 'status']`.
 
 ### Model
-- `App\Models\Application`
-  - Relasi: `event()`, `position()`, `volunteer()`, `decisionBy()`.
-  - Relasi tambahan di model `Event`, `EventPosition`, dan `User`: `applications()`.
+- `App\Models\ApplicationDocument`
+  - Relasi: `application()`, `uploader()`.
+- Update `App\Models\Application`:
+  - `documents()`, `cvDocument()`, `supportingDocuments()`.
 
 ---
 
-## 3. Layanan Domain (ApplicationService)
+## 3. Layanan Domain (DocumentStorageService & ApplicationService)
 
-File: `app/Services/ApplicationService.php`
+### 1. `App\Services\DocumentStorageService`
+- **Penyimpanan Privat**: Disk `'private'` (`storage/app/private`), tanpa URL publik, symlink, atau iframe publik.
+- **Validasi Ketat**:
+  - CV: format file wajib PDF (`application/pdf`).
+  - Pendukung: format file wajib PDF, JPG, atau PNG (`application/pdf`, `image/jpeg`, `image/png`).
+  - Batas ukuran: maksimal 5 MB per file.
+  - Batas kuota file: maksimal 5 file per lamaran. CV otomatis menggantikan CV lama bila diunggah ulang pada status draft.
+- **Kompensasi & Resiliensi**: Jika pembuatan entri database gagal, file fisik di disk privat otomatis dihapus seketika agar tidak terjadi file yatim (*orphan*).
+- **Download Terotorisasi**: Menggunakan attachment streaming dari controller dengan Policy ketat.
 
-### 1. `storeDraft(User $volunteer, EventPosition $position): Application`
-- Memeriksa kelengkapan profil volunteer melalui `ProfileEligibilityService::check($volunteer)`. Menolak dengan `ValidationException` jika profil belum lengkap.
-- Memeriksa apakah event dalam status `publiclyVisible()` (approved & published) serta dalam periode pendaftaran (`registration_opens_at <= now < registration_deadline`).
-- Menjamin aturan **1 Draft per Volunteer per Event**:
-  - Jika draft untuk event yang sama sudah ada dengan status `'draft'`, mengembalikan draft tersebut (dan memperbarui posisi jika berpindah posisi).
-  - Jika lamaran sudah dalam status `'submitted'` atau setelahnya, melempar `ValidationException`.
-
-### 2. `submit(Application $draft, User $actor): Application`
-- Menjamin **Idempotensi & Transaksional** dengan locking MySQL dalam urutan ketat:
-  `Volunteer -> Event -> Entitlement`.
-- Jika lamaran sudah berstatus `'submitted'` / beyond draft, fungsi mengembalikan objek lamaran secara idempoten tanpa menambah counter entitlement ulang.
-- Membentuk snapshot posisi via `PositionSnapshotService::build($position)`. Memeriksa kesiapan assessment (`AssessmentReadiness`).
-- Memanggil `EntitlementService::consumeApplication($event)` dalam transaksi MySQL yang sama untuk memverifikasi kuota paket (`submitted_applications < max_applications`) dan menaikkan counter secara atomik.
-- Mengubah status lamaran menjadi `'submitted'`, mencatat timestamp `submitted_at`, dan menaikkan `revision`.
-- Mencatat log audit melalui `AuditService::record` dengan aksi `'application.submitted'`.
-- **Rollback otomatis**: Jika terjadi kegagalan di langkah mana pun dalam transaksi (misal kuota paket habis atau assessment belum siap), seluruh perubahan database di-rollback termasuk increment counter entitlement dan audit log.
+### 2. `App\Services\ApplicationService`
+- **Snapshot Immutable**: Saat `submit()`, `snapshot_json` menyimpan posisi, profil volunteer (nama, email, phone, city_id, skills dengan level, availability slots), dan metadata dokumen resmi (id, tipe, nama asli, ukuran, checksum sha256). Perubahan data profil volunteer setelah submit tidak akan mempengaruhi histori snapshot yang sudah tersimpan.
+- **Pemicu Evaluasi**: Pasca-commit, sistem memicu proses evaluasi (bila A4 terdaftar). Bila evaluator belum tersedia, status lamaran tetap `submitted` dengan badge tampilan antarmuka **"Menunggu evaluasi"**.
 
 ---
 
-## 4. Otorisasi (ApplicationPolicy)
+## 4. Otorisasi (ApplicationDocumentPolicy)
 
-File: `app/Policies/ApplicationPolicy.php`
+File: `app/Policies/ApplicationDocumentPolicy.php`
 
-- `viewAny`: Khusus pengguna dengan role `volunteer` yang aktif dan terverifikasi.
-- `view`: Hanya pemilik volunteer lamaran atau organizer pemilik event (untuk lamaran yang sudah dikirim).
-- `update` & `submit`: Hanya pemilik volunteer lamaran yang aktif dan terverifikasi saat lamaran berstatus `'draft'`.
+- `create`: Volunteer pemilik lamaran dengan akun aktif dan lamaran berstatus `'draft'`.
+- `delete`: Volunteer pemilik lamaran dengan akun aktif dan lamaran berstatus `'draft'`.
+- `download`:
+  - Volunteer pemilik lamaran aktif.
+  - Organizer pemilik event aktif, **hanya jika lamaran berstatus `submitted` atau setelahnya** (draft volunteer ditolak).
+  - Pihak lain (termasuk Admin dan organizer event lain) ditolak (HTTP 403) sesuai PRD: *Admin tidak otomatis mendapat akses seluruh dokumen pelamar*.
 
 ---
 
 ## 5. Controller & Routing
 
-### Controller
-`App\Http\Controllers\Volunteer\VolunteerApplicationController`
-- `store(Request $request, EventPosition $position)`: Membuat draft lamaran dan redirect ke halaman detail draft.
-- `index(Request $request)`: Menampilkan daftar lamaran milik volunteer terautentikasi (paginated).
-- `show(Application $application)`: Menampilkan detail lamaran, event, posisi, jadwal, dan status profil.
-- `submit(Request $request, Application $application)`: Mengirimkan lamaran draft.
-
-### Routes (`routes/volunteer.php`)
-Grup middleware: `['auth', 'account.active', 'role:volunteer', 'verified']`, prefix: `volunteer`, name: `volunteer.`:
-- `POST /volunteer/positions/{position}/applications` -> `volunteer.applications.store`
-- `GET /volunteer/applications` -> `volunteer.applications.index`
-- `GET /volunteer/applications/{application}` -> `volunteer.applications.show`
-- `POST /volunteer/applications/{application}/submit` -> `volunteer.applications.submit`
+### Routes Baru:
+- `POST /volunteer/applications/{application}/documents` -> `volunteer.documents.store`
+- `DELETE /volunteer/documents/{document}` -> `volunteer.documents.destroy`
+- `GET /documents/{document}/download` -> `documents.download`
+- `GET /organizer/events/{event}/applications` -> `organizer.applications.index`
+- `GET /organizer/applications/{application}` -> `organizer.applications.show`
 
 ---
 
 ## 6. Antarmuka UI
 
-- **Halaman Detail Event (`resources/views/events/show.blade.php`)**:
-  - Menampilkan tombol CTA `"Pilih posisi dan mulai lamaran"` saat pendaftaran terbuka dan user login sebagai Volunteer.
-- **Halaman Daftar Lamaran (`resources/views/volunteer/applications/index.blade.php`)**:
-  - Daftar kartu lamaran volunteer dengan status badge, detail posisi, dan lokasi.
-- **Halaman Detail Lamaran (`resources/views/volunteer/applications/show.blade.php`)**:
-  - Status lamaran, informasi event/posisi, peringatan kelengkapan profil jika draft, dan tombol `"Kirimkan Lamaran"`.
-- **Navigasi Utama (`resources/views/layouts/navigation.blade.php`)**:
-  - Menambahkan tautan `"Lamaran Saya"` untuk pengguna role `volunteer`.
+1. **Detail Lamaran Volunteer (`resources/views/volunteer/applications/show.blade.php`)**:
+   - Status badge dengan label status **"Menunggu evaluasi"** saat berstatus `submitted`.
+   - Tabel dokumen tersimpan dengan label "Dokumen tersimpan", ukuran, dan link unduh.
+   - Form upload file CV & Dokumen Pendukung saat status masih `draft`.
+2. **Daftar Pelamar Organizer (`resources/views/organizer/applications/index.blade.php`)**:
+   - Filter posisi, daftar pelamar yang sudah `submitted`, badge "Menunggu evaluasi", dan link detail kandidat. Draft volunteer tidak ditampilkan kepada organizer.
+3. **Detail Lamaran Organizer (`resources/views/organizer/applications/show.blade.php`)**:
+   - Detail profil kandidat, posisi, kebutuhan skill, jadwal tugas, dan link unduh dokumen resmi kandidat.
+4. **Navigasi Sidebar**:
+   - Menu `"Lamaran Saya"` ditambahkan pada navigasi sidebar volunteer.
+   - CTA `"Kelola Pelamar Event"` ditambahkan pada halaman detail event organizer.
 
 ---
 
 ## 7. Pengujian & Verifikasi
 
-### Pengujian Otomatis (`tests/Feature/A3ApplicationTest.php`)
-8 Skenario pengujian yang dibuat dan **100% Lulus**:
-1. `test_volunteer_can_create_draft_application_for_published_event`: Berhasil membuat draft lamaran dari tombol CTA detail event.
-2. `test_incomplete_profile_blocks_draft_creation`: Menolak pembuatan draft jika profil volunteer belum lengkap (HTTP 422).
-3. `test_store_draft_is_single_per_volunteer_per_event`: Menjamin hanya 1 draft per volunteer per event.
-4. `test_successful_submit_updates_status_snapshot_and_audit`: Submit berhasil memperbarui status ke `submitted`, menyimpan snapshot, menambah counter entitlement, dan membuat audit log.
-5. `test_submit_is_idempotent`: Submit ulang pada lamaran submitted bersifat idempoten tanpa menggandakan counter.
-6. `test_package_quota_limit_rejects_subsequent_submissions`: Menolak submit jika kuota lamaran paket event sudah tercapai (`max_applications`).
-7. `test_submission_failure_rolls_back_transaction_and_entitlement_counter`: Memastikan seluruh transaksi di-rollback jika submit gagal.
-8. `test_other_volunteer_cannot_access_or_submit_others_application`: Akses lintas volunteer ditolak (HTTP 403).
+### Pengujian Otomatis (`tests/Feature/A3ApplicationDocumentsTest.php`)
+7 Skenario pengujian terarah dan **100% Lulus**:
+1. `test_volunteer_can_upload_cv_and_supporting_documents_to_draft`: Berhasil mengunggah CV dan dokumen pendukung pada draft dengan disk privat dan metadata lengkap.
+2. `test_upload_validates_file_extension_and_content_mime_type`: Menolak format tidak sah (bukan PDF untuk CV, bukan PDF/JPG/PNG untuk pendukung) dengan HTTP 422.
+3. `test_upload_validates_max_file_size_and_max_documents_count`: Menolak file > 5 MB dan menolak upload melebihi batas 5 file per lamaran.
+4. `test_volunteer_can_delete_document_during_draft`: Volunteer berhasil menghapus dokumen saat draft dan file fisik terhapus.
+5. `test_authorized_document_download_rules`: Hak unduh terverifikasi (Volunteer pemilik boleh, Volunteer lain ditolak, Organizer ditolak saat draft, Organizer boleh setelah submit, Organizer lain ditolak, Admin ditolak).
+6. `test_submit_stores_immutable_snapshot_and_profile_changes_do_not_affect_it`: Perubahan profil volunteer setelah submit terbukti tidak mengubah snapshot historis.
+7. `test_organizer_can_view_submitted_applications_list_and_detail_with_status_menunggu_evaluasi`: Organizer dapat melihat daftar kandidat `submitted` dengan label "Menunggu evaluasi" dan mengunduh berkasnya.
 
-### Hasil Suite Pengujian Penuh
-- **Status Suite**: `136 tests passed, 680 assertions passed`.
+### Pengujian Regresi Tahap 1 (`tests/Feature/A3ApplicationTest.php`)
+8 Skenario pengujian Tahap 1 tetap **100% Lulus** (32 assertions).
+
+### Hasil Suite Pengujian Modul A3:
+- **Total A3 Feature Tests**: 15 tests, 88 assertions passed.
+- **Frontend Build**: `npm.cmd run build` (Vite v8.3.1) sukses.
+- **Blade Caching**: `php artisan view:cache` sukses.
 - **Database Uji**: MySQL `skillmatch_testing`.
