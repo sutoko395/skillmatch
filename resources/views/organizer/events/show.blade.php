@@ -322,6 +322,15 @@
                         Lihat halaman publik
                     </a>
                 @endif
+
+                @if ($event->publication_status === 'published' || $event->entitlement)
+                    <a
+                        href="{{ route('organizer.applications.index', $event) }}"
+                        class="inline-flex items-center rounded-lg bg-indigo-50 px-3 py-1.5 text-sm font-semibold text-indigo-700 hover:bg-indigo-100"
+                    >
+                        Kelola Pelamar Event &rarr;
+                    </a>
+                @endif
             </div>
 
             @if (in_array($event->lifecycle_status, ['upcoming', 'ongoing']))

@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Application extends Model
 {
@@ -51,5 +53,24 @@ class Application extends Model
     public function decisionBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'decision_by');
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(ApplicationDocument::class);
+    }
+
+    public function cvDocument(): HasOne
+    {
+        return $this->hasOne(ApplicationDocument::class)
+            ->where('document_type', 'cv')
+            ->where('status', 'ready');
+    }
+
+    public function supportingDocuments(): HasMany
+    {
+        return $this->hasMany(ApplicationDocument::class)
+            ->where('document_type', 'supporting')
+            ->where('status', 'ready');
     }
 }

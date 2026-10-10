@@ -83,6 +83,11 @@ class Event extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
+    // public function cityRecord()
+    // {
+    //     return $this->belongsTo(City::class, 'city_id');
+    // }
+
     public function positions()
     {
         return $this->hasMany(EventPosition::class);

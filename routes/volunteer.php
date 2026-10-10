@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Volunteer\VolunteerApplicationController;
 use App\Http\Controllers\Volunteer\VolunteerDashboardController;
+use App\Http\Controllers\Volunteer\VolunteerDocumentController;
 use App\Http\Controllers\Volunteer\VolunteerProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -52,4 +53,14 @@ Route::middleware([
             '/applications/{application}/submit',
             [VolunteerApplicationController::class, 'submit']
         )->name('applications.submit');
+
+        Route::post(
+            '/applications/{application}/documents',
+            [VolunteerDocumentController::class, 'store']
+        )->name('documents.store');
+
+        Route::delete(
+            '/documents/{document}',
+            [VolunteerDocumentController::class, 'destroy']
+        )->name('documents.destroy');
     });

@@ -49,6 +49,7 @@ class VolunteerApplicationController extends Controller
             'position.positionSkills.skill',
             'position.schedules',
             'position.requirements',
+            'documents',
         ]);
 
         $eligibility = $this->profileEligibilityService->check(Auth::user());

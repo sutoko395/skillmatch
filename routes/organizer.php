@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Organizer\ApplicationController;
 use App\Http\Controllers\Organizer\EventController;
 use App\Http\Controllers\Organizer\OrderController;
 use App\Http\Controllers\Organizer\PositionController;
@@ -69,6 +70,16 @@ Route::middleware([
         )->parameters([
             'positions' => 'position',
         ]);
+
+        Route::get(
+            'events/{event}/applications',
+            [ApplicationController::class, 'index']
+        )->name('applications.index');
+
+        Route::get(
+            'applications/{application}',
+            [ApplicationController::class, 'show']
+        )->name('applications.show');
 
         Route::get(
             'events/{event}/package',
