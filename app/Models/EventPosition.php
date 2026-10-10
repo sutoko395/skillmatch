@@ -30,6 +30,11 @@ class EventPosition extends Model
         return $this->hasMany(PositionSchedule::class);
     }
 
+    public function assessments(): HasMany
+    {
+        return $this->hasMany(Assessment::class)->orderByDesc('version');
+    }
+
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);

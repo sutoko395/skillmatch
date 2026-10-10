@@ -1,5 +1,13 @@
 # SkillMatch
 
+## Assessment Organizer (10 Oktober 2026)
+
+Setelah mengambil kode, jalankan `php artisan migrate` memakai PHP kompatibel dengan vendor (lingkungan lokal ini memakai PHP 8.4 Herd), lalu `npm.cmd run build`. Migration `2026_10_10_000002_create_organizer_assessments.php` membuat assessments/questions/options; tidak perlu reset atau seeder assessment.
+
+Login sebagai Organizer aktif/terverifikasi, buka Event Saya -> detail event draft -> Assessment (di bawah Posisi dan jadwal) -> Kelola Assessment pada posisi. Isi durasi 1–120 menit, tambah 1–50 soal dengan empat opsi A–D dan satu kunci tiap soal. Simpan Draft boleh parsial. Publikasikan Assessment menampilkan konfirmasi; centang persetujuan lalu Konfirmasi Publikasi untuk mengunci set. Simpan draft dan kembali tersedia bila belum siap. Readiness nyata terhubung ke pengajuan/publikasi event dan snapshot lamaran, tetapi semua syarat A2 lainnya tetap berlaku. Publikasi assessment tidak menerbitkan event. Published tidak dibuka kembali; draft stale dari tab lain ditolak. Posisi dengan draft assessment dapat dihapus, sedangkan posisi dengan assessment published dipertahankan.
+
+Tes validasi: `php vendor/bin/phpunit tests/Unit/OrganizerAssessmentValidationTest.php`. Tes integrasi hanya sesudah konfigurasi MySQL `skillmatch_testing` terpisah dan migration tes: `php vendor/bin/phpunit tests/Feature/OrganizerAssessmentTest.php`. Timer/attempt peserta, screening/matching, aktivitas/notifikasi masih tahap berikutnya. Bukti dan blocker ada di [handoff assessment](docs/A4_ASSESSMENT_HANDOFF.md).
+
 ## Update jadwal posisi (10 Oktober 2026)
 
 Jalankan migration tambahan dengan PHP yang memenuhi lockfile/dependensi terpasang, setelah backup dan pemeriksaan database: `php artisan migrate`. Migration `2026_10_10_000001_add_event_schedule_mode_to_positions.php` menambah `follows_event_schedule`; tidak mengubah interval posisi lama. Posisi baru default mengikuti jadwal event. Pilih Atur jadwal tugas khusus bila perlu; jadwal event selalu terlihat. Event satu hari cukup mengubah jam, beberapa hari memakai tanggal/jam. Perubahan event editable memperbarui posisi otomatis, dan ditolak jika jadwal khusus keluar rentang/deadline. Snapshot dan freeze published tetap berlaku.

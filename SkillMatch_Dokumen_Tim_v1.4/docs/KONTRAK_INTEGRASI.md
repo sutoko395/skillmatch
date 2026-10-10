@@ -1,5 +1,11 @@
 # Kontrak integrasi empat anggota
 
+## Assessment Organizer — 10 Oktober 2026
+
+A4 membuat `assessments`, `assessment_questions`, `assessment_options` melalui migration `2026_10_10_000002_create_organizer_assessments.php`. assessments memakai unique(event_position_id,version), revision untuk proteksi edit draft bersamaan, duration_minutes nullable pada draft, dan is_published. Questions memakai text/sort_order; options memakai label A–D/text/is_correct dengan unique(question,label). Published immutable, versi awal 1; draft baru diperbarui pada versi yang sama, bukan membuat versi published ulang. Posisi dengan draft assessment dapat dihapus bersama draft; posisi dengan assessment published ditolak penghapusannya untuk menjaga referensi. Kunci hanya digunakan server dan editor pemilik; is_correct disembunyikan pada serialisasi model opsi.
+
+GET/PUT `/organizer/positions/{position}/assessment` tetap bernama organizer.assessments.edit/update. PUT action draft menyimpan parsial; preview memvalidasi dan menampilkan konfirmasi tanpa menulis database; publish memerlukan confirmed dan memvalidasi ulang/transaksi dengan lock actor -> event -> position -> assessment. Revision stale ditolak; replay publish tidak mengubah set atau menggandakan audit. OrganizerAssessmentService di-bind ke AssessmentReadiness dan memeriksa versi published, 1–50 soal, empat opsi, satu kunci, durasi 1–120. A2 submit/publish dan snapshot A3 memakai interface existing, tanpa bypass. Attempt peserta/screening/matching belum termasuk tahap ini.
+
 ## Penyesuaian jadwal posisi — 10 Oktober 2026
 
 A2 menambahkan boolean `event_positions.follows_event_schedule` (default database false untuk menjaga posisi existing). Form posisi baru default mengikuti event. EventService.position menerima flag boolean; mode mengikuti event membentuk satu interval UTC dari waktu event di server dan mengabaikan interval request. Pemanggil lama yang mengirim schedules tanpa flag tetap memakai jadwal khusus. Struktur PositionSnapshotService.schedules `[start,end]` tetap sama; A3/A4 membaca interval tersimpan, tanpa mode/status/snapshot baru. Perubahan event editable menyelaraskan posisi mengikuti event dan memvalidasi ulang jadwal khusus secara atomik. Published/frozen dan snapshot submitted tidak diubah. Migration tambahan: `2026_10_10_000001_add_event_schedule_mode_to_positions.php`.

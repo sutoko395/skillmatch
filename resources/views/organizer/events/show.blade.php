@@ -174,24 +174,31 @@
                             </form>
                         @endif
 
-                        @if (Route::has('organizer.assessments.edit'))
-                            <a
-                                href="{{ route('organizer.assessments.edit', $position) }}"
-                                class="text-indigo-700 underline"
-                            >
-                                Assessment
-                            </a>
-                        @else
-                            <p class="text-sm text-slate-600">
-                                Pengelolaan assessment belum tersedia.
-                            </p>
-                        @endif
                     </div>
                 </article>
             @empty
                 <p class="mt-4 text-slate-600">
                     Belum ada posisi.
                 </p>
+            @endforelse
+        </x-section-card>
+
+        <x-section-card>
+            <h2 id="assessment" class="text-xl font-semibold">Assessment</h2>
+            @forelse($event->positions as $position)
+                @php($assessment = $position->assessments->first())
+                <div class="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4">
+                    <div>
+                        <p class="font-semibold">{{ $position->name }}</p>
+                        <p class="text-sm text-slate-600">{{ $assessment?->is_published ? 'Dipublikasikan · Terkunci' : ($assessment ? 'Draft assessment' : 'Belum dibuat') }}</p>
+                        @if($assessment)
+                            <p class="mt-1 text-sm text-slate-700">{{ $assessment->questions_count }} soal · {{ $assessment->duration_minutes !== null ? $assessment->duration_minutes . ' menit' : 'Durasi belum diatur' }}</p>
+                        @endif
+                    </div>
+                    <a href="{{ route('organizer.assessments.edit', $position) }}" class="text-sm font-semibold text-indigo-700 underline">{{ $assessment?->is_published || !$editable ? 'Lihat Assessment' : 'Kelola Assessment' }}</a>
+                </div>
+            @empty
+                <p class="mt-4 text-sm text-slate-600">Tambahkan posisi di bagian Posisi dan jadwal terlebih dahulu untuk membuat assessment.</p>
             @endforelse
         </x-section-card>
 

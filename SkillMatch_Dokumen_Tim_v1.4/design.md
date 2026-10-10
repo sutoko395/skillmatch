@@ -1,5 +1,9 @@
 # Design specification SkillMatch
 
+## Editor assessment Organizer — 10 Oktober 2026
+
+Bagian Assessment berada di bawah Posisi dan jadwal sebelum Paket dan pembayaran, menampilkan nama posisi/status/tautan Kelola Assessment atau Lihat Assessment bila terkunci. Editor per posisi memakai navbar/layout SF, beberapa soal dalam satu halaman, tombol tambah/hapus, opsi tetap A–D dan select satu kunci. Durasi 1–120 menit dan hitungan soal maksimal 50 ditampilkan. Simpan Draft mempertahankan isian parsial. Publikasikan Assessment membuka halaman konfirmasi posisi/jumlah/durasi/penguncian, checkbox persetujuan, Konfirmasi Publikasi, serta Simpan draft dan kembali. Published tampil read-only; empty/error/input lama/loading tersedia. Kunci tampil hanya untuk Organizer pemilik pada editor/konfirmasi, tidak pada halaman event publik atau peserta. Editor soal menggunakan Alpine existing satu kali.
+
 ## Penyesuaian form jadwal posisi — 10 Oktober 2026
 
 Tampilkan jadwal event berlabel WIB di atas dua radio: Ikuti jadwal event (default posisi baru) dan Atur jadwal tugas khusus. Mode otomatis tidak meminta input waktu. Mode khusus diawali nilai event; event satu hari menampilkan tanggal sebagai keterangan dan input jam, event beberapa hari menampilkan input tanggal/jam. Jadwal existing ditampilkan sebagai jadwal khusus. Tampilkan error server dan pertahankan pilihan/input setelah gagal. Bagian Posisi dan jadwal tetap memiliki tombol pengelolaan posisi sendiri; perubahan ini tidak mencakup editor assessment.

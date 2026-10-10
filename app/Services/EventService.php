@@ -424,6 +424,10 @@ class EventService
                 $position
             );
 
+            if ($position->assessments()->where('is_published', true)->exists()) {
+                throw ValidationException::withMessages(['assessment' => 'Posisi dengan assessment published tidak dapat dihapus.']);
+            }
+            $position->assessments()->delete();
             $position->delete();
 
             $event->forceFill([

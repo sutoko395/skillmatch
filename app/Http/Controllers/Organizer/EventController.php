@@ -114,6 +114,7 @@ class EventController extends Controller
                 'positions.positionSkills.skill',
                 'positions.schedules',
                 'positions.requirements',
+                'positions.assessments' => fn ($query) => $query->withCount('questions'),
                 'entitlement',
                 'orders',
             ]),
