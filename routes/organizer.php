@@ -27,6 +27,9 @@ Route::middleware([
 
     Route::middleware('organizer.active')->group(function () {
 
+        Route::get('positions/{position}/assessment', [\App\Http\Controllers\Organizer\AssessmentController::class, 'edit'])->middleware('verified')->name('assessments.edit');
+        Route::put('positions/{position}/assessment', [\App\Http\Controllers\Organizer\AssessmentController::class, 'update'])->middleware('verified')->name('assessments.update');
+
         Route::redirect('/dashboard', '/organizer/aktivitas')
             ->name('dashboard');
 

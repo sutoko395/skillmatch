@@ -1,5 +1,9 @@
 # PRD SkillMatch Volunteer — acuan tim empat anggota
 
+## Keputusan assessment Organizer — 10 Oktober 2026
+
+Assessment per posisi terdiri dari 1–50 soal dengan tepat empat opsi A–D dan satu kunci benar setiap soal, durasi 1–120 menit. Organizer bebas menentukan jumlah/durasi dalam rentang tersebut. Simpan Draft boleh belum lengkap (termasuk tanpa soal/durasi); draft belum memenuhi readiness. Publikasikan Assessment memvalidasi kelengkapan, lalu menampilkan konfirmasi posisi/jumlah/durasi dan konsekuensi penguncian. Konfirmasi publikasi membekukan soal, opsi, kunci dan durasi saat assessment published, sebelum event published; tidak ada pembukaan kembali/revisi published pada tahap ini. Publikasi assessment tidak menerbitkan event. Versi published tetap immutable dan terikat snapshot; nilai assessment tetap terpisah dari matching. Keputusan ini menetapkan angka durasi/jumlah soal yang sebelumnya belum final. Batas panjang teknis input: pertanyaan 5.000 karakter, opsi 2.000 karakter.
+
 ## Keputusan jadwal posisi — 10 Oktober 2026
 
 Posisi baru default mengikuti jadwal event; Organizer dapat memilih jadwal tugas khusus dalam rentang event. Jadwal event selalu terlihat pada form posisi. Untuk event satu hari, tanggal mengikuti event dan Organizer cukup mengubah jam; event beberapa hari memakai tanggal/jam. Mode mengikuti event disimpan pada `event_positions.follows_event_schedule`; interval UTC tetap disimpan di `position_schedules` untuk kompatibilitas snapshot, screening, matching dan seleksi. Posisi existing tetap jadwal khusus tanpa backfill interval. Perubahan jadwal/deadline event yang masih editable menyelaraskan posisi mengikuti event dalam transaksi yang sama dan ditolak bila jadwal khusus menjadi tidak valid. Freeze event published dan snapshot lamaran tetap berlaku. Ketentuan ini menggantikan kewajiban mengisi ulang jadwal posisi secara manual; rumus matching tidak berubah.

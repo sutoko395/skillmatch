@@ -1,5 +1,9 @@
 # UAT dan kriteria selesai lintas anggota
 
+## Assessment Organizer — tambahan 10 Oktober 2026
+
+Uji draft tanpa soal/durasi dan draft parsial berhasil tetapi tidak membuka readiness; publikasi 1/50 soal, 1/120 menit valid; 0/51 soal, durasi 0/121 dan opsi selain tepat A–D ditolak. Soal/opsi kosong atau tanpa satu kunci ditolak. Preview tidak menulis database, confirmed publish mengunci set, edit setelah publish ditolak dan replay tidak menggandakan audit. Uji stale revision, dua tab, rollback, akses Organizer lain/Volunteer/Admin/guest/nonaktif dan event frozen melalui endpoint. Readiness nyata membuka pengajuan/publikasi hanya jika syarat A2 lainnya terpenuhi; snapshot assessment_version tetap immutable. Posisi draft assessment dapat dihapus; published tidak. UI diuji 360/768/1280, keyboard, error/old input/loading dan konfirmasi. Tes validasi tidak berarti UAT timer/attempt/screening/matching selesai; bukti tiap tahap dicatat terpisah.
+
 ## Tambahan UAT jadwal posisi — 10 Oktober 2026
 
 Untuk UAT-07/10/19/32/34: pastikan posisi baru default mengikuti event dengan interval dari server; interval request palsu diabaikan pada mode ini. Mode khusus harus berdurasi positif, dalam rentang event dan setelah deadline. Uji event satu hari (input jam) dan beberapa hari (input tanggal/jam), kegagalan simpan mempertahankan pilihan, serta endpoint lintas pemilik/role. Perubahan event editable menyelaraskan hanya posisi mengikuti event; bila jadwal khusus tidak valid, seluruh transaksi rollback. Migration mempertahankan interval existing sebagai khusus. Published tetap terkunci dan snapshot submitted tidak berubah. Bukti otomatis dan visual harus dicatat terpisah; penambahan ini tidak berarti UAT sudah lulus.

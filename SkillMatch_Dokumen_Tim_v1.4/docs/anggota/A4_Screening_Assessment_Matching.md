@@ -1,5 +1,9 @@
 # Brief A4 — screening, assessment, matching, aktivitas
 
+## Tahap assessment Organizer — keputusan 10 Oktober 2026
+
+Implementasi tahap ini: editor set per posisi pada bagian Assessment (setelah Posisi/jadwal, sebelum Paket), 1–50 soal dengan empat opsi A–D dan satu kunci setiap soal, durasi 1–120 menit. Draft boleh belum lengkap; preview publikasi memvalidasi dan menampilkan konfirmasi posisi/jumlah/durasi sebelum confirmed publish. Published langsung immutable (termasuk soal/opsi/kunci/durasi), versi awal 1; tidak ada fitur revisi published. Binding OrganizerAssessmentService -> AssessmentReadiness harus nyata dan membaca data valid. Revision draft mencegah stale overwrite; transaksi/audit dan replay publish aman. Penghapusan posisi published assessment ditolak; draft dapat dibuang bersama posisi. Pertanyaan dibatasi 5.000 karakter, opsi 2.000 karakter untuk batas teknis form. Attempt peserta, screening, matching, aktivitas/notifikasi tetap tahap berikutnya. Handoff tahap ini: `docs/A4_ASSESSMENT_HANDOFF.md` pada root aplikasi.
+
 ## Konsumsi jadwal posisi — 10 Oktober 2026
 
 Form A2 default mengikuti jadwal event dengan opsi jadwal khusus. Kedua mode tetap disimpan pada `position_schedules` dan disalin ke snapshot `[start,end]`; A4 memakai snapshot immutable untuk screening ketersediaan/matching. Rumus 50/30/20 dan batas waktu assessment tetap sama. Jangan membaca ulang waktu event sebagai pengganti snapshot jadwal historis.
