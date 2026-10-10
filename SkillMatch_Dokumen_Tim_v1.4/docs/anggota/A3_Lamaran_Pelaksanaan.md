@@ -1,5 +1,9 @@
 # Brief A3 — lamaran, dokumen, seleksi, pelaksanaan
 
+## Konsumsi jadwal posisi — 10 Oktober 2026
+
+A2 menyediakan opsi mengikuti event atau jadwal khusus; kedua mode tetap menghasilkan interval UTC pada `position_schedules` dan snapshot `[start,end]` yang sama. A3 tetap memakai snapshot interval pada submit dan pemeriksaan konflik, tanpa membaca ulang mode/profil untuk histori. Jadwal existing dan snapshot submitted tidak ditimpa. Tidak ada perubahan kepemilikan seleksi/attendance.
+
 Versi 1.4.2 • Baca [PRD](../../PRD_SkillMatch_Tim.md), [kontrak](../KONTRAK_INTEGRASI.md), [design](../../design.md), [UAT](../UAT.md).
 
 ## Titik mulai

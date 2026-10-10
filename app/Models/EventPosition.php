@@ -17,12 +17,12 @@ class EventPosition extends Model
         'description',
         'quota',
         'min_skill_level',
-        'qualifications', 'required_full_availability', 'required_same_city',
+        'qualifications', 'required_full_availability', 'required_same_city', 'follows_event_schedule',
     ];
 
     protected function casts(): array
     {
-        return ['required_full_availability' => 'boolean', 'required_same_city' => 'boolean'];
+        return ['required_full_availability' => 'boolean', 'required_same_city' => 'boolean', 'follows_event_schedule' => 'boolean'];
     }
 
     public function schedules(): HasMany

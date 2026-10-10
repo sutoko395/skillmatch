@@ -10,6 +10,10 @@
     />
 
     @php
+        $eventStart = $event->starts_at->copy()->setTimezone('Asia/Jakarta')->format('Y-m-d\TH:i');
+        $eventEnd = $event->ends_at->copy()->setTimezone('Asia/Jakarta')->format('Y-m-d\TH:i');
+        $singleDay = substr($eventStart, 0, 10) === substr($eventEnd, 0, 10);
+        $followsEvent = (bool) old('follows_event_schedule', $position->exists ? $position->follows_event_schedule : true);
         $initialSkills = old(
             'skills',
             $position->positionSkills
@@ -48,6 +52,9 @@
                 ))
                 ->all()
         );
+        if (! $initialSchedules) {
+            $initialSchedules = [['starts_at' => $eventStart, 'ends_at' => $eventEnd]];
+        }
     @endphp
 
     <x-section-card>
@@ -59,6 +66,9 @@
             class="space-y-8"
             x-data="{
                 busy: false,
+                followsEvent: @js($followsEvent),
+                eventStart: @js($eventStart),
+                eventEnd: @js($eventEnd),
                 skills: @js($initialSkills),
                 schedules: @js($initialSchedules),
                 requirements: @js($initialRequirements)
@@ -206,30 +216,66 @@
                     Jadwal posisi (WIB)
                 </legend>
 
+                <div class="rounded-xl border border-indigo-100 bg-indigo-50 p-4 text-sm text-indigo-950">
+                    <p class="font-semibold">Jadwal event</p>
+                    <p class="mt-1">{{ $event->starts_at->copy()->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} – {{ $event->ends_at->copy()->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</p>
+                </div>
+                <div class="space-y-3">
+                    <label class="flex items-center gap-3 text-sm font-medium">
+                        <input type="radio" name="follows_event_schedule" value="1" @checked($followsEvent) @change="followsEvent = true" class="text-indigo-600 focus:ring-indigo-500">
+                        Ikuti jadwal event
+                    </label>
+                    <p class="pl-7 text-sm text-slate-600">Posisi bertugas sepanjang jadwal event dan mengikuti perubahan jadwal event draft.</p>
+                    <label class="flex items-center gap-3 text-sm font-medium">
+                        <input type="radio" name="follows_event_schedule" value="0" @checked(! $followsEvent) @change="followsEvent = false" class="text-indigo-600 focus:ring-indigo-500">
+                        Atur jadwal tugas khusus
+                    </label>
+                </div>
+                <x-input-error :messages="$errors->get('follows_event_schedule')" />
+                <x-input-error :messages="$errors->get('schedules')" />
+
+                <div x-show="! followsEvent" class="space-y-4">
+                @if($singleDay)
+                    <p class="text-sm text-slate-600">Tanggal tugas: {{ $event->starts_at->copy()->setTimezone('Asia/Jakarta')->format('d/m/Y') }}. Ubah jam sesuai kebutuhan posisi.</p>
+                @else
+                    <p class="text-sm text-slate-600">Pilih tanggal dan jam tugas dalam rentang event.</p>
+                @endif
                 <template x-for="(slot, i) in schedules" :key="i">
                     <div class="grid gap-4 rounded-xl bg-slate-50 p-4 md:grid-cols-3">
                         <label class="text-sm font-medium text-slate-700">
                             Mulai
 
+                            @if($singleDay)
+                            <input type="hidden" :name="`schedules[${i}][starts_at]`" :value="slot.starts_at" :disabled="followsEvent">
+                            <input type="time" :value="slot.starts_at.slice(11, 16)" @input="slot.starts_at = eventStart.slice(0, 11) + $event.target.value" :disabled="followsEvent" :required="! followsEvent" class="mt-2 w-full rounded-xl border-slate-300">
+                            @else
                             <input
                                 class="mt-2 w-full rounded-xl border-slate-300"
                                 type="datetime-local"
                                 :name="`schedules[${i}][starts_at]`"
                                 x-model="slot.starts_at"
-                                required
+                                :disabled="followsEvent"
+                                :required="! followsEvent"
                             >
+                            @endif
                         </label>
 
                         <label class="text-sm font-medium text-slate-700">
                             Selesai
 
+                            @if($singleDay)
+                            <input type="hidden" :name="`schedules[${i}][ends_at]`" :value="slot.ends_at" :disabled="followsEvent">
+                            <input type="time" :value="slot.ends_at.slice(11, 16)" @input="slot.ends_at = eventEnd.slice(0, 11) + $event.target.value" :disabled="followsEvent" :required="! followsEvent" class="mt-2 w-full rounded-xl border-slate-300">
+                            @else
                             <input
                                 class="mt-2 w-full rounded-xl border-slate-300"
                                 type="datetime-local"
                                 :name="`schedules[${i}][ends_at]`"
                                 x-model="slot.ends_at"
-                                required
+                                :disabled="followsEvent"
+                                :required="! followsEvent"
                             >
+                            @endif
                         </label>
 
                         <div class="flex items-end">
@@ -248,12 +294,14 @@
                     type="button"
                     class="text-sm font-semibold text-indigo-700 hover:underline"
                     @click="schedules.push({
-                        starts_at: '',
-                        ends_at: ''
+                        starts_at: eventStart,
+                        ends_at: eventEnd
                     })"
                 >
                     + Tambah jadwal
                 </button>
+                <p class="text-sm text-slate-600">Jadwal tugas harus berada dalam rentang event. Waktu ditampilkan dalam WIB.</p>
+                </div>
             </fieldset>
 
             <fieldset class="space-y-4">

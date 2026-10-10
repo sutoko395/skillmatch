@@ -127,6 +127,7 @@
                             ->join(', ') }}
                     </p>
 
+                    <p class="mt-2 text-sm text-slate-600">{{ $position->follows_event_schedule ? 'Jadwal mengikuti event' : 'Jadwal tugas khusus' }}</p>
                     @foreach ($position->schedules as $slot)
                         <p class="text-sm">
                             {{ $slot->starts_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}

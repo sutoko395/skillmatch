@@ -1,5 +1,9 @@
 # Brief A4 — screening, assessment, matching, aktivitas
 
+## Konsumsi jadwal posisi — 10 Oktober 2026
+
+Form A2 default mengikuti jadwal event dengan opsi jadwal khusus. Kedua mode tetap disimpan pada `position_schedules` dan disalin ke snapshot `[start,end]`; A4 memakai snapshot immutable untuk screening ketersediaan/matching. Rumus 50/30/20 dan batas waktu assessment tetap sama. Jangan membaca ulang waktu event sebagai pengganti snapshot jadwal historis.
+
 Versi 1.4.2 • PIC: A4. Baca [PRD](../../PRD_SkillMatch_Tim.md), [kontrak](../KONTRAK_INTEGRASI.md), [design](../../design.md), [UAT](../UAT.md).
 
 ## Dependensi fondasi bersama
