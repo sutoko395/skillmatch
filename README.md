@@ -1,5 +1,11 @@
 # SkillMatch
 
+## Update jadwal posisi (10 Oktober 2026)
+
+Jalankan migration tambahan dengan PHP yang memenuhi lockfile/dependensi terpasang, setelah backup dan pemeriksaan database: `php artisan migrate`. Migration `2026_10_10_000001_add_event_schedule_mode_to_positions.php` menambah `follows_event_schedule`; tidak mengubah interval posisi lama. Posisi baru default mengikuti jadwal event. Pilih Atur jadwal tugas khusus bila perlu; jadwal event selalu terlihat. Event satu hari cukup mengubah jam, beberapa hari memakai tanggal/jam. Perubahan event editable memperbarui posisi otomatis, dan ditolak jika jadwal khusus keluar rentang/deadline. Snapshot dan freeze published tetap berlaku.
+
+Verifikasi pada MySQL khusus tes sesuai panduan di bawah: `php artisan migrate --env=testing`, lalu `php vendor/bin/phpunit tests/Feature/PositionScheduleModeTest.php` dan `npm run build` (PowerShell dapat memakai `npm.cmd run build`). Pengujian database perubahan ini belum dijalankan: `.env.testing` belum ada dan akun database kerja tidak memiliki izin menyiapkan `skillmatch_testing`. Sediakan database/kredensial tes terpisah sebelum menjalankan pengujian. PHP terminal 8.3.31 ditolak dependensi vendor yang meminta >=8.4.1; gunakan PHP 8.4 Herd yang tersedia. Jangan reset database kerja.
+
 SkillMatch adalah aplikasi web yang dikembangkan untuk menghubungkan Volunteer dengan kegiatan Organizer berdasarkan keterampilan, ketersediaan waktu, dan lokasi.
 
 Aplikasi menggunakan Laravel, Blade, Tailwind CSS 3, Alpine.js, Vite, dan MySQL. Volunteer dan Organizer memakai antarmuka web utama, sementara Admin memiliki panel tersendiri.

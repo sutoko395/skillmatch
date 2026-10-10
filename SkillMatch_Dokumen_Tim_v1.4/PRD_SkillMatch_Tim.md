@@ -1,5 +1,9 @@
 # PRD SkillMatch Volunteer — acuan tim empat anggota
 
+## Keputusan jadwal posisi — 10 Oktober 2026
+
+Posisi baru default mengikuti jadwal event; Organizer dapat memilih jadwal tugas khusus dalam rentang event. Jadwal event selalu terlihat pada form posisi. Untuk event satu hari, tanggal mengikuti event dan Organizer cukup mengubah jam; event beberapa hari memakai tanggal/jam. Mode mengikuti event disimpan pada `event_positions.follows_event_schedule`; interval UTC tetap disimpan di `position_schedules` untuk kompatibilitas snapshot, screening, matching dan seleksi. Posisi existing tetap jadwal khusus tanpa backfill interval. Perubahan jadwal/deadline event yang masih editable menyelaraskan posisi mengikuti event dalam transaksi yang sama dan ditolak bila jadwal khusus menjadi tidak valid. Freeze event published dan snapshot lamaran tetap berlaku. Ketentuan ini menggantikan kewajiban mengisi ulang jadwal posisi secara manual; rumus matching tidak berubah.
+
 Versi 1.4.2 • 4 Oktober 2026 • Berbasis `skillmatch-main.zip` dan PRD v1.3.
 
 ## 1. Tujuan dan otoritas

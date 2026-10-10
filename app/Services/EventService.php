@@ -208,6 +208,21 @@ class EventService
                 ->format('H:i:s');
 
             $event->forceFill($data);
+            if ($event->exists && $event->isDirty(['starts_at', 'ends_at', 'registration_deadline'])) {
+                foreach ($event->positions()->orderBy('id')->lockForUpdate()->get() as $position) {
+                    if ($position->follows_event_schedule) {
+                        $position->schedules()->delete();
+                        $position->schedules()->create([
+                            'starts_at' => $event->starts_at,
+                            'ends_at' => $event->ends_at,
+                        ]);
+                    } else {
+                        foreach ($position->schedules()->get() as $schedule) {
+                            $this->assertScheduleWithinEvent($event, $schedule->starts_at, $schedule->ends_at);
+                        }
+                    }
+                }
+            }
             $event->save();
 
             app(AuditService::class)->record(
@@ -250,6 +265,11 @@ class EventService
                     ->findOrFail($position->id);
             }
 
+            // Legacy callers supplying schedules retain custom mode.
+            $input['follows_event_schedule'] ??= $position?->follows_event_schedule
+                ?? ! array_key_exists('schedules', $input);
+            $followsEvent = filter_var($input['follows_event_schedule'], FILTER_VALIDATE_BOOLEAN);
+
             $data = Validator::make($input, [
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string|max:5000',
@@ -264,9 +284,10 @@ class EventService
                 ],
                 'skills.*.minimum_level' => 'required|in:beginner,intermediate,advanced,expert',
                 'skills.*.is_required' => 'required|boolean',
-                'schedules' => 'required|array|min:1|max:100',
-                'schedules.*.starts_at' => 'required|date_format:Y-m-d\TH:i',
-                'schedules.*.ends_at' => 'required|date_format:Y-m-d\TH:i',
+                'follows_event_schedule' => 'required|boolean',
+                'schedules' => [Rule::excludeIf($followsEvent), 'required', 'array', 'min:1', 'max:100'],
+                'schedules.*.starts_at' => [Rule::excludeIf($followsEvent), 'required', 'date_format:Y-m-d\TH:i'],
+                'schedules.*.ends_at' => [Rule::excludeIf($followsEvent), 'required', 'date_format:Y-m-d\TH:i'],
                 'requirements' => 'sometimes|array|max:50',
                 'requirements.*.name' => 'required|string|max:255',
                 'requirements.*.description' => 'nullable|string|max:2000',
@@ -288,7 +309,11 @@ class EventService
 
             $schedules = [];
 
-            foreach ($data['schedules'] as $row) {
+            if ($followsEvent) {
+                $schedules[] = ['starts_at' => $event->starts_at, 'ends_at' => $event->ends_at];
+            }
+
+            foreach ($data['schedules'] ?? [] as $row) {
                 $s = CarbonImmutable::createFromFormat(
                     '!Y-m-d\TH:i',
                     $row['starts_at'],
@@ -301,16 +326,7 @@ class EventService
                     'Asia/Jakarta'
                 )->utc();
 
-                if (
-                    $e <= $s ||
-                    $s < $event->starts_at ||
-                    $e > $event->ends_at ||
-                    $s < $event->registration_deadline
-                ) {
-                    throw ValidationException::withMessages([
-                        'schedules' => 'Jadwal harus berdurasi positif, dalam rentang event dan setelah deadline.',
-                    ]);
-                }
+                $this->assertScheduleWithinEvent($event, $s, $e);
 
                 $schedules[$s->timestamp . ':' . $e->timestamp] = [
                     'starts_at' => $s,
@@ -342,6 +358,7 @@ class EventService
                             'quota',
                             'required_full_availability',
                             'required_same_city',
+                            'follows_event_schedule',
                         ])
                         ->all()
                 )
@@ -373,6 +390,15 @@ class EventService
 
             return $position;
         }, 3);
+    }
+
+    private function assertScheduleWithinEvent(Event $event, $start, $end): void
+    {
+        if ($end <= $start || $start < $event->starts_at || $end > $event->ends_at || $start < $event->registration_deadline) {
+            throw ValidationException::withMessages([
+                'schedules' => 'Jadwal khusus posisi harus berdurasi positif, dalam rentang event dan setelah deadline. Sesuaikan jadwal posisi sebelum mengubah rentang event.',
+            ]);
+        }
     }
 
     public function removePosition(

@@ -1,5 +1,9 @@
 # Design specification SkillMatch
 
+## Penyesuaian form jadwal posisi — 10 Oktober 2026
+
+Tampilkan jadwal event berlabel WIB di atas dua radio: Ikuti jadwal event (default posisi baru) dan Atur jadwal tugas khusus. Mode otomatis tidak meminta input waktu. Mode khusus diawali nilai event; event satu hari menampilkan tanggal sebagai keterangan dan input jam, event beberapa hari menampilkan input tanggal/jam. Jadwal existing ditampilkan sebagai jadwal khusus. Tampilkan error server dan pertahankan pilihan/input setelah gagal. Bagian Posisi dan jadwal tetap memiliki tombol pengelolaan posisi sendiri; perubahan ini tidak mencakup editor assessment.
+
 Versi 1.4.2 • 4 Oktober 2026 • Pendamping [PRD tim](PRD_SkillMatch_Tim.md).
 
 ## 1. Dasar dan arah

@@ -1,5 +1,9 @@
 # Kontrak integrasi empat anggota
 
+## Penyesuaian jadwal posisi — 10 Oktober 2026
+
+A2 menambahkan boolean `event_positions.follows_event_schedule` (default database false untuk menjaga posisi existing). Form posisi baru default mengikuti event. EventService.position menerima flag boolean; mode mengikuti event membentuk satu interval UTC dari waktu event di server dan mengabaikan interval request. Pemanggil lama yang mengirim schedules tanpa flag tetap memakai jadwal khusus. Struktur PositionSnapshotService.schedules `[start,end]` tetap sama; A3/A4 membaca interval tersimpan, tanpa mode/status/snapshot baru. Perubahan event editable menyelaraskan posisi mengikuti event dan memvalidasi ulang jadwal khusus secara atomik. Published/frozen dan snapshot submitted tidak diubah. Migration tambahan: `2026_10_10_000001_add_event_schedule_mode_to_positions.php`.
+
 Versi 1.4.2 • Pasangan [PRD induk](../PRD_SkillMatch_Tim.md). Nama di bawah merupakan target implementasi; tabel baru belum ada pada ZIP.
 
 ## 1. Aturan kerja bersama

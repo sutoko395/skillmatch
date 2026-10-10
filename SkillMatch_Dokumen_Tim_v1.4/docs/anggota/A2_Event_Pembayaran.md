@@ -1,5 +1,9 @@
 # Brief A2 — event, katalog, paket, pembayaran
 
+## Jadwal posisi — keputusan 10 Oktober 2026
+
+Form posisi baru default mengikuti event, dengan opsi jadwal tugas khusus. A2 menyimpan mode `follows_event_schedule` dan interval pada `position_schedules`; jadwal event/deadline editable diselaraskan/divalidasi secara atomik. Jadwal existing tetap khusus; freeze published tetap berlaku. Lihat penyesuaian terbaru di PRD/kontrak/desain dan tes PositionScheduleModeTest.
+
 Versi 1.4.2 • Baca [PRD](../../PRD_SkillMatch_Tim.md), [kontrak](../KONTRAK_INTEGRASI.md), [design](../../design.md), [UAT](../UAT.md).
 
 ## Titik mulai ZIP
