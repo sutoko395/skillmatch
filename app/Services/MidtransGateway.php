@@ -33,7 +33,7 @@ class MidtransGateway
         try {
             $response = $this->http()->post('https://app.sandbox.midtrans.com/snap/v1/transactions', [
                 'transaction_details' => ['order_id' => $order->order_ref, 'gross_amount' => $order->amount],
-                'callbacks' => ['finish' => route('organizer.orders.show', $order)],
+                'callbacks' => ['finish' => route('organizer.orders.show', ['order' => $order, 'check_payment' => 1])],
             ]);
         } catch (ConnectionException) {
             throw ValidationException::withMessages(['payment' => 'Gateway tidak terjangkau. Periksa status sebelum mencoba lagi.']);
@@ -65,7 +65,9 @@ class MidtransGateway
     public function status(Order $order): VerifiedGatewayResult
     {
         try {
-            $response = $this->http()->get('https://api.sandbox.midtrans.com/v2/'.rawurlencode($order->order_ref).'/status');
+            // Status checks also run during navigation on the local single-worker server.
+            // Bound them separately from checkout creation so a slow gateway cannot hold it for 20 seconds.
+            $response = $this->http()->connectTimeout(2)->timeout(5)->get('https://api.sandbox.midtrans.com/v2/'.rawurlencode($order->order_ref).'/status');
         } catch (ConnectionException) {
             throw ValidationException::withMessages(['payment' => 'Status gateway belum dapat diperiksa. Coba sinkronkan kembali.']);
         }

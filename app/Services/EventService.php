@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\City;
 use App\Models\Event;
 use App\Models\EventPosition;
+use App\Models\Package;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
@@ -129,7 +131,7 @@ class EventService
 
             $event = $event
                 ? Event::lockForUpdate()->findOrFail($event->id)
-                : new Event();
+                : new Event;
 
             Gate::forUser($actor)->authorize(
                 $event->exists ? 'update' : 'create',
@@ -142,9 +144,14 @@ class EventService
 
             $data = Validator::make($input, [
                 'title' => ['required', 'string', 'max:255'],
+                'package_id' => [$event->package_snapshot ? 'sometimes' : 'required', 'integer'],
                 'description' => ['required', 'string', 'max:10000'],
                 'location' => ['required', 'string', 'max:255'],
-                'city' => ['required', 'string', 'max:100'],
+                'city_id' => [
+                    'required',
+                    'integer',
+                    Rule::exists('cities', 'id')->where('is_active', true),
+                ],
                 'category_id' => [
                     'required',
                     Rule::exists('categories', 'id')
@@ -159,7 +166,15 @@ class EventService
                     'after:registration_opens_at',
                     'before_or_equal:starts_at',
                 ],
+            ], [
+                'package_id.required' => 'Pilih paket event terlebih dahulu.',
+                'package_id.integer' => 'Pilih paket dari daftar yang tersedia.',
+                'city_id.required' => 'Pilih kota kegiatan.',
+                'city_id.integer' => 'Pilih kota dari daftar yang tersedia.',
+                'city_id.exists' => 'Kota yang dipilih tidak tersedia atau sudah nonaktif.',
             ])->validate();
+
+            $data['city'] = City::findOrFail($data['city_id'])->name;
 
             foreach ([
                 'starts_at',
@@ -179,6 +194,20 @@ class EventService
                     'starts_at' => 'Awal event harus di masa depan.',
                 ]);
             }
+
+            $beforePackage = $event->package_snapshot;
+            $packageId = (int) ($data['package_id'] ?? $beforePackage['id']);
+            unset($data['package_id']);
+            if ($beforePackage && (int) $beforePackage['id'] === $packageId) {
+                $snapshot = $beforePackage;
+            } else {
+                $package = Package::where('is_active', true)->lockForUpdate()->find($packageId);
+                if (! $package) {
+                    throw ValidationException::withMessages(['package_id' => 'Paket tidak tersedia atau sudah nonaktif. Pilih paket aktif.']);
+                }
+                $snapshot = $package->snapshot();
+            }
+            $data['package_snapshot'] = $snapshot;
 
             $data['organizer_id'] = $actor->id;
             $data['status'] = 'draft';
@@ -208,6 +237,7 @@ class EventService
                 ->format('H:i:s');
 
             $event->forceFill($data);
+            app(PackageService::class)->assertFits($event, $snapshot);
             if ($event->exists && $event->isDirty(['starts_at', 'ends_at', 'registration_deadline'])) {
                 foreach ($event->positions()->orderBy('id')->lockForUpdate()->get() as $position) {
                     if ($position->follows_event_schedule) {
@@ -225,6 +255,10 @@ class EventService
             }
             $event->save();
 
+            if ($beforePackage !== $snapshot) {
+                app(AuditService::class)->record($actor, 'event.package_selected', $event, ['after' => ['revision' => $event->revision]]);
+            }
+
             app(AuditService::class)->record(
                 $actor,
                 'event.saved',
@@ -240,6 +274,7 @@ class EventService
             return $event->fresh();
         }, 3);
     }
+
     public function position(
         Event $event,
         User $actor,
@@ -328,7 +363,7 @@ class EventService
 
                 $this->assertScheduleWithinEvent($event, $s, $e);
 
-                $schedules[$s->timestamp . ':' . $e->timestamp] = [
+                $schedules[$s->timestamp.':'.$e->timestamp] = [
                     'starts_at' => $s,
                     'ends_at' => $e,
                 ];

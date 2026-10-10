@@ -24,6 +24,8 @@ Model Event, EventPosition, PositionSkill dan PositionRequirement sudah ada. CRU
 
 ## Aturan payment yang tidak boleh dilompati
 
+Perbaikan 10 Oktober 2026: tombol Sinkronkan status harus type submit pada Organizer/Admin. Halaman pending Organizer yang sudah memiliki checkout melakukan satu POST otomatis melalui PaymentService.sync hanya pada finish checkout baru dengan check_payment=1; kunjungan biasa tidak memanggil gateway, GET/parameter redirect tetap tidak menentukan paid. Klik navigasi membatalkan request browser dan menolak reload hasil terlambat; status gateway mempunyai batas HTTP lima detik. Endpoint sync menerima Accept JSON dengan status/boolean minimum dan tetap mendukung form HTML tanpa JavaScript. UI loading/gagal/pending menyediakan retry manual; Kembali ke event memakai gaya tombol sekunder. Bukti tes dan verifikasi Get Status Sandbox nyata ada pada DEVELOPMENT, bukan klaim webhook/UAT lengkap.
+
 - Gateway belum terpasang pada ZIP; integrasi baru memakai Laravel HTTP client, konfigurasi Sandbox dan kredensial lingkungan.
 - Implementasi mengikuti dokumentasi gateway yang diverifikasi saat coding; dokumen ini tidak mengarang API secret, endpoint produksi atau versi SDK.
 - Checkout return menampilkan status dari server. Tidak mengubah order paid karena query string/callback browser.
@@ -42,7 +44,7 @@ UAT-07, 08, 09, 10, 23, 24, 25, 26, 31; ikut UAT-11 dan 22. Gunakan gateway mock
 
 ## Demo selesai
 
-Organizer membuat event, Admin meminta revisi lalu approve, paket dipilih, payment diverifikasi bila berbayar, event muncul publik, dan Volunteer bisa melanjutkan ke draft A3. Kasus belum bayar tetap unpublished. Sediakan label jelas "Sandbox — simulasi pembayaran".
+Organizer memilih paket terlebih dahulu per event, mengisi informasi/jadwal, posisi dan assessment, lalu mengajukan moderasi. Admin meminta revisi lalu approve; payment diverifikasi bila berbayar, event muncul publik, dan Volunteer bisa melanjutkan ke draft A3. Warning durasi muncul langsung jika melebihi limit paket (default Free 7/Standard 30/Premium 60 hari); server menolak simpan yang berlebihan, termasuk saat JavaScript dimatikan. Ganti paket atau pendekkan jadwal sebelum simpan. Snapshot existing tetap historis saat edit paket yang sama. Kasus belum bayar tetap unpublished. Sediakan label jelas "Sandbox — simulasi pembayaran".
 
 ## Batas tugas
 
@@ -51,6 +53,8 @@ A4 mengelola isi assessment, A3 mengelola seleksi/attendance. A2 menyediakan tab
 ## Dependensi SF
 
 Gunakan commit shared foundation untuk auth bersama, kota, master skill, layout dan audit. A2 boleh mulai schema/event dengan kontrak dan fixture sebelum SF selesai; jangan membuat auth/master tandingan. UI admin paket memakai guard web dan role admin, serta logout bersama.
+
+Perbaikan 10 Oktober 2026: pertahankan Event.cityRecord melalui city_id dan select master kota aktif pada form event. Teks city lama hanya kompatibilitas/petunjuk; draft tanpa city_id harus dikoreksi pemilik sebelum moderasi. Jangan menghapus relasi yang dipakai validator, katalog, beranda dan A3. Bukti tes dan tiga temuan tambahan A2/SF dicatat pada docs/DEVELOPMENT.md di root aplikasi; bukan klaim UAT penuh lulus.
 
 ## Penugasan beranda publik - 5 Oktober 2026
 

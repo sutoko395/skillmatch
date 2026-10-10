@@ -21,10 +21,10 @@
         aria-label="Tahap konfigurasi event"
         class="mb-6 flex flex-wrap gap-3 text-sm text-slate-600"
     >
-        <li>1. Informasi event</li>
-        <li>2. Posisi dan jadwal</li>
-        <li>3. Assessment</li>
-        <li>4. Paket</li>
+        <li>1. Pilih paket</li>
+        <li>2. Informasi event</li>
+        <li>3. Posisi dan jadwal</li>
+        <li>4. Assessment</li>
         <li>5. Tinjau dan ajukan</li>
     </ol>
 
@@ -230,7 +230,7 @@
                     href="{{ route('organizer.packages.select', $event) }}"
                     class="mt-3 inline-block text-indigo-700 underline"
                 >
-                    Pilih paket
+                    Ubah paket
                 </a>
             @endif
 

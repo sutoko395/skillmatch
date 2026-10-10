@@ -30,7 +30,7 @@ class A2DemoSeeder extends Seeder
             if (Event::where('organizer_id', $owner->id)->where('title', $title)->exists()) {
                 continue;
             }
-            $event = app(EventService::class)->save($owner, ['title' => $title, 'description' => 'Fixture lokal A2. Assessment A4 belum tersedia; event tidak dipublikasikan.', 'location' => 'Lokasi demonstrasi', 'city_id' => $city->id, 'category_id' => $category->id,
+            $event = app(EventService::class)->save($owner, ['package_id' => $package->id, 'title' => $title, 'description' => 'Fixture lokal A2. Assessment A4 belum tersedia; event tidak dipublikasikan.', 'location' => 'Lokasi demonstrasi', 'city_id' => $city->id, 'category_id' => $category->id,
                 'starts_at' => now()->addDays(14)->format('Y-m-d').'T09:00', 'ends_at' => now()->addDays(14)->format('Y-m-d').'T17:00',
                 'registration_opens_at' => now()->format('Y-m-d').'T00:00', 'registration_deadline' => now()->addDays(13)->format('Y-m-d').'T20:00']);
             app(EventService::class)->position($event, $owner, ['name' => 'Petugas demo', 'quota' => 1, 'required_full_availability' => false, 'required_same_city' => false, 'skills' => [['skill_id' => $skill->id, 'minimum_level' => 'beginner', 'is_required' => true]], 'schedules' => [['starts_at' => now()->addDays(14)->format('Y-m-d').'T09:00', 'ends_at' => now()->addDays(14)->format('Y-m-d').'T12:00']]]);

@@ -41,11 +41,20 @@ class PackageService
             Gate::forUser($actor)->authorize('update', $event);
             app(EventService::class)->editable($event);
             $package = Package::where('is_active', true)->lockForUpdate()->findOrFail($packageId);
-            if ($event->positions()->count() > $package->max_positions || ($event->registration_opens_at && $event->registration_opens_at->diffInSeconds($event->registration_deadline) > $package->max_registration_days * 86400)) {
-                throw ValidationException::withMessages(['package_id' => 'Batas paket tidak mencukupi konfigurasi event.']);
-            }
+            $this->assertFits($event, $package->snapshot());
             $event->forceFill(['package_snapshot' => $package->snapshot(), 'status' => 'draft', 'revision' => $event->revision + 1])->save();
             app(AuditService::class)->record($actor, 'event.package_selected', $event, ['after' => ['revision' => $event->revision]]);
         }, 3);
+    }
+
+    public function assertFits(Event $event, array $snapshot): void
+    {
+        if ($event->exists && $event->positions()->count() > $snapshot['max_positions']) {
+            throw ValidationException::withMessages(['package_id' => 'Jumlah posisi melebihi batas paket. Pilih paket dengan kuota lebih besar.']);
+        }
+        if ($event->registration_opens_at && $event->registration_deadline
+            && $event->registration_opens_at->diffInSeconds($event->registration_deadline) > $snapshot['max_registration_days'] * 86400) {
+            throw ValidationException::withMessages(['registration_deadline' => "Durasi pendaftaran melebihi batas paket {$snapshot['name']} ({$snapshot['max_registration_days']} hari). Pilih paket dengan durasi lebih besar atau pendekkan jadwal pendaftaran."]);
+        }
     }
 }

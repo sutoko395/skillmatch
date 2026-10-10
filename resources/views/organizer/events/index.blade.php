@@ -5,7 +5,7 @@
 @section('content')
 <div
     class="w-full max-w-7xl mx-auto space-y-6"
-    x-data="{ openCreateEvent: false, busy: false }"
+    x-data="{ openCreateEvent: @js($errors->any()), busy: false }"
 >
     <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
@@ -135,9 +135,13 @@
                     method="POST"
                     action="{{ route('organizer.events.store') }}"
                     class="space-y-5 p-6"
-                    @submit="busy = true"
+                    x-data="eventPackageForm(@js($packages), @js(old('package_id', '')), @js(old('registration_opens_at', '')), @js(old('registration_deadline', '')))"
+                    @submit="submit($event)"
                 >
                     @csrf
+
+                    <x-event-package-selector :packages="$packages" />
+                    <h2 class="text-lg font-semibold text-slate-800">2. Informasi dan jadwal event</h2>
 
                     <x-form-field
                         name="title"
@@ -168,12 +172,7 @@
                     />
 
                     <div class="grid gap-5 md:grid-cols-2">
-                        <x-form-field
-                            name="city"
-                            label="Kota"
-                            required
-                            maxlength="100"
-                        />
+                        <x-event-city-field :cities="$cities" />
 
                         <x-form-field
                             name="category_id"
@@ -219,6 +218,7 @@
                             name="registration_opens_at"
                             label="Pendaftaran dibuka (WIB)"
                             type="datetime-local"
+                            x-model="opens"
                             required
                         />
 
@@ -226,9 +226,12 @@
                             name="registration_deadline"
                             label="Deadline pendaftaran (WIB)"
                             type="datetime-local"
+                            x-model="deadline"
                             required
                         />
                     </div>
+
+                    <x-event-package-warning />
 
                     <div class="flex justify-end gap-3 border-t border-slate-100 pt-5">
                         <button
@@ -241,7 +244,7 @@
 
                         <x-button
                             type="submit"
-                            x-bind:disabled="busy"
+                            x-bind:disabled="busy || exceedsLimit || !selectedPackage"
                         >
                             <span x-text="busy ? 'Menyimpan...' : 'Simpan Draft'">
                                 Simpan Draft

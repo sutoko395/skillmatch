@@ -20,14 +20,17 @@
             method="POST"
             action="{{ $event->exists ? route('organizer.events.update', $event) : route('organizer.events.store') }}"
             class="space-y-6"
-            x-data="{ busy: false }"
-            @submit="busy = true"
+            x-data="eventPackageForm(@js($packages), @js(old('package_id', $event->package_snapshot['id'] ?? '')), @js(old('registration_opens_at', $event->registration_opens_at?->setTimezone('Asia/Jakarta')->format('Y-m-d\TH:i') ?? '')), @js(old('registration_deadline', $event->registration_deadline?->setTimezone('Asia/Jakarta')->format('Y-m-d\TH:i') ?? '')))"
+            @submit="submit($event)"
         >
             @csrf
 
             @if($event->exists)
                 @method('PUT')
             @endif
+
+            <x-event-package-selector :packages="$packages" :selected="$event->package_snapshot['id'] ?? null" />
+            <h2 class="text-lg font-semibold text-slate-800">2. Informasi dan jadwal event</h2>
 
             <x-form-field
                 name="title"
@@ -59,12 +62,10 @@
             />
 
             <div class="grid gap-6 md:grid-cols-2">
-                <x-form-field
-                    name="city"
-                    label="Kota"
-                    :value="$event->city"
-                    required
-                    maxlength="100"
+                <x-event-city-field
+                    :cities="$cities"
+                    :selected="$event->city_id"
+                    :helper="$event->exists && !$event->city_id ? 'Kota lama: '.($event->city ?: 'belum diisi').'. Pilih kota dari master dan simpan kembali.' : null"
                 />
 
                 <x-form-field
@@ -103,15 +104,18 @@
                         label="{{ $label }}"
                         type="datetime-local"
                         :value="$event->$field?->setTimezone('Asia/Jakarta')->format('Y-m-d\TH:i')"
+                        :x-model="$field === 'registration_opens_at' ? 'opens' : ($field === 'registration_deadline' ? 'deadline' : null)"
                         required
                     />
                 @endforeach
             </div>
 
+            <x-event-package-warning />
+
             <div class="flex flex-wrap items-center gap-3 border-t border-slate-100 pt-6">
                 <x-button
                     type="submit"
-                    x-bind:disabled="busy"
+                    x-bind:disabled="busy || exceedsLimit || !selectedPackage"
                 >
                     <span x-text="busy ? 'Menyimpan...' : 'Simpan draft'">
                         Simpan draft

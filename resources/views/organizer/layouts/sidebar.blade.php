@@ -230,6 +230,7 @@
     </header>
 
     <main class="flex-1 px-4 pb-8 pt-24 sm:px-6 lg:px-8">
+        <x-flash />
         @yield('content')
     </main>
 </div>
