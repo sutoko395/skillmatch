@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Category;
+use App\Models\City;
+use App\Models\Package;
 use App\Models\Skill;
 use App\Models\User;
 use App\Services\EventService;
@@ -17,7 +19,9 @@ class PositionScheduleModeTest extends DatabaseTestCase
     private function eventInput(): array
     {
         return [
-            'title' => 'Schedule test', 'description' => 'Test', 'city' => 'Test city', 'location' => 'Test location',
+            'package_id' => Package::firstOrCreate(['name' => 'Schedule test'], ['price' => 0, 'max_positions' => 2, 'max_applications' => 10, 'max_registration_days' => 30, 'is_active' => true])->id,
+            'title' => 'Schedule test', 'description' => 'Test', 'location' => 'Test location',
+            'city_id' => City::firstOrCreate(['name' => 'Schedule test'], ['is_active' => true])->id,
             'category_id' => Category::firstOrCreate(['name' => 'Schedule test'], ['is_active' => true])->id,
             'starts_at' => now()->addDays(10)->format('Y-m-d').'T08:00',
             'ends_at' => now()->addDays(10)->format('Y-m-d').'T17:00',

@@ -14,8 +14,11 @@ class EventConfiguration
         if (! $event->organizer->is_active || ! $event->organizer->hasVerifiedEmail() || $event->organizer->organizer_status !== 'active') {
             $fail('Organisasi belum terverifikasi atau akun tidak aktif.');
         }
-        if (! $event->cityRecord?->is_active || ! $event->category?->is_active) {
-            $fail('Pilih kota dan kategori aktif.');
+        if (! $event->cityRecord?->is_active) {
+            throw ValidationException::withMessages(['city_id' => 'Pilih kota aktif dari master pada informasi event, lalu simpan sebelum mengajukan moderasi.']);
+        }
+        if (! $event->category?->is_active) {
+            $fail('Pilih kategori aktif.');
         }
         if (! $event->starts_at || ! $event->ends_at || $event->ends_at <= $event->starts_at || $event->ends_at <= now()) {
             $fail('Rentang event belum valid atau sudah berakhir.');

@@ -78,7 +78,7 @@ Keadilan dinilai dari kompleksitas dan hasil, bukan jumlah menu. Evaluasi setela
 
 ### 5.1 Organizer dan publikasi
 
-Registrasi → verifikasi email → lengkapi organisasi dan dokumen → Admin menyetujui organisasi → buat draft event/posisi/jadwal/persyaratan/assessment → pilih paket → ajukan moderasi → Admin setujui atau minta revisi → bayar Sandbox jika berbayar → publikasi setelah semua syarat terpenuhi.
+Registrasi → verifikasi email → lengkapi organisasi dan dokumen → Admin menyetujui organisasi → pilih paket per event → buat draft event/posisi/jadwal/persyaratan/assessment → ajukan moderasi → Admin setujui atau minta revisi → bayar Sandbox jika berbayar → publikasi setelah semua syarat terpenuhi.
 
 Event published hanya muncul di katalog jika akun Organizer aktif dan organisasi terverifikasi. Menonaktifkan akun menutup akses dan visibilitas publik tanpa mengubah histori pembayaran. Pemulihan tidak menerbitkan event cancelled/completed atau melewati syarat publikasi.
 
@@ -135,6 +135,7 @@ ID FR-01–22 mempertahankan padanan PRD v1.3; FR-23 ditambahkan untuk memperjel
 - Minimal satu posisi, satu skill per posisi, dan assessment valid sebelum pengajuan; daftar syarat membedakan wajib dan preferensi.
 - Setelah published, aturan posisi, jadwal, assessment dan paket dibekukan pada MVP. Perubahan substantif menggunakan pembatalan dan event baru; koreksi teks ringan dapat diaudit tanpa mengubah aturan seleksi. Ini mencegah perubahan skor pelamar yang sudah masuk.
 - Paket per event. Harga/manfaat berasal server dan disnapshot ketika order dibuat. Free/Standard/Premium memakai konfigurasi awal yang disepakati pengguna 5 Oktober 2026 (lihat tabel di bawah); admin dapat mengedit atau menonaktifkan paket tanpa mengubah snapshot lama. Paket Demo terpisah tetap hanya fixture.
+- Keputusan 10 Oktober 2026: pilih paket sebagai bagian pertama form pembuatan event, sebelum informasi/jadwal. Snapshot paket disimpan atomik bersama draft; memilih paket berbayar belum membuat order atau entitlement. Durasi dihitung dari pembukaan sampai deadline (maksimum hari x 24 jam); tepat batas diperbolehkan, lebih dari batas ditolak saat simpan. Form memberi warning langsung dan meminta paket lebih besar atau jadwal lebih pendek. Default Free 7, Standard 30, Premium 60 hari; nilai mengikuti konfigurasi Admin/snapshot existing. Edit dengan ID paket yang sama mempertahankan snapshot lama; perubahan paket eksplisit mengambil snapshot master aktif dan harus memenuhi jumlah posisi serta jadwal. Pembayaran tetap setelah approved; published/transaksi tetap mengunci konfigurasi.
 - Entitlement mengatur maksimal posisi, maksimal lamaran terkirim per event dan maksimum durasi pembukaan pendaftaran. Draft tidak dihitung; slot lamaran yang sudah terkirim tidak dikembalikan karena withdrawn. Validasi limit dilakukan transaksional.
 - Paket gratis tidak menghasilkan order paid palsu; entitlement gratis diaktifkan sekali setelah approval. Paket berbayar memerlukan pembayaran terverifikasi.
 - Redirect checkout hanya membawa pengguna ke halaman status; server memverifikasi signature/status, order, nominal dan mata uang. Callback ganda/tidak berurutan tidak menggandakan hak atau menurunkan paid karena pesan pending lama.

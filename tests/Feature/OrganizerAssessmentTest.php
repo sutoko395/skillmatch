@@ -20,19 +20,20 @@ class OrganizerAssessmentTest extends DatabaseTestCase
     private function setupPosition(): array
     {
         $owner = User::factory()->create(['role' => 'organizer', 'organizer_status' => 'active']);
+        $package = Package::create(['name' => 'Assessment test', 'price' => 0, 'max_positions' => 2, 'max_applications' => 10, 'max_registration_days' => 30, 'is_active' => true]);
         $event = app(EventService::class)->save($owner, [
-            'title' => 'Assessment test', 'description' => 'Test', 'city' => 'Test city', 'location' => 'Test',
+            'package_id' => $package->id,
+            'title' => 'Assessment test', 'description' => 'Test', 'location' => 'Test',
+            'city_id' => City::firstOrCreate(['name' => 'Assessment test'], ['is_active' => true])->id,
             'category_id' => Category::firstOrCreate(['name' => 'Assessment test'], ['is_active' => true])->id,
             'starts_at' => now()->addDays(10)->format('Y-m-d').'T08:00', 'ends_at' => now()->addDays(10)->format('Y-m-d').'T17:00',
             'registration_opens_at' => now()->format('Y-m-d').'T00:00', 'registration_deadline' => now()->addDays(9)->format('Y-m-d').'T23:00',
         ]);
-        $event->forceFill(['city_id' => City::firstOrCreate(['name' => 'Assessment test'], ['is_active' => true])->id])->save();
         $position = app(EventService::class)->position($event, $owner, [
             'name' => 'Petugas', 'quota' => 1, 'required_full_availability' => false, 'required_same_city' => false,
             'skills' => [['skill_id' => Skill::firstOrCreate(['name' => 'Assessment test'], ['is_active' => true])->id,
                 'minimum_level' => 'beginner', 'is_required' => true]],
         ]);
-        $package = Package::create(['name' => 'Assessment test', 'price' => 0, 'max_positions' => 2, 'max_applications' => 10, 'max_registration_days' => 30, 'is_active' => true]);
         app(PackageService::class)->select($event, $owner, $package->id);
 
         return [$owner, $event, $position, "/organizer/positions/{$position->id}/assessment"];

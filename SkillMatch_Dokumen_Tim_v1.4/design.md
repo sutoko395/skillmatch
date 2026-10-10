@@ -1,5 +1,19 @@
 # Design specification SkillMatch
 
+## Font lokal dan klik navigasi semua role - 10 Oktober 2026
+
+Partial layouts/fonts memuat Inter WOFF2 lokal dari public/fonts/inter, bobot 400/500/600/700, memakai font-display swap dan preload bobot normal. Deklarasi @font-face berada pada partial bersama dengan URL asset Laravel; tidak memakai stylesheet eksternal yang menunda inisialisasi Alpine. Auth-layout juga memakai partial ini. Font-sans/fallback system dan identitas visual tetap berlaku. Menu/dropdown harus merespons satu klik setelah JavaScript aplikasi tersedia, termasuk saat file font belum selesai diunduh. Pada mobile, tombol membuka drawer dan item menu membawa pengguna ke halaman dengan satu klik. Lisensi OFL.txt disertakan; role/route/Policy dan komponen sidebar existing dipertahankan.
+
+## Status pembayaran dan navigasi kembali - 10 Oktober 2026
+
+Halaman status Organizer memeriksa order pending dengan checkout sekali melalui server saat kembali dari checkout baru dengan check_payment=1; kunjungan biasa tidak memanggil gateway otomatis. Tampilkan pesan memeriksa, menunggu, gagal dan retry manual tanpa mengklaim sukses dari redirect. Klik menu tetap navigasi native sekali, membatalkan request browser dan mencegah reload hasil pembayaran yang terlambat. Disable hanya tombol Sinkronkan status selama request dan sediakan pesan aria-live. Tombol berupa submit POST agar bekerja tanpa JavaScript. Kembali ke event adalah tautan berbentuk tombol sekunder dengan ikon panah, tinggi/padding sejajar, fokus keyboard dan tujuan detail event milik order. Pakai komponen/layout existing; status paid dan publikasi tetap dua hal berbeda. Admin tetap sinkron manual. Mode Sandbox tetap dijelaskan pada konteks pembayaran.
+
+## Kota pada form event - perbaikan 10 Oktober 2026
+
+Pakai select Kota dari master aktif, label terkait id city_id, placeholder Pilih Kota, pilihan old input dan error spesifik. Draft lama tanpa city_id menampilkan teks kota lama sebagai petunjuk agar Organizer memilih sendiri. Pertahankan gaya form existing; layout Organizer memakai flash bersama untuk menampilkan pesan kegagalan pengajuan dan sukses simpan.
+
+Popup Buat Event di Event Saya dan halaman buat/edit memakai komponen event-city-field yang sama. Popup terbuka kembali setelah validasi gagal dengan old input; jika master kota aktif kosong, tampilkan petunjuk menghubungi Admin. Pesan kota menggunakan bahasa Indonesia.
+
 ## Editor assessment Organizer — 10 Oktober 2026
 
 Bagian Assessment berada di bawah Posisi dan jadwal sebelum Paket dan pembayaran, menampilkan nama posisi/status/tautan Kelola Assessment atau Lihat Assessment bila terkunci. Editor per posisi memakai navbar/layout SF, beberapa soal dalam satu halaman, tombol tambah/hapus, opsi tetap A–D dan select satu kunci. Durasi 1–120 menit dan hitungan soal maksimal 50 ditampilkan. Simpan Draft mempertahankan isian parsial. Publikasikan Assessment membuka halaman konfirmasi posisi/jumlah/durasi/penguncian, checkbox persetujuan, Konfirmasi Publikasi, serta Simpan draft dan kembali. Published tampil read-only; empty/error/input lama/loading tersedia. Kunci tampil hanya untuk Organizer pemilik pada editor/konfirmasi, tidak pada halaman event publik atau peserta. Editor soal menggunakan Alpine existing satu kali.
@@ -98,7 +112,7 @@ Detail: judul dan metadata, deskripsi, daftar posisi beserta skill/jadwal/kuota/
 
 ### 4.2 Form event — A2, tab assessment A4
 
-Gunakan langkah: Informasi Event → Posisi & Jadwal → Assessment → Paket → Tinjau & Ajukan. Simpan Draft tersedia setiap langkah yang memiliki data valid parsial. Tampilkan progres langkah sebagai teks/stepper pendek, bukan persentase palsu.
+Gunakan langkah: Pilih Paket → Informasi Event → Posisi & Jadwal → Assessment → Tinjau & Ajukan. Form popup dan halaman buat/edit sama-sama menempatkan paket di awal, dengan harga/limit per event dari server. Tampilkan warning dekat input jadwal jika durasi pendaftaran melebihi paket; simpan diblokir sampai paket/durasi sesuai. Pilihan paket dan tanggal menggunakan old input sesudah gagal. Simpan draft memerlukan paket dan informasi/jadwal valid, sementara posisi/assessment bisa dilengkapi berikutnya. Tampilkan progres langkah sebagai teks/stepper pendek, bukan persentase palsu.
 
 Posisi berulang berupa kartu dengan nama, kuota, skill+minimum level, interval tugas, dokumen wajib, dan syarat wajib/preferensi. Form bertingkat panjang dibagi section, bukan satu modal besar. Tinjau menampilkan seluruh syarat publikasi dan tautan perbaikan. Status moderasi, publikasi, dan pelaksanaan ditampilkan dengan label terpisah agar approved tidak disalahartikan sebagai published.
 
@@ -192,7 +206,7 @@ Hapus `body:not(.ready){display:none}` dari layout ZIP. Gunakan x-cloak hanya pa
 
 1. Pertahankan Tailwind 3 + PostCSS dan tokens existing; tidak mengaktifkan plugin Tailwind 4 yang tidak terpakai.
 2. Import Alpine hanya dari resources/js/app.js; hapus CDN Alpine pada tiga layout.
-3. Satukan font Inter dan CSS global di app.css; hapus override Poppins/duplikasi style.
+3. Satukan font Inter lokal melalui layouts/fonts dan CSS global di app.css; hapus override Poppins/duplikasi style. Jangan menambahkan stylesheet CDN font yang memblokir pemuatan runtime.
 4. SF membuat shell user baru dan mengadaptasi profil lama; admin sidebar dipertahankan.
 5. A2/A3/A4 memakai komponen bersama dan menghubungkan seluruh menu ke route kontrak.
 6. Semua PIC menyertakan screenshot desktop/mobile modulnya saat PR. A1 meninjau konsistensi, bukan mengerjakan ulang seluruh UI.
@@ -222,7 +236,7 @@ Aktivitas Volunteer/Organizer memakai kembali sambutan, kartu putih beraksen ind
 
 Beranda baseline dipertahankan dengan CTA Jelajahi Event. Katalog memakai navbar publik, filter judul/kategori/kota/tanggal WIB, jumlah hasil nyata, pagination dan kartu 1/2/3 kolom. Detail menampilkan jadwal/skill/kuota/syarat; pengajuan lamaran diberi keadaan belum tersedia sampai route A3 ada. Login Volunteer dapat kembali ke detail yang masih eligible melalui events.join.
 
-Event Saya merupakan daftar operasional, bukan dashboard baru. Informasi Event -> Posisi/Jadwal -> Assessment -> Paket -> Tinjau/Ajukan ditampilkan sebagai urutan teks. Skill/jadwal/syarat berulang memakai Alpine yang sudah dimuat SF; form server tetap memvalidasi seluruh data. Form assessment belum tersedia dan tidak dianggap selesai. Status moderasi/publikasi/pelaksanaan ditampilkan terpisah.
+Event Saya merupakan daftar operasional, bukan dashboard baru. Pilih Paket -> Informasi Event -> Posisi/Jadwal -> Assessment -> Tinjau/Ajukan ditampilkan sebagai urutan teks. Popup/halaman form memakai event-package-selector, event-package-warning dan Alpine eventPackageForm; durasi WIB dihitung independen timezone browser. Skill/jadwal/syarat berulang memakai Alpine yang sudah dimuat SF; form server tetap memvalidasi seluruh data. Assessment Organizer tersedia sesuai catatan 10 Oktober; fitur peserta A4 tetap mengikuti batas implementasinya. Status moderasi/publikasi/pelaksanaan ditampilkan terpisah.
 
 Paket/order dan UI admin paket/transaksi memakai komponen SF serta layout admin existing. Checkout selalu berlabel Sandbox, tidak ada tombol paid manual atau statistik fixture. Event dibatalkan/pembayaran review menampilkan status sebenarnya. Build/render Blade sudah diperiksa; review visual 360/768/1280 dan keyboard masih perlu dilakukan.
 

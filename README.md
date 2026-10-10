@@ -10,6 +10,8 @@ Tes validasi: `php vendor/bin/phpunit tests/Unit/OrganizerAssessmentValidationTe
 
 ## Update jadwal posisi (10 Oktober 2026)
 
+Form event memilih kota aktif dari master agar `city_id` dapat dipakai pada moderasi, katalog dan snapshot. Untuk draft lama yang hanya menyimpan kota teks, buka Edit Event, pilih kota lalu simpan kembali sebelum mengajukan moderasi. Teks lama ditampilkan sebagai petunjuk; tidak ada pemetaan otomatis, reset data atau migration tambahan untuk perbaikan relasi ini.
+
 Jalankan migration tambahan dengan PHP yang memenuhi lockfile/dependensi terpasang, setelah backup dan pemeriksaan database: `php artisan migrate`. Migration `2026_10_10_000001_add_event_schedule_mode_to_positions.php` menambah `follows_event_schedule`; tidak mengubah interval posisi lama. Posisi baru default mengikuti jadwal event. Pilih Atur jadwal tugas khusus bila perlu; jadwal event selalu terlihat. Event satu hari cukup mengubah jam, beberapa hari memakai tanggal/jam. Perubahan event editable memperbarui posisi otomatis, dan ditolak jika jadwal khusus keluar rentang/deadline. Snapshot dan freeze published tetap berlaku.
 
 Verifikasi pada MySQL khusus tes sesuai panduan di bawah: `php artisan migrate --env=testing`, lalu `php vendor/bin/phpunit tests/Feature/PositionScheduleModeTest.php` dan `npm run build` (PowerShell dapat memakai `npm.cmd run build`). Pengujian database perubahan ini belum dijalankan: `.env.testing` belum ada dan akun database kerja tidak memiliki izin menyiapkan `skillmatch_testing`. Sediakan database/kredensial tes terpisah sebelum menjalankan pengujian. PHP terminal 8.3.31 ditolak dependensi vendor yang meminta >=8.4.1; gunakan PHP 8.4 Herd yang tersedia. Jangan reset database kerja.
@@ -17,6 +19,8 @@ Verifikasi pada MySQL khusus tes sesuai panduan di bawah: `php artisan migrate -
 SkillMatch adalah aplikasi web yang dikembangkan untuk menghubungkan Volunteer dengan kegiatan Organizer berdasarkan keterampilan, ketersediaan waktu, dan lokasi.
 
 Aplikasi menggunakan Laravel, Blade, Tailwind CSS 3, Alpine.js, Vite, dan MySQL. Volunteer dan Organizer memakai antarmuka web utama, sementara Admin memiliki panel tersendiri.
+
+Font Inter disertakan di `public/fonts/inter` (empat bobot 400/500/600/700, lisensi SIL OFL 1.1). Sertakan direktori ini saat membagikan/deploy aplikasi. Layout bersama memuat font lokal dengan fallback system sans sehingga menu tidak menunggu stylesheet font dari internet; tidak perlu CDN font atau instalasi dependensi baru.
 
 ## Status aplikasi
 
@@ -139,6 +143,9 @@ Backup database dan berkas terlebih dahulu, periksa database tujuan, lalu ikuti 
 
 ## Troubleshooting
 
+- **Klik pertama loading tetapi tetap di halaman asal, klik kedua baru berpindah:** gunakan konfigurasi Tailwind/Vite terbaru, hentikan lalu jalankan kembali `npm run dev`, kemudian Ctrl+F5 sekali. Cache Blade di `storage/framework/views` sebelumnya ikut dipindai Tailwind dan memicu reload Vite yang membatalkan navigasi. Cache/runtime kini dikecualikan; refresh file sumber tetap aktif. Bukti reproduksi dan pengujian cache kosong tersedia di [DEVELOPMENT](docs/DEVELOPMENT.md). Instalasi tanpa dev server memakai `npm run build`.
+- **Dropdown belum merespons ketika halaman baru dimuat:** pastikan kode terbaru dan `public/fonts/inter` tersedia. Font lokal menghindari stylesheet eksternal yang menunda Alpine; ini berbeda dari request navigasi yang dibatalkan Vite. Tombol mobile membuka drawer, lalu satu klik pada item menuju halaman.
+
 - **Tabel `availability_slots` tidak ditemukan:** periksa `php artisan migrate:status` pada environment aplikasi. Setelah backup dan pemeriksaan tujuan, jalankan migration yang pending dengan `php artisan migrate`, lalu `php artisan db:seed --class=MasterDataSeeder`. Jika tabel sudah ada tetapi migration pending, periksa schema dan riwayatnya sebelum melanjutkan.
 - **Unknown database / Access denied:** periksa nama database dan izin akun MySQL lokal. Untuk `could not find driver`, aktifkan PDO MySQL pada PHP CLI/Herd.
 - **APP_KEY kosong:** jalankan `key:generate` hanya untuk instalasi baru. Jangan mengganti key instalasi existing.
@@ -153,7 +160,7 @@ Email autentikasi dan sinkronisasi pembayaran berjalan sinkron. Worker/scheduler
 
 Setelah memperbarui kode, backup database, periksa tujuan dengan `php tools/sf-db-check.php`, lalu jalankan `php artisan migrate`. Dua migration event/payment menambahkan schema tanpa memublikasikan event lama. Detail konversi data tersedia dalam [panduan pengembangan](docs/DEVELOPMENT.md).
 
-Organizer terverifikasi mengelola event melalui **Event Saya**. Urutan konfigurasi: informasi event, posisi/jadwal, assessment, paket, lalu pengajuan moderasi. Admin mengelola harga dan manfaat melalui `/admin/packages` serta transaksi melalui `/admin/orders`. Waktu form dan tampilan menggunakan WIB; penyimpanan menggunakan UTC.
+Organizer terverifikasi mengelola event melalui **Event Saya**. Urutan konfigurasi: paket, informasi event, posisi/jadwal, assessment, lalu pengajuan moderasi. Admin mengelola harga dan manfaat melalui `/admin/packages` serta transaksi melalui `/admin/orders`. Waktu form dan tampilan menggunakan WIB; penyimpanan menggunakan UTC.
 
 Tambahkan konfigurasi berikut ke `.env` lokal, lalu jalankan `php artisan config:clear`:
 
@@ -165,9 +172,11 @@ MIDTRANS_IS_PRODUCTION=false
 
 Isi server key dari akun Midtrans **Sandbox**, jangan memakai key produksi atau memasukkannya ke Git/chat. Checkout menggunakan halaman Snap redirect yang dihosting Midtrans; client key tidak diperlukan untuk mode ini. Mode produksi ditolak oleh adapter saat ini.
 
-Atur Payment Notification URL pada dashboard Sandbox ke URL HTTPS aplikasi yang dapat diakses gateway dengan path `/payments/midtrans/notification`. URL localhost tidak dapat dijangkau gateway; endpoint publik/tunnel belum disediakan oleh repository. Bila callback belum terjangkau, tombol **Sinkronkan status** memeriksa pembayaran langsung dari server. Kembali dari checkout tidak mengubah status menjadi paid.
+Atur Payment Notification URL pada dashboard Sandbox ke URL HTTPS aplikasi yang dapat diakses gateway dengan path `/payments/midtrans/notification`. URL localhost tidak dapat dijangkau gateway; endpoint publik/tunnel belum disediakan oleh repository. Halaman status Organizer memeriksa order pending yang sudah memiliki checkout sekali saat kembali dari checkout baru (penanda `check_payment=1`), melalui POST ber-CSRF ke server. Membuka detail transaksi biasa tidak memanggil gateway otomatis. Status final terverifikasi memuat ulang halaman selama pengguna belum berpindah; klik menu membatalkan pemeriksaan di browser dan mencegah reload terlambat. Pemeriksaan status gateway dibatasi lima detik; checkout tetap memiliki batas tersendiri. Bila masih pending atau pemeriksaan gagal, tunggu sebentar lalu gunakan **Sinkronkan status**; jangan membuat order baru. Tombol ini tetap mengirim form POST jika JavaScript dimatikan. Parameter redirect checkout tidak menjadi bukti paid.
 
 Paket Free tidak membuat order paid. Paket berbayar hanya dapat dibuatkan order setelah approval. Checkout, callback dan sinkronisasi menyimpan status serta hak paket secara idempoten. Pembayaran valid pada event cancelled tetap dicatat untuk tindak lanjut tanpa publikasi; refund otomatis tidak tersedia.
+
+Pada Buat Event, pilih paket terlebih dahulu, lalu isi informasi dan jadwal. Jika durasi pembukaan pendaftaran melebihi batas paket, warning muncul dan simpan diblokir; pilih paket lebih besar atau pendekkan jadwal. Batas dihitung dari waktu pembukaan sampai deadline, bukan lama kegiatan. Paket dan draft disimpan bersama; pembayaran berbayar tetap setelah approval. Draft lama tanpa paket harus memilih saat disimpan kembali. Edit dengan paket yang sama mempertahankan harga/limit snapshot; penggantian paket eksplisit memakai konfigurasi aktif terbaru. Tidak memerlukan migration/seeder baru untuk alur ini.
 
 Paket awal untuk local/testing disertakan oleh seeder dasar, dengan harga dan limit yang disepakati:
 

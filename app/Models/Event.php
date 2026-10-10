@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Event extends Model
 {
@@ -16,6 +17,7 @@ class Event extends Model
         'description',
         'location',
         'city',
+        'city_id',
         'start_date',
         'end_date',
         'start_time',
@@ -54,6 +56,11 @@ class Event extends Model
             'verified_at' => 'datetime',
             'package_snapshot' => 'array',
         ];
+    }
+
+    public function cityRecord(): BelongsTo
+    {
+        return $this->belongsTo(City::class, 'city_id');
     }
 
     public function entitlement()

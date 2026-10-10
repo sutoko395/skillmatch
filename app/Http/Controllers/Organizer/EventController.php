@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Organizer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\City;
 use App\Models\Event;
 use App\Models\Package;
 use App\Services\EventPublicationService;
@@ -51,6 +52,8 @@ class EventController extends Controller
             'events' => Event::where('organizer_id', $r->user()->id)
                 ->latest()
                 ->paginate(12),
+            'cities' => City::where('is_active', true)->orderBy('name')->get(),
+            'packages' => $this->formPackages(),
             'categories' => Category::where('is_active', true)
                 ->orderBy('name')
                 ->get(),
@@ -68,10 +71,24 @@ class EventController extends Controller
     {
         return view('organizer.events.form', [
             'event' => $event,
+            'packages' => $this->formPackages($event),
+            'cities' => City::where('is_active', true)->orderBy('name')->get(),
             'categories' => Category::where('is_active', true)
                 ->orderBy('name')
                 ->get(),
         ]);
+    }
+
+    private function formPackages(?Event $event = null)
+    {
+        $packages = Package::where('is_active', true)->orderBy('price')->get()->map(fn ($package) => $package->snapshot());
+        // Editing the same package keeps its historical price and limits, including inactive master rows.
+        if ($event?->package_snapshot) {
+            $snapshot = $event->package_snapshot;
+            $packages = $packages->reject(fn ($package) => (int) $package['id'] === (int) $snapshot['id'])->prepend($snapshot);
+        }
+
+        return $packages->values();
     }
 
     public function store(Request $r, EventService $service)

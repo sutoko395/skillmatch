@@ -1,5 +1,29 @@
 # UAT dan kriteria selesai lintas anggota
 
+## Regresi navigasi dengan cache Blade kosong - 10 Oktober 2026
+
+Pada server pengembangan dengan Vite, kosongkan cache view saja (php artisan view:clear; jangan reset database), lalu klik tautan sekali dari beranda ke katalog/login/register dan antarhalaman panel Admin/Organizer/Volunteer. Klik harus mencapai URL tujuan tanpa full-reload Vite dari storage/framework/views, tanpa net::ERR_ABORTED pada request Document dan tanpa kembali ke halaman asal. Ulangi setelah cache terbentuk. Penulisan cache/runtime tidak memicu reload; perubahan sumber Blade/CSS/JS tetap diperbarui oleh dev server. Build dengan sumber Blade tanpa cache harus berhasil. Bukti Chrome desktop dan tes MySQL terisolasi dicatat di DEVELOPMENT; seluruh tombol submit, browser pengguna dan UAT lintas modul belum otomatis dinyatakan lulus. Pengujian dropdown/font berikut merupakan kasus terpisah.
+
+## Navigasi dan font lambat semua role - 10 Oktober 2026
+
+UAT navigasi/responsive: pada Admin, Organizer dan Volunteer, tunda/blokir stylesheet penyedia font eksternal dan buka halaman baru dengan cache dingin. Layout tidak meminta stylesheet tersebut. Tunda berkas font lokal; dropdown harus tetap membuka dengan klik pertama karena Alpine tidak bergantung pada selesai unduhan font. Uji tautan sidebar menuju halaman nyata, keyboard fokus, tombol drawer mobile lalu satu klik item, serta login/register/beranda dengan fallback font. Pastikan file WOFF2 400/500/600/700 dan lisensi ikut distribusi. Bukti browser terisolasi dan tes rendering ada di DEVELOPMENT; bukan klaim seluruh UAT atau profil browser pengguna telah diuji.
+
+## Regresi pembayaran pending dan tombol kembali - 10 Oktober 2026
+
+Tambahan navigasi: kunjungan detail biasa tidak mengaktifkan sync otomatis; finish URL checkout baru dengan check_payment=1 hanya memicu POST verifikasi, tidak menandai paid. Simulasikan respons gateway terlambat lalu klik menu sekali: request browser dibatalkan dan hasil lama tidak memuat ulang/membatalkan tujuan navigasi. Modifier/new tab/download/anchor tidak dianggap perpindahan halaman saat ini. Periksa navigasi Dashboard/Event Saya/Profil desktop serta item menu mobile setelah drawer dibuka. Timeout server status dibatasi lima detik; timeout tidak menghasilkan paid/entitlement palsu. Bukti dan batas reproduksi browser pengguna dicatat di DEVELOPMENT.
+
+UAT-10/24/25/26/34: selesaikan pembayaran Sandbox, kembali ke halaman order dan periksa satu POST otomatis ber-CSRF. Status harus mengikuti Get Status server, bukan query redirect. Gateway pending tetap menunggu; settlement/capture valid mencatat paid dan aktivasi sekali, lalu halaman diperbarui. Uji Sinkronkan status tanpa JavaScript (button type submit), klik ganda, timeout, sesi berakhir, throttle, nominal/ref/currency palsu serta owner/role/akun nonaktif. Admin tetap dapat sinkron melalui form POST. Kembali ke event menuju detail event yang benar, mempunyai fokus keyboard dan gaya tombol konsisten. Tes MySQL/mock gateway dan tes JS dicatat di DEVELOPMENT; uji browser visual, webhook publik dan konkurensi dua proses tetap terpisah dari verifikasi Get Status Sandbox nyata.
+
+## Paket dahulu dan warning durasi - 10 Oktober 2026
+
+UAT-07/10/23/34: popup Event Saya dan halaman buat/edit mewajibkan paket lebih dahulu. Uji tepat 7/30/60 hari berhasil dan lebih satu menit ditolak; ubah paket/durasi mengubah warning langsung dan tombol simpan. Pastikan batas dari master/snapshot, timezone browser tidak mengubah WIB, pilihan/tanggal dipertahankan setelah validasi gagal. Endpoint menolak package_id hilang/tidak ada/nonaktif, snapshot/harga palsu, rentang terlalu panjang dan penurunan kuota posisi yang tidak mencukupi; event/audit rollback bersama. Create berbayar tetap draft/unpublished tanpa order/entitlement; bayar hanya setelah approved. Edit ID paket sama tidak mengikuti perubahan master; draft legacy tanpa paket harus memilih. Published/transaksi dan owner lain tetap ditolak. Bukti tes/build dicatat di DEVELOPMENT; mock payment dan tes state JavaScript tidak meluluskan Sandbox end-to-end atau review browser.
+
+## Regresi kota event - 10 Oktober 2026
+
+Uji kedua jalur pembuatan (popup Event Saya dan halaman Buat Event): keduanya mengirim city_id, menyembunyikan kota nonaktif, dan menyimpan relasi master. Kegagalan validasi membuka kembali popup dan mempertahankan kota yang dipilih; tidak membuat event parsial.
+
+Untuk UAT-06/07/09/19: simpan dan baca ulang city_id/relasi cityRecord, ubah kota melalui master aktif, abaikan teks kota palsu dari request, tolak ID hilang/tidak ada/nonaktif tanpa mengubah event/audit. Draft lama tanpa city_id menampilkan petunjuk koreksi; pengajuan gagal dengan pesan validasi yang terlihat, bukan HTTP 500. Assessment published tetap menjadi syarat pengajuan. Bukti tes terarah dicatat di docs/DEVELOPMENT.md; seluruh UAT/manual lintas modul tidak otomatis lulus.
+
 ## Assessment Organizer — tambahan 10 Oktober 2026
 
 Uji draft tanpa soal/durasi dan draft parsial berhasil tetapi tidak membuka readiness; publikasi 1/50 soal, 1/120 menit valid; 0/51 soal, durasi 0/121 dan opsi selain tepat A–D ditolak. Soal/opsi kosong atau tanpa satu kunci ditolak. Preview tidak menulis database, confirmed publish mengunci set, edit setelah publish ditolak dan replay tidak menggandakan audit. Uji stale revision, dua tab, rollback, akses Organizer lain/Volunteer/Admin/guest/nonaktif dan event frozen melalui endpoint. Readiness nyata membuka pengajuan/publikasi hanya jika syarat A2 lainnya terpenuhi; snapshot assessment_version tetap immutable. Posisi draft assessment dapat dihapus; published tidak. UI diuji 360/768/1280, keyboard, error/old input/loading dan konfirmasi. Tes validasi tidak berarti UAT timer/attempt/screening/matching selesai; bukti tiap tahap dicatat terpisah.

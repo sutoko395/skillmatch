@@ -1,5 +1,11 @@
 # Serah-terima A2 - event, katalog dan pembayaran
 
+Penyempurnaan navigasi 10 Oktober 2026: otomatis hanya pada finish checkout baru berpenanda check_payment=1, pembatalan fetch/no reload saat pengguna berpindah, dan timeout server status lima detik. Bukti terbaru **21 tes pembayaran / 129 assertion**, **8 tes frontend**, build, serta navigasi satu klik desktop/mobile pada browser/database tes ada di DEVELOPMENT. Keluhan menetap pada profil browser pengguna belum direproduksi secara konsisten; tidak mengklaim seluruh navigasi/performa aplikasi selesai diverifikasi. Tanpa migration atau perubahan .env; branch/basis tetap, belum commit/push.
+
+Perbaikan pembayaran 10 Oktober 2026: tombol sinkron Organizer/Admin mengirim POST; Organizer memeriksa order pending dengan checkout sekali saat halaman dibuka melalui endpoint existing, CSRF/Policy/throttle dan JSON minimum. GET/query redirect tidak menentukan paid. Kembali ke event memakai gaya tombol sekunder. Order pengguna telah diverifikasi settlement dari Midtrans Sandbox nyata, direkonsiliasi melalui layanan existing, paid/activated dan published terkonfirmasi di database. Bukti **19 tes pembayaran / 110 assertion**, **5 tes frontend** dan build serta batas webhook/browser/UAT tersedia pada [DEVELOPMENT](DEVELOPMENT.md). Tanpa migration; branch `fix/event-moderation-city`, basis `12d229b`, perubahan belum commit/push/PR/merge.
+
+Pembaruan lokal 10 Oktober 2026: paket dipilih di awal popup/halaman buat event dan disnapshot bersama draft; warning durasi dan validasi server mengikuti batas paket. Tidak ada migration/order/entitlement baru pada create, pembayaran tetap setelah approved. Bukti terbaru, snapshot existing dan temuan integrasi yang belum lulus dicatat di [DEVELOPMENT.md](DEVELOPMENT.md). Basis `12d229b`, branch `fix/event-moderation-city`, perubahan belum commit/push/PR/merge. Catatan historis di bawah tetap bukti tahap A2 awal.
+
 Tanggal: 5 Oktober 2026 (WIB). Status: implementasi A2 tersedia untuk ditinjau; integrasi assessment, cancellation, notifikasi, pengujian browser dan transaksi Sandbox nyata belum dinyatakan selesai.
 
 ## Dasar Git dan tahapan

@@ -1,8 +1,13 @@
 
 
 import Alpine from 'alpinejs';
+import eventPackageForm from './event-package-form';
+import paymentStatus from './payment-status';
 
 window.Alpine = Alpine;
+
+Alpine.data('eventPackageForm', eventPackageForm);
+Alpine.data('paymentStatus', paymentStatus);
 
 Alpine.start();
 

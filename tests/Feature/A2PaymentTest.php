@@ -11,6 +11,7 @@ use App\Services\EventPublicationService;
 use App\Services\NotificationService;
 use App\Services\PaymentService;
 use App\Services\VerifiedGatewayResult;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Factory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -136,6 +137,7 @@ class A2PaymentTest extends DatabaseTestCase
             $this->assertSame(1, DB::transactionLevel());
             $this->assertSame(10000, $request['transaction_details']['gross_amount']);
             $this->assertSame($order->order_ref, $request['transaction_details']['order_id']);
+            $this->assertSame(route('organizer.orders.show', ['order' => $order, 'check_payment' => 1]), $request['callbacks']['finish']);
 
             return Http::response(['redirect_url' => 'https://app.sandbox.midtrans.com/snap/v3/redirection/test-token']);
         });
@@ -271,5 +273,117 @@ class A2PaymentTest extends DatabaseTestCase
         $this->actingAs($owner)->postJson('/organizer/orders/'.$order->id.'/checkout')->assertUnprocessable();
         $this->assertNull($order->fresh()->checkout_claim);
         Http::assertNothingSent();
+    }
+
+    public function test_sync_buttons_submit_and_return_link_targets_owned_event(): void
+    {
+        [$owner, $event, $order] = $this->order();
+        Http::preventStrayRequests();
+        foreach ([$owner, User::factory()->create(['role' => 'admin'])] as $actor) {
+            $prefix = $actor->role === 'admin' ? 'admin' : 'organizer';
+            $response = $this->actingAs($actor)->get("/$prefix/orders/$order->id")->assertOk();
+            $document = new \DOMDocument;
+            @$document->loadHTML($response->getContent());
+            $xpath = new \DOMXPath($document);
+            $buttons = $xpath->query('//form[@action="'.route($prefix.'.orders.sync', $order).'"]//button');
+            $this->assertSame(1, $buttons->length);
+            $this->assertSame('submit', $buttons->item(0)->getAttribute('type'));
+            if ($prefix === 'organizer') {
+                $link = $xpath->query('//a[@href="'.route('organizer.events.show', $event).'"][contains(., "Kembali ke event")]')->item(0);
+                $this->assertNotNull($link);
+                $this->assertStringContainsString('inline-flex', $link->getAttribute('class'));
+                $this->assertStringContainsString('focus:ring', $link->getAttribute('class'));
+            }
+        }
+        Http::assertNothingSent(); // Rendering a GET does not mutate payment or call the gateway.
+    }
+
+    public function test_json_sync_uses_gateway_and_repeated_paid_check_is_idempotent(): void
+    {
+        [$owner, $event, $order] = $this->order();
+        config(['midtrans.server_key' => 'test-key']);
+        Http::preventStrayRequests();
+        Http::fakeSequence('api.sandbox.midtrans.com/*')
+            ->push($this->response($order, 'pending'))
+            ->push($this->response($order))
+            ->push($this->response($order));
+        $url = "/organizer/orders/$order->id/sync";
+        $this->actingAs($owner)->postJson($url, ['status' => 'paid', 'transaction_status' => 'settlement'])
+            ->assertOk()->assertExactJson(['status' => 'pending', 'paid' => false, 'activated' => false, 'requires_follow_up' => false]);
+        $this->assertNull($order->fresh()->paid_at);
+        $this->postJson($url)->assertOk()
+            ->assertExactJson(['status' => 'paid', 'paid' => true, 'activated' => true, 'requires_follow_up' => false]);
+        $paid = $order->fresh();
+        $this->postJson($url)->assertOk()->assertJsonPath('status', 'paid')->assertDontSee('test-key');
+        $this->assertTrue($paid->paid_at->equalTo($order->fresh()->paid_at));
+        $this->assertTrue($paid->activated_at->equalTo($order->fresh()->activated_at));
+        $this->assertSame(2, PaymentEvent::where('order_id', $order->id)->count()); // One pending + one settlement receipt.
+        $this->assertSame(1, $event->entitlement()->count());
+    }
+
+    public function test_sync_without_javascript_redirects_with_server_status(): void
+    {
+        [$owner, $event, $order] = $this->order();
+        config(['midtrans.server_key' => 'test-key']);
+        Http::preventStrayRequests();
+        Http::fake(['api.sandbox.midtrans.com/*' => Http::response($this->response($order))]);
+        $url = route('organizer.orders.show', $order);
+        $this->actingAs($owner)->from($url)->post("/organizer/orders/$order->id/sync")
+            ->assertRedirect($url)->assertSessionHas('success');
+        $this->assertSame('paid', $order->fresh()->status);
+        $this->assertSame(1, $event->entitlement()->count());
+    }
+
+    public function test_json_sync_forbids_other_owner_and_volunteer_before_gateway_call(): void
+    {
+        [$owner, $event, $order] = $this->order();
+        Http::preventStrayRequests();
+        foreach ([
+            ['role' => 'organizer', 'organizer_status' => 'active'],
+            ['role' => 'volunteer'],
+        ] as $attributes) {
+            $this->actingAs(User::factory()->create($attributes))
+                ->postJson("/organizer/orders/$order->id/sync")->assertForbidden();
+        }
+        $this->actingAs(User::factory()->create(['role' => 'organizer', 'organizer_status' => 'pending']))
+            ->postJson("/organizer/orders/$order->id/sync")->assertRedirect(route('organizer.profile.pending'));
+        $owner->forceFill(['is_active' => false])->save();
+        $this->actingAs($owner)->postJson("/organizer/orders/$order->id/sync")->assertForbidden();
+        Http::assertNothingSent();
+        $this->assertSame('pending', $order->fresh()->status);
+    }
+
+    public function test_status_check_is_bounded_and_timeout_keeps_payment_pending(): void
+    {
+        [$owner, $event, $order] = $this->order();
+        config(['midtrans.server_key' => 'test-key']);
+        Http::preventStrayRequests();
+        Http::fake(function ($request, $options) {
+            $this->assertSame(2, $options['connect_timeout']);
+            $this->assertSame(5, $options['timeout']);
+            throw new ConnectionException('Simulated timeout');
+        });
+        $this->actingAs($owner)->postJson("/organizer/orders/$order->id/sync")
+            ->assertUnprocessable()->assertJsonValidationErrors('payment');
+        $this->assertSame('pending', $order->fresh()->status);
+        $this->assertNull($order->fresh()->paid_at);
+        $this->assertNull($order->fresh()->activated_at);
+        $this->assertSame(0, $event->entitlement()->count());
+        $this->assertSame(0, PaymentEvent::where('order_id', $order->id)->count());
+    }
+
+    public function test_ordinary_order_visit_does_not_enable_automatic_check_but_checkout_return_does(): void
+    {
+        [$owner, $event, $order] = $this->order();
+        $order->forceFill(['checkout_url' => 'https://app.sandbox.midtrans.com/snap/v3/redirection/test-token'])->save();
+        Http::preventStrayRequests();
+        $this->actingAs($owner)->get("/organizer/orders/$order->id")
+            ->assertOk()->assertViewHas('checkPayment', false);
+        $this->get("/organizer/orders/$order->id?check_payment=1&transaction_status=settlement")
+            ->assertOk()->assertViewHas('checkPayment', true);
+        Http::assertNothingSent();
+        $this->assertSame('pending', $order->fresh()->status);
+        $this->assertNull($order->fresh()->paid_at);
+        $this->assertSame(0, $event->entitlement()->count());
     }
 }
