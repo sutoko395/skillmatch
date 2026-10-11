@@ -87,6 +87,15 @@ class ApplicationService
                 return $lockedDraft;
             }
 
+            $now = now();
+            if (! Event::publiclyVisible()->whereKey($event->id)->exists()
+                || $now < $event->registration_opens_at
+                || $now >= $event->registration_deadline) {
+                throw ValidationException::withMessages([
+                    'event' => 'Pendaftaran untuk kegiatan ini tidak sedang dibuka.',
+                ]);
+            }
+
             $position = EventPosition::where('id', $lockedDraft->event_position_id)
                 ->where('event_id', $event->id)
                 ->firstOrFail();
@@ -144,12 +153,10 @@ class ApplicationService
                 'volunteer-submitted'
             );
 
+            DB::afterCommit(fn () => $this->triggerEvaluation($lockedDraft));
+
             return $lockedDraft;
         });
-
-        $this->triggerEvaluation($submitted);
-
-        return $submitted;
     }
 
     /**

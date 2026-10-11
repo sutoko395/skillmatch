@@ -11,7 +11,9 @@ use App\Models\VolunteerProfile;
 use App\Models\VolunteerSkill;
 use App\Services\ApplicationService;
 use App\Services\EventPublicationService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\DatabaseTestCase;
 use Tests\Support\A2Fixture;
 
@@ -52,6 +54,116 @@ class A3ApplicationTest extends DatabaseTestCase
         ]);
 
         return $volunteer;
+    }
+
+    public static function closedRegistrationCases(): array
+    {
+        return [
+            'exact deadline' => ['registration_deadline', 'deadline'],
+            'after deadline' => ['registration_deadline', 'past'],
+            'not yet open' => ['registration_opens_at', 'future'],
+            'unpublished' => ['publication_status', 'unpublished'],
+            'cancelled event' => ['lifecycle_status', 'cancelled'],
+        ];
+    }
+
+    #[DataProvider('closedRegistrationCases')]
+    public function test_submit_rechecks_registration_without_consuming_quota(string $field, string $value): void
+    {
+        $this->assessmentReady();
+        [$owner, $event, $position] = $this->fixture();
+        $event->forceFill(['status' => 'approved'])->save();
+        app(EventPublicationService::class)->publish($event, $owner);
+
+        $volunteer = $this->createCompleteVolunteer($event->cityRecord, $position->positionSkills->first()->skill);
+        $service = app(ApplicationService::class);
+        $draft = $service->storeDraft($volunteer, $position);
+        $this->travelTo(now()->startOfSecond());
+        $event->forceFill([$field => match ($value) {
+            'deadline' => now(),
+            'past' => now()->subSecond(),
+            'future' => now()->addSecond(),
+            default => $value,
+        }])->save();
+        $beforeAuditCount = AuditLog::count();
+
+        $this->actingAs($volunteer)
+            ->postJson("/volunteer/applications/{$draft->id}/submit")
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('event');
+
+        $this->assertSame('draft', $draft->fresh()->status);
+        $this->assertNull($draft->fresh()->submitted_at);
+        $this->assertSame(0, $event->entitlement()->firstOrFail()->submitted_applications);
+        $this->assertSame($beforeAuditCount, AuditLog::count());
+    }
+
+    public function test_evaluation_waits_for_outer_commit_and_stale_replay_does_not_repeat_it(): void
+    {
+        $this->assessmentReady();
+        [$owner, $event, $position] = $this->fixture();
+        $event->forceFill(['status' => 'approved'])->save();
+        app(EventPublicationService::class)->publish($event, $owner);
+        $volunteer = $this->createCompleteVolunteer($event->cityRecord, $position->positionSkills->first()->skill);
+        $service = $this->evaluationSpy();
+        $draft = $service->storeDraft($volunteer, $position);
+        $staleDraft = $draft->fresh();
+        $baselineLevel = DB::transactionLevel();
+
+        DB::transaction(function () use ($service, $draft, $volunteer) {
+            $service->submit($draft, $volunteer);
+            $this->assertSame([], $service->evaluations);
+        });
+
+        $this->assertSame([[$draft->id, 'submitted', $baselineLevel]], $service->evaluations);
+        // A draft loaded before the first submit must also be an idempotent replay.
+        $this->travelTo($event->registration_deadline->addSecond());
+        $service->submit($staleDraft, $volunteer);
+        $service->submit($draft->fresh(), $volunteer);
+        $this->assertCount(1, $service->evaluations);
+        $this->assertSame(1, $event->entitlement()->firstOrFail()->submitted_applications);
+        $this->assertSame(1, AuditLog::where('action', 'application.submitted')->where('subject_id', $draft->id)->count());
+    }
+
+    public function test_outer_rollback_cancels_evaluation_and_submission(): void
+    {
+        $this->assessmentReady();
+        [$owner, $event, $position] = $this->fixture();
+        $event->forceFill(['status' => 'approved'])->save();
+        app(EventPublicationService::class)->publish($event, $owner);
+        $volunteer = $this->createCompleteVolunteer($event->cityRecord, $position->positionSkills->first()->skill);
+        $service = $this->evaluationSpy();
+        $draft = $service->storeDraft($volunteer, $position);
+        $beforeAuditCount = AuditLog::count();
+
+        try {
+            DB::transaction(function () use ($service, $draft, $volunteer) {
+                $service->submit($draft, $volunteer);
+                throw new \RuntimeException('Rollback the outer transaction.');
+            });
+            $this->fail('Expected outer rollback.');
+        } catch (\RuntimeException $e) {
+            $this->assertSame('Rollback the outer transaction.', $e->getMessage());
+        }
+
+        $this->assertSame([], $service->evaluations);
+        $this->assertSame('draft', $draft->fresh()->status);
+        $this->assertNull($draft->fresh()->submitted_at);
+        $this->assertSame(0, $event->entitlement()->firstOrFail()->submitted_applications);
+        $this->assertSame($beforeAuditCount, AuditLog::count());
+    }
+
+    protected function evaluationSpy(): ApplicationService
+    {
+        return new class extends ApplicationService
+        {
+            public array $evaluations = [];
+
+            protected function triggerEvaluation(Application $application): void
+            {
+                $this->evaluations[] = [$application->id, $application->fresh()->status, DB::transactionLevel()];
+            }
+        };
     }
 
     public function test_volunteer_can_create_draft_application_for_published_event(): void
@@ -201,9 +313,9 @@ class A3ApplicationTest extends DatabaseTestCase
 
     public function test_submission_failure_rolls_back_transaction_and_entitlement_counter(): void
     {
-        // Without calling $this->assessmentReady(), PositionSnapshotService will fail due to missing AssessmentReadiness binding
+        // The published event passes registration checks, but its assessment is incomplete.
         [$owner, $event, $position] = $this->fixture();
-        $event->forceFill(['status' => 'approved'])->save();
+        $event->forceFill(['status' => 'approved', 'publication_status' => 'published'])->save();
 
         // Manually create entitlement
         $entitlement = new EventEntitlement;
