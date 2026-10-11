@@ -57,12 +57,16 @@ class EventCityTest extends DatabaseTestCase
         $this->assertSame($event->city_id, $event->load('cityRecord')->cityRecord->id);
         $this->assertSame($event->cityRecord->name, $event->city);
         $city = City::create(['name' => 'Kota baru uji', 'is_active' => true]);
-        $input = array_replace($this->input($event), ['city_id' => $city->id, 'city' => 'Kota palsu']);
-        $this->actingAs($owner)->put("/organizer/events/{$event->id}", $input)->assertRedirect();
+        $input = array_replace($this->input($event), ['city_id' => $city->id]);
+        $this->actingAs($owner)->put("/organizer/events/{$event->id}", $input)
+            ->assertRedirect()->assertSessionHasNoErrors();
         $event->refresh()->load('cityRecord');
         $this->assertSame($city->id, $event->city_id);
         $this->assertSame($city->name, $event->city);
         $this->assertSame($city->id, $event->cityRecord->id);
+        $this->put("/organizer/events/{$event->id}", array_replace($input, ['city' => str_repeat('Kota palsu ', 20)]))
+            ->assertRedirect()->assertSessionHasNoErrors();
+        $this->assertSame($city->name, $event->fresh()->city);
         $this->get("/organizer/events/{$event->id}/edit")->assertOk()->assertSee('name="city_id"', false)->assertSee($city->name);
     }
 

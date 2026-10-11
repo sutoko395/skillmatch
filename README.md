@@ -10,7 +10,7 @@ Tes validasi: `php vendor/bin/phpunit tests/Unit/OrganizerAssessmentValidationTe
 
 ## Update jadwal posisi (10 Oktober 2026)
 
-Form event memilih kota aktif dari master agar `city_id` dapat dipakai pada moderasi, katalog dan snapshot. Untuk draft lama yang hanya menyimpan kota teks, buka Edit Event, pilih kota lalu simpan kembali sebelum mengajukan moderasi. Teks lama ditampilkan sebagai petunjuk; tidak ada pemetaan otomatis, reset data atau migration tambahan untuk perbaikan relasi ini.
+Form event memilih kota aktif dari master agar `city_id` dapat dipakai pada moderasi, katalog dan snapshot. Request buat/edit cukup mengirim `city_id`; teks `city` diisi server dari nama master, bukan input wajib tambahan. Untuk draft lama yang hanya menyimpan kota teks, buka Edit Event, pilih kota lalu simpan kembali sebelum mengajukan moderasi. Teks lama ditampilkan sebagai petunjuk; tidak ada pemetaan otomatis, reset data atau migration tambahan untuk perbaikan relasi ini.
 
 Jalankan migration tambahan dengan PHP yang memenuhi lockfile/dependensi terpasang, setelah backup dan pemeriksaan database: `php artisan migrate`. Migration `2026_10_10_000001_add_event_schedule_mode_to_positions.php` menambah `follows_event_schedule`; tidak mengubah interval posisi lama. Posisi baru default mengikuti jadwal event. Pilih Atur jadwal tugas khusus bila perlu; jadwal event selalu terlihat. Event satu hari cukup mengubah jam, beberapa hari memakai tanggal/jam. Perubahan event editable memperbarui posisi otomatis, dan ditolak jika jadwal khusus keluar rentang/deadline. Snapshot dan freeze published tetap berlaku.
 
