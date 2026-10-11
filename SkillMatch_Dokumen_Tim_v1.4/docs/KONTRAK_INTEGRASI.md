@@ -141,6 +141,18 @@ ApplicationService.submit membuat outbox `application.submitted`; consumer A4 me
 
 Event key notifikasi: `<event_type>:<subject_id>:<transition_revision>:<recipient_id>`. Retry transisi yang sama memakai key sama; keputusan baru memakai revision baru. Audit dan notifikasi harus mencatat transaksi yang benar-benar commit, bukan percobaan gagal.
 
+### Snapshot kelengkapan profil — 11 Oktober 2026
+
+A3 menambahkan `snapshot_json.profile_eligibility: {complete: boolean, missing_fields: string[]}`
+saat transisi draft → submitted, dari `ProfileEligibilityService.check` di transaksi submit.
+A4 memakai hasil ini untuk pemeriksaan profil lengkap, bukan membaca ulang profil/master
+terkini. Penambahan ini menyimpan bukti, tidak menambah penolakan submit baru: profil
+yang menjadi tidak lengkap setelah draft dibuat tercatat `complete=false` untuk screening.
+Snapshot posisi/profil/dokumen existing tetap dipertahankan; replay tidak menghitung ulang.
+Lamaran lama tanpa field ini tidak diisi ulang dari profil terbaru atau dianggap lengkap;
+bukti profil historisnya belum cukup untuk menyimpulkan hasil pemeriksaan tersebut.
+Tidak ada migration atau backfill snapshot historis.
+
 ## 5. Endpoint dan nama route target
 
 Route berikut menjadi kontrak navigasi. Implementasi dapat menambah endpoint pendukung, tetapi tidak mengganti nama di satu anggota saja.

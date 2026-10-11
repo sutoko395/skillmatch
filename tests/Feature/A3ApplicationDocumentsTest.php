@@ -3,9 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Application;
-use App\Models\ApplicationDocument;
 use App\Models\AvailabilitySlot;
-use App\Models\EventEntitlement;
 use App\Models\User;
 use App\Models\VolunteerProfile;
 use App\Models\VolunteerSkill;
@@ -267,6 +265,7 @@ class A3ApplicationDocumentsTest extends DatabaseTestCase
         $this->assertArrayHasKey('profile', $snapshot);
         $this->assertSame($volunteer->name, $snapshot['profile']['name']);
         $this->assertSame('081234567890', $snapshot['profile']['phone']);
+        $this->assertSame(['complete' => true, 'missing_fields' => []], $snapshot['profile_eligibility']);
         $this->assertCount(1, $snapshot['documents']);
         $this->assertSame('cv_snapshot.pdf', $snapshot['documents'][0]['original_name']);
 
@@ -275,6 +274,7 @@ class A3ApplicationDocumentsTest extends DatabaseTestCase
         $volunteer->volunteerProfile->update([
             'phone' => '089999999999',
             'address' => 'Jl. Perubahan Baru',
+            'bio' => null,
         ]);
         $volunteer->update(['name' => 'Nama Baru Volunteer']);
 
@@ -283,6 +283,32 @@ class A3ApplicationDocumentsTest extends DatabaseTestCase
         $this->assertEquals($snapshot, $freshApplication->snapshot_json);
         $this->assertSame('081234567890', $freshApplication->snapshot_json['profile']['phone']);
         $this->assertSame($originalName, $freshApplication->snapshot_json['profile']['name']);
+        app(ApplicationService::class)->submit($freshApplication, $volunteer);
+        $this->assertSame($snapshot, $freshApplication->fresh()->snapshot_json);
+    }
+
+    public function test_submit_snapshots_profile_completeness_at_submission_instead_of_draft_creation(): void
+    {
+        $this->assessmentReady();
+        [$owner, $event, $position] = $this->fixture();
+        $event->forceFill(['status' => 'approved'])->save();
+        app(EventPublicationService::class)->publish($event, $owner);
+
+        $volunteer = $this->createCompleteVolunteer($event->cityRecord, $position->positionSkills->first()->skill);
+        $service = app(ApplicationService::class);
+        $draft = $service->storeDraft($volunteer, $position);
+        $volunteer->volunteerProfile->update(['bio' => null, 'address' => null]);
+
+        $submitted = $service->submit($draft, $volunteer);
+        $snapshot = $submitted->snapshot_json;
+        $this->assertSame('submitted', $submitted->status);
+        $this->assertSame([
+            'complete' => false,
+            'missing_fields' => ['address', 'bio'],
+        ], $snapshot['profile_eligibility']);
+
+        $volunteer->volunteerProfile->update(['bio' => 'Profil dilengkapi', 'address' => 'Alamat baru']);
+        $this->assertSame($snapshot, $submitted->fresh()->snapshot_json);
     }
 
     public function test_organizer_can_view_submitted_applications_list_and_detail_with_status_menunggu_evaluasi(): void
