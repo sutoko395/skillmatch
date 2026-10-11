@@ -142,22 +142,21 @@ class EventService
                 $this->editable($event);
             }
 
-           $data = Validator::make($input, [
-    'title' => ['required', 'string', 'max:255'],
-    'package_id' => [$event->package_snapshot ? 'sometimes' : 'required', 'integer'],
-    'description' => ['required', 'string', 'max:10000'],
-    'location' => ['required', 'string', 'max:255'],
-    'city' => ['required', 'string', 'max:100'],
-    'city_id' => [
-        'required',
-        'integer',
-        Rule::exists('cities', 'id')->where('is_active', true),
-    ],
-    'category_id' => [
-        'required',
-        Rule::exists('categories', 'id')
-            ->where('is_active', true),
-    ],
+            $data = Validator::make($input, [
+                'title' => ['required', 'string', 'max:255'],
+                'package_id' => [$event->package_snapshot ? 'sometimes' : 'required', 'integer'],
+                'description' => ['required', 'string', 'max:10000'],
+                'location' => ['required', 'string', 'max:255'],
+                'city_id' => [
+                    'required',
+                    'integer',
+                    Rule::exists('cities', 'id')->where('is_active', true),
+                ],
+                'category_id' => [
+                    'required',
+                    Rule::exists('categories', 'id')
+                        ->where('is_active', true),
+                ],
                 'starts_at' => ['required', 'date_format:Y-m-d\TH:i'],
                 'ends_at' => ['required', 'date_format:Y-m-d\TH:i', 'after:starts_at'],
                 'registration_opens_at' => ['required', 'date_format:Y-m-d\TH:i'],
@@ -212,10 +211,6 @@ class EventService
 
             $data['organizer_id'] = $actor->id;
             $data['status'] = 'draft';
-
-            if (empty($data['city_id']) && ! empty($data['city'])) {
-                $data['city_id'] = \App\Models\City::where('name', $data['city'])->where('is_active', true)->value('id');
-            }
 
             if (! $event->exists) {
                 $data['revision'] = 1;
