@@ -1,5 +1,21 @@
 # Serah-terima A3 — Tahap 2: Fondasi Lamaran dan Dokumen Privat
 
+## Snapshot kelengkapan profil — 11 Oktober 2026
+
+Submit menyimpan `snapshot_json.profile_eligibility` dengan `complete` dan `missing_fields`
+dari ProfileEligibilityService saat submit, di transaksi yang sama dengan snapshot dan kuota.
+Relasi profil dimuat ulang oleh layanan existing sehingga hasil tidak memakai data draft lama.
+A4 membaca bukti ini untuk screening profil lengkap; tidak ada penambahan validasi penolakan
+submit, schema, route, UI, atau backfill lamaran historis. Lamaran lama yang belum memiliki
+field ini tidak boleh dianggap otomatis lengkap atau dievaluasi dari profil terbaru.
+
+Tes pada A3ApplicationDocumentsTest mencakup hasil profil lengkap, profil menjadi tidak
+lengkap setelah draft dibuat, perubahan profil sesudah submit, dan replay yang tidak
+mengubah snapshot. Pint, sintaks PHP dan `npm.cmd run build` berhasil. Tes database
+**belum dijalankan**: akses akun lokal ke MySQL `skillmatch_testing` masih ditolak (1044).
+Setelah akses dan migration database tes terpisah tersedia, jalankan
+`php artisan test --filter=A3ApplicationDocumentsTest` dengan PHP kompatibel composer.lock.
+
 ## Perbaikan integrasi submit — 11 Oktober 2026
 
 Lingkup perbaikan terbatas pada `ApplicationService.submit`: di bawah lock event/lamaran,

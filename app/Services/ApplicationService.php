@@ -102,7 +102,11 @@ class ApplicationService
 
             $snapshot = app(PositionSnapshotService::class)->build($position);
 
-            $volunteer->loadMissing(['volunteerProfile.cityRecord', 'volunteerSkills.skill', 'availabilitySlots']);
+            $eligibility = app(ProfileEligibilityService::class)->check($volunteer);
+            $snapshot['profile_eligibility'] = [
+                'complete' => $eligibility['complete'],
+                'missing_fields' => $eligibility['missing_fields'],
+            ];
             $snapshot['profile'] = [
                 'user_id' => $volunteer->id,
                 'name' => $volunteer->name,
