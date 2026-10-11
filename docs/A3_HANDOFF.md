@@ -1,5 +1,31 @@
 # Serah-terima A3 — Tahap 2: Fondasi Lamaran dan Dokumen Privat
 
+## Perbaikan integrasi submit — 11 Oktober 2026
+
+Lingkup perbaikan terbatas pada `ApplicationService.submit`: di bawah lock event/lamaran,
+draft diperiksa ulang terhadap publikasi, lifecycle, entitlement, Organizer aktif dan
+jendela pendaftaran melalui `Event::publiclyVisible` serta timestamp server. Tepat pada
+deadline sudah ditolak. Penolakan tidak menulis snapshot/status/audit atau memakai kuota.
+Replay lamaran yang sudah dikirim tetap idempoten, termasuk setelah deadline.
+`EntitlementService.consumeApplication` sebelumnya sudah memeriksa jendela pendaftaran;
+pemeriksaan baru di submit menolak lebih awal sebelum pembuatan snapshot, tanpa menghapus
+pemeriksaan existing pada saat konsumsi kuota.
+
+Pemanggilan evaluasi yang sebelumnya berada setelah `return` dipindahkan ke
+`DB::afterCommit` hanya untuk transisi draft → submitted yang baru. Transaksi luar yang
+rollback membatalkan callback; replay tidak mendaftarkan evaluasi kedua. ScreeningService
+tetap dependensi A4: bila belum tersedia, lamaran tetap Menunggu evaluasi. Outbox/recovery
+evaluasi belum diimplementasikan oleh perbaikan ini; belum merupakan bukti integrasi penuh A4.
+
+Tes regresi ditambahkan pada `A3ApplicationTest`: tepat/setelah deadline, belum dibuka,
+unpublished/cancelled, callback sesudah commit transaksi luar, stale replay, dan rollback.
+Tes transaksi **belum dijalankan** pada lingkungan lokal perbaikan ini: akun database
+menolak akses MySQL `skillmatch_testing` (1044). Setelah akses database tes terpisah dan
+migration tersedia, jalankan `php artisan test --filter=A3Application` memakai PHP yang
+memenuhi composer.lock. Database kerja tidak digunakan untuk tes.
+
+Tidak ada migration, route, perubahan setup atau perubahan UI pada perbaikan ini.
+
 Tanggal: 10 Oktober 2026 (WIB).
 Status: Implementasi Tahap 2 A3 (Fondasi Lamaran, Dokumen Privat, Snapshot Immutable, dan Daftar/Detail Volunteer & Organizer) telah selesai dan terverifikasi **100% lulus pengujian feature test** pada MySQL `skillmatch_testing`.
 
