@@ -153,6 +153,18 @@ Lamaran lama tanpa field ini tidak diisi ulang dari profil terbaru atau dianggap
 bukti profil historisnya belum cukup untuk menyimpulkan hasil pemeriksaan tersebut.
 Tidak ada migration atau backfill snapshot historis.
 
+### Implementasi screening bertahap — 11 Oktober 2026
+
+ScreeningService.evaluate kini menyimpan satu screening_results dan audit dalam transaksi
+dengan lock Volunteer → event → application. Hasil `{passed, checks, rule_version}`;
+checks menambahkan label, required, manual untuk tampilan. Syarat nonwajib tidak memblokir.
+Fail mengubah submitted → screening_failed; passed tetap submitted sampai matching nyata
+tersimpan sebelum assessment_pending. Ini state intermediate existing, bukan status baru.
+Replay tidak mengubah hasil/status terminal. Recovery sinkron: `a4:retry-screening`.
+Missing profile_eligibility/invalid snapshot ditunda, tidak ditafsirkan sebagai gagal
+syarat kandidat. Outbox/notifikasi dan matching/attempt belum menjadi bagian tahap ini.
+Rincian serta batas verifikasi pada docs/A4_SCREENING_HANDOFF.md aplikasi.
+
 ## 5. Endpoint dan nama route target
 
 Route berikut menjadi kontrak navigasi. Implementasi dapat menambah endpoint pendukung, tetapi tidak mengganti nama di satu anggota saja.

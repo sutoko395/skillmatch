@@ -21,18 +21,14 @@
             <div>
                 <p class="text-sm font-medium text-slate-500">Status Seleksi</p>
                 <div class="mt-1 flex items-center gap-3">
-                    @if($application->status === 'submitted')
-                        <span class="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
-                            Menunggu evaluasi
-                        </span>
-                    @else
-                        <x-status-badge :status="$application->status === 'accepted' ? 'success' : ($application->status === 'rejected' ? 'danger' : 'default')">
-                            {{ ucfirst(str_replace('_', ' ', $application->status)) }}
-                        </x-status-badge>
-                    @endif
+                    <x-application-status :application="$application" />
                     <span class="text-sm text-slate-600">Dikirim pada {{ $application->submitted_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</span>
                 </div>
             </div>
+        </div>
+
+        <div class="mt-6">
+            <x-application-screening :application="$application" :detailed="true" />
         </div>
 
         <div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">

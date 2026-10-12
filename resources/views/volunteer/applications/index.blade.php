@@ -9,9 +9,7 @@
             <div class="space-y-1">
                 <div class="flex items-center gap-3">
                     <h2 class="text-xl font-bold text-gray-900">{{ $app->event->title }}</h2>
-                    <x-status-badge :status="$app->status === 'submitted' || $app->status === 'accepted' ? 'success' : ($app->status === 'draft' ? 'pending' : 'default')">
-                        {{ ucfirst(str_replace('_', ' ', $app->status)) }}
-                    </x-status-badge>
+                    <x-application-status :application="$app" />
                 </div>
                 <p class="text-sm font-medium text-indigo-700">Posisi: {{ $app->position->name }}</p>
                 <p class="text-sm text-slate-600">

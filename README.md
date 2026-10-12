@@ -230,6 +230,42 @@ php tools/a2-sandbox-check.php --env=testing --sync=ID_ORDER_LOKAL
 
 Skrip membaca key Sandbox dari `.env` lokal tanpa mencetaknya dan menolak database kerja. Checkout disimpan dalam `storage/app/private/a2-sandbox-checkout.html` yang diabaikan Git; buka file lokal tersebut untuk memilih metode dan menyelesaikan simulasi. Ganti `ID_ORDER_LOKAL` dengan ID yang dicetak skrip. Sinkronkan lagi setelah simulasi untuk memeriksa status dan entitlement; ulangi untuk memeriksa idempotensi. Sebelum metode dipilih, status gateway mungkin belum tersedia. Setelah timeout checkout, tunggu lima menit sebelum mencoba reference yang sama. Jangan membagikan file checkout atau tokennya. Ini belum menguji callback publik maupun assessment/publikasi lintas modul.
 
+## Screening A4
+
+Setelah pull, jalankan `php artisan migrate` untuk tabel `screening_results` (migration
+`2026_10_11_000001_create_screening_results_table.php`). Gunakan PHP yang memenuhi
+composer.lock. Tidak ada dependency, konfigurasi `.env`, worker atau seeder tambahan.
+
+Screening otomatis sesudah submit memeriksa snapshot profil, skill wajib/minimum level,
+dokumen wajib ready saat submit, availability penuh dan kota jika diwajibkan. Syarat
+manual tetap untuk Organizer. Detail lamaran Volunteer menampilkan hasil ringkas/alasan;
+detail pelamar Organizer menampilkan pemeriksaan per syarat. Daftar lamaran memakai badge
+hasil yang sama. Hasil gagal menjadi `screening_failed`; hasil lolos tetap `submitted`
+dengan label **Lolos screening — menunggu pencocokan** sampai matching tersedia.
+Tahap ini belum membuka assessment atau mengimplementasikan matching/notifikasi.
+
+Untuk memproses lamaran submitted yang belum memiliki hasil setelah kegagalan sementara:
+
+```powershell
+php artisan a4:retry-screening --limit=100
+```
+
+Limit 1–1000; aman diulang dan tidak menimpa hasil tersimpan/lamaran terminal. Lamaran
+lama tanpa bukti `profile_eligibility` tetap tertunda, bukan otomatis gagal/lolos;
+jangan mengisi bukti historis dari profil terbaru. Retry menyebut ID operasional tanpa
+mencetak data profil/dokumen. Jika ada legacy yang tertunda, periksa handoff sebelum demo.
+
+Pengujian dengan MySQL tes terpisah yang sudah dimigrasi:
+
+```powershell
+php vendor/bin/phpunit tests/Unit/ScreeningRulesTest.php
+php artisan test --filter=ScreeningTest
+php artisan test --filter=A3Application
+npm.cmd run build
+```
+
+Hasil dan batas pengujian tersedia di [handoff screening](docs/A4_SCREENING_HANDOFF.md).
+
 ## Dokumentasi
 
 - [Panduan pengembangan dan pembagian tugas](docs/DEVELOPMENT.md).

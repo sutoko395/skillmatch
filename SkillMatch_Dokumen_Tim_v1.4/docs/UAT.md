@@ -1,5 +1,17 @@
 # UAT dan kriteria selesai lintas anggota
 
+## Screening bertahap — 11 Oktober 2026
+
+Untuk UAT-17/19/32: uji syarat wajib profil/dokumen/skill/level, jadwal penuh dan kota
+hanya jika wajib; preferensi/manual tidak menggagalkan. Hasil/alasan dibaca dari snapshot,
+EO mendapat tabel, Volunteer mendapat ringkasan. Legacy/malformed ditunda tanpa hasil
+palsu. Replay tidak menggandakan hasil/revision/audit, rollback konsisten, terminal/event
+cancelled tidak diaktifkan lagi; akses langsung hanya akun yang berhak. Passed tetap
+submitted menunggu matching nyata; tahap screening bukan bukti akses assessment selesai.
+Tes unit/rendering/Policy lulus, tes transaksi/endpoint MySQL dan race dua koneksi belum
+diuji karena akses skillmatch_testing ditolak (1044). Bukti terbaru di
+docs/A4_SCREENING_HANDOFF.md aplikasi; status UAT penuh tetap belum diuji.
+
 ## Regresi navigasi dengan cache Blade kosong - 10 Oktober 2026
 
 Pada server pengembangan dengan Vite, kosongkan cache view saja (php artisan view:clear; jangan reset database), lalu klik tautan sekali dari beranda ke katalog/login/register dan antarhalaman panel Admin/Organizer/Volunteer. Klik harus mencapai URL tujuan tanpa full-reload Vite dari storage/framework/views, tanpa net::ERR_ABORTED pada request Document dan tanpa kembali ke halaman asal. Ulangi setelah cache terbentuk. Penulisan cache/runtime tidak memicu reload; perubahan sumber Blade/CSS/JS tetap diperbarui oleh dev server. Build dengan sumber Blade tanpa cache harus berhasil. Bukti Chrome desktop dan tes MySQL terisolasi dicatat di DEVELOPMENT; seluruh tombol submit, browser pengguna dan UAT lintas modul belum otomatis dinyatakan lulus. Pengujian dropdown/font berikut merupakan kasus terpisah.

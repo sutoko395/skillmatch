@@ -311,7 +311,7 @@ class A3ApplicationDocumentsTest extends DatabaseTestCase
         $this->assertSame($snapshot, $submitted->fresh()->snapshot_json);
     }
 
-    public function test_organizer_can_view_submitted_applications_list_and_detail_with_status_menunggu_evaluasi(): void
+    public function test_organizer_can_view_submitted_applications_list_and_detail_with_screening_results(): void
     {
         $this->assessmentReady();
         [$owner, $event, $position] = $this->fixture();
@@ -336,7 +336,7 @@ class A3ApplicationDocumentsTest extends DatabaseTestCase
         $indexResponse = $this->get("/organizer/events/{$event->id}/applications");
         $indexResponse->assertOk();
         $indexResponse->assertSee($volunteer1->name);
-        $indexResponse->assertSee('Menunggu evaluasi');
+        $indexResponse->assertSee('Lolos screening');
         // Draft applicant should not be listed
         $indexResponse->assertDontSee($volunteer2->name);
 
@@ -344,7 +344,7 @@ class A3ApplicationDocumentsTest extends DatabaseTestCase
         $showResponse = $this->get("/organizer/applications/{$app1->id}");
         $showResponse->assertOk();
         $showResponse->assertSee($volunteer1->name);
-        $showResponse->assertSee('Menunggu evaluasi');
+        $showResponse->assertSee('Lolos screening');
         $showResponse->assertSee('cv1.pdf');
         $showResponse->assertSee('Unduh Dokumen');
 

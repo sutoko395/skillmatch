@@ -31,7 +31,7 @@ class VolunteerApplicationController extends Controller
     {
         Gate::authorize('viewAny', Application::class);
 
-        $applications = Application::with(['event.cityRecord', 'position'])
+        $applications = Application::with(['event.cityRecord', 'position', 'screeningResult'])
             ->where('volunteer_id', Auth::id())
             ->latest()
             ->paginate(10);
@@ -50,6 +50,7 @@ class VolunteerApplicationController extends Controller
             'position.schedules',
             'position.requirements',
             'documents',
+            'screeningResult',
         ]);
 
         $eligibility = $this->profileEligibilityService->check(Auth::user());

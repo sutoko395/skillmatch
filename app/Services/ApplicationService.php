@@ -175,7 +175,8 @@ class ApplicationService
             try {
                 app('App\Services\ScreeningService')->evaluate($application);
             } catch (\Throwable $e) {
-                // Keep status 'submitted' and log if needed
+                // Recovery uses a4:retry-screening; never log snapshot or exception contents.
+                logger()->warning('Screening belum selesai; retry diperlukan.', ['application_id' => $application->id]);
             }
         }
     }
