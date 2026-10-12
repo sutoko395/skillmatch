@@ -1,5 +1,14 @@
 # Brief A4 — screening, assessment, matching, aktivitas
 
+## Tahap screening — 11 Oktober 2026
+
+Screening otomatis memakai snapshot A3 termasuk profile_eligibility; hasil/alasan satu
+per lamaran. Volunteer mendapat ringkasan/alasan di detail existing, EO mendapat tabel
+per syarat. Failed → screening_failed; passed disimpan tetapi status tetap submitted
+sampai matching nyata tersedia, tanpa membuka assessment dini. Retry terkontrol melalui
+`a4:retry-screening`; legacy/malformed tertunda, bukan hasil palsu. Detail implementasi,
+migration dan bukti/batas uji: `docs/A4_SCREENING_HANDOFF.md` pada root aplikasi.
+
 ## Tahap assessment Organizer — keputusan 10 Oktober 2026
 
 Implementasi tahap ini: editor set per posisi pada bagian Assessment (setelah Posisi/jadwal, sebelum Paket), 1–50 soal dengan empat opsi A–D dan satu kunci setiap soal, durasi 1–120 menit. Draft boleh belum lengkap; preview publikasi memvalidasi dan menampilkan konfirmasi posisi/jumlah/durasi sebelum confirmed publish. Published langsung immutable (termasuk soal/opsi/kunci/durasi), versi awal 1; tidak ada fitur revisi published. Binding OrganizerAssessmentService -> AssessmentReadiness harus nyata dan membaca data valid. Revision draft mencegah stale overwrite; transaksi/audit dan replay publish aman. Penghapusan posisi published assessment ditolak; draft dapat dibuang bersama posisi. Pertanyaan dibatasi 5.000 karakter, opsi 2.000 karakter untuk batas teknis form. Attempt peserta, screening, matching, aktivitas/notifikasi tetap tahap berikutnya. Handoff tahap ini: `docs/A4_ASSESSMENT_HANDOFF.md` pada root aplikasi.

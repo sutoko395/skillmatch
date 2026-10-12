@@ -72,15 +72,7 @@
                                     {{ $app->position->name }}
                                 </td>
                                 <td class="px-4 py-3">
-                                    @if($app->status === 'submitted')
-                                        <span class="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
-                                            Menunggu evaluasi
-                                        </span>
-                                    @else
-                                        <x-status-badge :status="$app->status === 'accepted' ? 'success' : ($app->status === 'rejected' ? 'danger' : 'default')">
-                                            {{ ucfirst(str_replace('_', ' ', $app->status)) }}
-                                        </x-status-badge>
-                                    @endif
+                                    <x-application-status :application="$app" />
                                 </td>
                                 <td class="px-4 py-3 text-slate-600">
                                     {{ $app->submitted_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') ?? '-' }} WIB

@@ -14,6 +14,16 @@ Pakai select Kota dari master aktif, label terkait id city_id, placeholder Pilih
 
 Popup Buat Event di Event Saya dan halaman buat/edit memakai komponen event-city-field yang sama. Popup terbuka kembali setelah validasi gagal dengan old input; jika master kota aktif kosong, tampilkan petunjuk menghubungi Admin. Pesan kota menggunakan bahasa Indonesia.
 
+## Hasil screening — 11 Oktober 2026
+
+Tambahkan kartu Hasil screening pada detail lamaran existing. Volunteer melihat ringkasan
+lolos/gagal, seluruh alasan syarat wajib gagal dan pesan “Lamaranmu belum bisa dilanjutkan
+ke tahap selanjutnya.” EO melihat tabel syarat/hasil/keterangan; manual ditandai ditinjau
+manual, preferensi tidak diwajibkan. Teks di-escape; tabel responsif melalui overflow.
+Hasil memakai snapshot saat submit; pending tidak menampilkan hasil palsu. Passed yang
+masih submitted diberi label Lolos screening — menunggu pencocokan sampai matching siap.
+Tidak ada tombol assessment/seleksi/bypass baru pada tahap screening ini.
+
 ## Editor assessment Organizer — 10 Oktober 2026
 
 Bagian Assessment berada di bawah Posisi dan jadwal sebelum Paket dan pembayaran, menampilkan nama posisi/status/tautan Kelola Assessment atau Lihat Assessment bila terkunci. Editor per posisi memakai navbar/layout SF, beberapa soal dalam satu halaman, tombol tambah/hapus, opsi tetap A–D dan select satu kunci. Durasi 1–120 menit dan hitungan soal maksimal 50 ditampilkan. Simpan Draft mempertahankan isian parsial. Publikasikan Assessment membuka halaman konfirmasi posisi/jumlah/durasi/penguncian, checkbox persetujuan, Konfirmasi Publikasi, serta Simpan draft dan kembali. Published tampil read-only; empty/error/input lama/loading tersedia. Kunci tampil hanya untuk Organizer pemilik pada editor/konfirmasi, tidak pada halaman event publik atau peserta. Editor soal menggunakan Alpine existing satu kali.

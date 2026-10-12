@@ -60,6 +60,11 @@ class Application extends Model
         return $this->hasMany(ApplicationDocument::class);
     }
 
+    public function screeningResult(): HasOne
+    {
+        return $this->hasOne(ScreeningResult::class);
+    }
+
     public function cvDocument(): HasOne
     {
         return $this->hasOne(ApplicationDocument::class)

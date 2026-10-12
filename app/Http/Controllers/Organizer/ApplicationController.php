@@ -23,6 +23,7 @@ class ApplicationController extends Controller
                 'volunteer.volunteerProfile.cityRecord',
                 'position',
                 'documents',
+                'screeningResult',
             ]);
 
         if ($request->filled('position_id')) {
@@ -52,6 +53,7 @@ class ApplicationController extends Controller
             'volunteer.volunteerSkills.skill',
             'volunteer.availabilitySlots',
             'documents',
+            'screeningResult',
         ]);
 
         return view('organizer.applications.show', compact('application'));

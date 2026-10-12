@@ -26,14 +26,9 @@
             <div>
                 <p class="text-sm font-medium text-slate-500">Status Lamaran</p>
                 <div class="mt-1 flex flex-wrap items-center gap-3">
-                    <x-status-badge :status="$application->status === 'submitted' || $application->status === 'accepted' ? 'success' : ($application->status === 'draft' ? 'pending' : 'default')">
-                        {{ ucfirst(str_replace('_', ' ', $application->status)) }}
-                    </x-status-badge>
+                    <x-application-status :application="$application" />
 
                     @if($application->status === 'submitted')
-                        <span class="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
-                            Menunggu evaluasi
-                        </span>
                         <span class="text-sm text-slate-600">Dikirim pada {{ $application->submitted_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</span>
                     @endif
                 </div>
@@ -58,6 +53,11 @@
         @endif
 
         {{-- Kelola Dokumen Privat Lamaran --}}
+        @if ($application->status !== 'draft')
+            <div class="mt-6">
+                <x-application-screening :application="$application" />
+            </div>
+        @endif
         <div class="mt-6 border-b border-slate-200 pb-6">
             <div class="flex items-center justify-between">
                 <div>
