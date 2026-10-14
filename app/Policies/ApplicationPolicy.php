@@ -9,20 +9,29 @@ class ApplicationPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->is_active && $user->hasVerifiedEmail() && $user->role === 'volunteer';
+        return $user->is_active
+            && $user->role === 'volunteer';
     }
 
     public function view(User $user, Application $application): bool
     {
-        if (! $user->is_active || ! $user->hasVerifiedEmail()) {
+        if (! $user->is_active) {
             return false;
         }
 
-        if ($user->role === 'volunteer' && $application->volunteer_id === $user->id) {
+        if (
+            $user->role === 'volunteer'
+            && $application->volunteer_id === $user->id
+        ) {
             return true;
         }
 
-        if ($user->role === 'organizer' && $application->event?->organizer_id === $user->id && $application->status !== 'draft') {
+        if (
+            $user->role === 'organizer'
+            && $user->hasVerifiedEmail()
+            && $application->event?->organizer_id === $user->id
+            && $application->status !== 'draft'
+        ) {
             return true;
         }
 
@@ -31,7 +40,11 @@ class ApplicationPolicy
 
     public function update(User $user, Application $application): bool
     {
-        return $user->is_active && $user->hasVerifiedEmail() && $user->role === 'volunteer' && $application->volunteer_id === $user->id && $application->status === 'draft';
+        return $user->is_active
+            && $user->hasVerifiedEmail()
+            && $user->role === 'volunteer'
+            && $application->volunteer_id === $user->id
+            && $application->status === 'draft';
     }
 
     public function submit(User $user, Application $application): bool
