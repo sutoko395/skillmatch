@@ -10,7 +10,6 @@ Route::middleware([
     'auth',
     'account.active',
     'role:volunteer',
-    'verified',
 ])
     ->prefix('volunteer')
     ->name('volunteer.')
@@ -37,7 +36,7 @@ Route::middleware([
         Route::post(
             '/positions/{position}/applications',
             [VolunteerApplicationController::class, 'store']
-        )->name('applications.store');
+        )->middleware('verified')->name('applications.store');
 
         Route::get(
             '/applications',
@@ -52,15 +51,15 @@ Route::middleware([
         Route::post(
             '/applications/{application}/submit',
             [VolunteerApplicationController::class, 'submit']
-        )->name('applications.submit');
+        )->middleware('verified')->name('applications.submit');
 
         Route::post(
             '/applications/{application}/documents',
             [VolunteerDocumentController::class, 'store']
-        )->name('documents.store');
+        )->middleware('verified')->name('documents.store');
 
         Route::delete(
             '/documents/{document}',
             [VolunteerDocumentController::class, 'destroy']
-        )->name('documents.destroy');
+        )->middleware('verified')->name('documents.destroy');
     });
