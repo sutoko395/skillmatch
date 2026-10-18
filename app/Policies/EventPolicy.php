@@ -31,7 +31,6 @@ class EventPolicy
     public function manage(User $user, Event $event): bool
     {
         return $user->is_active
-            && $user->hasVerifiedEmail()
             && $user->role === 'admin';
     }
 }

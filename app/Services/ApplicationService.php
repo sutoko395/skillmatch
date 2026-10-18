@@ -14,8 +14,8 @@ class ApplicationService
 {
     public function storeDraft(User $volunteer, EventPosition $position): Application
     {
-        if ($volunteer->role !== 'volunteer' || ! $volunteer->is_active || ! $volunteer->hasVerifiedEmail()) {
-            throw new AuthorizationException('Hanya volunteer aktif dan terverifikasi yang dapat membuat draft lamaran.');
+        if ($volunteer->role !== 'volunteer' || ! $volunteer->is_active) {
+            throw new AuthorizationException('Hanya volunteer aktif yang dapat membuat draft lamaran.');
         }
 
         $position->loadMissing('event');

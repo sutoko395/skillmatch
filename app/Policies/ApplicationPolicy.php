@@ -41,7 +41,6 @@ class ApplicationPolicy
     public function update(User $user, Application $application): bool
     {
         return $user->is_active
-            && $user->hasVerifiedEmail()
             && $user->role === 'volunteer'
             && $application->volunteer_id === $user->id
             && $application->status === 'draft';

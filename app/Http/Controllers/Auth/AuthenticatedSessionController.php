@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Services\LoginDestination;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,27 +17,25 @@ class AuthenticatedSessionController extends Controller
         return view('auth.login');
     }
 
-    public function store(LoginRequest $request): RedirectResponse
-    {
+    public function store(
+        LoginRequest $request,
+        LoginDestination $destination
+    ): RedirectResponse {
         $request->authenticate();
 
         $request->session()->regenerate();
 
         $user = $request->user();
 
-        return match ($user->role) {
-            'organizer' => $user->organizerProfile
-                ? ($user->organizer_status === 'active'
-                    ? redirect('/organizer/aktivitas')
-                    : redirect()->route('organizer.profile.pending'))
-                : redirect()->route('organizer.profile.edit'),
+        if (! in_array($user->role, [
+            'organizer',
+            'admin',
+            'volunteer',
+        ], true)) {
+            return $this->logoutAndRedirect($request);
+        }
 
-            'admin' => redirect('/admin/dashboard'),
-
-            'volunteer' => redirect('/volunteer/aktivitas'),
-
-            default => $this->logoutAndRedirect($request),
-        };
+        return redirect()->to($destination->resolve($request));
     }
 
     public function destroy(Request $request): RedirectResponse
