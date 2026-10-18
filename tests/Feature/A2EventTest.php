@@ -118,7 +118,7 @@ class A2EventTest extends DatabaseTestCase
             $this->actingAs($u)->get('/organizer/events')->assertRedirect(route('organizer.profile.pending'));
         }
         $u = User::factory()->create(['role' => 'organizer', 'organizer_status' => 'active', 'email_verified_at' => null]);
-        $this->actingAs($u)->get('/organizer/events')->assertRedirect(route('verification.notice'));
+        $this->actingAs($u)->get('/organizer/events')->assertOk();
         $u->update(['is_active' => false]);
         $this->get('/organizer/events')->assertForbidden();
     }

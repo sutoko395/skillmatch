@@ -36,7 +36,7 @@ Route::middleware([
         Route::post(
             '/positions/{position}/applications',
             [VolunteerApplicationController::class, 'store']
-        )->middleware('verified')->name('applications.store');
+        )->name('applications.store');
 
         Route::get(
             '/applications',
@@ -51,15 +51,15 @@ Route::middleware([
         Route::post(
             '/applications/{application}/submit',
             [VolunteerApplicationController::class, 'submit']
-        )->middleware('verified')->name('applications.submit');
+        )->name('applications.submit');
 
         Route::post(
             '/applications/{application}/documents',
             [VolunteerDocumentController::class, 'store']
-        )->middleware('verified')->name('documents.store');
+        )->name('documents.store');
 
         Route::delete(
             '/documents/{document}',
             [VolunteerDocumentController::class, 'destroy']
-        )->middleware('verified')->name('documents.destroy');
+        )->name('documents.destroy');
     });
