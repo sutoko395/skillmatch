@@ -1,5 +1,11 @@
 # Design specification SkillMatch
 
+Komponen dan tampilan yang sudah dipakai modul lain harus diperiksa pada kode,
+branch, dan handoff terkini sebelum diubah. Rancangan awal atau contoh baseline
+tidak membatalkan tampilan baru yang telah disepakati. Perubahan desain dilakukan
+terarah pada komponen terkait, menjaga route dan perilaku yang berfungsi, lalu
+memperbarui spesifikasi ini bila keputusan visual berubah.
+
 ## Font lokal dan klik navigasi semua role - 10 Oktober 2026
 
 Partial layouts/fonts memuat Inter WOFF2 lokal dari public/fonts/inter, bobot 400/500/600/700, memakai font-display swap dan preload bobot normal. Deklarasi @font-face berada pada partial bersama dengan URL asset Laravel; tidak memakai stylesheet eksternal yang menunda inisialisasi Alpine. Auth-layout juga memakai partial ini. Font-sans/fallback system dan identitas visual tetap berlaku. Menu/dropdown harus merespons satu klik setelah JavaScript aplikasi tersedia, termasuk saat file font belum selesai diunduh. Pada mobile, tombol membuka drawer dan item menu membawa pengguna ke halaman dengan satu klik. Lisensi OFL.txt disertakan; role/route/Policy dan komponen sidebar existing dipertahankan.

@@ -27,6 +27,14 @@ Periksa branch, git status, perubahan lokal, manifest/lockfile, migration, route
 model, layanan, layout, dan tes sebelum mengedit. Periksa catatan serah-terima SF.
 Kode existing dan hasil anggota lain harus dipakai kembali bila sudah sesuai.
 Jangan membuat ulang aplikasi atau menyatakan fitur selesai hanya karena filenya ada.
+Catatan baseline/ZIP dan brief menjelaskan titik awal serta target pada saat ditulis;
+bukan perintah untuk mengembalikan kode yang sudah berkembang ke kondisi lama.
+Sebelum menyimpulkan sebuah fitur harus diganti, cocokkan dokumen dengan kode pada
+branch aktif, riwayat commit, migration, route, tes, dan handoff terbaru. Jika
+bertentangan, pertahankan perilaku baru yang telah disepakati pengguna dan
+terintegrasi, lalu selaraskan dokumen yang tertinggal. Konflik aturan bisnis atau
+keamanan yang belum jelas dicatat dan dikonfirmasi, bukan diselesaikan dengan
+menghapus hasil anggota lain.
 
 Pakai Laravel, Blade, Tailwind 3, Alpine.js, Vite, dan PHPUnit sesuai manifest serta
 lockfile repository. Target database MySQL/InnoDB. Jangan mengganti framework,
@@ -71,6 +79,15 @@ layout, CSS, komponen, User, dan schema bersama. Utamakan perubahan terarah,
 bukan mengganti seluruh file. Gunakan file route modul sesuai kontrak. Pemilik
 migration tetap mengikuti tabel tanggung jawab; jangan membuat schema tandingan
 untuk mengatasi dependensi yang belum tersedia.
+
+Sebelum menghapus atau mengganti route, view, controller, service, migration,
+atau dokumentasi, periksa siapa yang menambahkannya (`git log`/`git blame`),
+apakah masih dipakai, dan tes/handoff terkait. Perubahan spesifikasi lama tidak
+boleh dipakai sebagai alasan untuk menghapus fitur baru tanpa keputusan produk.
+Jika penggantian memang diperlukan, jelaskan dampak dan migrasi data/tautan,
+perbarui tes yang menguji perilaku lama dan baru, serta catatnya di handoff.
+Saat menggabungkan branch, tinjau diff dan konflik per berkas; jangan menerima
+seluruh versi satu sisi untuk file bersama tanpa menilai kontribusi sisi lain.
 
 ## 5. Auth dan navigasi
 
@@ -143,6 +160,11 @@ Setiap perubahan setup memperbarui README aplikasi: dependensi, konfigurasi,
 migration/seeder, akun demo lokal, server/frontend, worker/scheduler bila dipakai,
 tes dan troubleshooting. SF membuat README awal; A1 menggabungkan kontribusi
 modul untuk README akhir yang dicoba anggota lain. Password demo khusus lokal.
+Setiap perubahan perilaku memperbarui bagian PRD/kontrak/desain/brief/UAT yang
+terdampak, atau mencatat alasan bagian tersebut tetap berlaku. Bedakan target,
+implementasi yang sudah ada, dan pengujian yang benar-benar lulus; jangan
+menurunkan status fitur yang sudah ada hanya karena catatan baseline belum
+diperbarui.
 
 ## 9. Laporan akhir dan serah-terima
 

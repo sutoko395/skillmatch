@@ -1,5 +1,12 @@
 # PRD SkillMatch Volunteer — acuan tim empat anggota
 
+Dokumen ini memuat kebutuhan dan keputusan produk, bukan perintah mengembalikan
+kode ke baseline ZIP. Sebelum menerapkan ketentuan lama, cocokkan keputusan
+pengguna terbaru, implementasi pada branch aktif, migration, tes, dan handoff.
+Jika fitur baru yang disepakati belum tercermin di sini, selaraskan PRD dan
+dokumen turunannya tanpa menghapus fitur tersebut. Penggantian perilaku yang
+disengaja harus dicatat bersama dampak data, route, dan pengujiannya.
+
 ## Keputusan assessment Organizer — 10 Oktober 2026
 
 Assessment per posisi terdiri dari 1–50 soal dengan tepat empat opsi A–D dan satu kunci benar setiap soal, durasi 1–120 menit. Organizer bebas menentukan jumlah/durasi dalam rentang tersebut. Simpan Draft boleh belum lengkap (termasuk tanpa soal/durasi); draft belum memenuhi readiness. Publikasikan Assessment memvalidasi kelengkapan, lalu menampilkan konfirmasi posisi/jumlah/durasi dan konsekuensi penguncian. Konfirmasi publikasi membekukan soal, opsi, kunci dan durasi saat assessment published, sebelum event published; tidak ada pembukaan kembali/revisi published pada tahap ini. Publikasi assessment tidak menerbitkan event. Versi published tetap immutable dan terikat snapshot; nilai assessment tetap terpisah dari matching. Keputusan ini menetapkan angka durasi/jumlah soal yang sebelumnya belum final. Batas panjang teknis input: pertanyaan 5.000 karakter, opsi 2.000 karakter.

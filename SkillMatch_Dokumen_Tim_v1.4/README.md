@@ -22,7 +22,13 @@ Gunakan **satu PRD induk sebagai sumber kebutuhan**, satu kontrak integrasi, dan
 
 ## Urutan otoritas dan perubahan
 
-Keputusan pengguna terbaru → PRD v1.4.2 ini → kontrak integrasi → design.md → brief anggota. Konflik ditemukan sebelum coding: ubah dokumen pusat dahulu, tulis dampaknya pada brief terkait, lalu implementasikan. Jangan mengganti nama status, kolom, atau rumus hanya di satu modul.
+Keputusan pengguna terbaru → PRD v1.4.2 ini → kontrak integrasi → design.md → brief anggota untuk keputusan produk. Sebelum mengubah kontrak bersama, selaraskan dokumen pusat dan brief terkait, lalu implementasikan. Untuk fitur yang sudah diimplementasikan berdasarkan keputusan pengguna yang lebih baru, perbarui dokumen yang tertinggal; jangan memulihkan perilaku lama hanya karena tertulis pada revisi sebelumnya. Jangan mengganti nama status, kolom, atau rumus hanya di satu modul.
+
+## Menjaga hasil implementasi saat memakai dokumen
+
+Dokumen ini mencatat baseline ZIP dan target tim pada tanggal penulisannya. Kode, migration, tes, dan handoff pada branch yang sedang dikerjakan dapat berisi hasil lebih baru. Sebelum mengubah fitur, periksa `git status`, branch dan commit dasar, `git log`/diff pada berkas terkait, lalu cocokkan route, service, view, migration, tes, serta handoff modul. Bedakan temuan baseline, target yang belum dibuat, fitur yang sudah berjalan, dan bagian yang belum diuji.
+
+Jika ketentuan lama bertentangan dengan hasil baru yang telah disepakati, pertahankan hasil tersebut dan selaraskan PRD, kontrak, desain, brief, serta UAT yang terdampak. Jika perubahan produk baru memang harus mengganti hasil lama, tulis keputusan dan dampaknya sebelum menghapus kode; jaga migration/data historis dan perbarui tes. Konflik yang belum punya keputusan tidak memberi izin untuk menghapus kontribusi anggota lain. Saat merge, tinjau konflik pada file bersama per bagian, bukan mengganti seluruh file dengan versi satu branch. [AGENTS.md](../AGENTS.md) mengatur langkah kerja dan pelaporan.
 
 PRD v1.3 tanggal 1 Oktober 2026 menjadi sumber kebutuhan awal. Paket v1.4.2 ini merupakan turunan untuk tim berdasarkan ZIP, bukan penggantian diam-diam terhadap file PRD lama. Revisi 1.4.1 menetapkan MySQL/InnoDB sesuai keputusan pengguna dan mempertahankan penghapusan scanner dari v1.4. P0 lain tetap dipertahankan.
 

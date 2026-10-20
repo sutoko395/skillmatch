@@ -1,5 +1,15 @@
 # Baseline kode dan tools
 
+Bagian "ZIP awal", "baseline" dan tabel temuan di bawah adalah catatan historis
+pada saat dokumen disusun, bukan instruksi untuk menghapus implementasi sesudahnya.
+Sebelum memakai suatu tindakan/PIC dari tabel, periksa branch aktif, riwayat
+commit, kode, migration, tes dan handoff modul yang lebih baru. Keputusan pengguna
+terbaru serta kontrak yang telah diselaraskan mengatasi catatan baseline lama.
+Jika ada perbedaan, perbarui dokumen terdampak dan pertahankan kontribusi yang
+masih benar; jangan mengembalikan aplikasi ke keadaan ZIP hanya demi mengikuti
+tabel historis. Penggantian yang diperlukan harus menjelaskan dampak terhadap
+data, route, antarmuka dan tes.
+
 Koreksi navigasi 10 Oktober 2026: content Tailwind membaca sumber resources/views dan pagination framework, tidak membaca cache storage/framework/views. Vite mengecualikan storage/** dan bootstrap/cache/** dari watcher; refresh sumber tetap aktif. Penulisan cache Blade saat membuka halaman sebelumnya memicu full-reload dan membatalkan request navigasi pertama. Setelah memperbarui konfigurasi, jalankan kembali npm run dev dan muat ulang browser. Reproduksi cache kosong, rekaman pembatalan request, pengujian panel tiga role dan build dicatat di docs/DEVELOPMENT.md aplikasi; tidak ada perubahan versi/dependensi atau migration.
 
 Pembaruan navigasi 10 Oktober 2026: Inter memakai empat berkas WOFF2 lokal (400/500/600/700) dalam public/fonts/inter dan lisensi SIL OFL 1.1. Layout bersama/auth-layout memuat partial layouts/fonts; tidak menunggu CSS penyedia font eksternal sebelum Alpine dimulai. Tidak mengubah manifest/lockfile atau memerlukan migration/dependency baru. Direktori font wajib ikut distribusi aplikasi; uji browser dengan font tertunda serta menu desktop/mobile semua role dicatat di DEVELOPMENT.
