@@ -28,7 +28,7 @@ class ApplicationPolicy
 
         if (
             $user->role === 'organizer'
-            && $user->hasVerifiedEmail()
+            && $user->organizer_status === 'active'
             && $application->event?->organizer_id === $user->id
             && $application->status !== 'draft'
         ) {

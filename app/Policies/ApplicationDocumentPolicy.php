@@ -3,39 +3,19 @@
 namespace App\Policies;
 
 use App\Models\Application;
-use App\Models\ApplicationDocument;
 use App\Models\User;
 
-class ApplicationDocumentPolicy
+class ApplicationPolicy
 {
-    public function create(User $user, Application $application): bool
+    public function viewAny(User $user): bool
     {
         return $user->is_active
-            && $user->role === 'volunteer'
-            && $application->volunteer_id === $user->id
-            && $application->status === 'draft';
+            && $user->role === 'volunteer';
     }
 
-    public function delete(User $user, ApplicationDocument $document): bool
-    {
-        $application = $document->application;
-
-        return $user->is_active
-            && $user->role === 'volunteer'
-            && $application->volunteer_id === $user->id
-            && $application->status === 'draft';
-    }
-
-    public function download(User $user, ApplicationDocument $document): bool
+    public function view(User $user, Application $application): bool
     {
         if (! $user->is_active) {
-            return false;
-        }
-
-        $document->loadMissing(['application.event']);
-        $application = $document->application;
-
-        if (! $application) {
             return false;
         }
 
@@ -48,6 +28,7 @@ class ApplicationDocumentPolicy
 
         if (
             $user->role === 'organizer'
+            && $user->organizer_status === 'active'
             && $application->event?->organizer_id === $user->id
             && $application->status !== 'draft'
         ) {
@@ -55,5 +36,18 @@ class ApplicationDocumentPolicy
         }
 
         return false;
+    }
+
+    public function update(User $user, Application $application): bool
+    {
+        return $user->is_active
+            && $user->role === 'volunteer'
+            && $application->volunteer_id === $user->id
+            && $application->status === 'draft';
+    }
+
+    public function submit(User $user, Application $application): bool
+    {
+        return $this->update($user, $application);
     }
 }
