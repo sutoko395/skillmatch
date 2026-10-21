@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
@@ -12,19 +12,17 @@ use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
+    private const MAX_ATTEMPTS = 5;
+
+    private const DECAY_SECONDS = 60;
+
+    private const MAX_LOCKOUT_CYCLES = 3;
+
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -33,17 +31,26 @@ class LoginRequest extends FormRequest
         ];
     }
 
-    /**
-     * Attempt to authenticate the request's credentials.
-     *
-     * @throws ValidationException
-     */
     public function authenticate(): void
     {
-        $this->ensureIsNotRateLimited();
+        $email = Str::lower($this->string('email')->toString());
 
-        if (! Auth::guard('web')->attempt([...$this->only('email', 'password'), 'is_active' => true], $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+        $user = User::where('email', $email)->first();
+
+        if ($user?->login_suspended_until?->isFuture()) {
+            throw ValidationException::withMessages([
+                'email' => 'akun anda terkena suspend karena mencoba melakukan spam login, silahkan login kembali dalam waktu 24 jam',
+            ]);
+        }
+
+        $this->ensureIsNotRateLimited($user);
+
+        if (! Auth::guard('web')->attempt([
+            'email' => $email,
+            'password' => $this->input('password'),
+            'is_active' => true,
+        ], $this->boolean('remember'))) {
+            RateLimiter::hit($this->throttleKey(), self::DECAY_SECONDS);
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
@@ -51,22 +58,46 @@ class LoginRequest extends FormRequest
         }
 
         RateLimiter::clear($this->throttleKey());
+
+        if ($user) {
+            $user->forceFill([
+                'login_lockout_cycles' => 0,
+            ])->save();
+        }
     }
 
-    /**
-     * Ensure the login request is not rate limited.
-     *
-     * @throws ValidationException
-     */
-    public function ensureIsNotRateLimited(): void
+    public function ensureIsNotRateLimited(?User $user = null): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (! RateLimiter::tooManyAttempts(
+            $this->throttleKey(),
+            self::MAX_ATTEMPTS
+        )) {
             return;
         }
 
         event(new Lockout($this));
 
         $seconds = RateLimiter::availableIn($this->throttleKey());
+
+        if ($user) {
+            $cycleKey = 'login-lockout-cycle:'.$user->id.':'.sha1($this->ip());
+
+            if (RateLimiter::attempts($cycleKey) === 0) {
+                RateLimiter::hit($cycleKey, self::DECAY_SECONDS);
+
+                $user->increment('login_lockout_cycles');
+
+                if ($user->login_lockout_cycles >= self::MAX_LOCKOUT_CYCLES) {
+                    $user->forceFill([
+                        'login_suspended_until' => now()->addHours(24),
+                    ])->save();
+
+                    throw ValidationException::withMessages([
+                        'email' => 'akun anda terkena suspend karena mencoba melakukan spam login, silahkan login kembali dalam waktu 24 jam',
+                    ]);
+                }
+            }
+        }
 
         throw ValidationException::withMessages([
             'email' => trans('auth.throttle', [
@@ -76,11 +107,10 @@ class LoginRequest extends FormRequest
         ]);
     }
 
-    /**
-     * Get the rate limiting throttle key for the request.
-     */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(
+            Str::lower($this->string('email')->toString()).'|'.$this->ip()
+        );
     }
 }

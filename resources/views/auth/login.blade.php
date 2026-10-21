@@ -35,7 +35,11 @@
         </div>
 
         <div>
-            <x-auth-password-field />
+            <x-auth-password-field
+                name="password"
+                label="Kata sandi"
+                autocomplete="current-password"
+            />
         </div>
 
         <div class="flex items-center justify-between gap-3 text-sm">
@@ -90,3 +94,55 @@
         </a>
     </p>
 </x-auth-layout>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const countdownPattern = /Please try again in (\d+) seconds?\.?/i;
+
+    function updateCountdown() {
+        document.querySelectorAll('body *').forEach((element) => {
+            if (element.children.length > 0) return;
+
+            const text = element.textContent.trim();
+            const match = text.match(countdownPattern);
+
+            if (!match || element.dataset.countdownActive === 'true') return;
+
+            let remaining = Number(match[1]);
+
+            if (remaining <= 0) {
+                element.textContent = 'Waktu pembatasan hampir berakhir. Silakan coba masuk kembali.';
+                return;
+            }
+
+            element.dataset.countdownActive = 'true';
+
+            const render = () => {
+                element.textContent = remaining > 0
+                    ? `Too many login attempts. Please try again in ${remaining} seconds.`
+                    : 'Waktu pembatasan berakhir. Silakan coba masuk kembali.';
+            };
+
+            render();
+
+            const timer = window.setInterval(() => {
+                remaining--;
+                render();
+
+                if (remaining <= 0) {
+                    window.clearInterval(timer);
+                    delete element.dataset.countdownActive;
+                }
+            }, 1000);
+        });
+    }
+
+    updateCountdown();
+
+    const observer = new MutationObserver(updateCountdown);
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+});
+</script>

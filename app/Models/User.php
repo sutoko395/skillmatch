@@ -11,6 +11,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
+    
     use HasFactory, Notifiable;
 
     protected $fillable = [
@@ -33,6 +34,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
+            'login_suspended_until' => 'datetime',
         ];
     }
 

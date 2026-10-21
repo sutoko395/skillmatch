@@ -8,3 +8,16 @@
     input:not([type=checkbox]):not([type=radio]), select, button { min-height: 44px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0.01ms !important; } }
+
+
+/* Hilangkan ikon bawaan browser pada input password */
+input::-ms-reveal,
+input::-ms-clear {
+    display: none;
+}
+
+input::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+}
