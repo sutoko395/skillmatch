@@ -36,7 +36,16 @@ class NewPasswordController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
+    
+        $user = User::where('email', $request->input('email'))->first();
 
+        if ($user?->login_suspended_until?->isFuture()) {
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors([
+                    'email' => 'akun anda terkena suspend karena mencoba melakukan spam login, silahkan login kembali dalam waktu 24 jam',
+                ]);
+        }
         // Here we will attempt to reset the user's password. If it is successful we
         // will update the password on an actual user model and persist it to the
         // database. Otherwise we will parse the error and return the response.

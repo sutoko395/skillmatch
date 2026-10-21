@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use App\Models\User;
 
 class PasswordResetLinkController extends Controller
 {
@@ -29,6 +30,16 @@ class PasswordResetLinkController extends Controller
         $request->validate([
             'email' => ['required', 'email'],
         ]);
+
+        $user = User::where('email', $request->input('email'))->first();
+
+        if ($user?->login_suspended_until?->isFuture()) {
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors([
+                    'email' => 'akun anda terkena suspend karena mencoba melakukan spam login, silahkan login kembali dalam waktu 24 jam',
+                ]);
+        }
 
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we
