@@ -3,114 +3,333 @@
 @section('title', 'Dashboard Utama Admin')
 
 @section('content')
-<div class="w-full max-w-7xl mx-auto space-y-6">
-    
-    {{-- WELCOME BANNER --}}
-    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group">
-        <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-indigo-500/10 rounded-full blur-xl transition-all duration-300 group-hover:bg-indigo-500/20"></div>
-        
-        <div class="relative z-10 space-y-2">
-            <h1 class="text-xl md:text-2xl font-semibold text-gray-900 tracking-tight">
-                Selamat Datang Kembali, <span class="text-indigo-600 font-bold">{{ Auth::user()->name }}</span>!
+<div class="mx-auto w-full max-w-7xl space-y-6">
+
+    <div class="relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-sm md:p-8">
+        <div class="absolute -right-4 -top-4 h-32 w-32 rounded-full bg-indigo-500/10 blur-xl"></div>
+        <div class="relative space-y-2">
+            <h1 class="text-xl font-semibold tracking-tight text-gray-900 md:text-2xl">
+                Selamat Datang Kembali,
+                <span class="font-bold text-indigo-600">{{ Auth::user()->name }}</span>!
             </h1>
-            <p class="text-xs md:text-sm text-gray-500 font-normal leading-relaxed">
-                Ringkasan data saat ini: akun Volunteer dan Organizer, master skill, kategori, serta event menunggu verifikasi.
+            <p class="text-xs leading-relaxed text-gray-500 md:text-sm">
+                Pantau statistik pengguna, transaksi, kegiatan, dan master data SkillMatch dalam satu dashboard.
             </p>
         </div>
     </div>
 
-    <div class="rounded-xl border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-900">
-        <p class="font-semibold">Dashboard dasar</p>
-        <p class="mt-1">Angka di bawah berasal dari database saat halaman dimuat dan mencakup seluruh akun serta master, termasuk yang nonaktif. Filter periode, tren, dan analitik lengkap belum tersedia.</p>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+
+        <button type="button" data-chart="volunteers"
+            class="stat-card rounded-2xl border border-gray-100 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            <div class="flex items-center gap-4">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2m12-13a4 4 0 11-8 0 4 4 0 018 0zm2 5a4 4 0 014 4v2m-3-15a4 4 0 010 7"/>
+                    </svg>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-sm text-gray-500">Total Volunteer</p>
+                    <h3 class="mt-1 text-3xl font-bold text-gray-800">{{ number_format($totalVolunteers) }}</h3>
+                    <p class="mt-1 text-xs text-indigo-600">Lihat tren pendaftaran →</p>
+                </div>
+            </div>
+        </button>
+
+        <button type="button" data-chart="organizers"
+            class="stat-card rounded-2xl border border-gray-100 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            <div class="flex items-center gap-4">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M5 21V7l8-4v18m6 0V11l-6-4M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/>
+                    </svg>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-sm text-gray-500">Total Organizer</p>
+                    <h3 class="mt-1 text-3xl font-bold text-gray-800">{{ number_format($totalOrganizers) }}</h3>
+                    <p class="mt-1 text-xs text-emerald-600">Lihat tren pendaftaran →</p>
+                </div>
+            </div>
+        </button>
+
+        <button type="button" data-chart="transactions"
+            class="stat-card rounded-2xl border border-gray-100 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            <div class="flex items-center gap-4">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-600">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M5 7V5a2 2 0 012-2h10a2 2 0 012 2v2M5 7v12a2 2 0 002 2h10a2 2 0 002-2V7M9 12h6m-6 4h6"/>
+                    </svg>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-sm text-gray-500">Total Transaksi</p>
+                    <h3 class="mt-1 text-3xl font-bold text-gray-800">{{ number_format($totalTransactions) }}</h3>
+                    <p class="mt-1 text-xs text-sky-600">Lihat tren transaksi →</p>
+                </div>
+            </div>
+        </button>
+
+        <a href="{{ route('admin.event-verification.index') }}"
+            class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            <div class="flex items-center gap-4">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M10.3 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.7 3.86a2 2 0 00-3.4 0z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Kegiatan Menunggu Verifikasi</p>
+                    <h3 class="mt-1 text-3xl font-bold text-amber-600">{{ number_format($pendingEvents) }}</h3>
+                    <p class="mt-1 text-xs text-gray-400">Buka antrean verifikasi →</p>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ route('admin.master-data.skills.index') }}"
+            class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            <div class="flex items-center gap-4">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 7l3 3m-8 8l-5 2 2-5L16 5a2.12 2.12 0 013 3L11 18z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Master Skills</p>
+                    <h3 class="mt-1 text-3xl font-bold text-blue-600">{{ number_format($totalSkills) }}</h3>
+                    <p class="mt-1 text-xs text-gray-400">Kelola keterampilan →</p>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ route('admin.master-data.event-categories.index') }}"
+            class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            <div class="flex items-center gap-4">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-purple-50 text-purple-600">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M3 3h7l11 11-7 7L3 10V3z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Kategori Event</p>
+                    <h3 class="mt-1 text-3xl font-bold text-purple-600">{{ number_format($totalCategories) }}</h3>
+                    <p class="mt-1 text-xs text-gray-400">Kelola kategori →</p>
+                </div>
+            </div>
+        </a>
     </div>
 
-    {{-- METRICS CARD GRID --}}
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
-        
-        {{-- Total Volunteer --}}
-        <div class="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 transition-all duration-200 hover:shadow-md group">
-            <div class="w-10 h-10 flex-shrink-0 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                </svg>
-            </div>
-            <div class="space-y-1 min-w-0">
-                <p class="text-[10px] md:text-xs font-semibold text-gray-400 tracking-wider truncate">Total Volunteer</p>
-                <h3 class="text-xl md:text-2xl font-bold text-gray-800 transition-all group-hover:text-indigo-600 truncate">{{ $totalVolunteers }}</h3>
-            </div>
+    <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <h2 id="chartTitle" class="text-lg font-bold text-gray-900">
+                Tren Pendaftaran Volunteer
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-500">
+                @if ($range === 'all')
+                    Tren sejak data pertama dibuat hingga sekarang.
+                @elseif ($range === 'year')
+                    Tren bulanan tahun {{ $year }}.
+                @else
+                    Tren harian {{ \Carbon\Carbon::create($year, $month, 1)->translatedFormat('F Y') }}.
+                @endif
+            </p>
         </div>
 
-        {{-- Total Organizer --}}
-        <div class="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 transition-all duration-200 hover:shadow-md group">
-            <div class="w-10 h-10 flex-shrink-0 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5h.75m-.75 3h.75m-.75 3h.75" />
-                </svg>
+        <form action="{{ route('admin.dashboard') }}" method="GET"
+            class="flex flex-wrap items-end gap-3">
+            <div>
+                <label for="range" class="mb-1 block text-xs font-medium text-gray-600">
+                    Periode
+                </label>
+                <select id="range" name="range"
+                    class="rounded-lg border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <option value="all" @selected($range === 'all')>All</option>
+                    <option value="year" @selected($range === 'year')>Tahun</option>
+                    <option value="month" @selected($range === 'month')>Bulan</option>
+                </select>
             </div>
-            <div class="space-y-1 min-w-0">
-                <p class="text-[10px] md:text-xs font-semibold text-gray-400 tracking-wider truncate">Total Organizer</p>
-                <h3 class="text-xl md:text-2xl font-bold text-gray-800 transition-all group-hover:text-emerald-600 truncate">{{ $totalOrganizers }}</h3>
-            </div>
-        </div>
 
-        {{-- Master Skill --}}
-        <div class="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 transition-all duration-200 hover:shadow-md group">
-            <div class="w-10 h-10 flex-shrink-0 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 01-3.586-3.586l5.654-4.654m0 0l3.03-2.496c.384-.317.626-.74.766-1.208" />
-                </svg>
+            <div>
+                <label for="year" class="mb-1 block text-xs font-medium text-gray-600">
+                    Tahun
+                </label>
+                <select id="year" name="year"
+                    class="rounded-lg border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    @foreach ($years as $availableYear)
+                        <option value="{{ $availableYear }}"
+                            @selected((int) $year === (int) $availableYear)>
+                            {{ $availableYear }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
-            <div class="space-y-1 min-w-0">
-                <p class="text-[10px] md:text-xs font-semibold text-gray-400 tracking-wider truncate">Master Skill</p>
-                <h3 class="text-xl md:text-2xl font-bold text-gray-800 transition-all group-hover:text-blue-600 truncate">{{ $totalSkills }}</h3>
-            </div>
-        </div>
 
-        {{-- Kategori Event --}}
-        <div class="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 transition-all duration-200 hover:shadow-md group">
-            <div class="w-10 h-10 flex-shrink-0 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.674.509a13.91 13.91 0 003.354-2.1c.78-.658.95-1.745.424-2.583L11.16 3.66a2.25 2.25 0 00-1.592-.661z" />
-                </svg>
-            </div>
-            <div class="space-y-1 min-w-0">
-                <p class="text-[10px] md:text-xs font-semibold text-gray-400 tracking-wider truncate">Kategori Event</p>
-                <h3 class="text-xl md:text-2xl font-bold text-gray-800 transition-all group-hover:text-purple-600 truncate">{{ $totalCategories }}</h3>
-            </div>
-        </div>
+            <div>
+                <label for="month" class="mb-1 block text-xs font-medium text-gray-600">
+                    Bulan
+                </label>
 
+                <select id="month" name="month"
+                    class="rounded-lg border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+
+                    <option value="" @selected($range !== 'month')>
+                        Pilih Bulan
+                    </option>
+
+                    @foreach (range(1, 12) as $monthNumber)
+                        <option value="{{ $monthNumber }}"
+                            @selected($range === 'month' && (int) $month === $monthNumber)>
+                            {{ \Carbon\Carbon::create()->month($monthNumber)->translatedFormat('F') }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <button type="submit"
+                class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700">
+                Terapkan
+            </button>
+        </form>
+    </div>
+    
+    <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm md:p-6">
+        <div class="relative h-72 md:h-96">
+            <canvas id="adminTrendChart"></canvas>
+        </div>
     </div>
 
-    {{-- QUICK ACTION PANEL --}}
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
-        <h3 class="text-base font-bold text-gray-900">Aksi Cepat Admin</h3>
-        <div class="flex flex-wrap gap-4">
-            <a href="{{ route('admin.master-data.skills.index') }}" class="inline-flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold text-xs md:text-sm hover:bg-indigo-700 transition shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-                Kelola Master Data (Skill & Kategori)
+
+    <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm md:p-6">
+        <a href="{{ route('admin.orders.index') }}"
+            class="flex items-center justify-between gap-4">
+            <div>
+                <p class="text-sm text-gray-500">Manajemen Transaksi</p>
+                <h3 class="mt-1 font-semibold text-gray-800">
+                    Lihat seluruh pesanan dan detail transaksi
+                </h3>
+                <p class="mt-2 text-sm text-gray-500">
+                    Total {{ number_format($totalTransactions) }} transaksi tercatat.
+                </p>
+            </div>
+            <span class="shrink-0 text-sm font-semibold text-indigo-600">
+                Buka transaksi →
+            </span>
+        </a>
+    </div>
+
+    <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+        <h2 class="text-base font-bold text-gray-900">Aksi Cepat Admin</h2>
+        <div class="mt-4 flex flex-wrap gap-3">
+            <a href="{{ route('admin.volunteers.index') }}"
+                class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700">
+                Kelola Volunteer
+            </a>
+            <a href="{{ route('admin.organizers.index') }}"
+                class="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700">
+                Kelola Organizer
+            </a>
+            <a href="{{ route('admin.master-data.skills.index') }}"
+                class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700">
+                Kelola Master Skills
+            </a>
+            <a href="{{ route('admin.orders.index') }}"
+                class="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-700">
+                Kelola Transaksi
             </a>
         </div>
     </div>
 
-    <div class="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 transition-all duration-200 hover:shadow-md group">
-        <div class="w-10 h-10 flex-shrink-0 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0 3.75h.007v.008H12V16.5zM9.75 3.75h4.5l6 6v4.5l-6 6h-4.5l-6-6v-4.5l6-6z" />
-            </svg>
-        </div>
-
-        <div class="space-y-1 min-w-0">
-            <p class="text-[10px] md:text-xs font-semibold text-gray-400 tracking-wider truncate">
-                Event Menunggu Verifikasi
-            </p>
-
-            <h3 class="text-xl md:text-2xl font-bold text-gray-800 transition-all group-hover:text-amber-600 truncate">
-                {{ $pendingEvents }}
-            </h3>
-        </div>
-    </div>
-
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const labels = @js($labels);
+    const chartData = @js($chartData);
+    const canvas = document.getElementById('adminTrendChart');
+    const title = document.getElementById('chartTitle');
+
+    if (!canvas || !title || typeof Chart === 'undefined') {
+        console.error('Elemen grafik atau library Chart.js tidak ditemukan.');
+        return;
+    }
+
+    const configs = {
+        volunteers: {
+            title: 'Tren Pendaftaran Volunteer',
+            label: 'Volunteer baru',
+            color: '#4f46e5'
+        },
+        organizers: {
+            title: 'Tren Pendaftaran Organizer',
+            label: 'Organizer baru',
+            color: '#059669'
+        },
+        transactions: {
+            title: 'Tren Transaksi Bulanan',
+            label: 'Transaksi dibuat',
+            color: '#0284c7'
+        }
+    };
+
+    let chart;
+
+    function renderChart(type) {
+        const config = configs[type] || configs.volunteers;
+        title.textContent = config.title;
+
+        if (chart) chart.destroy();
+
+        chart = new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: config.label,
+                    data: chartData[type],
+                    borderColor: config.color,
+                    backgroundColor: config.color + '20',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { precision: 0 }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        document.querySelectorAll('.stat-card').forEach(function (card) {
+            const active = card.dataset.chart === type;
+            card.classList.toggle('ring-2', active);
+            card.classList.toggle('ring-indigo-500', active);
+        });
+    }
+
+    document.querySelectorAll('.stat-card').forEach(function (card) {
+        card.addEventListener('click', function () {
+            renderChart(card.dataset.chart);
+        });
+    });
+
+    renderChart('volunteers');
+});
+</script>
 @endsection

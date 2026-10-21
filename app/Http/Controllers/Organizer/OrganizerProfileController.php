@@ -35,33 +35,57 @@ class OrganizerProfileController extends Controller
         ));
     }
 
-    public function update(Request $request): RedirectResponse
-    {
-        $user = $request->user();
 
-        Gate::authorize('updateProfile', $user);
+public function update(Request $request): RedirectResponse
+{
+    $user = $request->user();
 
-        $profileExists = OrganizerProfile::where('user_id', $user->id)->exists();
+    Gate::authorize('updateProfile', $user);
 
-        $validated = $request->validate([
-            'organization_name' => ['required', 'string', 'max:255'],
-            'contact_person' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:30'],
-            'address' => ['required', 'string', 'max:1000'],
-            'city' => ['required', 'string', 'max:255'],
-            'website' => ['nullable', 'url:http,https', 'max:255'],
-            'description' => ['required', 'string', 'max:1000'],
-            'ktp' => [
-                $profileExists ? 'nullable' : 'required',
-                'file',
-                'mimes:jpg,jpeg,png,pdf',
-                'max:5120',
-            ],
-        ], [
-            'ktp.required' => 'KTP wajib diupload untuk pengajuan profil pertama kali.',
-        ]);
+    $profileExists = OrganizerProfile::where('user_id', $user->id)->exists();
 
-        DB::transaction(function () use ($user, $validated, $request, $profileExists) {
+    $validated = $request->validate([
+        'organization_name' => ['required', 'string', 'max:255'],
+        'contact_person' => ['required', 'string', 'max:255'],
+        'phone' => ['required', 'string', 'max:30'],
+        'address' => ['required', 'string', 'max:1000'],
+        'city' => ['required', 'string', 'max:255'],
+        'website' => ['nullable', 'url:http,https', 'max:255'],
+        'description' => ['required', 'string', 'max:1000'],
+        'ktp' => [
+            $profileExists ? 'nullable' : 'required',
+            'file',
+            'mimes:jpg,jpeg,png,pdf',
+            'max:5120',
+        ],
+    ], [
+        'ktp.required' => 'KTP wajib diupload untuk pengajuan profil pertama kali.',
+    ]);
+
+    $newPath = null;
+    $oldPaths = [];
+
+    if ($request->hasFile('ktp')) {
+        $newPath = $request->file('ktp')->store(
+            'organizers/'.$user->id.'/documents'
+        );
+
+        if (!$newPath) {
+            throw ValidationException::withMessages([
+                'ktp' => 'KTP baru gagal disimpan. Silakan coba kembali.',
+            ]);
+        }
+    }
+
+    try {
+        DB::transaction(function () use (
+            $user,
+            $validated,
+            $request,
+            $profileExists,
+            $newPath,
+            &$oldPaths
+        ) {
             $locked = User::whereKey($user->id)
                 ->lockForUpdate()
                 ->firstOrFail();
@@ -70,8 +94,6 @@ class OrganizerProfileController extends Controller
                 $locked->is_active && $locked->role === 'organizer',
                 403
             );
-
-            $profile = $locked->organizerProfile;
 
             $profile = $locked->organizerProfile()->updateOrCreate(
                 ['user_id' => $locked->id],
@@ -87,27 +109,27 @@ class OrganizerProfileController extends Controller
                 ]
             );
 
-            if ($request->hasFile('ktp')) {
+            if ($newPath) {
                 $documents = $locked->organizerDocuments()
                     ->where('document_type', 'ktp')
                     ->get();
 
-                foreach ($documents as $document) {
-                    if ($document->file_path) {
-                        Storage::delete($document->file_path);
-                    }
+                $oldPaths = $documents
+                    ->pluck('file_path')
+                    ->filter()
+                    ->reject(fn ($path) => $path === $newPath)
+                    ->unique()
+                    ->values()
+                    ->all();
 
+                foreach ($documents as $document) {
                     $document->delete();
                 }
-
-                $path = $request->file('ktp')->store(
-                    'organizers/'.$locked->id.'/documents'
-                );
 
                 $locked->organizerDocuments()->create([
                     'document_type' => 'ktp',
                     'document_name' => $request->file('ktp')->getClientOriginalName(),
-                    'file_path' => $path,
+                    'file_path' => $newPath,
                 ]);
             }
 
@@ -128,23 +150,31 @@ class OrganizerProfileController extends Controller
                 ]
             );
         });
-
-        if (!$profileExists) {
-            return redirect()
-                ->route('organizer.profile.pending')
-                ->with(
-                    'success',
-                    'Data Organizer berhasil dikirim dan sedang menunggu verifikasi admin.'
-                );
+    } catch (\Throwable $e) {
+        if ($newPath) {
+            Storage::delete($newPath);
         }
 
+        throw $e;
+    }
+
+    foreach ($oldPaths as $oldPath) {
+        Storage::delete($oldPath);
+    }
+
+    if (!$profileExists) {
         return redirect()
-            ->route('organizer.profile.edit')
+            ->route('organizer.profile.pending')
             ->with(
                 'success',
-                'Profil organisasi berhasil diperbarui.'
+                'Data Organizer berhasil dikirim dan sedang menunggu verifikasi admin.'
             );
     }
+
+    return redirect()
+        ->route('organizer.profile.edit')
+        ->with('success', 'Profil organisasi berhasil diperbarui.');
+}
 
     public function pending(Request $request): View|RedirectResponse
     {

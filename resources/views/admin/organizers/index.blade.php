@@ -571,7 +571,7 @@
 
                             <div class="mt-4 space-y-3">
 
-                                @forelse($organizer->organizerDocuments as $document)
+                                @forelse($organizer->organizerDocuments->where('document_type', 'ktp')->sortByDesc('created_at')->take(1) as $document)
                                     <div class="flex items-center justify-between gap-4 rounded-xl border border-slate-100 bg-slate-50 p-4">
                                         <div class="min-w-0">
                                             <p class="truncate font-semibold text-slate-800">
