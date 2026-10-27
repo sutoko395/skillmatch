@@ -110,6 +110,8 @@
                 @endforeach
             </div>
 
+            <x-event-recruitment-fields :event="$event" />
+
             <x-event-package-warning />
 
             <div class="flex flex-wrap items-center gap-3 border-t border-slate-100 pt-6">

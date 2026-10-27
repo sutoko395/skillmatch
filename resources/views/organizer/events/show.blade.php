@@ -72,6 +72,23 @@
             </p>
 
             @if ($event->published_at && !in_array($event->lifecycle_status, ['completed', 'cancelled']))
+                @if (!$event->assessment_deadline && !$event->decision_deadline)
+                    <p class="mt-3 text-sm text-slate-600">Tenggat rekrutmen belum tersedia untuk event ini.</p>
+                @endif
+            @endif
+
+            <dl class="mt-3 space-y-2 text-sm">
+                <div>
+                    <dt class="font-semibold">Tenggat assessment (WIB)</dt>
+                    <dd>{{ $event->assessment_deadline?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') ?? 'Belum diisi' }}</dd>
+                </div>
+                <div>
+                    <dt class="font-semibold">Batas akhir keputusan EO (WIB)</dt>
+                    <dd>{{ $event->decision_deadline?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') ?? 'Belum diisi' }}</dd>
+                </div>
+            </dl>
+
+            @if ($event->published_at && !in_array($event->lifecycle_status, ['completed', 'cancelled']))
                 <a
                     href="{{ route('organizer.events.text', $event) }}"
                     class="mt-4 inline-block text-indigo-700 underline"

@@ -30,6 +30,8 @@ trait A2Fixture
             'category_id' => $category->id,
             'starts_at' => now()->addDays(10)->format('Y-m-d').'T09:00', 'ends_at' => now()->addDays(10)->format('Y-m-d').'T17:00',
             'registration_opens_at' => now()->subDay()->format('Y-m-d').'T00:00', 'registration_deadline' => now()->addDays(9)->format('Y-m-d').'T23:00',
+            'assessment_deadline' => now()->addDays(10)->format('Y-m-d').'T02:00',
+            'decision_deadline' => now()->addDays(10)->format('Y-m-d').'T06:00',
         ]);
         $position = app(EventService::class)->position($event, $owner, [
             'name' => 'Petugas', 'quota' => 1, 'required_full_availability' => false, 'required_same_city' => false,
