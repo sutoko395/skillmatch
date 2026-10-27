@@ -65,6 +65,11 @@ class Application extends Model
         return $this->hasOne(ScreeningResult::class);
     }
 
+    public function matchResult(): HasOne
+    {
+        return $this->hasOne(MatchResult::class);
+    }
+
     public function cvDocument(): HasOne
     {
         return $this->hasOne(ApplicationDocument::class)

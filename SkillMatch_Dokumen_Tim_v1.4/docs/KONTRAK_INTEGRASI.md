@@ -167,6 +167,18 @@ Rincian serta batas verifikasi pada docs/A4_SCREENING_HANDOFF.md aplikasi.
 
 ## 5. Endpoint dan nama route target
 
+Integrasi matching — 27 Oktober 2026: ScreeningService tetap mengembalikan hasil
+screening existing dan memicu MatchingEvaluationService.evaluate sesudah commit
+untuk passed (termasuk replay). Layanan matching mengunci Volunteer → event → application,
+memerlukan submitted + screening passed, lalu menyimpan match_results unik, revision,
+assessment_pending dan audit secara atomik. Hasil existing tidak dihitung ulang atau
+mengaktifkan lamaran terminal. Event cancelled/completed tidak diproses. Matching gagal
+menyisakan screening passed/submitted; recovery melalui a4:retry-matching --limit=100
+[--after=ID]. Migration baru 2026_10_27_000001_create_match_results_table.php mengikuti
+schema match_results di atas; kolom skor DOUBLE tanpa pembulatan UI saat penyimpanan.
+EO saja memuat relasi Application.matchResult dan menampilkan angka; respons halaman
+Volunteer tidak memuat angka/rincian matching. Tidak ada endpoint/guard/status baru.
+
 Route berikut menjadi kontrak navigasi. Implementasi dapat menambah endpoint pendukung, tetapi tidak mengganti nama di satu anggota saja.
 
 | Method / path | Nama route | PIC |

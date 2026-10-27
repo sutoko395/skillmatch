@@ -240,9 +240,10 @@ Screening otomatis sesudah submit memeriksa snapshot profil, skill wajib/minimum
 dokumen wajib ready saat submit, availability penuh dan kota jika diwajibkan. Syarat
 manual tetap untuk Organizer. Detail lamaran Volunteer menampilkan hasil ringkas/alasan;
 detail pelamar Organizer menampilkan pemeriksaan per syarat. Daftar lamaran memakai badge
-hasil yang sama. Hasil gagal menjadi `screening_failed`; hasil lolos tetap `submitted`
-dengan label **Lolos screening — menunggu pencocokan** sampai matching tersedia.
-Tahap ini belum membuka assessment atau mengimplementasikan matching/notifikasi.
+hasil yang sama. Hasil gagal menjadi `screening_failed`. Hasil lolos memicu matching
+setelah commit; status menjadi `assessment_pending` sesudah skor tersimpan. Bila matching
+tertunda, status masih `submitted` dengan label **Lolos screening — menunggu pencocokan**.
+Pengerjaan assessment peserta dan notifikasi masih tahap berikutnya.
 
 Untuk memproses lamaran submitted yang belum memiliki hasil setelah kegagalan sementara:
 
@@ -265,6 +266,45 @@ npm.cmd run build
 ```
 
 Hasil dan batas pengujian tersedia di [handoff screening](docs/A4_SCREENING_HANDOFF.md).
+
+## Matching A4
+
+Setelah pull, jalankan `php artisan migrate` untuk migration
+`2026_10_27_000001_create_match_results_table.php`. Tidak ada dependency, konfigurasi .env,
+worker, route publik atau seeder baru. Bobot matching tetap skill 50%, availability 30%,
+lokasi 20% dari snapshot saat submit. Hasil komponen/total tidak dibulatkan sebelum disimpan;
+tampilan dua desimal. Skor dan rincian hanya di daftar/detail pelamar EO. Volunteer hanya
+melihat **Menunggu assessment**, tanpa skor. Matching tidak menerima/menolak otomatis;
+nilai assessment terpisah dan pengerjaan assessment peserta belum tersedia.
+
+Untuk lamaran lama yang sudah lolos screening atau kegagalan sementara matching:
+
+```powershell
+php artisan a4:retry-matching --limit=100
+```
+
+Aman diulang, hanya submitted dengan screening passed tanpa skor. Limit 1–1000;
+`--after=ID_TERAKHIR` melanjutkan batch sesudah ID yang dicetak command. Snapshot malformed
+tetap tertunda; jangan memperbaiki bukti historis dengan membaca profil terbaru.
+
+Setelah MySQL tes terpisah siap dan dimigrasi:
+
+```powershell
+php vendor/bin/phpunit tests/Unit/MatchingServiceTest.php
+php artisan test --filter=MatchingTest
+php artisan test --filter=ScreeningTest
+```
+
+Pemeriksaan dua proses bersamaan, hanya pada database tes terpisah yang sudah dimigrasi:
+
+```powershell
+php tools/a4-matching-concurrency-check.php --env=testing
+```
+
+Tool memverifikasi target MySQL skillmatch_testing, menjalankan dua proses independen,
+dan mempertahankan fixture sintetis/audit di database tes. Tidak diarahkan ke database kerja.
+
+Bukti dan batas pengujian ada di [handoff matching](docs/A4_MATCHING_HANDOFF.md).
 
 ## Dokumentasi
 

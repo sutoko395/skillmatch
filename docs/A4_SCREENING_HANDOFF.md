@@ -2,6 +2,12 @@
 
 Branch implementasi: `feature/screening`, dari commit snapshot `824e7e2`.
 
+Pembaruan 27 Oktober 2026: matching disambungkan melalui callback sesudah screening
+passed berhasil commit. Kini skor tersimpan sebelum assessment_pending; hanya kegagalan/
+penundaan matching yang masih submitted dengan label menunggu pencocokan. Rincian dan
+bukti terbaru di A4_MATCHING_HANDOFF.md. Catatan tahapan 11 Oktober di bawah dipertahankan
+sebagai histori, bukan perintah menahan semua kandidat lolos di submitted.
+
 ## Perilaku
 
 ScreeningRules mengevaluasi snapshot saja: bukti kelengkapan profil, skill wajib/minimum
@@ -39,6 +45,13 @@ di-backfill; batch tertua yang gagal perlu ditinjau, bukan dibypass.
   Belum dievaluasi menampilkan pending, tidak ada hasil fixture sebagai data aplikasi.
 
 ## Verifikasi
+
+Pembaruan verifikasi 27 Oktober 2026: kendala akses MySQL tes di bawah sudah teratasi.
+Suite matching/screening/regresi A3/unit terkait lulus 70 tes/341 assertion pada
+skillmatch_testing. Tool a4-matching-concurrency-check juga lulus dua proses matching
+ganda serta screening → matching ganda, tanpa hasil/audit tambahan. Fixture/test
+disesuaikan untuk normalisasi key JSON MySQL dan status sesudah matching. Bukti lengkap
+di A4_MATCHING_HANDOFF.md; catatan awal 11 Oktober berikut merupakan histori.
 
 - PHPUnit ScreeningRulesTest: 16 tes, 50 assertion lulus (tanpa akses database).
   Mencakup syarat gagal, preferensi/manual, merge/celah/offset, legacy/malformed,

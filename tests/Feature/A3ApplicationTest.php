@@ -79,7 +79,7 @@ class A3ApplicationTest extends DatabaseTestCase
         $service = app(ApplicationService::class);
         $draft = $service->storeDraft($volunteer, $position);
         $this->travelTo(now()->startOfSecond());
-        $event->forceFill([$field => match ($value) {
+        $event->refresh()->forceFill([$field => match ($value) {
             'deadline' => now(),
             'past' => now()->subSecond(),
             'future' => now()->addSecond(),
