@@ -1,5 +1,22 @@
 # Serah-terima A3 — Tahap 2: Fondasi Lamaran dan Dokumen Privat
 
+## Perbaikan Policy dokumen — 27 Oktober 2026
+
+File ApplicationDocumentPolicy.php sempat mendeklarasikan ApplicationPolicy sejak
+commit 649e13b, sehingga Gate tidak menemukan Policy dokumen dan upload menghasilkan
+403. Dikembalikan sebagai ApplicationDocumentPolicy dengan create/delete/download.
+Create/delete memakai izin update ApplicationPolicy existing (Volunteer aktif pemilik,
+hanya draft), download memakai izin view existing (draft hanya pemilik, EO aktif
+pemilik event sesudah submit). Tidak mengganti ApplicationPolicy, dashboard, route,
+alur login, verifikasi email atau penyimpanan dokumen. PRD/kontrak/desain/brief/UAT
+dokumen tetap berlaku; ini pemulihan otorisasi existing, bukan fitur/status baru.
+
+ApplicationDocumentPolicyTest: 4 tes/42 assertion lulus, termasuk auto-discovery kedua
+Policy, create/delete, role/owner/nonaktif, status sesudah submit dan download.
+Pint dan sintaks PHP lulus. Pemeriksaan Gate baca-saja terhadap lamaran lokal #2:
+draft dan pemilik diizinkan upload. Upload/download HTTP penuh serta transaksi MySQL
+belum diuji ulang pada perbaikan ini. Tidak ada migration atau perubahan .env.
+
 ## Snapshot kelengkapan profil — 11 Oktober 2026
 
 Submit menyimpan `snapshot_json.profile_eligibility` dengan `complete` dan `missing_fields`

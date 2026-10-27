@@ -3,51 +3,28 @@
 namespace App\Policies;
 
 use App\Models\Application;
+use App\Models\ApplicationDocument;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
-class ApplicationPolicy
+class ApplicationDocumentPolicy
 {
-    public function viewAny(User $user): bool
+    public function create(User $user, Application $application): bool
     {
-        return $user->is_active
-            && $user->role === 'volunteer';
+        return Gate::forUser($user)->allows('update', $application);
     }
 
-    public function view(User $user, Application $application): bool
+    public function delete(User $user, ApplicationDocument $document): bool
     {
-        if (! $user->is_active) {
-            return false;
-        }
+        $application = $document->application;
 
-        if (
-            $user->role === 'volunteer'
-            && $application->volunteer_id === $user->id
-        ) {
-            return true;
-        }
-
-        if (
-            $user->role === 'organizer'
-            && $user->organizer_status === 'active'
-            && $application->event?->organizer_id === $user->id
-            && $application->status !== 'draft'
-        ) {
-            return true;
-        }
-
-        return false;
+        return $application !== null && $this->create($user, $application);
     }
 
-    public function update(User $user, Application $application): bool
+    public function download(User $user, ApplicationDocument $document): bool
     {
-        return $user->is_active
-            && $user->role === 'volunteer'
-            && $application->volunteer_id === $user->id
-            && $application->status === 'draft';
-    }
+        $application = $document->application;
 
-    public function submit(User $user, Application $application): bool
-    {
-        return $this->update($user, $application);
+        return $application !== null && Gate::forUser($user)->allows('view', $application);
     }
 }
