@@ -37,6 +37,15 @@
             </div>
         @endif
 
+        @if (in_array($application->assessmentAttempt?->status, ['submitted', 'expired']))
+            <section class="mt-6 rounded-xl border border-slate-200 p-5" aria-label="Hasil assessment">
+                <h2 class="text-lg font-bold text-slate-900">Hasil assessment</h2>
+                <p class="mt-2">Nilai: <strong>{{ number_format($application->assessmentAttempt->score, 2, ',', '.') }}/100</strong></p>
+                <p class="mt-1 text-sm text-slate-600">{{ $application->assessmentAttempt->correct }} benar dari {{ $application->assessmentAttempt->total }} soal. {{ $application->assessmentAttempt->status === 'expired' ? 'Difinalkan karena waktu habis.' : 'Dikirim peserta.' }}</p>
+                <p class="mt-1 text-sm text-slate-600">Nilai assessment terpisah dari skor kecocokan. Keputusan seleksi tetap ditentukan EO.</p>
+            </section>
+        @endif
+
         <div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
             {{-- Profil Kandidat --}}
             <div class="space-y-4 rounded-xl bg-slate-50 p-5 border border-slate-200">

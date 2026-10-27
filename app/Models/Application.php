@@ -70,6 +70,11 @@ class Application extends Model
         return $this->hasOne(MatchResult::class);
     }
 
+    public function assessmentAttempt(): HasOne
+    {
+        return $this->hasOne(AssessmentAttempt::class);
+    }
+
     public function cvDocument(): HasOne
     {
         return $this->hasOne(ApplicationDocument::class)

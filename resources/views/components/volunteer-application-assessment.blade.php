@@ -23,6 +23,10 @@
             <p>Assessment tidak tersedia karena event telah dibatalkan.</p>
         @elseif (in_array($application->status, ['accepted', 'rejected', 'withdrawn']))
             <p>Proses seleksi lamaran ini telah berakhir.</p>
+        @elseif (in_array($application->assessmentAttempt?->status, ['submitted', 'expired']))
+            <p>{{ $application->assessmentAttempt->status === 'expired' ? 'Waktu pengerjaan telah habis. Jawaban yang tersimpan sudah dinilai.' : 'Assessment selesai. Jawabanmu sudah dikirim.' }} Menunggu keputusan EO.</p>
+        @elseif ($application->assessmentAttempt?->status === 'cancelled')
+            <p>Pengerjaan assessment telah dihentikan.</p>
         @elseif ($application->status === 'under_review')
             <p>Lamaranmu sedang ditinjau EO. Tunggu hasil seleksi pada halaman ini.</p>
         @elseif (!$deadline)
@@ -35,8 +39,7 @@
             <p>Assessment tidak tersedia karena kegiatan sudah dimulai atau berakhir.</p>
         @elseif ($application->status === 'assessment_pending' && $assessment)
             <p>Pencocokan selesai. Tahap berikutnya adalah mengerjakan assessment.</p>
-            <p id="assessment-not-available" class="mt-1">Pengerjaan assessment belum tersedia.</p>
-            <button type="button" disabled aria-describedby="assessment-not-available" class="mt-3 cursor-not-allowed rounded-xl bg-slate-200 px-4 py-2 font-semibold text-slate-500">Mulai assessment</button>
+            <a href="{{ route('volunteer.assessments.show', $application) }}" class="mt-3 inline-flex rounded-xl bg-indigo-600 px-4 py-2 font-semibold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">{{ $application->assessmentAttempt?->status === 'in_progress' ? 'Lanjutkan assessment' : 'Mulai assessment' }}</a>
         @else
             <p>Informasi assessment belum tersedia untuk lamaran ini.</p>
         @endif

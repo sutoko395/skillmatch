@@ -63,3 +63,5 @@ Route::middleware([
             [VolunteerDocumentController::class, 'destroy']
         )->name('documents.destroy');
     });
+
+require __DIR__.'/volunteer-assessments.php';
