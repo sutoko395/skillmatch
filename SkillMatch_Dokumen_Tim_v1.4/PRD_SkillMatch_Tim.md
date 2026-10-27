@@ -165,6 +165,13 @@ Retensi baseline demo: draft terbengkalai 7 hari, dokumen lamaran 90 hari setela
 
 ### 7.3 Screening dan matching
 
+Keputusan 27 Oktober 2026: skor matching dan rincian komponennya hanya tampil untuk EO
+pemilik event pada daftar/detail pelamar. Volunteer melihat status/progres, tanpa angka
+matching. Hasil lolos screening diproses matching dari snapshot; setelah skor tersimpan,
+status menjadi assessment_pending. Kegagalan matching tetap menunggu proses/retry,
+bukan otomatis gagal screening. Matching bukan rekomendasi event dan tidak memberi
+keputusan penerimaan. Pengerjaan assessment peserta tetap tahap berikutnya.
+
 Screening adalah pemeriksaan syarat wajib, bukan keputusan penerimaan. Minimal meliputi profil, dokumen wajib ready, skill wajib dan level minimum, serta cakupan jadwal penuh hanya jika posisi mensyaratkannya. Kota berbeda hanya menggagalkan jika ditandai wajib. Pengalaman dalam teks CV tetap ditinjau manusia.
 
 `Match Score = 0,50 × S + 0,30 × A + 0,20 × L`.

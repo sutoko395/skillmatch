@@ -31,6 +31,12 @@
             <x-application-screening :application="$application" :detailed="true" />
         </div>
 
+        @if ($application->screeningResult?->passed)
+            <div class="mt-6">
+                <x-application-matching :result="$application->matchResult" />
+            </div>
+        @endif
+
         <div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
             {{-- Profil Kandidat --}}
             <div class="space-y-4 rounded-xl bg-slate-50 p-5 border border-slate-200">

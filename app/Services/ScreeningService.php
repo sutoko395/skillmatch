@@ -14,7 +14,7 @@ class ScreeningService
 
     public function evaluate(Application $application): ?array
     {
-        return DB::transaction(function () use ($application) {
+        $evaluation = DB::transaction(function () use ($application) {
             User::whereKey($application->volunteer_id)->lockForUpdate()->firstOrFail();
             $event = Event::whereKey($application->event_id)->lockForUpdate()->firstOrFail();
             $locked = Application::whereKey($application->id)->lockForUpdate()->firstOrFail();
@@ -40,5 +40,11 @@ class ScreeningService
 
             return $evaluation;
         });
+
+        if ($evaluation['passed'] ?? false) {
+            DB::afterCommit(fn () => app(MatchingEvaluationService::class)->evaluate($application));
+        }
+
+        return $evaluation;
     }
 }

@@ -24,6 +24,7 @@ class ApplicationController extends Controller
                 'position',
                 'documents',
                 'screeningResult',
+                'matchResult',
             ]);
 
         if ($request->filled('position_id')) {
@@ -54,6 +55,7 @@ class ApplicationController extends Controller
             'volunteer.availabilitySlots',
             'documents',
             'screeningResult',
+            'matchResult',
         ]);
 
         return view('organizer.applications.show', compact('application'));

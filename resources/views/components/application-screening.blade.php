@@ -14,6 +14,8 @@
                     <p class="mt-1">{{ $detailed ? 'Pelamar belum memenuhi syarat untuk melanjutkan proses.' : 'Lamaranmu belum bisa dilanjutkan ke tahap selanjutnya.' }}</p>
                 @elseif ($application->status === 'submitted')
                     <p class="mt-1">{{ $detailed ? 'Pelamar menunggu proses pencocokan sebelum assessment.' : 'Lamaranmu menunggu proses pencocokan sebelum assessment.' }}</p>
+                @elseif ($application->status === 'assessment_pending')
+                    <p class="mt-1">{{ $detailed ? 'Pencocokan selesai. Pelamar menunggu assessment.' : 'Pencocokan selesai. Lamaranmu siap lanjut ke assessment.' }}</p>
                 @endif
             </div>
             @if ($detailed)

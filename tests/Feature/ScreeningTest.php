@@ -48,19 +48,21 @@ class ScreeningTest extends DatabaseTestCase
         $this->assertSame('screening_failed', $application->fresh()->status);
         $this->assertSame(2, $application->fresh()->revision);
         $application->volunteer->update(['name' => 'Profil diubah']);
-        $this->assertSame($result, $service->evaluate($application));
+        // MySQL normalizes JSON object key order; compare the evaluation contents.
+        $this->assertEquals($result, $service->evaluate($application));
         $this->assertSame(1, ScreeningResult::where('application_id', $application->id)->count());
         $this->assertSame(1, AuditLog::where('action', 'application.screened')->where('subject_id', $application->id)->count());
     }
 
-    public function test_passed_screening_waits_for_matching_and_cannot_open_assessment(): void
+    public function test_passed_screening_advances_after_matching_is_saved(): void
     {
         $application = $this->application();
         $service = app(ScreeningService::class);
         $this->assertTrue($service->evaluate($application)['passed']);
-        $this->assertSame('submitted', $application->fresh()->status);
+        $this->assertSame('assessment_pending', $application->fresh()->status);
+        $this->assertNotNull($application->fresh()->matchResult);
         $service->evaluate($application->fresh());
-        $this->assertSame(2, $application->fresh()->revision);
+        $this->assertSame(3, $application->fresh()->revision);
         $this->artisan('a4:retry-screening')->assertSuccessful();
         $this->assertSame(1, ScreeningResult::where('application_id', $application->id)->count());
     }

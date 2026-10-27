@@ -1,5 +1,16 @@
 # Design specification SkillMatch
 
+## Matching pelamar — 27 Oktober 2026
+
+EO mendapat kolom Match Score pada daftar pelamar dan kartu Kecocokan kandidat pada
+detail existing: total /100, tabel komponen/skor/bobot/poin, jumlah skill cocok, cakupan
+jam serta kota sama/berbeda. Tampilan skor dua desimal; nilai assessment terpisah dan
+keputusan akhir tetap EO. Skor belum tersedia ditandai kosong/tertunda, bukan nol palsu.
+Volunteer tidak mendapat kartu angka matching; badge Menunggu assessment dan pesan
+“Pencocokan selesai. Lamaranmu siap lanjut ke assessment.” sesudah status assessment_pending.
+Tombol start assessment belum ditambahkan oleh tahap matching. Layout, sidebar, navigasi,
+dashboard dan komponen screening yang sudah ada dipertahankan; tambahan hanya di atas.
+
 Komponen dan tampilan yang sudah dipakai modul lain harus diperiksa pada kode,
 branch, dan handoff terkini sebelum diubah. Rancangan awal atau contoh baseline
 tidak membatalkan tampilan baru yang telah disepakati. Perubahan desain dilakukan

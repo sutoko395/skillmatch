@@ -56,6 +56,7 @@
                             <th class="px-4 py-3">Nama Kandidat</th>
                             <th class="px-4 py-3">Posisi Dilamar</th>
                             <th class="px-4 py-3">Status</th>
+                            <th class="px-4 py-3">Match Score</th>
                             <th class="px-4 py-3">Tanggal Mengirim</th>
                             <th class="px-4 py-3">Dokumen</th>
                             <th class="px-4 py-3 text-right">Aksi</th>
@@ -73,6 +74,9 @@
                                 </td>
                                 <td class="px-4 py-3">
                                     <x-application-status :application="$app" />
+                                </td>
+                                <td class="px-4 py-3 font-semibold text-indigo-700">
+                                    {{ $app->matchResult ? number_format($app->matchResult->total_score, 2, ',', '.') : '—' }}
                                 </td>
                                 <td class="px-4 py-3 text-slate-600">
                                     {{ $app->submitted_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') ?? '-' }} WIB

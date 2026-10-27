@@ -2,6 +2,15 @@
 
 ## Tahap screening — 11 Oktober 2026
 
+Pembaruan matching 27 Oktober 2026: MatchingService/MatchingEvaluationService kini
+menyambung hasil screening passed setelah commit, menyimpan komponen/total/rule_version,
+dan mengubah status menjadi assessment_pending secara atomik. Skor hanya tampil di EO;
+Volunteer mendapat status/progres tanpa angka. Kandidat gagal tetap screening_failed.
+Retry matching mengonsumsi lamaran submitted yang sudah lolos tetapi belum memiliki skor.
+Rumus tetap 50/30/20 dari snapshot; assessment/notifikasi/rekomendasi event tidak termasuk
+tahap ini. Bukti/batas uji pada docs/A4_MATCHING_HANDOFF.md aplikasi. Catatan tahap lama
+tentang menunggu matching di bawah merujuk kondisi sebelum integrasi ini.
+
 Screening otomatis memakai snapshot A3 termasuk profile_eligibility; hasil/alasan satu
 per lamaran. Volunteer mendapat ringkasan/alasan di detail existing, EO mendapat tabel
 per syarat. Failed → screening_failed; passed disimpan tetapi status tetap submitted

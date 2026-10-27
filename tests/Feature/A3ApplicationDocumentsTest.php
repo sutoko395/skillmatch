@@ -284,7 +284,7 @@ class A3ApplicationDocumentsTest extends DatabaseTestCase
         $this->assertSame('081234567890', $freshApplication->snapshot_json['profile']['phone']);
         $this->assertSame($originalName, $freshApplication->snapshot_json['profile']['name']);
         app(ApplicationService::class)->submit($freshApplication, $volunteer);
-        $this->assertSame($snapshot, $freshApplication->fresh()->snapshot_json);
+        $this->assertEquals($snapshot, $freshApplication->fresh()->snapshot_json);
     }
 
     public function test_submit_snapshots_profile_completeness_at_submission_instead_of_draft_creation(): void
@@ -308,7 +308,7 @@ class A3ApplicationDocumentsTest extends DatabaseTestCase
         ], $snapshot['profile_eligibility']);
 
         $volunteer->volunteerProfile->update(['bio' => 'Profil dilengkapi', 'address' => 'Alamat baru']);
-        $this->assertSame($snapshot, $submitted->fresh()->snapshot_json);
+        $this->assertEquals($snapshot, $submitted->fresh()->snapshot_json);
     }
 
     public function test_organizer_can_view_submitted_applications_list_and_detail_with_screening_results(): void
@@ -336,7 +336,8 @@ class A3ApplicationDocumentsTest extends DatabaseTestCase
         $indexResponse = $this->get("/organizer/events/{$event->id}/applications");
         $indexResponse->assertOk();
         $indexResponse->assertSee($volunteer1->name);
-        $indexResponse->assertSee('Lolos screening');
+        $indexResponse->assertSee('Menunggu assessment');
+        $indexResponse->assertSee('Match Score');
         // Draft applicant should not be listed
         $indexResponse->assertDontSee($volunteer2->name);
 

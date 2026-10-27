@@ -1,5 +1,23 @@
 # UAT dan kriteria selesai lintas anggota
 
+## Matching — 27 Oktober 2026
+
+UAT-18/19/32: contoh S=75,A=75,L=100 → 80,00; level wajib/preferensi sama-sama dihitung,
+tidak ada bonus level di atas minimum; union interval termasuk overlap/adjacency, batas
+setengah terbuka dan offset timezone; kota berbeda=0. Data invalid ditunda, bukan skor
+palsu. Hasil immutable dari snapshot, replay tidak menggandakan skor/status/audit; terminal
+dan cancelled/completed tidak diaktifkan. Lolos screening memicu matching sesudah commit,
+assessment_pending hanya setelah skor tersimpan. EO owner mendapat skor/rincian, Volunteer
+hanya status/pesan dan tidak menerima angka. Uji akses endpoint lintas akun dan race dua
+koneksi pada MySQL tes terpisah. Bukti unit/rendering bukan bukti UAT transaksi/browser;
+status verifikasi aktual pada docs/A4_MATCHING_HANDOFF.md aplikasi.
+
+Bukti 27 Oktober 2026: suite matching/screening/regresi A3/unit terkait lulus 70 tes/
+341 assertion pada MySQL skillmatch_testing. Dua proses independen matching ganda dan
+screening → matching ganda lulus melalui tools/a4-matching-concurrency-check.php.
+Review browser lintas ukuran dan race pembatalan lintas layanan A3 tetap belum diuji;
+bukti ini tidak meluluskan seluruh UAT aplikasi.
+
 ## Screening bertahap — 11 Oktober 2026
 
 Untuk UAT-17/19/32: uji syarat wajib profil/dokumen/skill/level, jadwal penuh dan kota
