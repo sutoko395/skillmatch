@@ -231,6 +231,8 @@
                         />
                     </div>
 
+                    <x-event-recruitment-fields />
+
                     <x-event-package-warning />
 
                     <div class="flex justify-end gap-3 border-t border-slate-100 pt-5">

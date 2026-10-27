@@ -12,6 +12,8 @@ class PositionSnapshotService
 
         return [
             'position_id' => $position->id, 'event_id' => $position->event_id, 'city_id' => $position->event->city_id,
+            'assessment_deadline' => $position->event->assessment_deadline?->toIso8601String(),
+            'decision_deadline' => $position->event->decision_deadline?->toIso8601String(),
             'skills' => $position->positionSkills->map(fn ($s) => ['id' => $s->skill_id, 'minimum_level' => $s->minimum_level, 'is_required' => $s->is_required])->all(),
             'schedules' => $position->schedules->map(fn ($s) => ['start' => $s->starts_at->toIso8601String(), 'end' => $s->ends_at->toIso8601String()])->all(),
             'requirements' => $position->requirements->map->only(['name', 'description', 'kind', 'document_type', 'is_required'])->all(),

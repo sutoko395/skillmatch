@@ -142,6 +142,17 @@ class EventService
                 $this->editable($event);
             }
 
+            // Preserve configured deadlines for existing callers that omit both fields.
+            $input = array_replace([
+                'assessment_deadline' => $event->assessment_deadline?->setTimezone('Asia/Jakarta')->format('Y-m-d\TH:i'),
+                'decision_deadline' => $event->decision_deadline?->setTimezone('Asia/Jakarta')->format('Y-m-d\TH:i'),
+            ], $input);
+            foreach (['assessment_deadline', 'decision_deadline'] as $field) {
+                if (is_string($input[$field]) && trim($input[$field]) === '') {
+                    $input[$field] = null;
+                }
+            }
+
             $data = Validator::make($input, [
                 'title' => ['required', 'string', 'max:255'],
                 'package_id' => [$event->package_snapshot ? 'sometimes' : 'required', 'integer'],
@@ -166,12 +177,26 @@ class EventService
                     'after:registration_opens_at',
                     'before_or_equal:starts_at',
                 ],
+                'assessment_deadline' => [
+                    'nullable', 'required_with:decision_deadline', 'date_format:Y-m-d\TH:i', 'after:registration_deadline',
+                ],
+                'decision_deadline' => [
+                    'nullable', 'required_with:assessment_deadline', 'date_format:Y-m-d\TH:i',
+                    'after:assessment_deadline', 'before:starts_at',
+                ],
             ], [
                 'package_id.required' => 'Pilih paket event terlebih dahulu.',
                 'package_id.integer' => 'Pilih paket dari daftar yang tersedia.',
                 'city_id.required' => 'Pilih kota kegiatan.',
                 'city_id.integer' => 'Pilih kota dari daftar yang tersedia.',
                 'city_id.exists' => 'Kota yang dipilih tidak tersedia atau sudah nonaktif.',
+                'assessment_deadline.required_with' => 'Isi tenggat assessment bersama batas akhir keputusan EO.',
+                'assessment_deadline.date_format' => 'Isi tanggal dan jam tenggat assessment dalam WIB.',
+                'assessment_deadline.after' => 'Tenggat assessment harus setelah penutupan pendaftaran.',
+                'decision_deadline.required_with' => 'Isi batas akhir keputusan EO bersama tenggat assessment.',
+                'decision_deadline.date_format' => 'Isi tanggal dan jam batas akhir keputusan EO dalam WIB.',
+                'decision_deadline.after' => 'Batas akhir keputusan EO harus setelah tenggat assessment.',
+                'decision_deadline.before' => 'Batas akhir keputusan EO harus sebelum awal kegiatan.',
             ])->validate();
 
             $data['city'] = City::findOrFail($data['city_id'])->name;
@@ -181,7 +206,12 @@ class EventService
                 'ends_at',
                 'registration_opens_at',
                 'registration_deadline',
+                'assessment_deadline',
+                'decision_deadline',
             ] as $field) {
+                if ($data[$field] === null) {
+                    continue;
+                }
                 $data[$field] = CarbonImmutable::createFromFormat(
                     'Y-m-d\TH:i',
                     $data[$field],

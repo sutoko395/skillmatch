@@ -60,6 +60,22 @@ class EventConfiguration
             $fail('Rentang pendaftaran tidak valid.');
         }
 
+        // Existing frozen events with no recruitment deadlines retain their old flow.
+        // Their dates are not guessed or unlocked by adding these nullable columns.
+        $legacyFrozen = ! $event->assessment_deadline && ! $event->decision_deadline
+            && ($event->published_at || in_array($event->status, ['pending', 'approved'], true)
+                || $event->orders()->exists() || $event->entitlement()->exists());
+        if (! $legacyFrozen && (
+            ! $event->assessment_deadline || ! $event->decision_deadline
+            || $event->assessment_deadline <= $event->registration_deadline
+            || $event->decision_deadline <= $event->assessment_deadline
+            || $event->decision_deadline >= $event->starts_at
+        )) {
+            throw ValidationException::withMessages([
+                'assessment_deadline' => 'Lengkapi jadwal: tutup pendaftaran < tenggat assessment < batas keputusan EO < awal kegiatan.',
+            ]);
+        }
+
         $package = $event->package_snapshot;
 
         if (
