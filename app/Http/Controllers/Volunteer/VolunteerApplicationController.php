@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Volunteer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Application;
+use App\Models\Assessment;
 use App\Models\EventPosition;
 use App\Services\ApplicationService;
 use App\Services\ProfileEligibilityService;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -55,7 +57,26 @@ class VolunteerApplicationController extends Controller
 
         $eligibility = $this->profileEligibilityService->check(Auth::user());
 
-        return view('volunteer.applications.show', compact('application', 'eligibility'));
+        $snapshot = $application->status === 'draft' ? [] : ($application->snapshot_json ?? []);
+        $recruitmentDates = [];
+        foreach (['assessment_deadline', 'decision_deadline'] as $field) {
+            $value = array_key_exists($field, $snapshot) ? $snapshot[$field] : $application->event->$field;
+            $recruitmentDates[$field] = $value ? CarbonImmutable::parse($value)->setTimezone('Asia/Jakarta') : null;
+        }
+
+        // Only fetch published metadata for the version recorded when this application was submitted.
+        $assessmentSummary = null;
+        if ($application->status !== 'draft' && isset($snapshot['assessment_version'])) {
+            $assessmentSummary = Assessment::query()
+                ->where('event_position_id', $application->event_position_id)
+                ->where('version', $snapshot['assessment_version'])
+                ->where('is_published', true)
+                ->select(['id', 'duration_minutes'])
+                ->withCount('questions')
+                ->first();
+        }
+
+        return view('volunteer.applications.show', compact('application', 'eligibility', 'recruitmentDates', 'assessmentSummary'));
     }
 
     public function submit(Request $request, Application $application)

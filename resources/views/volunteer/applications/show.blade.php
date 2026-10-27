@@ -32,6 +32,14 @@
                         <span class="text-sm text-slate-600">Dikirim pada {{ $application->submitted_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</span>
                     @endif
                 </div>
+                <div class="mt-3 text-sm text-slate-600">
+                    @if ($recruitmentDates['decision_deadline'])
+                        <p>Hasil seleksi paling lambat: <span class="font-semibold">{{ $recruitmentDates['decision_deadline']->format('d/m/Y H:i') }} WIB</span></p>
+                        <p class="mt-1">Hasil dapat diumumkan lebih awal.</p>
+                    @else
+                        <p>Jadwal hasil seleksi belum tersedia.</p>
+                    @endif
+                </div>
             </div>
 
             @if($application->status === 'draft')
@@ -56,6 +64,9 @@
         @if ($application->status !== 'draft')
             <div class="mt-6">
                 <x-application-screening :application="$application" />
+            </div>
+            <div class="mt-6">
+                <x-volunteer-application-assessment :application="$application" :assessment="$assessmentSummary" :deadline="$recruitmentDates['assessment_deadline']" />
             </div>
         @endif
         <div class="mt-6 border-b border-slate-200 pb-6">
