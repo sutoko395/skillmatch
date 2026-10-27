@@ -56,6 +56,7 @@ class ApplicationController extends Controller
             'documents',
             'screeningResult',
             'matchResult',
+            'assessmentAttempt',
         ]);
 
         return view('organizer.applications.show', compact('application'));

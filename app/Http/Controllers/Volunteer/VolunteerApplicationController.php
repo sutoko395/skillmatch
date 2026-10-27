@@ -7,6 +7,7 @@ use App\Models\Application;
 use App\Models\Assessment;
 use App\Models\EventPosition;
 use App\Services\ApplicationService;
+use App\Services\AssessmentService;
 use App\Services\ProfileEligibilityService;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
@@ -45,6 +46,9 @@ class VolunteerApplicationController extends Controller
     {
         Gate::authorize('view', $application);
 
+        app(AssessmentService::class)->expire($application);
+        $application->refresh();
+
         $application->load([
             'event.organizer.organizerProfile',
             'event.cityRecord',
@@ -53,6 +57,7 @@ class VolunteerApplicationController extends Controller
             'position.requirements',
             'documents',
             'screeningResult',
+            'assessmentAttempt',
         ]);
 
         $eligibility = $this->profileEligibilityService->check(Auth::user());

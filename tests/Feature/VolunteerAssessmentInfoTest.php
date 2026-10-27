@@ -51,7 +51,7 @@ class VolunteerAssessmentInfoTest extends DatabaseTestCase
         $response = $this->actingAs($application->volunteer)->get(route('volunteer.applications.show', $application));
         $response->assertOk()->assertSeeInOrder(['Hasil seleksi paling lambat:', 'Hasil dapat diumumkan lebih awal.', 'Informasi assessment'], false)
             ->assertSee('1 soal')->assertSee('30 menit')->assertDontSee('90 menit')
-            ->assertSee('disabled aria-describedby="assessment-not-available"', false)
+            ->assertSee(route('volunteer.assessments.show', $application), false)
             ->assertDontSee('Pertanyaan privat assessment')->assertDontSee('Opsi rahasia')->assertDontSee('is_correct')
             ->assertDontSee('Hasil kecocokan');
         foreach (['assessment_deadline', 'decision_deadline'] as $field) {
