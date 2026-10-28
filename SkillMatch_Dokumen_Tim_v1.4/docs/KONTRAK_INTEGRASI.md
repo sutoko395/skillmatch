@@ -1,5 +1,28 @@
 # Kontrak integrasi empat anggota
 
+Perubahan hasil terintegrasi mengikuti persetujuan pengguna dalam
+[AGENTS.md](../../AGENTS.md#persetujuan-perubahan-hasil-kerja-dan-tampilan).
+Perubahan interface, route dan komponen bersama tidak boleh menghilangkan fitur
+atau tampilan existing di luar lingkup yang disetujui. Ajukan dampak pada konsumen
+SF/A1/A2/A3/A4 sebelum penggantian, koordinasikan PIC terkait dan periksa diff saat
+merge; menerima seluruh versi satu sisi bukan bukti semua kontribusi terjaga.
+
+## Alur email Volunteer — perbaikan 28 Oktober 2026
+
+RegisteredUserController mengirim event Registered untuk Volunteer lalu redirect
+verification.notice; LoginDestination menahan Volunteer unverified pada halaman
+yang sama tanpa mengonsumsi intended URL. verification.send tetap POST dengan CSRF,
+auth/account.active dan throttle 6/menit; kegagalan transport memakai status flash
+verification-send-failed, sukses verification-link-sent. Tidak mengisi
+email_verified_at dari form/registrasi. Link signed, expiry dan hash/id tetap
+diperiksa framework. Setelah verifikasi, resolver memvalidasi intended lokal dan
+hak role; tidak me-replay POST lamaran. Middleware verified pada
+volunteer.applications.store/submit dan volunteer.documents.store/destroy
+mengarahkan browser ke verification.notice; ApplicationService tetap memeriksa
+akun/email di server dan transaksi. Profil dan baca lamaran existing tetap memakai
+Policy sebelumnya. Pengecualian Organizer A3 dan default Admin tidak berubah.
+Tanpa schema, migration, guard, atau nama route baru.
+
 Penyesuaian auth Organizer A3 28 Oktober 2026: mengikuti alur Organizer existing yang
 terintegrasi sejak 9dc9886, persetujuan organisasi (organizer_status active) dan akun
 aktif menjadi syarat seleksi/pelaksanaan; email verified bukan syarat tambahan route

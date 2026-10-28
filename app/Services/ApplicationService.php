@@ -14,15 +14,11 @@ class ApplicationService
 {
     public function storeDraft(User $volunteer, EventPosition $position): Application
     {
-        if ($volunteer->role !== 'volunteer' || ! $volunteer->is_active || ! $volunteer->hasVerifiedEmail()) {
-            throw new AuthorizationException('Hanya volunteer aktif yang dapat membuat draft lamaran.');
-        }
+        $this->assertEligibleAccount($volunteer);
 
         return DB::transaction(function () use ($volunteer, $position) {
             $volunteer = User::whereKey($volunteer->id)->lockForUpdate()->firstOrFail();
-            if ($volunteer->role !== 'volunteer' || ! $volunteer->is_active || ! $volunteer->hasVerifiedEmail()) {
-                throw new AuthorizationException;
-            }
+            $this->assertEligibleAccount($volunteer);
             $event = Event::whereKey($position->event_id)->lockForUpdate()->firstOrFail();
             $position = EventPosition::whereKey($position->id)->where('event_id', $event->id)->firstOrFail();
             $position->setRelation('event', $event);
@@ -89,9 +85,10 @@ class ApplicationService
 
         return DB::transaction(function () use ($draft, $actor) {
             $volunteer = User::where('id', $draft->volunteer_id)->lockForUpdate()->firstOrFail();
-            if ($actor->id !== $volunteer->id || $volunteer->role !== 'volunteer' || ! $volunteer->is_active || ! $volunteer->hasVerifiedEmail()) {
+            if ($actor->id !== $volunteer->id) {
                 throw new AuthorizationException;
             }
+            $this->assertEligibleAccount($volunteer);
             $event = Event::where('id', $draft->event_id)->lockForUpdate()->firstOrFail();
 
             $lockedDraft = Application::where('id', $draft->id)->lockForUpdate()->firstOrFail();
@@ -180,6 +177,17 @@ class ApplicationService
 
             return $lockedDraft;
         }, 3);
+    }
+
+    private function assertEligibleAccount(User $volunteer): void
+    {
+        if ($volunteer->role !== 'volunteer' || ! $volunteer->is_active) {
+            throw new AuthorizationException('Hanya volunteer aktif yang dapat membuat draft lamaran.');
+        }
+
+        if (! $volunteer->hasVerifiedEmail()) {
+            throw new AuthorizationException('Verifikasi email Anda sebelum membuat atau mengirim lamaran.');
+        }
     }
 
     /**

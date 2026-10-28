@@ -89,6 +89,28 @@ perbarui tes yang menguji perilaku lama dan baru, serta catatnya di handoff.
 Saat menggabungkan branch, tinjau diff dan konflik per berkas; jangan menerima
 seluruh versi satu sisi untuk file bersama tanpa menilai kontribusi sisi lain.
 
+### Persetujuan perubahan hasil kerja dan tampilan
+
+Fitur, alur, route, layout, navigasi, komponen, CSS, aset dan tampilan yang sudah
+dibangun adalah hasil kerja yang harus dipertahankan, termasuk perubahan lokal
+yang belum commit. Jangan menghapus, mengganti, menyederhanakan menjadi shell,
+mengembalikan versi lama, atau mendesain ulang hasil tersebut hanya karena brief,
+mockup atau pedoman lama berbeda. Build berhasil bukan izin perubahan desain.
+
+Permintaan pengguna yang secara jelas mencakup perubahan tersebut adalah
+persetujuan untuk lingkup itu; jangan meminta ulang persetujuan yang sudah ada.
+Jika perubahan yang diperlukan melampaui lingkup permintaan, siapkan usulan
+konkret berisi alasan, file/halaman terdampak dan perilaku/tampilan sebelum-sesudah,
+lalu minta persetujuan pengguna sebelum menerapkannya. Review/koordinasi PIC
+dilakukan sesuai dampaknya; persetujuan pengguna tidak boleh diklaim sebagai
+review atau merge tim. Sambil menunggu, lanjutkan pekerjaan independen yang aman.
+
+Sebelum mengedit, catat branch/commit dasar dan perilaku/tampilan existing dari
+kode serta, bila tersedia, screenshot atau uji browser. Setelah mengedit, periksa
+diff dan regresi halaman/alur terkait agar kontribusi lain tetap tersedia.
+Catat keputusan, lingkup yang disetujui, bukti tes/build dan pemeriksaan visual
+yang belum dilakukan pada handoff; jangan menyamakan build dengan review visual.
+
 ## 5. Auth dan navigasi
 
 Semua role menggunakan GET/POST /login, satu guard session web, dan POST /logout

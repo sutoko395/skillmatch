@@ -1,5 +1,11 @@
 # Baseline kode dan tools
 
+Untuk perubahan hasil kerja dan UI existing, ikuti batas persetujuan pada
+[AGENTS.md](../../AGENTS.md#persetujuan-perubahan-hasil-kerja-dan-tampilan).
+Build hanya memeriksa kompilasi aset; jangan menganggap build sebagai persetujuan
+redesign atau bukti tidak ada regresi visual. Jangan menimpa Blade/CSS/aset dengan
+scaffolding, contoh ZIP atau mockup lama tanpa lingkup perubahan yang disetujui.
+
 Bagian "ZIP awal", "baseline" dan tabel temuan di bawah adalah catatan historis
 pada saat dokumen disusun, bukan instruksi untuk menghapus implementasi sesudahnya.
 Sebelum memakai suatu tindakan/PIC dari tabel, periksa branch aktif, riwayat

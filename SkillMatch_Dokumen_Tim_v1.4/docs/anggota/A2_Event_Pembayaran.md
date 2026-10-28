@@ -1,5 +1,14 @@
 # Brief A2 — event, katalog, paket, pembayaran
 
+Status lintas modul terkini: [daftar pekerjaan tersisa](../../../docs/DEVELOPMENT.md#daftar-pekerjaan-tersisa--pembaruan-28-oktober-2026).
+Pisahkan pekerjaan belum dibuat, belum diuji, dan selesai lokal yang belum diintegrasikan.
+
+Batas perubahan hasil kerja: ikuti [persetujuan pada AGENTS.md](../../../AGENTS.md#persetujuan-perubahan-hasil-kerja-dan-tampilan).
+Pertahankan fitur dan tampilan yang sudah dibangun. Permintaan pengguna memberi
+izin dalam lingkupnya; penggantian, penghapusan atau redesign di luar lingkup
+memerlukan usulan sebelum-sesudah dan persetujuan terlebih dahulu. Brief ini
+bukan izin untuk menimpa hasil anggota lain atau mengembalikan baseline lama.
+
 Integrasi A3 28 Oktober 2026: EventCancellationService.cancelApplications kini tersedia
 dan dipakai A2Dependencies pada transaksi cancel existing; attempt A4 dihentikan atomik
 tanpa mengambil ulang lock Volunteer. Race cancel versus submit/accept/attempt lulus

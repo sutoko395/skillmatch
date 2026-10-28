@@ -179,7 +179,7 @@ Semua akun memakai password **`SkillMatch-local-2026!`**, khusus lokal dan dilar
 | organizer-pending@example.test | Pending menuju `/organizer/profile/pending` |
 | organizer-inactive@example.test | Revisi/belum terverifikasi; akun tetap aktif dan dapat mengedit profil |
 | organizer-suspended@example.test | Akun nonaktif, login ditolak |
-| organizer-unverified@example.test | Verifikasi email dahulu; profil dasar tetap dapat dibuka |
+| organizer-unverified@example.test | Onboarding profil/organisasi; email belum verified tidak menambah gate seleksi/pelaksanaan A3 |
 | volunteer-a@example.test, volunteer-b@example.test, volunteer-c@example.test | Profil lengkap menuju `/volunteer/aktivitas` |
 | volunteer-suspended@example.test | Akun nonaktif, login ditolak |
 | volunteer-unverified@example.test | Verifikasi email dahulu |
@@ -190,7 +190,66 @@ Availability demo: 1 November 2026 pukul 09.00-12.00 WIB (02.00-05.00 UTC). Kota
 
 `MAIL_MAILER=log` pada `.env.example` menulis email verifikasi/reset ke `storage/logs/laravel.log`, **tidak mengirim ke inbox**. Buka tautan verifikasi/reset lokal dari log tanpa membagikan token. Untuk pengiriman nyata gunakan SMTP uji dan konfigurasi MAIL_HOST/PORT/USERNAME/PASSWORD/FROM_ADDRESS di `.env`. APP_URL harus sesuai alamat yang dibuka karena verifikasi memakai signed URL.
 
-Registrasi publik mengirim notifikasi verifikasi, login/registrasi meregenerasi sesi, logout POST ber-CSRF menginvalidasi sesi dan token. Akun demo terverifikasi dapat langsung login; akun unverified dipakai untuk menguji alur email. Password reset memakai token framework, masa berlaku 60 menit, throttle broker 60 detik, serta throttle route. Login gagal dibatasi lima percobaan per email/IP. Pengiriman SMTP nyata belum diuji.
+Untuk memakai SMTP, isi konfigurasi berikut di `.env` lokal sesuai penyedia email.
+Nilai di bawah hanya contoh; kredensial asli tidak boleh masuk Git atau dokumentasi.
+
+```dotenv
+MAIL_MAILER=smtp
+MAIL_SCHEME=smtp
+MAIL_HOST=smtp.example.test
+MAIL_PORT=587
+MAIL_USERNAME=isi_username_smtp
+MAIL_PASSWORD=isi_password_smtp
+MAIL_FROM_ADDRESS=pengirim@example.test
+MAIL_FROM_NAME="SkillMatch"
+```
+
+Host, port dan scheme harus sesuai layanan yang digunakan. `MAIL_URL`, jika diisi,
+dapat mengambil alih pengaturan SMTP terpisah; jangan membiarkan URL lama yang
+bertentangan. Setelah perubahan `.env`, jalankan `php artisan config:clear` dan
+restart proses aplikasi yang berjalan lama. Gunakan satu alamat browser yang
+sesuai `APP_URL`. Pengiriman email autentikasi saat ini sinkron, tanpa queue worker.
+Coba **Kirim ulang tautan verifikasi** dan periksa inbox/spam untuk membuktikan
+pengiriman; sekadar konfigurasi terbaca belum membuktikan SMTP dapat mengirim.
+
+Registrasi Volunteer mengirim notifikasi verifikasi dan menuju `/verify-email`. Login Volunteer lama yang belum terverifikasi juga menuju halaman ini; gunakan **Kirim ulang tautan verifikasi** tanpa mendaftar ulang. Profil tetap dapat dilengkapi sambil menunggu. Membuat/mengirim lamaran serta mengunggah/menghapus dokumen lamaran memerlukan verifikasi. Setelah membuka tautan bertanda tangan, kembali ke tujuan lokal yang diizinkan atau Aktivitas Volunteer, lalu pilih posisi kembali; POST lamaran tidak dijalankan otomatis. Kegagalan SMTP saat mengirim verifikasi menampilkan pesan dan pilihan kirim ulang, tanpa menghapus akun atau menandainya terverifikasi.
+
+Organizer tetap mengikuti onboarding profil dan persetujuan organisasi existing, tanpa tambahan gate email di seleksi/pelaksanaan A3. Login Admin tetap menuju panel. Login/registrasi meregenerasi sesi; logout POST ber-CSRF menginvalidasi sesi dan token. Password reset memakai token framework, masa berlaku 60 menit, throttle broker 60 detik, serta throttle route. Login gagal dibatasi lima percobaan per email/IP. Pengiriman SMTP nyata belum diuji.
+
+## Penyimpanan dan preview KTP
+
+Upload memakai PHP dan Laravel UploadedFile/Storage. Dengan `FILESYSTEM_DISK=local`,
+berkas KTP disimpan di `storage/app/private/organizers/{user_id}/documents`;
+metadata tersimpan di tabel `organizer_documents`. Pemilik dan Admin melihat
+JPG/PNG/PDF melalui endpoint preview yang memeriksa akses. Tidak perlu Dompdf,
+layanan cloud atau `storage:link` untuk alur ini. Dompdf adalah pembuat PDF,
+bukan penerima upload. Pertahankan disk privat; jangan membuka KTP lewat URL publik.
+
+Sebelum menyimpan ke Laravel, PHP membutuhkan folder sementara yang sudah ada dan
+bisa ditulis oleh proses server. Pesan **Folder sementara upload pada server tidak
+tersedia** menunjukkan masalah pada tahap ini. Untuk Windows, contoh setup lokal:
+
+```powershell
+New-Item -ItemType Directory -Path 'D:\php-upload-temp' -Force
+php --ini
+```
+
+Pada `php.ini` yang dipakai server, aktifkan pengaturan berikut (tanpa `;` di awal):
+
+```ini
+file_uploads=On
+upload_tmp_dir="D:/php-upload-temp"
+upload_max_filesize=8M
+post_max_size=10M
+```
+
+Sesuaikan lokasi folder dengan mesin masing-masing dan beri izin tulis kepada
+akun yang menjalankan PHP. Mengisi path di `php.ini` tidak membuat folder tersebut.
+Restart `php artisan serve` atau layanan PHP Herd sesudah mengubah konfigurasi.
+`php --ini` menunjukkan konfigurasi terminal; pastikan proses web memakai PHP/ini
+yang sama. Batas aplikasi tetap 5 MB; batas PHP di atas memberi ruang agar pesan
+validasi aplikasi dapat ditampilkan. `php.ini` dan folder sementara adalah setup
+lokal, tidak ikut `git pull`. Tidak perlu migration untuk pengaturan folder ini.
 
 ## Tes MySQL terpisah
 
@@ -233,6 +292,7 @@ Backup database dan berkas terlebih dahulu, periksa database tujuan, lalu ikuti 
 - **APP_KEY kosong:** jalankan `key:generate` hanya untuk instalasi baru. Jangan mengganti key instalasi existing.
 - **Vite manifest hilang:** jalankan `npm ci --ignore-scripts` lalu `npm run build`. Hapus `public/hot` hanya jika itu penanda dev server milik Anda yang sudah berhenti.
 - **Tautan verifikasi gagal:** periksa APP_URL, waktu server dan akun yang sedang login. Mailer log tidak mengirim email ke inbox.
+- **KTP gagal diunggah:** baca pesan spesifik pada form dan entri `organizer.ktp.upload_failed` di log (kode error PHP saja, tanpa isi/nama KTP). Kegagalan menerima file sementara berbeda dari kegagalan menyimpan file. Periksa konfigurasi PHP proses server, `upload_tmp_dir`/folder sementara sistem, izin tulis dan ruang disk. KTP existing memakai Laravel Storage disk `local` di `storage/app/private`; metadata di `organizer_documents` dan preview melalui endpoint terotorisasi. Pertahankan `FILESYSTEM_DISK=local` untuk alur existing ini; `storage:link` tidak diperlukan untuk preview KTP. Jangan memindahkan dokumen identitas ke disk publik.
 - **Trigger audit ditolak saat migration:** akun migration memerlukan izin TRIGGER. Jangan menghapus proteksi audit untuk mengatasi kesalahan izin.
 - **Akun nonaktif tidak bisa login:** periksa status dan alasan penonaktifan; jangan mengaktifkan semua akun secara massal.
 

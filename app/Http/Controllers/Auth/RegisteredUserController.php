@@ -10,8 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
-use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class RegisteredUserController extends Controller
 {
@@ -55,6 +55,13 @@ class RegisteredUserController extends Controller
             return redirect()->route('organizer.profile.edit');
         }
 
-        return redirect('/volunteer/aktivitas');
+        try {
+            event(new Registered($user));
+        } catch (TransportExceptionInterface) {
+            // The account is already created: keep the session and allow a retry.
+            return redirect()->route('verification.notice')->with('status', 'verification-send-failed');
+        }
+
+        return redirect()->route('verification.notice')->with('status', 'verification-link-sent');
     }
 }

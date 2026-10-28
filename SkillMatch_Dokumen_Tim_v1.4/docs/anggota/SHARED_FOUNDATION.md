@@ -1,5 +1,14 @@
 # Shared foundation — dikerjakan kamu sebelum A2
 
+Status lintas modul terkini: [daftar pekerjaan tersisa](../../../docs/DEVELOPMENT.md#daftar-pekerjaan-tersisa--pembaruan-28-oktober-2026).
+Pisahkan pekerjaan belum dibuat, belum diuji, dan selesai lokal yang belum diintegrasikan.
+
+Batas perubahan hasil kerja: ikuti [persetujuan pada AGENTS.md](../../../AGENTS.md#persetujuan-perubahan-hasil-kerja-dan-tampilan).
+Pertahankan fitur dan tampilan yang sudah dibangun. Permintaan pengguna memberi
+izin dalam lingkupnya; penggantian, penghapusan atau redesign di luar lingkup
+memerlukan usulan sebelum-sesudah dan persetujuan terlebih dahulu. Brief ini
+bukan izin untuk menimpa hasil anggota lain atau mengembalikan baseline lama.
+
 Versi 1.4.2 • 4 Oktober 2026 • Kode tugas: SF • Branch: `feature/shared-foundation`.
 
 Baca [PRD](../../PRD_SkillMatch_Tim.md), [kontrak](../KONTRAK_INTEGRASI.md), [design](../../design.md) dan [baseline](../BASELINE_DAN_TOOLS.md). SF merupakan pengalihan pekerjaan fondasi A1 kepada kamu; bukan anggota kelima dan bukan penambahan seluruh modul A1 ke A4.

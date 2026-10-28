@@ -1,5 +1,24 @@
 # UAT dan kriteria selesai lintas anggota
 
+Pemeriksaan pelestarian hasil kerja pada setiap perubahan: catat lingkup yang
+disetujui, branch/commit dasar dan halaman/alur terdampak. Bandingkan hasil dengan
+implementasi sebelum perubahan; pastikan fitur, navigasi dan tampilan di luar
+lingkup tetap tersedia, termasuk halaman konsumen komponen bersama. Untuk
+perubahan visual, catat pemeriksaan desktop/mobile serta interaksi yang relevan;
+build sukses tidak otomatis meluluskan pemeriksaan visual. Penggantian di luar
+lingkup harus memperoleh persetujuan terlebih dahulu sesuai AGENTS.md. Status
+review, tes dan persetujuan dicatat terpisah, tidak dianggap selesai lewat dokumen ini.
+
+Regresi alur email Volunteer (28 Oktober 2026, UAT-01/02/09/34): daftar Volunteer
+mengirim tautan dan menuju verifikasi; akun lama dapat login dan kirim ulang tanpa
+mendaftar lagi. Profil tetap dapat diisi. Melamar/submit/upload/hapus dokumen sebelum
+verified mengarah ke verifikasi tanpa perubahan domain. Tautan valid membuka akses;
+ID/hash palsu, expired, lintas akun dan akun nonaktif ditolak. Intended eksternal
+atau lintas role dibuang; POST tidak dijalankan ulang setelah verifikasi.
+Uji gagal SMTP lalu retry tanpa kehilangan akun, throttle kirim ulang, serta
+Organizer/Admin tetap mengikuti alur existing. Mailer log diuji terpisah dari
+pengiriman nyata SMTP/inbox. Bukti otomatis dan batas manual ada di DEVELOPMENT.
+
 Regresi auth seleksi A3: Organizer approved/akun aktif dengan email belum verified
 harus dapat melakukan seleksi/pelaksanaan miliknya sesuai alur Organizer existing,
 tanpa diarahkan melalui verification.notice ke dashboard. Organizer pending/nonaktif

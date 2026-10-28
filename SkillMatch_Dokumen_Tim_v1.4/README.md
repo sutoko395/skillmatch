@@ -26,6 +26,15 @@ Keputusan pengguna terbaru → PRD v1.4.2 ini → kontrak integrasi → design.m
 
 ## Menjaga hasil implementasi saat memakai dokumen
 
+Keputusan pengguna 28 Oktober 2026: penggantian hasil kerja, termasuk layout,
+navigasi, komponen dan tampilan yang sudah dibangun, membutuhkan persetujuan
+pengguna yang mencakup perubahan tersebut. Permintaan perubahan yang eksplisit
+sudah menjadi persetujuan dalam lingkupnya; tidak perlu konfirmasi ulang.
+Di luar lingkup itu, ajukan alasan, halaman/file terdampak dan perbandingan
+sebelum-sesudah terlebih dahulu. Brief lama, hasil build, dan penyelesaian konflik
+merge tidak menjadi izin untuk membuang hasil baru. Prosedur lengkap berlaku bagi
+SF/A1/A2/A3/A4 di [AGENTS.md](../AGENTS.md#persetujuan-perubahan-hasil-kerja-dan-tampilan).
+
 Dokumen ini mencatat baseline ZIP dan target tim pada tanggal penulisannya. Kode, migration, tes, dan handoff pada branch yang sedang dikerjakan dapat berisi hasil lebih baru. Sebelum mengubah fitur, periksa `git status`, branch dan commit dasar, `git log`/diff pada berkas terkait, lalu cocokkan route, service, view, migration, tes, serta handoff modul. Bedakan temuan baseline, target yang belum dibuat, fitur yang sudah berjalan, dan bagian yang belum diuji.
 
 Jika ketentuan lama bertentangan dengan hasil baru yang telah disepakati, pertahankan hasil tersebut dan selaraskan PRD, kontrak, desain, brief, serta UAT yang terdampak. Jika perubahan produk baru memang harus mengganti hasil lama, tulis keputusan dan dampaknya sebelum menghapus kode; jaga migration/data historis dan perbarui tes. Konflik yang belum punya keputusan tidak memberi izin untuk menghapus kontribusi anggota lain. Saat merge, tinjau konflik pada file bersama per bagian, bukan mengganti seluruh file dengan versi satu branch. [AGENTS.md](../AGENTS.md) mengatur langkah kerja dan pelaporan.

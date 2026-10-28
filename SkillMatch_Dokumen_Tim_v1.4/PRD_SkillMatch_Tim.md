@@ -1,5 +1,20 @@
 # PRD SkillMatch Volunteer — acuan tim empat anggota
 
+Keputusan pelestarian hasil kerja, 28 Oktober 2026: perubahan fitur/alur/tampilan
+yang sudah dibangun harus tercakup dalam persetujuan pengguna. Instruksi terbaru
+yang eksplisit cukup untuk lingkupnya; penggantian di luar lingkup memerlukan
+usulan konkret dan persetujuan sebelum diterapkan. Perbedaan terhadap dokumen lama
+tidak memberi izin menghapus kontribusi existing. Prosedur di AGENTS.md berlaku
+untuk seluruh brief; perubahan kode dan dokumen terkait harus selaras.
+
+Perbaikan alur verifikasi Volunteer, 28 Oktober 2026: registrasi mengirim tautan
+verifikasi; akun baru dan login akun lama yang belum verified menuju `/verify-email`
+dengan pilihan kirim ulang. Profil tetap dapat diisi, tetapi pembuatan/pengiriman
+lamaran dan perubahan dokumen lamaran menunggu verifikasi. Setelah tautan sah,
+tujuan lokal sesuai role divalidasi ulang; aksi POST tidak diulang otomatis.
+Kegagalan pengiriman tidak menghapus akun atau memverifikasi email otomatis.
+Pengecualian auth Organizer di bawah dan login Admin tetap berlaku.
+
 Penegasan kompatibilitas auth A3, 28 Oktober 2026: seleksi dan pelaksanaan Organizer
 mengikuti alur auth Organizer existing (9dc9886), yaitu akun aktif dan organisasi
 disetujui Admin, tanpa menambah kewajiban email verified pada modul A3. Semua pemeriksaan

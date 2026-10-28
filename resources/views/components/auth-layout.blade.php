@@ -2,6 +2,7 @@
     'title',
     'intro' => null,
     'register' => false,
+    'scrollable' => false,
 ])
 
 <!DOCTYPE html>
@@ -97,8 +98,12 @@
                 </div>
             </header>
 
-            <div class="flex min-h-0 flex-1 items-center justify-center overflow-hidden px-5 pb-5 sm:px-8 lg:px-12">
-                <div class="w-full max-w-2xl">
+            <div @class([
+                'flex min-h-0 flex-1 justify-center px-5 pb-5 sm:px-8 lg:px-12',
+                'items-start overflow-y-auto' => $scrollable,
+                'items-center overflow-hidden' => ! $scrollable,
+            ])>
+                <div @class(['w-full max-w-2xl', 'my-auto' => $scrollable])>
                     <div class="mb-5">
                         <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-600">
                             {{ $register ? 'MULAI BERSAMA SKILLMATCH' : 'SELAMAT DATANG KEMBALI' }}
