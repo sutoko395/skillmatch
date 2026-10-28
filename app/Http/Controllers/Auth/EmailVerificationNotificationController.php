@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\LoginDestination;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class EmailVerificationNotificationController extends Controller
 {
@@ -21,8 +22,12 @@ class EmailVerificationNotificationController extends Controller
             return redirect(app(LoginDestination::class)->resolve($request));
         }
 
-        $user->sendEmailVerificationNotification();
+        try {
+            $user->sendEmailVerificationNotification();
+        } catch (TransportExceptionInterface) {
+            return redirect()->route('verification.notice')->with('status', 'verification-send-failed');
+        }
 
-        return back()->with('status', 'verification-link-sent');
+        return redirect()->route('verification.notice')->with('status', 'verification-link-sent');
     }
 }

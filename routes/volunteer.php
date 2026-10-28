@@ -36,7 +36,7 @@ Route::middleware([
         Route::post(
             '/positions/{position}/applications',
             [VolunteerApplicationController::class, 'store']
-        )->name('applications.store');
+        )->middleware('verified')->name('applications.store');
 
         Route::get(
             '/applications',
@@ -51,17 +51,17 @@ Route::middleware([
         Route::post(
             '/applications/{application}/submit',
             [VolunteerApplicationController::class, 'submit']
-        )->name('applications.submit');
+        )->middleware('verified')->name('applications.submit');
 
         Route::post(
             '/applications/{application}/documents',
             [VolunteerDocumentController::class, 'store']
-        )->middleware('throttle:20,1')->name('documents.store');
+        )->middleware(['verified', 'throttle:20,1'])->name('documents.store');
 
         Route::delete(
             '/documents/{document}',
             [VolunteerDocumentController::class, 'destroy']
-        )->name('documents.destroy');
+        )->middleware('verified')->name('documents.destroy');
     });
 
 require __DIR__.'/volunteer-assessments.php';

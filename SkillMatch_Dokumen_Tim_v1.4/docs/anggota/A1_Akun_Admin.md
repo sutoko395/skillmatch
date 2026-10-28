@@ -1,5 +1,20 @@
 # Brief A1 — melanjutkan fondasi dan fitur admin
 
+Status lintas modul terkini: [daftar pekerjaan tersisa](../../../docs/DEVELOPMENT.md#daftar-pekerjaan-tersisa--pembaruan-28-oktober-2026).
+Pisahkan pekerjaan belum dibuat, belum diuji, dan selesai lokal yang belum diintegrasikan.
+
+Batas perubahan hasil kerja: ikuti [persetujuan pada AGENTS.md](../../../AGENTS.md#persetujuan-perubahan-hasil-kerja-dan-tampilan).
+Pertahankan fitur dan tampilan yang sudah dibangun. Permintaan pengguna memberi
+izin dalam lingkupnya; penggantian, penghapusan atau redesign di luar lingkup
+memerlukan usulan sebelum-sesudah dan persetujuan terlebih dahulu. Brief ini
+bukan izin untuk menimpa hasil anggota lain atau mengembalikan baseline lama.
+
+Alur auth Volunteer diperbaiki 28 Oktober 2026: registrasi mengirim tautan dan
+registrasi/login unverified menuju verifikasi dengan kirim ulang; profil tetap
+dapat diisi, tindakan lamaran menunggu verified. Jangan menghapus pengiriman atau
+redirect ini ketika meneruskan auth. Pengecualian Organizer/Admin existing tetap.
+Rincian setup mailer log/SMTP dan bukti ada di README serta DEVELOPMENT aplikasi.
+
 Integrasi A3 28 Oktober 2026: DocumentStorageService.validateOrganizationUpload dan
 downloadOrganization serta OrganizerDocumentPolicy tersedia untuk A1. Validator
 mengembalikan metadata/checksum tanpa mengklaim ready; A1 tetap menulis schema

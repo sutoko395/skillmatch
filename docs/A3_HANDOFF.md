@@ -1,5 +1,11 @@
 # Serah-terima A3 — seleksi dan pelaksanaan, 28 Oktober 2026
 
+Perbaikan integrasi auth Volunteer setelah merge A3: registrasi/pengiriman ulang
+email dan redirect verifikasi disambungkan kembali dengan gate ApplicationService.
+Browser mendapat alur verifikasi sebelum store/submit/upload/hapus dokumen,
+bukan pesan akun tidak aktif. Pengecualian Organizer di bawah tetap berlaku.
+Bukti terbaru dan batas SMTP/browser dicatat pada DEVELOPMENT aplikasi.
+
 Penyesuaian pesan melamar ulang 28 Oktober 2026: ApplicationService.storeDraft
 menampilkan “Lamaranmu sudah ditarik dan tidak dapat diajukan ulang pada event ini.”
 untuk status withdrawn. Status lain tetap memakai pesan lamaran existing. Ini hanya

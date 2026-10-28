@@ -19,7 +19,7 @@ class LoginDestination
 
             'admin' => '/admin/dashboard',
 
-            'volunteer' => '/volunteer/aktivitas',
+            'volunteer' => $user->hasVerifiedEmail() ? '/volunteer/aktivitas' : '/verify-email',
 
             default => '/login',
         };
@@ -34,6 +34,11 @@ class LoginDestination
         }
 
         $fallback = $this->defaultFor($user);
+
+        // Validate/consume the intended destination only after verification.
+        if ($user->role === 'volunteer' && ! $user->hasVerifiedEmail()) {
+            return $fallback;
+        }
 
         $intended = $request->session()->pull('url.intended');
 

@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
@@ -43,6 +44,27 @@ public function update(Request $request): RedirectResponse
     Gate::authorize('updateProfile', $user);
 
     $profileExists = OrganizerProfile::where('user_id', $user->id)->exists();
+
+    $ktp = $request->file('ktp');
+    if ($ktp && ! $ktp->isValid()) {
+        $error = $ktp->getError();
+        // Record only transport diagnostics, never the identity document or its name.
+        Log::warning('organizer.ktp.upload_failed', [
+            'php_upload_error' => $error,
+            'upload_max_filesize' => ini_get('upload_max_filesize'),
+            'post_max_size' => ini_get('post_max_size'),
+        ]);
+        throw ValidationException::withMessages([
+            'ktp' => match ($error) {
+                UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE => 'KTP ditolak oleh batas upload PHP server ('.ini_get('upload_max_filesize').'). Pilih berkas lebih kecil atau hubungi pengelola.',
+                UPLOAD_ERR_PARTIAL => 'Upload KTP terputus sebelum seluruh berkas diterima. Pilih ulang berkas dan coba kembali.',
+                UPLOAD_ERR_NO_TMP_DIR => 'Folder sementara upload pada server tidak tersedia. Hubungi pengelola untuk memperbaiki konfigurasi PHP.',
+                UPLOAD_ERR_CANT_WRITE => 'Server gagal menulis berkas sementara KTP. Hubungi pengelola untuk memeriksa izin folder dan ruang penyimpanan.',
+                UPLOAD_ERR_EXTENSION => 'Upload KTP dihentikan oleh ekstensi PHP pada server. Hubungi pengelola.',
+                default => 'Server belum menerima berkas KTP yang valid. Pilih ulang berkas dan coba kembali.',
+            },
+        ]);
+    }
 
     $validated = $request->validate([
         'organization_name' => ['required', 'string', 'max:255'],

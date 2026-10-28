@@ -1,5 +1,21 @@
 # Brief A3 — lamaran, dokumen, seleksi, pelaksanaan
 
+Status lintas modul terkini: [daftar pekerjaan tersisa](../../../docs/DEVELOPMENT.md#daftar-pekerjaan-tersisa--pembaruan-28-oktober-2026).
+Pisahkan pekerjaan belum dibuat, belum diuji, dan selesai lokal yang belum diintegrasikan.
+
+Batas perubahan hasil kerja: ikuti [persetujuan pada AGENTS.md](../../../AGENTS.md#persetujuan-perubahan-hasil-kerja-dan-tampilan).
+Pertahankan fitur dan tampilan yang sudah dibangun. Permintaan pengguna memberi
+izin dalam lingkupnya; penggantian, penghapusan atau redesign di luar lingkup
+memerlukan usulan sebelum-sesudah dan persetujuan terlebih dahulu. Brief ini
+bukan izin untuk menimpa hasil anggota lain atau mengembalikan baseline lama.
+
+Integrasi auth Volunteer 28 Oktober 2026: middleware verified dipasang pada
+store/submit lamaran serta upload/hapus dokumen agar browser menuju verifikasi,
+sementara ApplicationService tetap memeriksa email dan status akun. Registrasi
+mengirim tautan, akun lama dapat kirim ulang, profil tetap dapat diisi. Jangan
+menghapus gate service sebagai solusi 403 atau menambah gate email Organizer A3.
+Rincian alur dan pengujian di DEVELOPMENT aplikasi.
+
 ## Status implementasi 28 Oktober 2026
 
 Tahap 1–7 sudah memiliki implementasi di feature/a3-applications-attendance dari

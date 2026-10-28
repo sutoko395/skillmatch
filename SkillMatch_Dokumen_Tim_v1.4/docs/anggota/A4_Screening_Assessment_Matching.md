@@ -1,5 +1,14 @@
 # Brief A4 — screening, assessment, matching, aktivitas
 
+Status lintas modul terkini: [daftar pekerjaan tersisa](../../../docs/DEVELOPMENT.md#daftar-pekerjaan-tersisa--pembaruan-28-oktober-2026).
+Pisahkan pekerjaan belum dibuat, belum diuji, dan selesai lokal yang belum diintegrasikan.
+
+Batas perubahan hasil kerja: ikuti [persetujuan pada AGENTS.md](../../../AGENTS.md#persetujuan-perubahan-hasil-kerja-dan-tampilan).
+Pertahankan fitur dan tampilan yang sudah dibangun. Permintaan pengguna memberi
+izin dalam lingkupnya; penggantian, penghapusan atau redesign di luar lingkup
+memerlukan usulan sebelum-sesudah dan persetujuan terlebih dahulu. Brief ini
+bukan izin untuk menimpa hasil anggota lain atau mengembalikan baseline lama.
+
 Integrasi A3 28 Oktober 2026: AssessmentService.cancelLocked(application,actor) menjadi
 adapter transaksi penarikan/close-selection/cancellation. Caller memegang event/application;
 adapter hanya lock attempt, tidak mengambil Volunteer lagi dan tidak menghasilkan skor.

@@ -1,5 +1,26 @@
 # Design specification SkillMatch
 
+## Persetujuan perubahan tampilan — 28 Oktober 2026
+
+Pertahankan tampilan existing yang sudah dibangun, termasuk layout/sidebar/navbar,
+konten berguna, komponen, warna, tipografi dan perilaku interaksi. Spesifikasi lama
+bukan izin untuk menghapusnya atau mengganti dengan template/shell. Perubahan
+visual mengikuti lingkup permintaan pengguna; redesign atau perubahan di luar
+lingkup itu harus diajukan dengan alasan dan perbandingan sebelum-sesudah untuk
+persetujuan terlebih dahulu. Persetujuan yang sudah jelas tidak diminta ulang.
+Periksa halaman lain yang memakai komponen bersama. Catat hasil review visual
+secara terpisah dari build; build sukses tidak membuktikan tampilan tetap sesuai.
+
+## Verifikasi email Volunteer — 28 Oktober 2026
+
+Halaman verifikasi memakai auth-layout existing, teks Indonesia, alamat email
+escaped, tombol Kirim ulang dengan keadaan mengirim, status berhasil/gagal, tautan
+melengkapi profil dan logout POST. Sidebar Volunteer yang belum verified memberi
+pengingat dan tautan verifikasi; detail event menawarkan "Verifikasi email untuk
+melamar" sebelum menampilkan form lamaran. Akun aktif tidak disebut nonaktif hanya
+karena email belum verified. Status pengiriman tidak berarti email sudah verified
+atau sudah diterima di inbox; pengembangan dengan mailer log dijelaskan di README.
+
 Menu Riwayat Partisipasi Volunteer memakai ikon jam outline 24×24 dengan ukuran
 h-5 w-5 dan stroke 2 seperti menu existing; state aktif/hover mengikuti menu lain,
 dengan aria-current pada halaman riwayat (penyesuaian 28 Oktober 2026).

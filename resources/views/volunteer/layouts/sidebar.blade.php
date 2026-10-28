@@ -372,6 +372,13 @@
         <main class="flex-1 px-4 pb-8 pt-24 sm:px-6 lg:px-8">
             @include('components.flash')
 
+            @if(!auth()->user()->hasVerifiedEmail())
+                <div role="status" class="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                    Akun Anda aktif. Verifikasi email diperlukan sebelum mulai melamar.
+                    <a href="{{ route('verification.notice') }}" class="font-semibold underline">Buka verifikasi email</a>
+                </div>
+            @endif
+
             @yield('content')
         </main>
 

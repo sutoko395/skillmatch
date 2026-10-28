@@ -1,5 +1,130 @@
 # Panduan pengembangan tim SkillMatch
 
+## Daftar pekerjaan tersisa — pembaruan 28 Oktober 2026
+
+Daftar ini merangkum temuan yang sudah diperiksa pada branch
+`fix/volunteer-email-verification-flow` dari `89bb3e8` dan dependensi pada handoff.
+Ini bukan audit kelengkapan seluruh tugas A1–A4; PIC perlu mencocokkan checklist
+modul dengan kode terbaru sebelum menyatakan selesai. Catatan baseline/tahap lama
+di bawah tidak mengubah implementasi yang sudah ada menjadi tugas membuat ulang.
+
+| Pekerjaan | PIC | Status / langkah tersisa |
+|---|---|---|
+| Alur email Volunteer dan pesan error upload KTP | SF/A1, integrasi A3 | Selesai lokal dengan tes terarah; belum commit/push/PR/merge dan belum review tim. |
+| Penanganan kegagalan SMTP pada reset password | A1 | Belum diselaraskan dengan penanganan gagal kirim pada verifikasi; implementasikan pesan gagal/retry dan tes tanpa membocorkan kredensial. |
+| Pengiriman email nyata | A1 + pemilik konfigurasi lokal | SMTP terbaca dan mailer terinisialisasi; autentikasi SMTP, penerimaan inbox, dan klik tautan dari email nyata belum diuji. |
+| Upload/preview KTP pada browser pengguna | A1 + pengguna lokal | Folder sementara PHP sudah dibuat dan uji tulis berhasil; tes upload/preview sintetis lulus. Upload ulang berkas pengguna dan konfirmasi preview masih menunggu. |
+| Integrasi utilitas dokumen organisasi A3 ke A1 | A1 dengan A3 | Validator/download/Policy A3 tersedia; endpoint profil/preview existing masih memakai Storage langsung. Integrasi metadata, audit dan transisi berkas lama perlu dikerjakan sesuai kontrak, tanpa mengganti UI di luar persetujuan. |
+| NotificationService, outbox, delivery/deduplikasi dan ActivityReadService | A4; hook oleh masing-masing PIC | Layanan belum tersedia pada checkout ini; hook/replay A2/A3 bukan bukti delivery/aktivitas lengkap. Screening dan matching yang sudah ada tidak dibuat ulang. |
+| Backup/restore penuh dan kebijakan retensi publik | A1/A3 + reviewer/operator | Restore MySQL beserta file dan purge ledger dengan reviewer lain belum dibuktikan penuh; angka retensi demo belum menjadi kebijakan publik. |
+| Review visual dan penerimaan alur lengkap | PIC terkait + reviewer tim | Review browser/mobile perubahan auth, perjalanan pengguna lintas modul, performa dan seluruh UAT belum dinyatakan lulus. Gunakan bukti per tahap pada handoff, bukan hanya hasil build. |
+| Sisa checklist admin/event dan handoff modul | A1/A2 serta PIC masing-masing | Belum diaudit ulang secara menyeluruh pada perbaikan auth/upload ini. Status historis atau keberadaan berkas tidak cukup untuk menyatakan semua tugas selesai maupun belum dibuat. |
+
+Setiap penyelesaian memperbarui status dan bukti pada tabel serta handoff modul.
+Bedakan implementasi lokal, pengujian, integrasi, review dan publikasi Git;
+persetujuan perubahan tampilan tetap mengikuti bagian berikut.
+
+## Batas perubahan dan persetujuan pengguna — 28 Oktober 2026
+
+Seluruh PIC mengikuti [AGENTS.md](../AGENTS.md#persetujuan-perubahan-hasil-kerja-dan-tampilan):
+fitur, alur dan tampilan yang sudah dibangun dipertahankan. Permintaan pengguna
+yang jelas memberi izin untuk lingkupnya; penggantian atau redesign di luar
+lingkup diajukan dengan alasan, file/halaman terdampak dan perbandingan
+sebelum-sesudah, lalu menunggu persetujuan sebelum diterapkan. Jangan meminta
+ulang izin yang sudah ada. Catat dasar commit/diff, dampak komponen bersama,
+tes dan review visual secara terpisah. Build bukan persetujuan tampilan dan
+catatan baseline bukan perintah menghapus hasil baru. PRD, kontrak, desain,
+baseline, UAT dan kelima brief SF/A1/A2/A3/A4 merujuk aturan yang sama.
+
+## Diagnosis upload KTP kecil — 28 Oktober 2026
+
+Pengguna melaporkan KTP 43 KB dari folder dokumen biasa tetap menghasilkan pesan
+"failed to upload". Batas ukuran bukan penjelasan memadai untuk kasus tersebut.
+Pemeriksaan PHP terminal: file_uploads aktif, limit 2M/8M, temp sistem tersedia
+dan dapat dibuat berkas sementara. Laravel Storage default local menunjuk
+storage/app/private; probe berkas sintetis berhasil write/read lalu dihapus.
+Form sudah multipart; controller menyimpan file dan metadata organizer_documents,
+preview owner/Admin men-stream file lewat route terotorisasi. Ini storage lokal,
+bukan cloud; tidak memerlukan symlink publik. Integrasi penuh utilitas dokumen A3
+ke schema/endpoint A1 tetap pekerjaan terpisah, tidak dinyatakan selesai di sini.
+
+OrganizerProfileController kini memeriksa error upload PHP sebelum validasi umum
+dan memberi pesan berbeda untuk transfer parsial, temp hilang, gagal tulis,
+ekstensi PHP dan batas PHP. Log organizer.ktp.upload_failed hanya menyimpan kode
+error dan limit PHP; tidak menyimpan isi/nama/path KTP atau kredensial.
+Tidak mengubah disk, schema, route, otorisasi, data pengguna atau php.ini.
+
+OrganizerKtpUploadTest: **5 tes / 42 assertion lulus** di MySQL skillmatch_testing
+dengan disk tes terisolasi. Upload PDF sintetis sekitar 300 KB tersimpan dan
+preview owner/Admin sama byte-nya; non-owner/Volunteer/guest dan URL publik
+ditolak. Empat error transport ditolak sebelum profil/metadata/file ditulis.
+Tes memakai UploadedFile fixture, bukan bukti unggahan browser pengguna berhasil.
+Pint file tes, sintaks controller dan diff check lulus. Frontend tidak berubah
+setelah build sukses pada perbaikan auth di bawah.
+
+Tindak lanjut diagnosis: pengguna mendapat pesan folder sementara tidak tersedia
+(UPLOAD_ERR_NO_TMP_DIR). Setelah pengguna mengatur upload_tmp_dir menjadi
+D:/php-upload-temp, pemeriksaan PHP menunjukkan path itu terbaca tetapi folder
+belum ada. Folder dibuat dengan izin pengguna, uji tulis berhasil dan probe
+dihapus. Ini konfigurasi mesin lokal di luar Git; anggota lain harus menyiapkan
+folder masing-masing. php.ini diedit pengguna, bukan disalin ke repository.
+Upload ulang dan preview berkas pengguna lewat browser belum dikonfirmasi;
+keberhasilan probe tidak otomatis berarti alur browser sudah lulus.
+Branch tetap fix/volunteer-email-verification-flow, belum commit/push/merge.
+
+## Perbaikan alur email Volunteer — 28 Oktober 2026
+
+Branch `fix/volunteer-email-verification-flow`, dasar `89bb3e8` (main setelah PR #21).
+Diagnosis: registrasi tidak lagi mengirim event Registered, tetapi commit `d618abc`
+memulihkan hasVerifiedEmail pada ApplicationService. Akun baru aktif/unverified
+menemui pesan 403 akun aktif, tanpa onboarding email yang konsisten.
+
+Registrasi Volunteer kini mengirim event Registered dan menuju verification.notice;
+login akun lama unverified menuju halaman yang sama. Intended ditahan sampai
+verifikasi lalu diperiksa oleh resolver lokal/role existing. Profil tetap terbuka,
+sidebar memberi pengingat, detail event memberi CTA verifikasi melalui events.join
+agar kembali ke event. POST lamaran tidak diulang otomatis. Middleware verified
+pada store/submit lamaran dan upload/hapus dokumen memberikan redirect browser;
+service tetap memeriksa ulang akun/email di bawah lock dengan pesan yang sesuai.
+Transport email gagal menyisakan akun/sesi dan memberi opsi kirim ulang. Halaman
+verifikasi memakai auth-layout dengan area gulir opsional agar konten panjang
+dapat dijangkau. Pengecualian Organizer A3 dan default Admin tetap dipertahankan.
+
+Tanpa schema, migration, dependency, guard atau nama route baru. Sebelum tes,
+preflight memastikan MySQL `skillmatch_testing`, APP_ENV testing, config uncached,
+tanpa DB URL dan berbeda dari `db_skillmatch`; migration pending diterapkan hanya
+ke database tes dengan `php artisan migrate --env=testing`. Tidak mereset database
+atau mengubah akun/data/config database kerja. Akun yang dilaporkan tetap harus
+memverifikasi email lewat tautan miliknya, tanpa update verified massal/manual.
+
+Bukti otomatis:
+- RegistrationTest, EmailVerificationTest, AuthenticationTest,
+  VolunteerVerificationFlowTest, A3ApplicationTest dan A3ApplicationDocumentsTest:
+  **43 tes / 281 assertion lulus** pada MySQL khusus tes.
+- Dua tes `A3ExecutionTest --filter=verified_email`: **2 tes / 11 assertion lulus**;
+  Organizer approved tanpa verified tetap dapat seleksi, pending/inactive ditolak.
+- Pint pada file PHP terkait, `php artisan view:cache`, `git diff --check` dan
+  `npm run build` berhasil. Build sandbox awal ditolak spawn EPERM; berhasil setelah
+  izin eksekusi di luar sandbox. Tidak mengubah manifest/lockfile.
+
+Tes mencakup notifikasi registrasi/kirim ulang (fake), gagal transport/retry,
+throttle, akun aktif/nonaktif, guest/lintas role/pemilik, intended eksternal/lintas
+role, signed link valid/expired/hash/id, tanpa replay POST, draft setelah verified
+dan replay tanpa duplikasi, serta blokir submit/dokumen sebelum verified. Fixture
+assessment memakai kontrak tes existing, bukan bukti integrasi A4 lengkap.
+SMTP/inbox nyata, review visual browser/mobile dan UAT penuh belum diuji.
+Saat tes awal, mailer lokal log menulis tautan ke storage/logs/laravel.log.
+Pengguna kemudian mengganti .env ke SMTP: pemeriksaan runtime menunjukkan mailer
+smtp, port 587, kredensial/pengirim terisi, config uncached dan inisialisasi mailer
+berhasil. Tidak mencatat nilai kredensial. Koneksi/autentikasi SMTP dan penerimaan
+inbox belum diuji; inisialisasi mailer tidak membuktikan pengiriman. Penanganan
+kegagalan transport pada reset password masih perlu diselaraskan; perbaikan di
+sini menangani registrasi/verifikasi. Gunakan Kirim ulang pada /verify-email untuk
+akun lama, jangan membagikan token; setup SMTP/APP_URL mengikuti README.
+
+README, PRD, kontrak, desain, brief A1/A3, UAT dan handoff A3 diselaraskan.
+Perubahan tahap ini belum commit/push/merge; review tim belum dilakukan.
+
 ## Kelanjutan A3 — 28 Oktober 2026
 
 Branch `feature/a3-applications-attendance` diperbarui fast-forward dari `ca3afbf` ke
