@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\VolunteerProfile;
 use App\Models\VolunteerSkill;
 use App\Services\ApplicationService;
+use App\Services\DocumentRetentionService;
 use App\Services\DocumentStorageService;
 use App\Services\EventPublicationService;
 use Illuminate\Http\UploadedFile;
@@ -24,6 +25,7 @@ class A3ApplicationDocumentsTest extends DatabaseTestCase
     {
         parent::setUp();
         Storage::fake('private');
+        Storage::fake('private_documents');
     }
 
     protected function createCompleteVolunteer($city = null, $skill = null): User
@@ -99,7 +101,7 @@ class A3ApplicationDocumentsTest extends DatabaseTestCase
         $this->assertSame('application/pdf', $cvDoc->mime_type);
         $this->assertNotNull($cvDoc->ready_at);
         $this->assertNotEmpty($cvDoc->checksum_sha256);
-        Storage::disk('private')->assertExists($cvDoc->storage_key);
+        Storage::disk('private_documents')->assertExists($cvDoc->storage_key);
 
         // Volunteer can see documents on application page
         $this->get("/volunteer/applications/{$draft->id}")
@@ -188,15 +190,17 @@ class A3ApplicationDocumentsTest extends DatabaseTestCase
         $file = UploadedFile::fake()->create('to_delete.pdf', 50, 'application/pdf');
         $doc = app(DocumentStorageService::class)->store($file, ['type' => 'application', 'application' => $draft, 'document_type' => 'cv'], $volunteer);
 
-        Storage::disk('private')->assertExists($doc->storage_key);
+        Storage::disk('private_documents')->assertExists($doc->storage_key);
 
         $this->actingAs($volunteer);
         $response = $this->delete("/volunteer/documents/{$doc->id}");
         $response->assertRedirect("/volunteer/applications/{$draft->id}");
         $response->assertSessionHas('success');
 
-        $this->assertDatabaseMissing('application_documents', ['id' => $doc->id]);
-        Storage::disk('private')->assertMissing($doc->storage_key);
+        $this->assertDatabaseHas('application_documents', ['id' => $doc->id, 'status' => 'purged']);
+        // DatabaseTransactions defers afterCommit; explicitly exercise recovery.
+        app(DocumentRetentionService::class)->recover();
+        Storage::disk('private_documents')->assertMissing($doc->storage_key);
     }
 
     public function test_authorized_document_download_rules(): void
@@ -285,6 +289,8 @@ class A3ApplicationDocumentsTest extends DatabaseTestCase
         $this->assertSame($originalName, $freshApplication->snapshot_json['profile']['name']);
         app(ApplicationService::class)->submit($freshApplication, $volunteer);
         $this->assertEquals($snapshot, $freshApplication->fresh()->snapshot_json);
+        $this->actingAs($owner)->get(route('organizer.applications.show', $freshApplication))
+            ->assertOk()->assertSee($originalName)->assertSee('081234567890')->assertDontSee('089999999999')->assertDontSee('Nama Baru Volunteer');
     }
 
     public function test_submit_snapshots_profile_completeness_at_submission_instead_of_draft_creation(): void
