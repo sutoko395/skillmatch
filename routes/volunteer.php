@@ -56,7 +56,7 @@ Route::middleware([
         Route::post(
             '/applications/{application}/documents',
             [VolunteerDocumentController::class, 'store']
-        )->name('documents.store');
+        )->middleware('throttle:20,1')->name('documents.store');
 
         Route::delete(
             '/documents/{document}',
