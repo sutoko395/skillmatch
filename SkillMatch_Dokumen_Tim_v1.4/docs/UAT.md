@@ -1,5 +1,35 @@
 # UAT dan kriteria selesai lintas anggota
 
+Regresi auth seleksi A3: Organizer approved/akun aktif dengan email belum verified
+harus dapat melakukan seleksi/pelaksanaan miliknya sesuai alur Organizer existing,
+tanpa diarahkan melalui verification.notice ke dashboard. Organizer pending/nonaktif
+dan owner lain tetap ditolak. Email_verified_at tidak boleh diisi otomatis untuk
+meluluskan seleksi. Bukti 21 tes/156 assertion di A3_HANDOFF aplikasi.
+
+Regresi Terima Pelamar 28 Oktober 2026 (UAT-21/22/34): dari detail kandidat dengan
+referer dashboard, sukses selalu menuju detail kandidat dengan accepted dan attendance
+unrecorded; kuota penuh menuju detail yang sama dengan alasan jelas dan tanpa attendance.
+Klik browser Alpine harus mengirim native POST+CSRF; disabled/loading tidak menahan
+pengiriman. Bukti tes/probe browser dan batas verifikasi ada di A3_HANDOFF aplikasi.
+
+## Bukti terarah A3 — 28 Oktober 2026
+
+Status pusat di tabel tetap belum berarti UAT tim lulus. Implementasi dan bukti terbaru
+ada di docs/A3_HANDOFF.md aplikasi, branch feature/a3-applications-attendance dari
+34ae483. Tes otomatis memetakan UAT-11–16/19/21/22/27/28/31/32/33; build dan browser
+terbatas memetakan UAT-34. Dua proses MySQL skillmatch_testing membuktikan kuota satu,
+konflik Volunteer lintas event, counter submit, accept idempoten serta cancellation
+versus accept/submit/attempt. Recovery restore ledger/checksum diuji dengan fixture,
+bukan restore backup operasional penuh. Notifikasi A4 nyata, setup anggota lain,
+browser submit end-to-end, p95 dan review tim masih belum diuji.
+
+Tambahan kasus A3: tepat decision_deadline menolak keputusan baru, replay keputusan
+final tidak mengubah alasan/audit; accepted withdrawal hanya Organizer sebelum awal;
+stale revision attendance ditolak; koreksi completed beralasan mengubah riwayat sumber;
+file purged tidak aktif sesudah restore, missing kembali ready hanya checksum sama;
+orphan rollback tidak dibersihkan sebelum masa aman 24 jam; dokumen organisasi tidak
+terkena retensi lamaran. Cleanup publik harus opt-in sesudah kebijakan disetujui.
+
 ## Matching — 27 Oktober 2026
 
 UAT-18/19/32: contoh S=75,A=75,L=100 → 80,00; level wajib/preferensi sama-sama dihitung,

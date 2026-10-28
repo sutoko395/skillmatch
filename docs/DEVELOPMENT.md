@@ -1,5 +1,34 @@
 # Panduan pengembangan tim SkillMatch
 
+## Kelanjutan A3 — 28 Oktober 2026
+
+Branch `feature/a3-applications-attendance` diperbarui fast-forward dari `ca3afbf` ke
+dasar tim `34ae483` (main saat mulai; SF/A2 dan assessment peserta A4 sudah tersedia).
+Perubahan lokal .gitignore dipertahankan di luar commit. Tidak membuat ulang fondasi.
+Implementasi seleksi/attendance/riwayat/retensi, withdrawal dan cancellation ada pada
+branch ini. Status, perintah, bukti dan batas integrasi terbaru: [A3_HANDOFF](A3_HANDOFF.md).
+
+Dependency A4 screening, matching dan attempt telah dipakai nyata. Tambahan terarah
+AssessmentService.cancelLocked digunakan A3 untuk pembatalan atomik tanpa mengambil
+ulang lock Volunteer setelah event. NotificationService/outbox/ActivityReadService
+belum tersedia; A3 memakai adapter A2Dependencies dan replay audit, tanpa outbox baru.
+Dokumen `docs/A4_HANDOFF.md` tidak ditemukan; pemeriksaan memakai handoff assessment,
+screening dan matching yang tersedia. A1 masih perlu mengintegrasikan utilitas/Policy
+organisasi ke schema dan endpoint miliknya; migrasi dokumen organisasi lama tidak
+dikerjakan otomatis oleh A3.
+
+Lock seleksi/withdrawal: Volunteer → event → posisi bila perlu → application → attendance/
+attempt. Jalur cancellation A2 sudah memegang owner/event; close-selection, attendance
+dan completion memegang event terlebih dahulu dan **tidak** mengambil Volunteer
+sesudahnya. Semua berserial pada event/application; race lintas event acceptance
+berserial pada Volunteer. Deadlock ditangani retry transaksi maksimal tiga kali.
+
+Migration hanya pada database tes MySQL 8.4.3/InnoDB. Database kerja belum dimigrasi;
+backup/periksa target sebelum memakai halaman baru. Retensi demo 7/90 hari dapat
+dikonfigurasi, cleanup publik opt-in. Dokumen publik/paket/payment/aktivitas milik
+anggota lain tidak diganti. Layout sidebar terbaru existing dipertahankan sesuai
+pelestarian desain pengguna; migrasi shell global bukan pekerjaan A3.
+
 Dokumen ini memuat pembagian pekerjaan, dependensi, dan panduan transisi database. Untuk pengenalan aplikasi, instalasi, akun demo dan tes, lihat [README utama](../README.md).
 
 ## Regresi validasi kota saat menyimpan draft event - 11 Oktober 2026

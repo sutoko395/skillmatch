@@ -1,5 +1,11 @@
 # Brief A2 — event, katalog, paket, pembayaran
 
+Integrasi A3 28 Oktober 2026: EventCancellationService.cancelApplications kini tersedia
+dan dipakai A2Dependencies pada transaksi cancel existing; attempt A4 dihentikan atomik
+tanpa mengambil ulang lock Volunteer. Race cancel versus submit/accept/attempt lulus
+pada dua proses MySQL tes. Pelamar/Pelaksanaan ditautkan di detail event existing;
+kuota accepted posisi tidak mengubah submitted_applications paket. Lihat A3_HANDOFF.
+
 ## Jadwal posisi — keputusan 10 Oktober 2026
 
 Form posisi baru default mengikuti event, dengan opsi jadwal tugas khusus. A2 menyimpan mode `follows_event_schedule` dan interval pada `position_schedules`; jadwal event/deadline editable diselaraskan/divalidasi secara atomik. Jadwal existing tetap khusus; freeze published tetap berlaku. Lihat penyesuaian terbaru di PRD/kontrak/desain dan tes PositionScheduleModeTest.

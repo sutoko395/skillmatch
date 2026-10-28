@@ -1,5 +1,29 @@
 # Design specification SkillMatch
 
+Menu Riwayat Partisipasi Volunteer memakai ikon jam outline 24×24 dengan ukuran
+h-5 w-5 dan stroke 2 seperti menu existing; state aktif/hover mengikuti menu lain,
+dengan aria-current pada halaman riwayat (penyesuaian 28 Oktober 2026).
+
+## Seleksi/pelaksanaan A3 — 28 Oktober 2026
+
+Daftar Pelamar menambah tautan Semua Pelamar/Siap Ditinjau/Pelaksanaan; filter posisi
+mempertahankan tab. Detail menampilkan keputusan dan alasan, hasil A4 terpisah, serta
+profil dari snapshot. Legacy tanpa field menyebut tidak tercatat, bukan mengambil
+profil terkini sebagai bukti historis. Terima/Tolak hanya ditawarkan ketika masih
+under_review dan periode keputusan terbuka; server tetap memeriksa ulang.
+
+Pelaksanaan memakai page-header, section-card, flash dan tombol existing; rekap nyata
+accepted/present/absent/unrecorded, filter nama/posisi/status, tabel gulir dalam region
+berlabel/fokus keyboard, waktu pencatatan WIB, catatan dan alasan koreksi completed.
+Penutupan pending/penyelesaian meminta konfirmasi; nol peserta dikonfirmasi tersendiri.
+Riwayat Volunteer menampilkan event/posisi/waktu dan hasil sumber. File purged/missing
+tidak ditampilkan sebagai ready atau tautan unduh aktif.
+
+Layout sidebar Organizer/Volunteer terbaru existing dipertahankan sesuai keputusan
+pelestarian UI, tanpa mengganti shell global di lingkup A3. Rekonsiliasi target navbar
+global pada bagian 3 tetap koordinasi SF/A1; perubahan ini tidak membatalkan desain
+yang sudah dipakai. Bukti responsive dan batas interaksi browser ada di A3_HANDOFF.
+
 ## Matching pelamar — 27 Oktober 2026
 
 EO mendapat kolom Match Score pada daftar pelamar dan kartu Kecocokan kandidat pada

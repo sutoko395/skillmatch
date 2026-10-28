@@ -1,5 +1,11 @@
 # Brief A1 — melanjutkan fondasi dan fitur admin
 
+Integrasi A3 28 Oktober 2026: DocumentStorageService.validateOrganizationUpload dan
+downloadOrganization serta OrganizerDocumentPolicy tersedia untuk A1. Validator
+mengembalikan metadata/checksum tanpa mengklaim ready; A1 tetap menulis schema
+organisasi dan mengintegrasikan endpoint/migrasi legacy dengan backup. Utilitas tidak
+memberi Admin akses CV pelamar. Retensi A3 tidak menghapus dokumen organisasi.
+
 Versi 1.4.2 • PIC: teman pembuat ZIP. Baca [PRD](../../PRD_SkillMatch_Tim.md), [kontrak](../KONTRAK_INTEGRASI.md), [design](../../design.md), [UAT](../UAT.md), dan [shared foundation](SHARED_FOUNDATION.md).
 
 ## Pekerjaan lama tetap dihitung
