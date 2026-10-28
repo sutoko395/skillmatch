@@ -165,6 +165,7 @@
                 <span>
                     Dashboard
                 </span>
+            </a>
             <a
                 href="{{ route('volunteer.applications.index') }}"
                 class="flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-200
@@ -190,6 +191,20 @@
                 <span>
                     Lamaran Saya
                 </span>
+            </a>
+
+            <a
+                href="{{ route('volunteer.history.index') }}"
+                @if(Request::routeIs('volunteer.history.*')) aria-current="page" @endif
+                class="flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-200
+                {{ Request::routeIs('volunteer.history.*')
+                    ? 'border-white/5 bg-white/10 text-white shadow-sm'
+                    : 'border-transparent text-orange-100/70 hover:bg-white/5 hover:text-white' }}"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-5 w-5 shrink-0" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25V12l2.25 2.25M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                <span>Riwayat Partisipasi</span>
             </a>
 
             <a

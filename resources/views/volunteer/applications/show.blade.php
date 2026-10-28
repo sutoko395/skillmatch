@@ -3,6 +3,10 @@
 @section('content')
 <div class="mx-auto max-w-7xl space-y-6">
     <x-page-header :title="$application->event->title" :description="'Posisi: ' . $application->position->name" />
+    @if($application->status !== 'draft')<x-application-selection :application="$application" />@endif
+    @if($application->status === 'accepted')
+        <x-section-card><h2 class="text-lg font-semibold">Kehadiran</h2><p>{{ ['unrecorded' => 'Belum dicatat', 'present' => 'Hadir', 'absent' => 'Tidak hadir'][$application->attendance?->status ?? 'unrecorded'] }}</p><p class="text-sm text-slate-600">Kehadiran dicatat oleh Organizer.</p></x-section-card>
+    @endif
 
     @if (session('success'))
         <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
@@ -107,14 +111,16 @@
                                         </td>
                                         <td class="px-4 py-3 text-slate-600">
                                             <span class="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700">
-                                                Dokumen tersimpan
+                                                {{ ['ready' => 'Dokumen tersimpan', 'missing' => 'Berkas tidak tersedia', 'purged' => 'Dokumen telah dihapus'][$doc->status] ?? 'Tidak tersedia' }}
                                             </span>
                                         </td>
                                         <td class="px-4 py-3 text-right space-x-2">
+                                            @if($doc->status === 'ready')
                                             <a href="{{ route('documents.download', $doc) }}" class="inline-flex items-center text-xs font-semibold text-indigo-600 hover:text-indigo-800">
                                                 Unduh
                                             </a>
-                                            @if($application->status === 'draft')
+                                            @endif
+                                            @if($application->status === 'draft' && $doc->status === 'ready')
                                                 <form method="POST" action="{{ route('volunteer.documents.destroy', $doc) }}" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dokumen ini?')">
                                                     @csrf
                                                     @method('DELETE')

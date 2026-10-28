@@ -2,6 +2,11 @@
 @section('title', 'Daftar Pelamar - ' . $event->title)
 @section('content')
 <div class="mx-auto max-w-7xl space-y-6">
+    <nav class="flex flex-wrap gap-4" aria-label="Tab pelamar">
+        <a class="font-semibold text-indigo-600" href="{{ route('organizer.applications.index', $event) }}">Semua Pelamar</a>
+        <a class="font-semibold text-indigo-600" href="{{ route('organizer.applications.index', [$event, 'tab' => 'ready']) }}">Siap Ditinjau</a>
+        <a class="font-semibold text-indigo-600" href="{{ route('organizer.execution.show', $event) }}">Pelaksanaan</a>
+    </nav>
     <div class="flex flex-wrap items-center justify-between gap-4">
         <x-page-header :title="'Daftar Pelamar: ' . $event->title" description="Kelola dan tinjau lamaran yang masuk untuk setiap posisi kegiatan ini." />
         <a href="{{ route('organizer.events.show', $event) }}" class="inline-flex items-center text-sm font-semibold text-slate-600 hover:text-slate-900">
@@ -18,6 +23,7 @@
     {{-- Filter Posisi --}}
     <x-section-card>
         <form method="GET" action="{{ route('organizer.applications.index', $event) }}" class="flex flex-wrap items-center gap-4">
+            @if(request('tab') === 'ready')<input type="hidden" name="tab" value="ready">@endif
             <div class="w-full sm:w-64">
                 <label for="position_id" class="block text-xs font-medium text-slate-700">Filter Berdasarkan Posisi</label>
                 <select name="position_id" id="position_id" class="mt-1 block w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" onchange="this.form.submit()">
