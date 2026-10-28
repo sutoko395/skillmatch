@@ -15,3 +15,5 @@ Artisan::command('a2:retry-notifications', function () {
 })->purpose('Replay A2 business notifications through the A4 outbox with stable dedupe keys');
 
 Schedule::command('a4:expire-assessments')->everyMinute()->withoutOverlapping();
+Schedule::command('a3:documents cleanup --execute')->daily()->withoutOverlapping()
+    ->when(fn () => app()->environment(['local', 'testing']) || config('a3.retention_enabled'));
