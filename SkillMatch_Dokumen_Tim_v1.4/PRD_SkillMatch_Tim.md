@@ -1,5 +1,29 @@
 # PRD SkillMatch Volunteer — acuan tim empat anggota
 
+Penegasan kompatibilitas auth A3, 28 Oktober 2026: seleksi dan pelaksanaan Organizer
+mengikuti alur auth Organizer existing (9dc9886), yaitu akun aktif dan organisasi
+disetujui Admin, tanpa menambah kewajiban email verified pada modul A3. Semua pemeriksaan
+owner, kuota, jadwal dan lifecycle tetap wajib. Verifikasi organisasi bukan verifikasi
+email; data kedua status tersebut tidak diubah otomatis. Ketentuan email Volunteer
+tetap berlaku. Rincian diagnosis dan tes ada pada A3_HANDOFF aplikasi.
+
+## Implementasi A3 — 28 Oktober 2026
+
+Seleksi/pelaksanaan diterapkan mengikuti aturan bagian 7: under_review sebelum awal
+event dan batas keputusan EO bila tersedia; reject beralasan, kuota posisi berbeda
+dari counter paket, konflik memakai snapshot interval [start,end). Withdrawal accepted
+hanya Organizer sebelum awal dengan alasan; pending hanya Volunteer atau penutupan
+seleksi beralasan oleh Organizer. Completion/riwayat tetap derived dari sumber.
+Koreksi attendance completed memerlukan alasan dan revision untuk mencegah overwrite.
+
+Retensi 7/90 hari tetap baseline demo yang bisa dikonfigurasi, bukan keputusan kebijakan
+publik. Cleanup di luar local/testing memerlukan aktivasi eksplisit setelah kebijakan
+ditetapkan. Purge ledger privat dipertahankan di luar snapshot SQL lama dan diterapkan
+sebelum hasil restore dibuka. Recovery tidak mengaktifkan kembali berkas purged.
+city_name/bio pada snapshot profil baru mendukung tampilan historis; snapshot lama
+tidak di-backfill. Layanan A4 notifikasi/aktivitas serta integrasi dokumen organisasi
+A1 masih terpisah dan belum dinyatakan selesai. Bukti/batas di docs/A3_HANDOFF.md aplikasi.
+
 Dokumen ini memuat kebutuhan dan keputusan produk, bukan perintah mengembalikan
 kode ke baseline ZIP. Sebelum menerapkan ketentuan lama, cocokkan keputusan
 pengguna terbaru, implementasi pada branch aktif, migration, tes, dan handoff.

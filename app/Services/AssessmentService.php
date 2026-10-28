@@ -163,4 +163,17 @@ class AssessmentService
     {
         $this->locked($application, null, fn () => null);
     }
+
+    // A3 caller already holds event/application locks. Do not reacquire volunteer here.
+    public function cancelLocked(Application $application, User $actor): void
+    {
+        if (DB::transactionLevel() < 1) {
+            throw new \LogicException('Attempt cancellation requires a domain transaction.');
+        }
+        $attempt = AssessmentAttempt::where('application_id', $application->id)->lockForUpdate()->first();
+        if ($attempt?->status === 'in_progress') {
+            $attempt->forceFill(['status' => 'cancelled', 'submitted_at' => now(), 'revision' => $attempt->revision + 1])->save();
+            app(AuditService::class)->record($actor, 'assessment.cancelled', $attempt, ['after' => ['status' => 'cancelled']]);
+        }
+    }
 }

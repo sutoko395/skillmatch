@@ -1,4 +1,220 @@
-# Serah-terima A3 — Tahap 2: Fondasi Lamaran dan Dokumen Privat
+# Serah-terima A3 — seleksi dan pelaksanaan, 28 Oktober 2026
+
+Penyesuaian pesan melamar ulang 28 Oktober 2026: ApplicationService.storeDraft
+menampilkan “Lamaranmu sudah ditarik dan tidak dapat diajukan ulang pada event ini.”
+untuk status withdrawn. Status lain tetap memakai pesan lamaran existing. Ini hanya
+perubahan teks; aturan satu Volunteer/event, status, counter dan snapshot tidak berubah.
+
+## Penyebab redirect dashboard Terima Pelamar — 28 Oktober 2026
+
+Diagnosis baca-saja lamaran pengguna #7: owner aktif, organizer_status active,
+email_verified_at kosong, lamaran under_review, tabel attendance tersedia. Middleware
+verified A3 mengarahkan ke verification.notice; EmailVerificationPromptController
+existing (commit 9dc9886) sengaja mengarahkan Organizer kembali ke dashboard. Controller
+accept tidak pernah dijalankan, sehingga perbaikan redirect controller saja tidak cukup.
+
+A3 Organizer kini mengikuti alur organisasi existing A2: auth/account.active/
+role:organizer/organizer.active, tanpa syarat email tambahan. ApplicationPolicy.select
+tetap memeriksa akun aktif, role, organisasi active, submitted_at dan owner event.
+Email verified Volunteer dan seluruh pemeriksaan seleksi/kuota/jadwal tetap berlaku.
+Tidak mengubah akun pengguna atau mengisi email_verified_at secara manual.
+Perubahan ini menyelaraskan keputusan auth yang sudah terintegrasi, bukan mengembalikan
+auth ke baseline lama. Berlaku juga untuk attendance/completion di grup A3 Organizer.
+
+Verifikasi A3ExecutionTest dan ApplicationDocumentPolicyTest: **21 tes/156 assertion
+lulus** di MySQL tes, termasuk approved Organizer tanpa email verified berhasil,
+pending/nonaktif/lintas owner tetap ditolak dan email_verified_at tidak berubah.
+Pint lulus. Tidak ada perubahan Blade/JS sejak build sebelumnya; tidak ada migration,
+commit/push atau penerimaan kandidat kerja oleh agent. Status kandidat kerja dibiarkan
+untuk pengguna mencoba kembali melalui tombol. Catatan sebelumnya tentang kebutuhan
+email verified Organizer A3 digantikan oleh penyesuaian ini.
+
+## Perbaikan tombol Terima Pelamar — 28 Oktober 2026
+
+Keluhan klik Terima kembali ke dashboard/status tetap under_review ditindaklanjuti.
+ExecutionController.accept sekarang redirect eksplisit ke organizer.applications.show,
+bukan back() yang bergantung halaman sebelumnya. ValidationException HTML diarahkan
+ke detail yang sama dengan flash error alasan; JSON tetap 422, otorisasi tetap 403.
+Form native POST/CSRF dipertahankan, busy/disabled ditunda lewat Alpine nextTick dan
+direset saat pageshow. Aturan seleksi, kuota, deadline dan konflik tidak diubah.
+
+Verifikasi: A3ExecutionTest **15 tes/103 assertion lulus** pada MySQL tes terpisah,
+termasuk referer dashboard, sukses accepted/attendance unrecorded dan kegagalan kuota
+yang tampil di detail. Pint dan build Vite lulus. Chrome headless dengan Alpine
+memastikan klik mengirim POST/CSRF ke probe HTTP lokal terisolasi melalui
+`node tools/a3-browser-review.mjs --accept-submit`. Probe tidak menerima kandidat nyata;
+pengujian perubahan domain dilakukan melalui PHPUnit. Tidak ada migration baru,
+perubahan data kerja, commit atau push untuk perbaikan ini. Penyebab spesifik penolakan
+kandidat pengguna belum dibuktikan dari request aktual; jangan mengklaim kandidat
+tersebut sudah accepted.
+
+## Dasar dan status
+
+Branch aktual `feature/a3-applications-attendance`, dasar `34ae483` dari main yang
+benar-benar tersedia dan memuat SF/A2/A4. Branch A3 lama ca3afbf adalah ancestor,
+diperbarui fast-forward, tanpa reset/stash. Perubahan lokal .gitignore tidak diikutkan.
+Commit hasil dicatat di bagian penutupan. Tidak push/PR/review tim/merge/deploy.
+Catatan tahap 2 di bawah dipertahankan sebagai histori, bukan status implementasi terbaru.
+
+## Hasil implementasi
+
+- Draft berserial pada Volunteer/event, satu lamaran/event dan perubahan posisi draft
+  mencabut berkas lama melalui purge ledger. Submit memeriksa akun/role/email/status
+  terkini, periode/publikasi, snapshot A2/A4 dan entitlement dalam transaksi. Replay
+  membaca status tersimpan sesudah evaluasi, bukan mengembalikan model submitted stale.
+  Keputusan existing tentang profil yang berubah setelah draft tetap berlaku: snapshot
+  profile_eligibility mencatat kenyataan untuk screening, tanpa mengarang bukti lengkap.
+- Upload serial dengan submit, penggantian CV tidak menghapus file lama sebelum metadata
+  baru aman. CV PDF; pendukung PDF/JPG/PNG; 5 MB/file dan lima ready/lamaran. Disk baru
+  private_documents berbagi root privat dengan alias private lama. Nama acak, MIME isi,
+  checksum, attachment, nosniff dan audit download. Akses EO berakhir saat withdrawal,
+  cancellation, akun Volunteer nonaktif, atau masa akses terminal 90 hari terlampaui.
+- Tab Semua/Siap Ditinjau, ready hanya under_review; urut matching DESC, assessment DESC,
+  submitted_at ASC, id ASC. Detail membaca snapshot kandidat; city_name/bio ditambahkan
+  hanya untuk submit baru, legacy tanpa data tidak di-backfill dari profil sekarang.
+- SelectionService.accept/reject: owner terverifikasi, under_review, sebelum starts_at
+  dan decision_deadline bila tersedia, accepted memeriksa eligibility publikasi/
+  entitlement, akun Volunteer, kuota posisi dan interval snapshot setengah terbuka.
+  Jadwal bersinggungan tepat di batas diperbolehkan; snapshot rusak ditahan.
+  Replay keputusan sama idempoten; keputusan final tidak diganti. Reject wajib alasan.
+- Accepted membuat attendance unrecorded unik. EventExecutionService.record hanya oleh
+  owner untuk accepted sejak awal kegiatan; present/absent, catatan, recorded_at sebagai
+  waktu pencatatan, revision stale, audit. Pencatatan pertama memulai ongoing.
+- Completion sesudah ends_at, tidak ada lamaran evaluasi/assessment/review tertunda atau
+  attempt in_progress, seluruh accepted mempunyai attendance final. Nol peserta wajib
+  konfirmasi. Close-selection setelah pendaftaran tutup menolak pending dengan alasan,
+  menghentikan attempt, mempertahankan terminal. Koreksi completed beralasan dan audit.
+- Riwayat derived dari event/application/attendance: completed+accepted+present berhasil,
+  absent tidak berhasil, cancelled dibatalkan. Tidak ada tabel status histori tandingan.
+- Volunteer menarik pending; Organizer hanya mencatat pengunduran accepted sebelum
+  starts_at dengan alasan, menghapus attendance unrecorded. Counter submit tidak turun.
+  EventCancellationService.cancelApplications dipanggil A2 di transaksi yang sama;
+  menutup draft/pending/accepted, mempertahankan terminal, menghentikan attempt nyata A4.
+- Retensi demo draft 7 hari dan dokumen 90 hari sesudah completed/cancelled, configurable.
+  Cleanup publik memerlukan A3_RETENTION_ENABLED. Purge ledger SQL dan salinan privat
+  dibuat sebelum penghapusan fisik. Recovery idempoten menerapkan tombstone setelah
+  restore; file hilang/checksum salah missing, file pulih yang checksum-nya tepat dapat
+  ready lagi kecuali sudah dipurge. Jurnal upload memulihkan orphan setelah 24 jam.
+
+## Schema, route, interface
+
+Migration tambahan (histori lama tidak diubah):
+`2026_10_28_000001_create_a3_execution` membuat attendances (unique application_id,
+recorded_by, recorded_at, note, correction_reason) dan document_purges (unique disk/key,
+reason, purged_at). `2026_10_28_000002_add_attendance_revision` menambah revision setelah
+migration pertama telah dicoba di DB tes. Tidak memigrasi/backfill data kerja.
+
+Route baru di routes/a3.php, dimuat web.php: organizer.applications.accept/reject/withdraw,
+organizer.events.close-selection/complete, organizer.execution.show,
+organizer.attendances.update, volunteer.applications.withdraw, volunteer.history.index.
+Route lama dipertahankan. Upload throttle 20/menit, download 60/menit dan verified.
+Policy Application, Attendance dan ApplicationDocument memeriksa objek/pemilik;
+OrganizerDocumentPolicy terpisah dan tidak memberi Admin hak CV pelamar.
+
+Layanan yang dipakai anggota lain:
+SelectionService.accept/reject/withdraw/close; EventExecutionService.record/complete;
+EventCancellationService.cancelApplications(Event, User, string): void;
+AssessmentService.cancelLocked(Application, User): void (caller wajib transaksi dan
+lock event/application; hanya attempt in_progress, tanpa finalize/skor palsu).
+DocumentStorageService.validateOrganizationUpload mengembalikan metadata tervalidasi
+untuk A1, tanpa mengklaim ready sebelum A1 menulis metadata; downloadOrganization
+memakai Policy terpisah dan disk privat, tidak fallback ke disk publik.
+DocumentRetentionService.queue/cleanup/recover serta command a3:documents.
+
+Notifikasi memakai A2Dependencies → NotificationService A4 dengan key
+application.<status>:application_id:revision:recipient_id,
+attendance.recorded:attendance_id:revision:recipient_id,
+event.completed:event_id:revision:recipient_id. a3:retry-notifications membaca audit
+sesudah --after, limit 1–1000, key sama. Ini replay produsen, bukan outbox baru.
+
+## Verifikasi aktual
+
+Lingkungan PHP 8.4 Herd; MySQL tes 8.4.3/InnoDB. tools/sf-db-check.php --env=testing
+berhasil. TestCase/tool menolak database selain skillmatch_testing atau database yang
+sama dengan .env kerja. Migration tes berhasil tanpa reset/fresh/RefreshDatabase.
+Perintah/hasil akhir dicatat di bagian penutupan setelah pemeriksaan terakhir.
+
+tools/a3-concurrency-check.php --env=testing **lulus tujuh skenario**, masing-masing
+dua proses/koneksi PHP/MySQL: kuota satu, Volunteer pada dua event overlap, paket
+limit satu saat submit, duplicate accept, serta cancellation versus accept/submit/
+attempt. Satu attendance/audit dan terminal state diperiksa. Fixture sintetis dipertahankan
+di DB tes; bukan data demo kerja. Tes A4 existing yang memakai sole/count seluruh tabel
+perlu isolasi fixture bila diulang setelah tool konkurensi.
+
+Regresi A4 yang dijalankan sebelum fixture konkurensi: A3RetentionTest,
+ParticipantAssessmentTest, MatchingTest, ScreeningTest: **47 tes/250 assertion lulus**.
+Ini bukti tahap tersebut, bukan klaim seluruh suite sesudah semua perubahan.
+
+Browser Chrome headless pada HTML sintetis hasil HTTP kernel 200: seleksi, pelaksanaan,
+riwayat masing-masing 360/768/1280; readable, fokus keyboard dasar dan tidak ada overflow
+horizontal halaman. Screenshot privat storage/app/private/a3-review/*.png. Mobile tabel
+digulir di region yang dapat difokuskan. Export tools/a3-ui-review.php --env=testing,
+runner node tools/a3-browser-review.mjs. Bukan browser submit end-to-end, audit
+aksesibilitas lengkap, atau pengujian browser anggota lain.
+
+Pemetaan bukti: UAT-11/12/13/14/15/16/19 melalui regresi draft/dokumen/retensi;
+UAT-21/22 seleksi/urutan/race; UAT-27/28 attendance/completion/koreksi/riwayat;
+UAT-31 cancellation A2/attempt A4 nyata; UAT-32 ownership/rollback; UAT-33 simulasi
+restore ledger/checksum; UAT-34 build/render/browser terbatas. UAT pusat tidak
+ditandai lulus penuh; belum ada reviewer tim atau pengujian setup UAT-35.
+
+## Dependensi dan yang belum diuji
+
+- A4 NotificationService/outbox/ActivityReadService belum ada. Hook dan replay tersedia,
+  delivery/deduplikasi nyata/aktivitas belum terintegrasi. Adapter notifikasi pada tes
+  hanya mock, bukan bukti A4 berfungsi.
+- docs/A4_HANDOFF.md tidak tersedia; memakai tiga handoff A4 assessment/screening/matching.
+- A1 perlu memakai validator/download/Policy organisasi di endpoint dan schema metadata
+  miliknya, mengaudit/memigrasi berkas organisasi lama sesudah backup. A3 tidak membuat
+  schema A1 tandingan dan retensi A3 tidak menghapus berkas organisasi.
+- Backup+restore MySQL/file penuh dengan operator/reviewer lain, worker notifikasi,
+  browser submit end-to-end, performa p95 100 event/1000 lamaran, dan seluruh UAT belum diuji.
+- Database kerja tidak dimigrasi/dibersihkan/diisi fixture. Kebijakan retensi publik
+  perlu keputusan; angka 7/90 hanya baseline demo terkonfigurasi.
+
+## Menjalankan/demo
+
+1. Backup DB+berkas, periksa target, jalankan php artisan migrate dan npm run build.
+2. Pastikan assessment published, event/entitlement valid; Volunteer lengkap membuat
+   draft, upload CV dan submit. Screening/matching nyata membawa assessment_pending;
+   kerjakan assessment hingga under_review.
+3. Organizer pemilik membuka Pelamar → Siap Ditinjau, tinjau hasil lalu accept/reject.
+   Event lain/akun lain tidak berwenang. Kuota paket dan kuota posisi berbeda.
+4. Sejak starts_at, Pelaksanaan → Hadir/Tidak hadir. Sesudah ends_at, tutup pending
+   beralasan bila ada, selesaikan event, periksa Riwayat Volunteer dan koreksi beralasan.
+5. Uji pengunduran/cancellation pada fixture tes, bukan membatalkan event kerja demi demo.
+6. Retensi: a3:documents cleanup (tanpa perubahan), --execute hanya setelah target/backup
+   diperiksa. Jalankan schedule:work untuk tugas harian/timeout. Setelah restore ke tes,
+   pertahankan purge ledger terbaru dan jalankan a3:documents recover --execute sebelum
+   akses dibuka. Petunjuk lengkap dan konfigurasi pada README.
+
+## Penutupan verifikasi 28 Oktober 2026
+
+Commit implementasi **27dfcfe**, branch feature/a3-applications-attendance.
+Dokumentasi sudah ditulis tetapi belum di-commit: permintaan izin git add dokumentasi
+ditolak pengguna, sehingga staging/commit tidak dilanjutkan. Tidak push/PR/merge/deploy;
+reviewer tim belum ditetapkan. .gitignore lokal tetap tidak diikutkan.
+
+Perintah akhir `php vendor/bin/phpunit tests/Feature/A3ExecutionTest.php
+tests/Feature/A3RetentionTest.php tests/Feature/A3ApplicationTest.php
+tests/Feature/A3ApplicationDocumentsTest.php tests/Unit/ApplicationDocumentPolicyTest.php`:
+**49 tes / 315 assertion lulus** pada MySQL skillmatch_testing. Verifikasi tambahan
+retensi/dokumen setelah audit purge: **17 tes / 105 assertion lulus**, kemudian tercakup
+kembali dalam run akhir 49 tes. Angka tersebut tidak dijumlahkan sebagai tes berbeda.
+Pint berkas berubah, git diff --check, route attendance dan command dry-run lulus.
+`npm run build` akhir Vite 8.3.1 berhasil (CSS 55,41 kB / JS 59,98 kB), Blade cache
+berhasil, tiga halaman HTTP 200 dan sembilan pemeriksaan Chrome akhir lulus.
+Tujuh race dua proses sebelumnya tetap bukti aturan yang sama; cancellation versus
+attempt pada tool menguji start/replay attempt in_progress, bukan race finalisasi skor
+yang terpisah. Browser berupa HTML sintetis hasil render, tanpa submit interaktif.
+
+Dokumen PRD/kontrak/desain/brief/UAT/README/DEVELOPMENT diselaraskan; aturan produk lama
+yang masih berlaku dipertahankan. Backup operasional perlu menghentikan penulisan/
+scheduler dan menjalankan recover untuk menguras purge yang sudah commit **sebelum**
+mengambil snapshot DB/file; simpan ledger terbaru secara independen. Simulasi tombstone/
+checksum lulus; restore MySQL+filesystem lengkap bersama operator lain belum diuji.
+
+## Catatan tahap 2 terdahulu
 
 ## Perbaikan Policy dokumen — 27 Oktober 2026
 

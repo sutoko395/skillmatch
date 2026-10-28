@@ -25,6 +25,7 @@ class ApplicationDocumentPolicyTest extends TestCase
     {
         $application = new Application(['status' => $status, 'volunteer_id' => 10]);
         $application->setRelation('event', new Event(['organizer_id' => 20]));
+        $application->setRelation('volunteer', $this->actor('volunteer', 10));
         $document = new ApplicationDocument;
         $document->setRelation('application', $application);
 
@@ -69,6 +70,7 @@ class ApplicationDocumentPolicyTest extends TestCase
         $this->assertTrue(Gate::forUser($volunteer)->allows('download', $document));
         $this->assertFalse(Gate::forUser($organizer)->allows('download', $document));
         $document->application->status = 'submitted';
+        $document->application->submitted_at = now();
         $this->assertTrue(Gate::forUser($organizer)->allows('download', $document));
         $organizer->organizer_status = 'pending';
         $this->assertFalse(Gate::forUser($organizer)->allows('download', $document));

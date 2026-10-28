@@ -14,58 +14,71 @@ class ApplicationService
 {
     public function storeDraft(User $volunteer, EventPosition $position): Application
     {
-        if ($volunteer->role !== 'volunteer' || ! $volunteer->is_active) {
+        if ($volunteer->role !== 'volunteer' || ! $volunteer->is_active || ! $volunteer->hasVerifiedEmail()) {
             throw new AuthorizationException('Hanya volunteer aktif yang dapat membuat draft lamaran.');
         }
 
-        $position->loadMissing('event');
-        $event = $position->event;
+        return DB::transaction(function () use ($volunteer, $position) {
+            $volunteer = User::whereKey($volunteer->id)->lockForUpdate()->firstOrFail();
+            if ($volunteer->role !== 'volunteer' || ! $volunteer->is_active || ! $volunteer->hasVerifiedEmail()) {
+                throw new AuthorizationException;
+            }
+            $event = Event::whereKey($position->event_id)->lockForUpdate()->firstOrFail();
+            $position = EventPosition::whereKey($position->id)->where('event_id', $event->id)->firstOrFail();
+            $position->setRelation('event', $event);
+            $event = $position->event;
 
-        if (! $event) {
-            throw ValidationException::withMessages(['event' => 'Event tidak ditemukan.']);
-        }
-
-        $eligibility = app(ProfileEligibilityService::class)->check($volunteer);
-        if (! ($eligibility['complete'] ?? false)) {
-            throw ValidationException::withMessages([
-                'profile' => 'Profil Anda belum lengkap. Silakan lengkapi profil terlebih dahulu.',
-            ]);
-        }
-
-        if (! Event::publiclyVisible()->whereKey($event->id)->exists()
-            || now() < $event->registration_opens_at
-            || now() >= $event->registration_deadline) {
-            throw ValidationException::withMessages([
-                'event' => 'Pendaftaran untuk kegiatan ini tidak sedang dibuka.',
-            ]);
-        }
-
-        $existing = Application::where('volunteer_id', $volunteer->id)
-            ->where('event_id', $event->id)
-            ->first();
-
-        if ($existing) {
-            if ($existing->status === 'draft') {
-                if ($existing->event_position_id !== $position->id) {
-                    $existing->event_position_id = $position->id;
-                    $existing->save();
-                }
-
-                return $existing;
+            if (! $event) {
+                throw ValidationException::withMessages(['event' => 'Event tidak ditemukan.']);
             }
 
-            throw ValidationException::withMessages([
-                'application' => 'Anda sudah memiliki lamaran yang dikirim untuk kegiatan ini.',
-            ]);
-        }
+            $eligibility = app(ProfileEligibilityService::class)->check($volunteer);
+            if (! ($eligibility['complete'] ?? false)) {
+                throw ValidationException::withMessages([
+                    'profile' => 'Profil Anda belum lengkap. Silakan lengkapi profil terlebih dahulu.',
+                ]);
+            }
 
-        return Application::create([
-            'event_id' => $event->id,
-            'event_position_id' => $position->id,
-            'volunteer_id' => $volunteer->id,
-            'status' => 'draft',
-            'revision' => 0,
-        ]);
+            if (! Event::publiclyVisible()->whereKey($event->id)->exists()
+                || now() < $event->registration_opens_at
+                || now() >= $event->registration_deadline) {
+                throw ValidationException::withMessages([
+                    'event' => 'Pendaftaran untuk kegiatan ini tidak sedang dibuka.',
+                ]);
+            }
+
+            $existing = Application::where('volunteer_id', $volunteer->id)
+                ->where('event_id', $event->id)
+                ->first();
+
+            if ($existing) {
+                if ($existing->status === 'draft') {
+                    if ($existing->event_position_id !== $position->id) {
+                        foreach ($existing->documents()->where('status', 'ready')->get() as $document) {
+                            app(DocumentRetentionService::class)->queue($document, 'draft_position_changed');
+                        }
+                        $existing->event_position_id = $position->id;
+                        $existing->save();
+                    }
+
+                    return $existing;
+                }
+
+                throw ValidationException::withMessages([
+                    'application' => $existing->status === 'withdrawn'
+                        ? 'Lamaranmu sudah ditarik dan tidak dapat diajukan ulang pada event ini.'
+                        : 'Anda sudah memiliki lamaran yang dikirim untuk kegiatan ini.',
+                ]);
+            }
+
+            return Application::create([
+                'event_id' => $event->id,
+                'event_position_id' => $position->id,
+                'volunteer_id' => $volunteer->id,
+                'status' => 'draft',
+                'revision' => 0,
+            ]);
+        }, 3);
     }
 
     public function submit(Application $draft, User $actor): Application
@@ -74,17 +87,19 @@ class ApplicationService
             throw new AuthorizationException('Anda tidak berhak mengirimkan lamaran ini.');
         }
 
-        if ($draft->status !== 'draft') {
-            return $draft;
-        }
-
         return DB::transaction(function () use ($draft, $actor) {
             $volunteer = User::where('id', $draft->volunteer_id)->lockForUpdate()->firstOrFail();
+            if ($actor->id !== $volunteer->id || $volunteer->role !== 'volunteer' || ! $volunteer->is_active || ! $volunteer->hasVerifiedEmail()) {
+                throw new AuthorizationException;
+            }
             $event = Event::where('id', $draft->event_id)->lockForUpdate()->firstOrFail();
 
             $lockedDraft = Application::where('id', $draft->id)->lockForUpdate()->firstOrFail();
-            if ($lockedDraft->status !== 'draft') {
+            if ($lockedDraft->submitted_at !== null) {
                 return $lockedDraft;
+            }
+            if ($lockedDraft->status !== 'draft') {
+                throw ValidationException::withMessages(['application' => 'Lamaran ini tidak dapat dikirim.']);
             }
 
             $now = now();
@@ -112,7 +127,9 @@ class ApplicationService
                 'name' => $volunteer->name,
                 'email' => $volunteer->email,
                 'city_id' => $volunteer->volunteerProfile?->city_id,
+                'city_name' => $volunteer->volunteerProfile?->cityRecord?->name,
                 'phone' => $volunteer->volunteerProfile?->phone,
+                'bio' => $volunteer->volunteerProfile?->bio,
                 'skills' => $volunteer->volunteerSkills->map(fn ($vs) => [
                     'id' => $vs->skill_id,
                     'name' => $vs->skill?->name,
@@ -156,11 +173,13 @@ class ApplicationService
                 ],
                 'volunteer-submitted'
             );
+            app(A2Dependencies::class)->notify('application.submitted:'.$lockedDraft->id.':'.$lockedDraft->revision.':'.$event->organizer_id,
+                $event->organizer, ['type' => 'application.submitted', 'application_id' => $lockedDraft->id]);
 
             DB::afterCommit(fn () => $this->triggerEvaluation($lockedDraft));
 
             return $lockedDraft;
-        });
+        }, 3);
     }
 
     /**

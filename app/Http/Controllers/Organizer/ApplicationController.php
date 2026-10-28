@@ -4,27 +4,27 @@ namespace App\Http\Controllers\Organizer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Application;
+use App\Models\AssessmentAttempt;
 use App\Models\Event;
+use App\Models\MatchResult;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class ApplicationController extends Controller
 {
     public function index(Request $request, Event $event)
     {
-        if ($event->organizer_id !== Auth::id()) {
-            abort(403, 'Anda tidak berhak melihat pelamar pada kegiatan ini.');
-        }
+        Gate::authorize('update', $event);
 
         $query = $event->applications()
-            ->where('status', '!=', 'draft')
+            ->whereNotNull('submitted_at')
             ->with([
                 'volunteer.volunteerProfile.cityRecord',
                 'position',
                 'documents',
                 'screeningResult',
                 'matchResult',
+                'assessmentAttempt',
             ]);
 
         if ($request->filled('position_id')) {
@@ -35,7 +35,13 @@ class ApplicationController extends Controller
             $query->where('status', $request->input('status'));
         }
 
-        $applications = $query->latest('submitted_at')->paginate(15);
+        if ($request->input('tab') === 'ready') {
+            $query->where('status', 'under_review');
+        }
+        $applications = $query
+            ->orderByDesc(MatchResult::select('total_score')->whereColumn('application_id', 'applications.id')->limit(1))
+            ->orderByDesc(AssessmentAttempt::select('score')->whereColumn('application_id', 'applications.id')->limit(1))
+            ->orderBy('submitted_at')->orderBy('id')->paginate(15)->withQueryString();
         $positions = $event->positions()->get();
 
         return view('organizer.applications.index', compact('event', 'applications', 'positions'));

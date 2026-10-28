@@ -1,12 +1,94 @@
 # SkillMatch
 
+## Seleksi dan pelaksanaan A3 — 28 Oktober 2026
+
+Organizer yang organisasinya disetujui Admin memakai alur auth Organizer existing;
+seleksi/pelaksanaan tidak menambah syarat email verified. Akun tetap harus aktif dan
+event milik sendiri. Perbaikan ini mengatasi tombol Terima yang sebelumnya berhenti
+di middleware verifikasi lalu kembali ke dashboard tanpa mengubah lamaran.
+
+Perbaikan tombol Terima Pelamar: setelah klik, hasil selalu diarahkan ke detail kandidat.
+Berhasil menampilkan Diterima dan pesan sukses; gagal validasi menampilkan alasan.
+Tidak memerlukan migration tambahan untuk perbaikan tombol ini. Aturan penerimaan
+tetap sama; data kandidat tidak diubah hanya untuk mencoba tampilan.
+
+Implementasi A3 kini mencakup draft/submit dan dokumen privat, kandidat Siap Ditinjau,
+accept/reject, pemeriksaan kuota/bentrok jadwal, penarikan, attendance manual,
+completion, riwayat, pembatalan bersama A2/A4, serta retensi/recovery. Skor A4 dibaca
+tanpa dihitung ulang oleh controller A3. Status/bukti terbaru ada di
+[A3_HANDOFF](docs/A3_HANDOFF.md); catatan tahap lama di bawah bukan status terkini.
+Notifikasi internal menunggu NotificationService/outbox A4. Utilitas dokumen organisasi
+tersedia untuk A1, tetapi penggantian alur/schema organisasi tetap pekerjaan A1.
+
+Sebelum memakai halaman baru, backup dan periksa database tujuan, lalu jalankan
+`php artisan migrate` dengan PHP yang memenuhi vendor (di lingkungan ini PHP 8.4 Herd).
+Migration tambahan hanya membuat attendances, document_purges, dan revision attendance;
+tidak backfill penerimaan/kehadiran lama. Migration pekerjaan ini telah diuji pada
+MySQL khusus tes; belum diterapkan pada database kerja.
+
+Organizer: Event Saya → detail event → Pelamar → Siap Ditinjau → tinjau hasil dan
+Terima/Tolak dengan alasan. Pelaksanaan menampilkan rekap serta pencatatan
+Hadir/Tidak hadir sejak awal event. Belum dicatat bukan Tidak hadir. Selesaikan
+kegiatan setelah akhir jadwal, seleksi final, dan seluruh attendance final; nol peserta
+memerlukan konfirmasi. Koreksi setelah completion wajib alasan. Volunteer melihat
+Riwayat Partisipasi dan dapat menarik lamaran sebelum accepted; pengunduran accepted
+dicatat Organizer dengan alasan sebelum awal event. Counter paket tidak dikembalikan.
+
+Dokumen baru memakai disk `private_documents` dengan root `storage/app/private`;
+alias `private` dipertahankan untuk dokumen lama. Jangan menambah symlink publik.
+Sediakan izin tulis direktori ini dan batas upload PHP/web server minimal 5 MB per file
+(post_max_size perlu lebih besar dari upload_max_filesize). Download attachment memakai
+Policy, throttle, MIME terdeteksi dan nosniff. Ready bukan jaminan bebas malware.
+
+Konfigurasi baseline **demo**: `A3_DRAFT_RETENTION_DAYS=7`,
+`A3_DOCUMENT_RETENTION_DAYS=90`. Di luar local/testing, cleanup hanya aktif setelah
+kebijakan publik ditetapkan dan `A3_RETENTION_ENABLED=true`. Scheduler harian
+menjalankan cleanup; tidak ada worker khusus A3. Gunakan `php artisan schedule:work`
+pada development. Tanpa scheduler, cleanup/timeout otomatis tertunda.
+
+```powershell
+php artisan a3:documents cleanup
+php artisan a3:documents cleanup --execute
+php artisan a3:documents recover --execute
+php artisan a3:retry-notifications --after=0 --limit=100
+```
+
+Tanpa --execute perintah dokumen hanya menampilkan kebijakan. Jangan menjalankan cleanup
+pada data kerja untuk demo. Purge dibukukan sebelum file dihapus; penghapusan gagal dapat
+diulang. Recovery memverifikasi checksum, menandai missing, dan dapat mengembalikan ready
+hanya jika berkas kembali dengan checksum tepat dan tidak berada dalam purge ledger.
+Jurnal upload menangani orphan akibat rollback/crash setelah masa aman 24 jam.
+Replay notifikasi mengembalikan kegagalan yang jelas selama A4 belum tersedia.
+
+Backup/restore: hentikan penulisan dan scheduler, jalankan recover untuk menguras purge
+yang sudah commit ke ledger privat, lalu ambil dump MySQL konsisten serta salinan
+berkas privat pada titik yang sama; simpan salinan terbaru
+`storage/app/private/a3-purge-ledger` secara terpisah dari snapshot lama. Restore ke
+database uji terpisah, pertahankan ledger terbaru, lalu jalankan recover sebelum membuka
+akses atau menyalakan scheduler. Ledger menyimpan lokasi internal, sehingga juga privat.
+Tanpa ledger terbaru, penghapusan setelah tanggal backup tidak dapat diketahui dari
+backup lama; jangan membuka hasil restore tersebut sebagai data aktif. Prosedur penuh
+backup/restore operasional oleh anggota lain belum diuji.
+
+Tes terarah sesudah MySQL skillmatch_testing diverifikasi dan dimigrasi:
+
+```powershell
+php vendor/bin/phpunit tests/Feature/A3ExecutionTest.php tests/Feature/A3RetentionTest.php tests/Feature/A3ApplicationTest.php tests/Feature/A3ApplicationDocumentsTest.php tests/Unit/ApplicationDocumentPolicyTest.php
+php tools/a3-concurrency-check.php --env=testing
+npm run build
+```
+
+Tool konkurensi mempertahankan fixture sintetis hanya di database tes karena audit
+append-only. Tes A4 lama yang memakai count/sole seluruh tabel perlu database fixture
+terisolasi jika dijalankan sesudah tool ini; jangan mereset database kerja.
+
 ## Assessment Organizer (10 Oktober 2026)
 
 Setelah mengambil kode, jalankan `php artisan migrate` memakai PHP kompatibel dengan vendor (lingkungan lokal ini memakai PHP 8.4 Herd), lalu `npm.cmd run build`. Migration `2026_10_10_000002_create_organizer_assessments.php` membuat assessments/questions/options; tidak perlu reset atau seeder assessment.
 
 Login sebagai Organizer aktif/terverifikasi, buka Event Saya -> detail event draft -> Assessment (di bawah Posisi dan jadwal) -> Kelola Assessment pada posisi. Isi durasi 1–120 menit, tambah 1–50 soal dengan empat opsi A–D dan satu kunci tiap soal. Simpan Draft boleh parsial. Publikasikan Assessment menampilkan konfirmasi; centang persetujuan lalu Konfirmasi Publikasi untuk mengunci set. Simpan draft dan kembali tersedia bila belum siap. Readiness nyata terhubung ke pengajuan/publikasi event dan snapshot lamaran, tetapi semua syarat A2 lainnya tetap berlaku. Publikasi assessment tidak menerbitkan event. Published tidak dibuka kembali; draft stale dari tab lain ditolak. Posisi dengan draft assessment dapat dihapus, sedangkan posisi dengan assessment published dipertahankan.
 
-Tes validasi: `php vendor/bin/phpunit tests/Unit/OrganizerAssessmentValidationTest.php`. Tes integrasi hanya sesudah konfigurasi MySQL `skillmatch_testing` terpisah dan migration tes: `php vendor/bin/phpunit tests/Feature/OrganizerAssessmentTest.php`. Timer/attempt peserta, screening/matching, aktivitas/notifikasi masih tahap berikutnya. Bukti dan blocker ada di [handoff assessment](docs/A4_ASSESSMENT_HANDOFF.md).
+Tes validasi: `php vendor/bin/phpunit tests/Unit/OrganizerAssessmentValidationTest.php`. Tes integrasi hanya sesudah konfigurasi MySQL `skillmatch_testing` terpisah dan migration tes: `php vendor/bin/phpunit tests/Feature/OrganizerAssessmentTest.php`. Timer/attempt peserta dan screening/matching sudah diimplementasikan pada tahap berikutnya; aktivitas/notifikasi lengkap masih tertunda. Bukti historis tahap Organizer ada di [handoff assessment](docs/A4_ASSESSMENT_HANDOFF.md), bukti A3 terbaru pada bagian atas.
 
 ## Update jadwal posisi (10 Oktober 2026)
 
@@ -28,7 +110,7 @@ Beranda publik menjelaskan tujuan platform, peran Volunteer/Organizer, cara memu
 
 Saat ini tersedia login dan registrasi, verifikasi email/reset password, profil Volunteer beserta skill dan jadwal ketersediaan, profil Organizer, ringkasan profil pengguna, serta dashboard dasar Admin.
 
-Pengelolaan draft event/posisi/jadwal, katalog event published, paket, order dan integrasi pembayaran Sandbox sudah tersedia. Pengajuan/publikasi masih memerlukan validator assessment; pembatalan memerlukan layanan lamaran/attempt. Lamaran, attendance, assessment, matching dan notifikasi lengkap masih dalam pengembangan. Aplikasi belum menyediakan seluruh alur kegiatan dari awal sampai akhir.
+Pengelolaan event/posisi/jadwal, katalog, paket/order dan pembayaran Sandbox tersedia, beserta lamaran/dokumen, screening/matching, assessment, seleksi, attendance dan riwayat A3. Validator assessment nyata dipakai pengajuan/publikasi; pembatalan terhubung ke lamaran/attempt. Notifikasi internal, aktivitas lengkap dan review/UAT aplikasi menyeluruh masih tertunda. Lihat status A3 terbaru di atas untuk migration dan batas pengujian.
 
 ## Prasyarat
 
@@ -192,7 +274,7 @@ Admin dapat mengedit nama, harga, manfaat dan status melalui **Kelola Paket**. B
 php artisan db:seed --class=DefaultPackageSeeder
 ```
 
-Seeder tidak menimpa edit admin, termasuk rename/nonaktif, saat diulang. Tidak perlu menjalankan ulang seeder akun atau migration untuk paket ini. Fitur screening/assessment/seleksi/dokumen/attendance pada kartu masih dalam pengembangan.
+Seeder tidak menimpa edit admin, termasuk rename/nonaktif, saat diulang. Tidak perlu menjalankan ulang seeder akun atau migration untuk paket ini. Copy status fitur pada kartu paket milik A2 masih perlu diselaraskan dengan implementasi A3/A4 terbaru; bukan sumber status penyelesaian modul.
 
 Fixture demo tambahan bersifat opsional, hanya untuk local/testing setelah seeder dasar:
 
@@ -202,7 +284,7 @@ php artisan db:seed --class=A2DemoSeeder
 
 Seeder menambahkan paket berlabel **Demo ... (fixture)** dan event **Demo A2 ...**, bukan harga produksi. Seluruh event demo tetap unpublished. Satu fixture berbayar berstatus approved untuk mengembangkan pembayaran secara terpisah; tidak menyatakan assessment atau moderasi end-to-end sudah tersedia. Seeder tidak menimpa event/paket dengan nama yang sama. Jangan menggunakannya pada deployment publik.
 
-Pengajuan dan publikasi menampilkan alasan penolakan ketika assessment belum dapat divalidasi. Pembatalan juga ditahan selama layanan lamaran/attempt belum tersedia. Status pembayaran yang sudah terverifikasi tetap tersimpan walaupun event belum memenuhi syarat publikasi.
+Pengajuan dan publikasi menampilkan alasan penolakan ketika assessment tidak valid. Pembatalan memakai layanan lamaran A3 dan adapter attempt A4 dalam transaksi event yang sama. Status pembayaran yang sudah terverifikasi tetap tersimpan walaupun event belum memenuhi syarat publikasi.
 
 Notifikasi internal belum terkirim selama layanan notifikasi belum terpasang. Setelah tersedia, produsen memakai layanan yang sama dan catatan bisnis dapat diproses ulang:
 
@@ -243,7 +325,7 @@ detail pelamar Organizer menampilkan pemeriksaan per syarat. Daftar lamaran mema
 hasil yang sama. Hasil gagal menjadi `screening_failed`. Hasil lolos memicu matching
 setelah commit; status menjadi `assessment_pending` sesudah skor tersimpan. Bila matching
 tertunda, status masih `submitted` dengan label **Lolos screening — menunggu pencocokan**.
-Pengerjaan assessment peserta dan notifikasi masih tahap berikutnya.
+Pengerjaan assessment peserta sudah tersedia; notifikasi internal masih menunggu A4.
 
 Untuk memproses lamaran submitted yang belum memiliki hasil setelah kegagalan sementara:
 
@@ -275,7 +357,7 @@ worker, route publik atau seeder baru. Bobot matching tetap skill 50%, availabil
 lokasi 20% dari snapshot saat submit. Hasil komponen/total tidak dibulatkan sebelum disimpan;
 tampilan dua desimal. Skor dan rincian hanya di daftar/detail pelamar EO. Volunteer hanya
 melihat **Menunggu assessment**, tanpa skor. Matching tidak menerima/menolak otomatis;
-nilai assessment terpisah dan pengerjaan assessment peserta belum tersedia.
+nilai assessment terpisah dan pengerjaan assessment peserta kini sudah tersedia.
 
 Untuk lamaran lama yang sudah lolos screening atau kegagalan sementara matching:
 

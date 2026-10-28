@@ -1,5 +1,17 @@
 # Brief A3 — lamaran, dokumen, seleksi, pelaksanaan
 
+## Status implementasi 28 Oktober 2026
+
+Tahap 1–7 sudah memiliki implementasi di feature/a3-applications-attendance dari
+34ae483: draft/submit/dokumen existing dipertahankan dan diperkuat, seleksi,
+withdrawal/close-selection, attendance/completion/riwayat, cancellation nyata A2/A4,
+serta retensi/recovery. Ini bukan klaim semua UAT selesai. Bukti tes/race/build/browser,
+schema/route, demo dan blocker tercatat di docs/A3_HANDOFF.md aplikasi.
+NotificationService/outbox/ActivityReadService A4 belum ada; hook/replay siap, delivery
+dan aktivitas lengkap tertunda. Validator/download/Policy organisasi tersedia untuk
+A1, pemasangan ke schema/endpoint A1 masih tertunda. Catatan baseline ZIP di bawah
+adalah histori; tidak memerintahkan penghapusan implementasi baru.
+
 ## Konsumsi jadwal posisi — 10 Oktober 2026
 
 A2 menyediakan opsi mengikuti event atau jadwal khusus; kedua mode tetap menghasilkan interval UTC pada `position_schedules` dan snapshot `[start,end]` yang sama. A3 tetap memakai snapshot interval pada submit dan pemeriksaan konflik, tanpa membaca ulang mode/profil untuk histori. Jadwal existing dan snapshot submitted tidak ditimpa. Tidak ada perubahan kepemilikan seleksi/attendance.

@@ -1,5 +1,13 @@
 # Brief A4 — screening, assessment, matching, aktivitas
 
+Integrasi A3 28 Oktober 2026: AssessmentService.cancelLocked(application,actor) menjadi
+adapter transaksi penarikan/close-selection/cancellation. Caller memegang event/application;
+adapter hanya lock attempt, tidak mengambil Volunteer lagi dan tidak menghasilkan skor.
+Late job tetap memakai proteksi terminal existing. A3 merender hasil A4 dan mengurutkan
+kandidat tanpa menghitung ulang. NotificationService/outbox/ActivityReadService tetap
+A4 dan belum tersedia; hook A3 menggunakan A2Dependencies dengan key terdokumentasi
+dan a3:retry-notifications untuk replay audit. Deduplikasi/delivery nyata belum diuji.
+
 ## Tahap screening — 11 Oktober 2026
 
 Pembaruan matching 27 Oktober 2026: MatchingService/MatchingEvaluationService kini

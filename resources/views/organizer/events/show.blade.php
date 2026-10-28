@@ -3,6 +3,10 @@
 @section('title', $event->title)
 
 @section('content')
+    <nav class="mb-5 flex flex-wrap gap-4" aria-label="Rekrutmen dan pelaksanaan">
+        <a class="font-semibold text-indigo-600" href="{{ route('organizer.applications.index', $event) }}">Pelamar</a>
+        <a class="font-semibold text-indigo-600" href="{{ route('organizer.execution.show', $event) }}">Pelaksanaan dan kehadiran</a>
+    </nav>
     <x-page-header
         :title="$event->title"
         description="Persetujuan admin, pembayaran dan publikasi merupakan tahap yang berbeda."

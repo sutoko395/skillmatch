@@ -75,6 +75,11 @@ class Application extends Model
         return $this->hasOne(AssessmentAttempt::class);
     }
 
+    public function attendance(): HasOne
+    {
+        return $this->hasOne(Attendance::class);
+    }
+
     public function cvDocument(): HasOne
     {
         return $this->hasOne(ApplicationDocument::class)

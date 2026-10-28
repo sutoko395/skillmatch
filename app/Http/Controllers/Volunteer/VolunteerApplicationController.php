@@ -58,6 +58,7 @@ class VolunteerApplicationController extends Controller
             'documents',
             'screeningResult',
             'assessmentAttempt',
+            'attendance',
         ]);
 
         $eligibility = $this->profileEligibilityService->check(Auth::user());

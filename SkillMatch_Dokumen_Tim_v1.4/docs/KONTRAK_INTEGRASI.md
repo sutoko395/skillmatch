@@ -1,5 +1,52 @@
 # Kontrak integrasi empat anggota
 
+Penyesuaian auth Organizer A3 28 Oktober 2026: mengikuti alur Organizer existing yang
+terintegrasi sejak 9dc9886, persetujuan organisasi (organizer_status active) dan akun
+aktif menjadi syarat seleksi/pelaksanaan; email verified bukan syarat tambahan route
+A3 Organizer. Policy tetap memeriksa pemilik event dan lamaran submitted. Volunteer
+tetap mengikuti syarat email masing-masing. Tidak memodifikasi data verifikasi akun.
+Ini mencegah loop verified → verification.notice → dashboard untuk Organizer approved.
+
+## Integrasi seleksi/pelaksanaan A3 — 28 Oktober 2026
+
+Route target A3 seleksi, close-selection, execution, attendance, complete, withdrawal
+dan history tersedia melalui routes/a3.php. Tambahan pendukung
+POST /organizer/applications/{application}/withdraw bernama organizer.applications.withdraw
+hanya untuk pengunduran accepted sebelum awal event, alasan wajib. Pending ditarik
+Volunteer; Organizer menolak under_review atau menutup pending dengan alasan.
+Accept/reject dibatasi starts_at dan decision_deadline bila tersedia. Snapshot lama
+tanpa deadline tetap memakai starts_at; tidak mengarang tenggat historis.
+
+Schema A3 tambahan attendances mempunyai correction_reason dan revision (optimistic
+locking pada PATCH, status hanya present/absent). document_purges adalah ledger operasi
+file, bukan tabel status lamaran: unique(disk,storage_key), reason, purged_at. Metadata
+application_documents purged tetap tersimpan untuk submitted; draft kadaluwarsa boleh
+dihapus dengan ledger independen. Disk private_documents berbagi root privat dengan
+alias private untuk kompatibilitas. Purge ledger salinan pada a3-purge-ledger wajib
+dipertahankan setelah restore; a3-upload-ledger memulihkan orphan setelah 24 jam.
+
+SelectionService.accept/reject/withdraw mengunci Volunteer → event → posisi bila perlu
+→ application → attendance/attempt. A2 cancellation tetap owner → event lalu memanggil
+EventCancellationService.cancelApplications di transaksi sama. A3 close/attendance/
+completion tidak mengambil lock Volunteer sesudah event. AssessmentService.cancelLocked
+(Application, User): void menerima application/event yang sudah dikunci, caller harus
+di transaksi; mengubah hanya attempt in_progress menjadi cancelled, tanpa skor/finalisasi.
+Layanan ini tidak mengambil ulang Volunteer. Retry transaksi tiga kali.
+
+Notifikasi A3 menggunakan NotificationService A4 via A2Dependencies, key
+application.<status>:application_id:revision:recipient_id,
+attendance.recorded:attendance_id:revision:recipient_id,
+event.completed:event_id:revision:recipient_id. a3:retry-notifications membaca audit
+--after/--limit, key sama, dan gagal jelas bila layanan A4 belum tersedia. Tidak ada
+outbox A3. Upload/download dipasangi throttle 20/60 per menit; download wajib verified.
+Snapshot profil baru menambah city_name/bio untuk tampilan, bukan input matching baru.
+
+DocumentStorageService.validateOrganizationUpload(file,owner,actor) mengembalikan
+original_name/mime_type/size_bytes/checksum_sha256 untuk A1 setelah Policy terpisah;
+tidak menyatakan ready sebelum metadata A1 tersimpan. downloadOrganization(document,actor)
+attachment privat, Policy organisasi dan audit. A1 tetap pemilik schema/endpoint
+organisasi dan migrasi file legacy; integrasi utilitas ini masih tertunda A1.
+
 ## Sinkronisasi halaman pembayaran - perbaikan 10 Oktober 2026
 
 GET organizer.orders.show tetap membaca status lokal tanpa mengubah pembayaran dari parameter browser. Checkout baru memakai finish URL dengan penanda check_payment=1; hanya penanda ini pada halaman pending dengan checkout_url yang memicu satu POST organizer.orders.sync oleh Alpine paymentStatus. Penanda tidak membuktikan paid. Kunjungan detail biasa tidak melakukan pemeriksaan otomatis. Request memakai CSRF/session, Policy dan throttle existing. POST dengan Accept: application/json mengembalikan hanya status kanonik serta boolean paid, activated, requires_follow_up dari PaymentService.sync; tidak mengekspor model, key atau token. Klik navigasi membatalkan request browser dan mencegah reload dari hasil terlambat; batas HTTP status server lima detik (koneksi dua detik), tidak mengubah batas checkout. Form HTML tetap redirect/flash dan berfungsi tanpa JavaScript. Admin memakai form POST existing dengan tombol submit eksplisit. Tidak ada schema, status, route baru atau perubahan kepemilikan A3/A4. Gateway tidak tersedia/pending tidak dianggap paid; UI menyediakan retry manual tanpa polling berulang.

@@ -1,9 +1,9 @@
 @extends('organizer.layouts.sidebar')
-@section('title', 'Tinjau Lamaran - ' . $application->volunteer->name)
+@section('title', 'Tinjau Lamaran - ' . ($application->snapshot_json['profile']['name'] ?? $application->volunteer->name))
 @section('content')
 <div class="mx-auto max-w-7xl space-y-6">
     <div class="flex flex-wrap items-center justify-between gap-4">
-        <x-page-header :title="'Lamaran: ' . $application->volunteer->name" :description="'Untuk posisi ' . $application->position->name . ' di ' . $application->event->title" />
+        <x-page-header :title="'Lamaran: ' . ($application->snapshot_json['profile']['name'] ?? $application->volunteer->name)" :description="'Untuk posisi ' . $application->position->name . ' di ' . $application->event->title" />
         <a href="{{ route('organizer.applications.index', $application->event) }}" class="inline-flex items-center text-sm font-semibold text-slate-600 hover:text-slate-900">
             &larr; Kembali ke Daftar Pelamar
         </a>
@@ -16,6 +16,8 @@
     @endif
 
     {{-- Status Bar --}}
+    <x-application-selection :application="$application" />
+    @php($candidate = $application->snapshot_json['profile'] ?? [])
     <x-section-card>
         <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4">
             <div>
@@ -52,32 +54,32 @@
                 <h3 class="text-base font-bold text-gray-900 border-b border-slate-200 pb-2">Informasi Kandidat</h3>
                 <div>
                     <span class="text-xs font-medium text-slate-500">Nama Lengkap</span>
-                    <p class="text-sm font-semibold text-slate-900">{{ $application->volunteer->name }}</p>
+                    <p class="text-sm font-semibold text-slate-900">{{ $candidate['name'] ?? 'Tidak tercatat dalam snapshot' }}</p>
                 </div>
                 <div>
                     <span class="text-xs font-medium text-slate-500">Email</span>
-                    <p class="text-sm text-slate-700">{{ $application->volunteer->email }}</p>
+                    <p class="text-sm text-slate-700">{{ $candidate['email'] ?? 'Tidak tercatat dalam snapshot' }}</p>
                 </div>
                 <div>
                     <span class="text-xs font-medium text-slate-500">No. Telepon</span>
-                    <p class="text-sm text-slate-700">{{ $application->volunteer->volunteerProfile?->phone ?? '-' }}</p>
+                    <p class="text-sm text-slate-700">{{ $candidate['phone'] ?? 'Tidak tercatat dalam snapshot' }}</p>
                 </div>
                 <div>
                     <span class="text-xs font-medium text-slate-500">Kota Domisili</span>
-                    <p class="text-sm text-slate-700">{{ $application->volunteer->volunteerProfile?->cityRecord?->name ?? '-' }}</p>
+                    <p class="text-sm text-slate-700">{{ $candidate['city_name'] ?? (isset($candidate['city_id']) ? 'Kota #'.$candidate['city_id'] : 'Tidak tercatat dalam snapshot') }}</p>
                 </div>
                 <div>
                     <span class="text-xs font-medium text-slate-500">Bio Singkat</span>
-                    <p class="text-sm text-slate-700">{{ $application->volunteer->volunteerProfile?->bio ?? '-' }}</p>
+                    <p class="text-sm text-slate-700">{{ $candidate['bio'] ?? 'Tidak tercatat dalam snapshot' }}</p>
                 </div>
 
                 {{-- Skill Volunteer --}}
                 <div class="pt-2">
                     <span class="text-xs font-medium text-slate-500">Keahlian (Skill) Volunteer</span>
                     <div class="mt-1 flex flex-wrap gap-1.5">
-                        @forelse($application->volunteer->volunteerSkills as $vs)
+                        @forelse(($candidate['skills'] ?? []) as $vs)
                             <span class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700">
-                                {{ $vs->skill?->name }} ({{ ucfirst($vs->level) }})
+                                {{ $vs['name'] ?? 'Skill #'.($vs['id'] ?? '?') }} ({{ ucfirst($vs['level'] ?? '') }})
                             </span>
                         @empty
                             <span class="text-xs text-slate-500">Tidak ada skill tercatat.</span>
@@ -162,9 +164,11 @@
                                             </span>
                                         </td>
                                         <td class="px-4 py-3 text-right">
+                                            @if($doc->status === 'ready' && auth()->user()->can('download', $doc))
                                             <a href="{{ route('documents.download', $doc) }}" class="inline-flex items-center rounded-lg bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-100">
                                                 Unduh Dokumen &darr;
                                             </a>
+                                            @else <span class="text-slate-500">Dokumen tidak tersedia</span> @endif
                                         </td>
                                     </tr>
                                 @endforeach
