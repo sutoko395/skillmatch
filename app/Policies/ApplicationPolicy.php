@@ -30,7 +30,7 @@ class ApplicationPolicy
             $user->role === 'organizer'
             && $user->organizer_status === 'active'
             && $application->event?->organizer_id === $user->id
-            && $application->status !== 'draft'
+            && $application->submitted_at !== null
         ) {
             return true;
         }
@@ -48,6 +48,20 @@ class ApplicationPolicy
 
     public function submit(User $user, Application $application): bool
     {
-        return $this->update($user, $application);
+        return $user->is_active && $user->role === 'volunteer'
+            && $user->hasVerifiedEmail() && $application->volunteer_id === $user->id;
+    }
+
+    public function select(User $user, Application $application): bool
+    {
+        return $user->is_active && $user->role === 'organizer'
+            && $user->organizer_status === 'active' && $application->submitted_at !== null
+            && $application->event?->organizer_id === $user->id;
+    }
+
+    public function withdraw(User $user, Application $application): bool
+    {
+        return ($this->submit($user, $application) && $application->status !== 'accepted')
+            || (in_array($application->status, ['accepted', 'withdrawn'], true) && $this->select($user, $application));
     }
 }
