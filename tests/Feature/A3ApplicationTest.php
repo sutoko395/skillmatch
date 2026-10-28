@@ -281,7 +281,10 @@ class A3ApplicationTest extends DatabaseTestCase
         $second = $service->submit($first, $volunteer);
 
         $this->assertSame($first->id, $second->id);
-        $this->assertSame('submitted', $second->status);
+        // A4 may already have evaluated the first submission. Replay must return
+        // the persisted state rather than the stale in-memory submitted object.
+        $this->assertSame($first->fresh()->status, $second->status);
+        $this->assertSame(1, AuditLog::where('action', 'application.submitted')->where('subject_id', $first->id)->count());
 
         // Counter remains 1
         $entitlement = EventEntitlement::where('event_id', $event->id)->first();
