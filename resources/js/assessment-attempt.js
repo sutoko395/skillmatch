@@ -4,6 +4,11 @@ export default (config) => ({
     finished: false,
     message: 'Jawaban terakhir dimuat dari server.',
     timeLeft: '',
+    activeQuestion: 0,
+    listOpen: false,
+    questionIds: config.questionIds ?? [],
+    answeredIds: config.answeredIds ?? [],
+    get answeredCount() { return this.answeredIds.length; },
     queue: Promise.resolve(),
     offset: Date.parse(config.serverNow) - Date.now(),
     init() {
@@ -26,6 +31,19 @@ export default (config) => ({
             answers[input.name.match(/\[(\d+)\]/)[1]] = Number(input.value);
         });
         return { revision: this.revision, answers };
+    },
+    questionAnswered(id) { return this.answeredIds.includes(Number(id)); },
+    answerChanged() {
+        this.answeredIds = Object.keys(this.payload().answers).map(Number);
+        this.save();
+    },
+    selectQuestion(index) {
+        if (index < 0 || index >= this.questionIds.length || this.finished) return;
+        this.listOpen = false;
+        if (index === this.activeQuestion) return;
+        this.activeQuestion = index;
+        this.save();
+        this.$nextTick(() => this.$refs.answers.querySelector('[data-question-index="' + index + '"] legend')?.focus());
     },
     save() { return this.send(false); },
     submit() {
