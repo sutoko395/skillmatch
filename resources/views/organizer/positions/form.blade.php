@@ -108,12 +108,13 @@
 
             <div class="grid gap-6 md:grid-cols-2">
                 @foreach([
-                    'required_full_availability' => 'Wajib tersedia sepanjang jadwal',
+                    'required_full_availability' => 'Wajib tersedia selama jadwal tugas posisi',
                     'required_same_city' => 'Wajib berdomisili di kota event',
                 ] as $field => $label)
                     <x-form-field
                         :name="$field"
                         :label="$label"
+                        :helper="$field === 'required_full_availability' ? 'Jika wajib, ketersediaan pelamar harus mencakup seluruh jadwal posisi agar lolos screening.' : null"
                     >
                         <select
                             id="{{ $field }}"
