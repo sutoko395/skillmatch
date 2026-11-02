@@ -38,6 +38,10 @@ class ScreeningService
                 ['before' => $before, 'after' => ['status' => $locked->status, 'revision' => $locked->revision]],
                 $evaluation['passed'] ? 'screening-passed' : 'screening-failed');
 
+            if (! $evaluation['passed']) {
+                app(VolunteerEmailService::class)->enqueue($locked, VolunteerEmailService::FAILED);
+            }
+
             return $evaluation;
         });
 

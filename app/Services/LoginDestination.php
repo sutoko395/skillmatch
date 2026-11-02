@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Application;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -70,6 +71,13 @@ class LoginDestination
         }
 
         $path = $parts['path'] ?? '';
+
+        // Email deep links may return only to the authenticated volunteer's own application.
+        if ($user->role === 'volunteer' && $user->is_active
+            && preg_match('~\A/volunteer/applications/([1-9][0-9]*)(?:/assessment)?\z~', $path, $match)
+            && Application::whereKey($match[1])->where('volunteer_id', $user->id)->exists()) {
+            return $path;
+        }
 
         if (
             $user->role === 'volunteer' &&
