@@ -1,209 +1,102 @@
 @extends('volunteer.layouts.sidebar')
 @section('title', 'Detail Lamaran - ' . $application->event->title)
 @section('content')
+@php
+    $status = $application->status;
+    $screening = $application->screeningResult;
+    $attempt = $application->assessmentAttempt;
+    $assessmentFinished = in_array($attempt?->status, ['submitted', 'expired'], true);
+    $eventCancelled = $application->event->lifecycle_status === 'cancelled';
+    $terminal = in_array($status, ['screening_failed', 'accepted', 'rejected', 'withdrawn', 'cancelled'], true) || $eventCancelled;
+    $canOpenAssessment = $status === 'assessment_pending' && $assessmentSummary
+        && !in_array($attempt?->status, ['submitted', 'expired', 'cancelled'], true)
+        && $recruitmentDates['assessment_deadline'] && now()->lt($recruitmentDates['assessment_deadline'])
+        && $application->event->lifecycle_status === 'upcoming' && now()->lt($application->event->starts_at);
+    [$bannerTitle, $bannerText] = match (true) {
+        $eventCancelled || $status === 'cancelled' => ['Kegiatan dibatalkan', 'Proses lamaran ini telah dihentikan karena event dibatalkan.'],
+        $status === 'accepted' => ['Selamat, kamu DITERIMA!', 'Kamu terpilih untuk posisi ' . $application->position->name . '. Periksa jadwal tugasmu di bawah.'],
+        $status === 'rejected' => ['Maaf, kamu BELUM TERPILIH', 'Terima kasih sudah mengikuti proses seleksi untuk posisi ' . $application->position->name . '.'],
+        $status === 'screening_failed' => ['Lamaran belum memenuhi syarat wajib', 'Lamaranmu belum bisa dilanjutkan ke tahap selanjutnya. Lihat alasan pada hasil screening.'],
+        $status === 'withdrawn' => ['Lamaran telah ditarik', 'Proses seleksi lamaran ini telah berakhir.'],
+        $status === 'draft' => ['Lengkapi lamaranmu', 'Periksa profil dan dokumen sebelum mengirimkan lamaran.'],
+        $assessmentFinished || $status === 'under_review' => ['Menunggu hasil seleksi', 'Lamaranmu sedang ditinjau penyelenggara. Hasil seleksi akan ditampilkan pada halaman ini.'],
+        $status === 'submitted' => ['Lamaran sedang diproses', $screening?->passed ? 'Lamaranmu menunggu proses pencocokan sebelum assessment.' : 'Lamaranmu menunggu hasil screening sebelum assessment.'],
+        $status === 'assessment_pending' && $recruitmentDates['assessment_deadline'] && now()->gte($recruitmentDates['assessment_deadline']) => ['Tenggat assessment telah berakhir', 'Assessment tidak dapat dimulai. Periksa informasi tahap seleksi di bawah.'],
+        default => ['Periksa tahap assessment', 'Lihat informasi assessment dan tenggat pengerjaan pada perkembangan lamaran.'],
+    };
+    $bannerColor = match (true) {
+        $eventCancelled || in_array($status, ['withdrawn', 'cancelled'], true) => 'border-slate-200 bg-slate-100 text-slate-800',
+        $status === 'accepted' => 'border-emerald-200 bg-emerald-50 text-emerald-900',
+        in_array($status, ['rejected', 'screening_failed'], true) => 'border-rose-200 bg-rose-50 text-rose-900',
+        default => 'border-indigo-200 bg-indigo-50 text-indigo-900',
+    };
+@endphp
 <div class="mx-auto max-w-7xl space-y-6">
-    <x-page-header :title="$application->event->title" :description="'Posisi: ' . $application->position->name" />
-    @if($application->status !== 'draft')<x-application-selection :application="$application" />@endif
-    @if($application->status === 'accepted')
-        <x-section-card><h2 class="text-lg font-semibold">Kehadiran</h2><p>{{ ['unrecorded' => 'Belum dicatat', 'present' => 'Hadir', 'absent' => 'Tidak hadir'][$application->attendance?->status ?? 'unrecorded'] }}</p><p class="text-sm text-slate-600">Kehadiran dicatat oleh Organizer.</p></x-section-card>
-    @endif
+    <header class="space-y-4">
+        <a href="{{ route('volunteer.applications.index') }}" class="inline-flex w-fit items-center gap-2 rounded-xl border border-indigo-200 bg-white px-3 py-2 text-sm font-semibold text-indigo-700 shadow-sm transition hover:border-indigo-300 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+            <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m7 7-7-7 7-7" /></svg>
+            Lamaran Saya
+        </a>
+        <x-page-header title="Detail Lamaran" :description="$application->event->title . ' · Posisi: ' . $application->position->name" />
+    </header>
 
-    @if (session('success'))
-        <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
-            {{ session('success') }}
+    {{-- The panel layout already renders success and validation messages. --}}
+    @if ($canOpenAssessment)
+        <div id="assessment-summary" class="scroll-mt-24">
+            <x-volunteer-application-assessment :application="$application" :assessment="$assessmentSummary" :deadline="$recruitmentDates['assessment_deadline']" featured />
         </div>
-    @endif
-
-    @if ($errors->any())
-        <div class="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
-            <p class="font-semibold">Terjadi kesalahan:</p>
-            <ul class="mt-1 list-inside list-disc">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <x-section-card>
-        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4">
-            <div>
-                <p class="text-sm font-medium text-slate-500">Status Lamaran</p>
-                <div class="mt-1 flex flex-wrap items-center gap-3">
-                    <x-application-status :application="$application" />
-
-                    @if($application->status === 'submitted')
-                        <span class="text-sm text-slate-600">Dikirim pada {{ $application->submitted_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</span>
+    @else
+        <section aria-label="Status lamaran" class="rounded-2xl border p-5 sm:p-6 {{ $bannerColor }}">
+            <div class="flex items-start gap-4">
+                <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/70" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-6 w-6">
+                        @if ($status === 'accepted' && !$eventCancelled)
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m5 12 4 4L19 6" />
+                        @else
+                            <circle cx="12" cy="12" r="9" /><path stroke-linecap="round" d="M12 11v5m0-9v.01" />
+                        @endif
+                    </svg>
+                </span>
+                <div class="min-w-0 flex-1">
+                    <h2 class="text-xl font-bold">{{ $bannerTitle }}</h2>
+                    <p class="mt-1 text-sm leading-relaxed">{{ $bannerText }}</p>
+                    @if ($status !== 'accepted')
+                        <div class="mt-3"><x-application-status :application="$application" /></div>
                     @endif
-                </div>
-                <div class="mt-3 text-sm text-slate-600">
-                    @if ($recruitmentDates['decision_deadline'])
-                        <p>Hasil seleksi paling lambat: <span class="font-semibold">{{ $recruitmentDates['decision_deadline']->format('d/m/Y H:i') }} WIB</span></p>
-                        <p class="mt-1">Hasil dapat diumumkan lebih awal.</p>
-                    @else
-                        <p>Jadwal hasil seleksi belum tersedia.</p>
+                    @if ($status === 'draft')
+                        <form method="POST" action="{{ route('volunteer.applications.submit', $application) }}" class="mt-4">
+                            @csrf
+                            <x-button type="submit">Kirimkan Lamaran</x-button>
+                        </form>
                     @endif
                 </div>
             </div>
+        </section>
+    @endif
 
-            @if($application->status === 'draft')
-                <div>
-                    <form method="POST" action="{{ route('volunteer.applications.submit', $application) }}">
-                        @csrf
-                        <x-button type="submit" class="bg-indigo-600 hover:bg-indigo-700">Kirimkan Lamaran</x-button>
-                    </form>
-                </div>
+    @if ($status === 'draft' && !($eligibility['complete'] ?? true))
+        <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+            <p class="font-semibold">Profil Anda belum lengkap!</p>
+            <p class="mt-1">Silakan lengkapi data profil dan skill Anda sebelum mengirimkan lamaran.</p>
+            <a href="{{ route('volunteer.profile.edit') }}" class="mt-2 inline-block rounded font-semibold underline focus:ring-2 focus:ring-amber-600">Lengkapi Profil &rarr;</a>
+        </div>
+    @endif
+
+    <div class="flex flex-col gap-6 xl:grid xl:items-start xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        <div class="order-2 min-w-0 space-y-6 xl:order-1">
+            @include('volunteer.applications.partials.progress')
+            @include('volunteer.applications.partials.documents')
+
+            @if (in_array($status, ['submitted', 'assessment_pending', 'under_review'], true))
+                <details class="rounded-2xl border border-slate-200 bg-white shadow-sm">
+                    <summary class="cursor-pointer rounded-2xl p-5 text-sm font-semibold text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">Kelola penarikan lamaran</summary>
+                    <div class="px-4 pb-4"><x-application-selection :application="$application" /></div>
+                </details>
             @endif
         </div>
-
-        @if($application->status === 'draft' && !($eligibility['complete'] ?? true))
-            <div class="mt-4 rounded-xl bg-amber-50 p-4 text-sm text-amber-800">
-                <p class="font-semibold">Profil Anda belum lengkap!</p>
-                <p class="mt-1">Silakan lengkapi data profil dan skill Anda sebelum mengirimkan lamaran.</p>
-                <a href="{{ route('volunteer.profile.edit') }}" class="mt-2 inline-block font-semibold underline">Lengkapi Profil &rarr;</a>
-            </div>
-        @endif
-
-        {{-- Kelola Dokumen Privat Lamaran --}}
-        @if ($application->status !== 'draft')
-            <div class="mt-6">
-                <x-application-screening :application="$application" />
-            </div>
-            <div class="mt-6">
-                <x-volunteer-application-assessment :application="$application" :assessment="$assessmentSummary" :deadline="$recruitmentDates['assessment_deadline']" />
-            </div>
-        @endif
-        <div class="mt-6 border-b border-slate-200 pb-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h3 class="text-lg font-bold text-gray-900">Dokumen Lamaran</h3>
-                    <p class="text-sm text-slate-600">Unggah CV (wajib format PDF) dan dokumen pendukung (PDF, JPG, PNG). Maksimal 5 MB per file, maksimal 5 file.</p>
-                </div>
-            </div>
-
-            {{-- Daftar Dokumen Tersimpan --}}
-            <div class="mt-4">
-                @if($application->documents->isNotEmpty())
-                    <div class="overflow-hidden rounded-xl border border-slate-200">
-                        <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
-                            <thead class="bg-slate-50 font-medium text-slate-600">
-                                <tr>
-                                    <th class="px-4 py-3">Nama Dokumen</th>
-                                    <th class="px-4 py-3">Tipe</th>
-                                    <th class="px-4 py-3">Ukuran</th>
-                                    <th class="px-4 py-3">Status</th>
-                                    <th class="px-4 py-3 text-right">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 bg-white">
-                                @foreach($application->documents as $doc)
-                                    <tr>
-                                        <td class="px-4 py-3 font-medium text-slate-900">
-                                            {{ $doc->original_name }}
-                                        </td>
-                                        <td class="px-4 py-3 text-slate-600">
-                                            <span class="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium {{ $doc->document_type === 'cv' ? 'bg-indigo-50 text-indigo-700' : 'bg-slate-100 text-slate-700' }}">
-                                                {{ strtoupper($doc->document_type) }}
-                                            </span>
-                                        </td>
-                                        <td class="px-4 py-3 text-slate-600">
-                                            {{ number_format($doc->size_bytes / 1024, 1) }} KB
-                                        </td>
-                                        <td class="px-4 py-3 text-slate-600">
-                                            <span class="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700">
-                                                {{ ['ready' => 'Dokumen tersimpan', 'missing' => 'Berkas tidak tersedia', 'purged' => 'Dokumen telah dihapus'][$doc->status] ?? 'Tidak tersedia' }}
-                                            </span>
-                                        </td>
-                                        <td class="px-4 py-3 text-right space-x-2">
-                                            @if($doc->status === 'ready')
-                                            <a href="{{ route('documents.download', $doc) }}" class="inline-flex items-center text-xs font-semibold text-indigo-600 hover:text-indigo-800">
-                                                Unduh
-                                            </a>
-                                            @endif
-                                            @if($application->status === 'draft' && $doc->status === 'ready')
-                                                <form method="POST" action="{{ route('volunteer.documents.destroy', $doc) }}" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dokumen ini?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-xs font-semibold text-rose-600 hover:text-rose-800">
-                                                        Hapus
-                                                    </button>
-                                                </form>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <div class="rounded-xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">
-                        Belum ada dokumen yang diunggah untuk lamaran ini.
-                    </div>
-                @endif
-            </div>
-
-            {{-- Form Upload Dokumen (Jika masih Draft) --}}
-            @if($application->status === 'draft')
-                <div class="mt-6 rounded-xl bg-slate-50 p-4 border border-slate-200">
-                    <h4 class="font-semibold text-gray-900">Unggah Dokumen Baru</h4>
-                    <form method="POST" action="{{ route('volunteer.documents.store', $application) }}" enctype="multipart/form-data" class="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3">
-                        @csrf
-                        <div>
-                            <label class="block text-xs font-medium text-slate-700">Tipe Dokumen</label>
-                            <select name="document_type" class="mt-1 block w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                                <option value="cv">Curriculum Vitae (CV) - PDF</option>
-                                <option value="supporting">Dokumen Pendukung - PDF/JPG/PNG</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-slate-700">Pilih File (Maks. 5 MB)</label>
-                            <input type="file" name="file" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:rounded-md file:border-0 file:bg-indigo-50 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100" required />
-                        </div>
-                        <div class="flex items-end">
-                            <x-button type="submit" class="w-full justify-center">Unggah Dokumen</x-button>
-                        </div>
-                    </form>
-                </div>
-            @endif
-        </div>
-
-        <div class="mt-6 space-y-4">
-            <div>
-                <h3 class="text-lg font-bold text-gray-900">Penyelenggara</h3>
-                <p class="text-slate-700">{{ $application->event->organizer->organizerProfile?->organization_name ?? $application->event->organizer->name }}</p>
-            </div>
-
-            <div>
-                <h3 class="text-lg font-bold text-gray-900">Lokasi & Waktu Event</h3>
-                <p class="text-slate-700">{{ $application->event->location }} &middot; {{ $application->event->cityRecord?->name }}</p>
-                <p class="text-slate-700">{{ $application->event->starts_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} - {{ $application->event->ends_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</p>
-            </div>
-
-            <div>
-                <h3 class="text-lg font-bold text-gray-900">Deskripsi Posisi ({{ $application->position->name }})</h3>
-                <p class="whitespace-pre-line text-slate-700">{{ $application->position->description }}</p>
-            </div>
-
-            @if($application->position->positionSkills->isNotEmpty())
-                <div>
-                    <h4 class="font-semibold text-gray-900">Skill yang Dibutuhkan</h4>
-                    <ul class="mt-1 list-inside list-disc text-slate-700">
-                        @foreach($application->position->positionSkills as $s)
-                            <li>{{ $s->skill->name }} - {{ ucfirst($s->minimum_level) }} ({{ $s->is_required ? 'Wajib' : 'Preferensi' }})</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            @if($application->position->schedules->isNotEmpty())
-                <div>
-                    <h4 class="font-semibold text-gray-900">Jadwal Tugas (WIB)</h4>
-                    @foreach($application->position->schedules as $slot)
-                        <p class="text-slate-700">{{ $slot->starts_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} - {{ $slot->ends_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}</p>
-                    @endforeach
-                </div>
-            @endif
-        </div>
-    </x-section-card>
+        <aside class="contents xl:order-2 xl:block xl:min-w-0 xl:space-y-6" aria-label="Informasi seleksi dan posisi">
+            @include('volunteer.applications.partials.information')
+        </aside>
+    </div>
 </div>
 @endsection
