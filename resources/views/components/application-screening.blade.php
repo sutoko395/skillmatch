@@ -1,4 +1,4 @@
-@props(['application', 'detailed' => false])
+@props(['application', 'detailed' => false, 'showEvaluationInfo' => true])
 @if ($application->status !== 'draft')
     @php($result = $application->screeningResult)
     <section class="rounded-xl border border-slate-200 bg-white p-5" aria-label="Hasil screening">
@@ -51,7 +51,9 @@
                 </ul>
                 <p class="mt-3 text-sm text-slate-600">Lamaran ini tidak dapat dilanjutkan atau dikirim ulang pada event yang sama.</p>
             @endif
-            <p class="mt-4 text-xs text-slate-500">Berdasarkan data saat lamaran dikirim. Dievaluasi {{ $result->evaluated_at->copy()->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB.</p>
+            @if ($showEvaluationInfo)
+                <p class="mt-4 text-xs text-slate-500">Berdasarkan data saat lamaran dikirim. Dievaluasi {{ $result->evaluated_at->copy()->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB.</p>
+            @endif
         @endif
     </section>
 @endif
