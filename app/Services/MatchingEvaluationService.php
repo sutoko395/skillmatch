@@ -42,6 +42,8 @@ class MatchingEvaluationService
                 'before' => $before, 'after' => ['status' => $locked->status, 'revision' => $locked->revision],
             ], 'matching-completed');
 
+            app(VolunteerEmailService::class)->enqueue($locked, VolunteerEmailService::AVAILABLE);
+
             return $result;
         });
     }

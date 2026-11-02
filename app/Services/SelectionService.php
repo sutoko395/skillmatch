@@ -137,6 +137,10 @@ class SelectionService
             ['before' => ['status' => $before], 'after' => ['status' => $status, 'revision' => $application->revision]], 'a3_transition');
         app(A2Dependencies::class)->notify('application.'.$status.':'.$application->id.':'.$application->revision.':'.$application->volunteer_id,
             $application->volunteer, ['type' => 'application.'.$status, 'application_id' => $application->id]);
+
+        if (in_array($status, ['accepted', 'rejected'], true)) {
+            app(VolunteerEmailService::class)->enqueue($application, VolunteerEmailService::DECISION);
+        }
     }
 
     public function withdraw(Application $application, User $actor, ?string $reason = null): Application
