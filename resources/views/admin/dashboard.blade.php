@@ -332,4 +332,5 @@ document.addEventListener('DOMContentLoaded', function () {
     renderChart('volunteers');
 });
 </script>
+@include('notifications.summary')
 @endsection

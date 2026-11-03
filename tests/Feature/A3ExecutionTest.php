@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Attendance;
 use App\Models\AuditLog;
+use App\Models\NotificationOutbox;
 use App\Models\User;
 use App\Services\AssessmentService;
 use App\Services\AuditService;
@@ -267,25 +268,14 @@ class A3ExecutionTest extends DatabaseTestCase
             ->assertOk()->assertViewHas('applications', fn ($rows) => $rows->pluck('id')->all() === [$b->id, $a->id, $c->id]);
     }
 
-    public function test_notification_replay_preserves_transition_key_and_reports_missing_a4(): void
+    public function test_notification_replay_preserves_transition_key_with_integrated_a4(): void
     {
         $a = $this->reviewApplication();
         $after = AuditLog::max('id');
         app(SelectionService::class)->accept($a, $a->event->organizer);
-        $this->artisan('a3:retry-notifications', ['--after' => $after])->assertFailed();
-        $adapter = new class
-        {
-            public array $keys = [];
-
-            public function enqueue(string $key, User $recipient, array $payload): void
-            {
-                $this->keys[$key] = $payload;
-            }
-        };
-        $this->app->instance('App\\Services\\NotificationService', $adapter);
         $this->artisan('a3:retry-notifications', ['--after' => $after])->assertSuccessful();
         $this->artisan('a3:retry-notifications', ['--after' => $after])->assertSuccessful();
-        $this->assertCount(1, $adapter->keys);
-        $this->assertArrayHasKey('application.accepted:'.$a->id.':'.$a->fresh()->revision.':'.$a->volunteer_id, $adapter->keys);
+        $key = 'application.accepted:'.$a->id.':'.$a->fresh()->revision.':'.$a->volunteer_id;
+        $this->assertSame(1, NotificationOutbox::where('dedupe_key', $key)->where('channel', 'database')->count());
     }
 }

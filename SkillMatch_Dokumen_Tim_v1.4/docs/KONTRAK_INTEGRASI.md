@@ -1,5 +1,12 @@
 # Kontrak integrasi empat anggota
 
+## Perbaikan alur terintegrasi - 3 November 2026
+
+Fondasi schema bersama dan notifikasi internal tersedia; email tetap channel mail.
+Rincian lingkup dan verifikasi ada pada docs/INTEGRATED_FLOWS_HANDOFF.md.
+
+
+
 Perubahan hasil terintegrasi mengikuti persetujuan pengguna dalam
 [AGENTS.md](../../AGENTS.md#persetujuan-perubahan-hasil-kerja-dan-tampilan).
 Perubahan interface, route dan komponen bersama tidak boleh menghilangkan fitur

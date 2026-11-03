@@ -42,7 +42,7 @@ try {
             app(VolunteerEmailService::class)->enqueue($application, VolunteerEmailService::AVAILABLE);
             echo 'queued';
         } else {
-            $row = NotificationOutbox::where('application_id', $application->id)->sole();
+            $row = NotificationOutbox::where('channel', 'mail')->where('application_id', $application->id)->sole();
             echo app(VolunteerEmailDelivery::class)->deliver($row->id);
         }
         exit(0);
@@ -78,11 +78,11 @@ try {
         if ($outcomes !== ($mode === 'enqueue' ? ['queued', 'queued'] : ['ignored', 'sent'])) {
             throw new RuntimeException('Unexpected concurrent result');
         }
-        if (NotificationOutbox::where('application_id', $application->id)->count() !== 1) {
+        if (NotificationOutbox::where('channel', 'mail')->where('application_id', $application->id)->count() !== 1) {
             throw new RuntimeException('Duplicate outbox entries');
         }
     }
-    $row = NotificationOutbox::where('application_id', $application->id)->sole();
+    $row = NotificationOutbox::where('channel', 'mail')->where('application_id', $application->id)->sole();
     if ($row->status !== 'sent' || $row->attempts !== 1 || ! $row->delivered_at) {
         throw new RuntimeException('Inconsistent delivery state');
     }

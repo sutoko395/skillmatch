@@ -43,6 +43,8 @@ class MatchingEvaluationService
             ], 'matching-completed');
 
             app(VolunteerEmailService::class)->enqueue($locked, VolunteerEmailService::AVAILABLE);
+            app(NotificationService::class)->enqueue('application.matched:'.$locked->id.':'.$locked->revision.':'.$locked->volunteer_id,
+                $locked->volunteer, ['type' => 'application.matched', 'application_id' => $locked->id]);
 
             return $result;
         });

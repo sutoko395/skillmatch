@@ -157,6 +157,10 @@ class AssessmentService
         $application->forceFill(['status' => 'under_review', 'revision' => $application->revision + 1])->save();
         app(AuditService::class)->record($actor, 'assessment.finalized', $attempt, ['after' => ['status' => $status]]);
         app(AuditService::class)->record($actor, 'application.assessed', $application, ['after' => ['status' => 'under_review', 'revision' => $application->revision]]);
+        foreach ([$application->volunteer, $application->event->organizer] as $recipient) {
+            app(NotificationService::class)->enqueue('application.assessed:'.$application->id.':'.$application->revision.':'.$recipient->id,
+                $recipient, ['type' => 'application.assessed', 'application_id' => $application->id]);
+        }
     }
 
     public function expire(Application $application): void

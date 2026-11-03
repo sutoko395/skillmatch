@@ -1,5 +1,12 @@
 # Design specification SkillMatch
 
+## Perbaikan alur terintegrasi - 3 November 2026
+
+Fondasi schema bersama dan notifikasi internal tersedia; email tetap channel mail.
+Rincian lingkup dan verifikasi ada pada docs/INTEGRATED_FLOWS_HANDOFF.md.
+
+
+
 ## Persetujuan perubahan tampilan — 28 Oktober 2026
 
 Pertahankan tampilan existing yang sudah dibangun, termasuk layout/sidebar/navbar,

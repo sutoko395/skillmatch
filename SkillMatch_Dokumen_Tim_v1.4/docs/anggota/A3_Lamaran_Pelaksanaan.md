@@ -1,5 +1,7 @@
 # Brief A3 — lamaran, dokumen, seleksi, pelaksanaan
 
+Pembaruan integrasi 3 November 2026: lihat [handoff perbaikan alur](../../../docs/INTEGRATED_FLOWS_HANDOFF.md) untuk perilaku, interface, migration dan batas verifikasi terbaru. Tampilan dan fitur existing dipertahankan.
+
 Status lintas modul terkini: [daftar pekerjaan tersisa](../../../docs/DEVELOPMENT.md#daftar-pekerjaan-tersisa--pembaruan-28-oktober-2026).
 Pisahkan pekerjaan belum dibuat, belum diuji, dan selesai lokal yang belum diintegrasikan.
 

@@ -29,7 +29,7 @@ class VolunteerEmailService
         $version = $application->snapshot_json['assessment_version'] ?? 0;
         $suffix = $type === self::DECISION ? $application->revision : $version;
 
-        return NotificationOutbox::firstOrCreate(['dedupe_key' => 'volunteer-mail:'.$type.':'.$application->id.':'.$suffix], [
+        return NotificationOutbox::deduplicate('volunteer-mail:'.$type.':'.$application->id.':'.$suffix, [
             'recipient_id' => $application->volunteer_id, 'application_id' => $application->id, 'channel' => 'mail',
             'type' => $type, 'data' => ['version' => $version, 'revision' => $application->revision,
                 'decision' => $type === self::DECISION ? $application->status : null],

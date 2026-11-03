@@ -46,7 +46,7 @@ class VolunteerEmailTest extends DatabaseTestCase
         app(ScreeningService::class)->evaluate($application);
         // DatabaseTransactions defers afterCommit; run the real matching consumer explicitly.
         app(MatchingEvaluationService::class)->evaluate($application->fresh());
-        $row = NotificationOutbox::where('application_id', $application->id)->sole();
+        $row = NotificationOutbox::where('channel', 'mail')->where('application_id', $application->id)->sole();
         $this->assertSame(VolunteerEmailService::AVAILABLE, $row->type);
         $this->assertSame('assessment_pending', $application->fresh()->status);
         $this->assertSame($row->id, $this->enqueue($application->fresh())->id);
@@ -68,13 +68,13 @@ class VolunteerEmailTest extends DatabaseTestCase
         $application->update(['status' => 'submitted', 'snapshot_json' => $snapshot]);
         DB::beginTransaction();
         app(ScreeningService::class)->evaluate($application->fresh());
-        $this->assertSame(VolunteerEmailService::FAILED, NotificationOutbox::where('application_id', $application->id)->sole()->type);
+        $this->assertSame(VolunteerEmailService::FAILED, NotificationOutbox::where('channel', 'mail')->where('application_id', $application->id)->sole()->type);
         DB::rollBack();
         $this->assertSame('submitted', $application->fresh()->status);
-        $this->assertFalse(NotificationOutbox::where('application_id', $application->id)->exists());
+        $this->assertFalse(NotificationOutbox::where('channel', 'mail')->where('application_id', $application->id)->exists());
         app(ScreeningService::class)->evaluate($application->fresh());
         app(ScreeningService::class)->evaluate($application->fresh());
-        $this->assertSame(1, NotificationOutbox::where('application_id', $application->id)->count());
+        $this->assertSame(1, NotificationOutbox::where('channel', 'mail')->where('application_id', $application->id)->count());
         $this->assertSame('screening_failed', $application->fresh()->status);
         Mail::assertNothingSent();
     }
@@ -90,11 +90,11 @@ class VolunteerEmailTest extends DatabaseTestCase
             $actor = $application->event->organizer;
             $selection = app(SelectionService::class);
             $decision === 'accepted' ? $selection->accept($application, $actor) : $selection->reject($application, $actor, 'Belum sesuai kebutuhan posisi');
-            $row = NotificationOutbox::where('application_id', $application->id)->sole();
+            $row = NotificationOutbox::where('channel', 'mail')->where('application_id', $application->id)->sole();
             $this->assertSame(VolunteerEmailService::DECISION, $row->type);
             $this->assertSame($decision, $row->data['decision']);
             $decision === 'accepted' ? $selection->accept($application, $actor) : $selection->reject($application, $actor, 'Belum sesuai kebutuhan posisi');
-            $this->assertSame(1, NotificationOutbox::where('application_id', $application->id)->count());
+            $this->assertSame(1, NotificationOutbox::where('channel', 'mail')->where('application_id', $application->id)->count());
             app(VolunteerEmailDelivery::class)->deliver($row->id);
         }
         Mail::assertSentCount(2);
@@ -113,7 +113,7 @@ class VolunteerEmailTest extends DatabaseTestCase
         $this->travelTo($deadline->subDay());
         $this->assertSame(1, $emails->reminders());
         $this->assertSame(0, $emails->reminders());
-        $reminder = NotificationOutbox::where('application_id', $application->id)->where('type', VolunteerEmailService::REMINDER)->sole();
+        $reminder = NotificationOutbox::where('channel', 'mail')->where('application_id', $application->id)->where('type', VolunteerEmailService::REMINDER)->sole();
         app(AssessmentService::class)->start($application->fresh(), $application->volunteer);
         $this->assertSame('skipped', $delivery->deliver($reminder->id));
         Mail::assertSentCount(1);
@@ -129,7 +129,7 @@ class VolunteerEmailTest extends DatabaseTestCase
         $this->travelTo($deadline->subDay());
         $this->artisan('a4:remind-assessments')->assertSuccessful();
         $this->artisan('a4:remind-assessments')->assertSuccessful();
-        $reminder = NotificationOutbox::where('application_id', $application->id)->where('type', VolunteerEmailService::REMINDER)->sole();
+        $reminder = NotificationOutbox::where('channel', 'mail')->where('application_id', $application->id)->where('type', VolunteerEmailService::REMINDER)->sole();
         $this->assertSame('sent', app(VolunteerEmailDelivery::class)->deliver($reminder->id));
         $this->assertSame('ignored', app(VolunteerEmailDelivery::class)->deliver($reminder->id));
         $html = (new VolunteerApplicationMail($application, $reminder))->render();
@@ -205,11 +205,11 @@ class VolunteerEmailTest extends DatabaseTestCase
         Mail::swap(new MailManager($this->app));
         Mail::fake();
         $this->artisan('a4:send-volunteer-emails', ['--retry-failed' => true])->assertSuccessful();
-        Mail::assertNothingSent();
+        Mail::assertNotSent(VolunteerApplicationMail::class, fn ($mail) => $mail->application->id === $application->id);
         $row->update(['status' => 'processing', 'claimed_at' => now()->subMinutes(16), 'claim_token' => '00000000-0000-0000-0000-000000000001']);
         $this->artisan('a4:send-volunteer-emails')->assertSuccessful();
         $this->assertSame('uncertain', $row->fresh()->status);
-        Mail::assertNothingSent();
+        Mail::assertNotSent(VolunteerApplicationMail::class, fn ($mail) => $mail->application->id === $application->id);
     }
 
     public function test_mail_content_uses_configured_urls_and_never_discloses_keys_or_matching_score(): void
@@ -251,7 +251,7 @@ class VolunteerEmailTest extends DatabaseTestCase
     {
         $application = $this->participantApplication();
         app(SelectionService::class)->withdraw($application, $application->volunteer);
-        $this->assertFalse(NotificationOutbox::where('application_id', $application->id)->exists());
+        $this->assertFalse(NotificationOutbox::where('channel', 'mail')->where('application_id', $application->id)->exists());
         Mail::assertNothingSent();
     }
 }

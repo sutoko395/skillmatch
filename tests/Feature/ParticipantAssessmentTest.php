@@ -21,18 +21,18 @@ class ParticipantAssessmentTest extends DatabaseTestCase
         $application = $this->participantApplication();
         $this->actingAs($application->volunteer)->get(route('volunteer.assessments.show', $application))
             ->assertOk()->assertSee('Mulai sekarang')->assertSee('30 menit')->assertDontSee('Soal pertama')->assertDontSee('is_correct');
-        $this->assertSame(0, AssessmentAttempt::count());
+        $this->assertSame(0, AssessmentAttempt::where('application_id', $application->id)->count());
         $this->postJson(route('volunteer.assessments.start', $application))->assertUnprocessable();
         $this->post(route('volunteer.assessments.start', $application), ['confirmed' => 1])->assertRedirect();
-        $attempt = AssessmentAttempt::sole();
+        $attempt = AssessmentAttempt::where('application_id', $application->id)->sole();
         $expires = $attempt->expires_at;
         $this->travel(3)->minutes();
         $this->post(route('volunteer.assessments.start', $application), ['confirmed' => 1])->assertRedirect();
-        $this->assertSame(1, AssessmentAttempt::count());
+        $this->assertSame(1, AssessmentAttempt::where('application_id', $application->id)->count());
         $this->assertTrue($attempt->fresh()->expires_at->equalTo($expires));
         $this->get(route('volunteer.assessments.show', $application))->assertOk()->assertSee('Soal pertama')->assertSee('Opsi B')
             ->assertDontSee('is_correct')->assertDontSee('correct&quot;', false);
-        $this->assertSame(1, AuditLog::where('action', 'assessment.started')->count());
+        $this->assertSame(1, AuditLog::where('action', 'assessment.started')->where('subject_id', $attempt->id)->count());
         $this->travelBack();
     }
 
@@ -54,8 +54,8 @@ class ParticipantAssessmentTest extends DatabaseTestCase
         $this->assertSame('under_review', $application->fresh()->status);
         $this->assertSame(4, $application->fresh()->revision);
         $this->assertEquals(80, $application->matchResult->total_score);
-        $this->assertSame(1, AuditLog::where('action', 'assessment.finalized')->count());
-        $this->get(route('volunteer.applications.show', $application))->assertOk()->assertSee('Assessment selesai.')->assertDontSee('Mulai assessment');
+        $this->assertSame(1, AuditLog::where('action', 'assessment.finalized')->where('subject_id', $attempt->id)->count());
+        $this->get(route('volunteer.applications.show', $application))->assertOk()->assertSee('Menunggu hasil seleksi')->assertDontSee('Mulai assessment');
         $this->actingAs($application->event->organizer)->get(route('organizer.applications.show', $application))
             ->assertOk()->assertSee('50,00/100')->assertSee('Nilai assessment terpisah');
     }
@@ -68,7 +68,7 @@ class ParticipantAssessmentTest extends DatabaseTestCase
         $this->actingAs($application->volunteer)->putJson(route('volunteer.assessments.answers', $attempt), [
             'revision' => 0, 'answers' => [$questions[0]->id => $questions[1]->options[0]->id],
         ])->assertUnprocessable();
-        $this->assertSame(0, AssessmentAnswer::count());
+        $this->assertSame(0, AssessmentAnswer::where('assessment_attempt_id', $attempt->id)->count());
         $this->assertSame(0, $attempt->fresh()->revision);
     }
 
@@ -89,7 +89,7 @@ class ParticipantAssessmentTest extends DatabaseTestCase
         $this->artisan('a4:expire-assessments')->assertSuccessful();
         $this->assertSame(50.0, $attempt->fresh()->score);
         $this->assertSame('under_review', $application->fresh()->status);
-        $this->assertSame(1, AuditLog::where('action', 'assessment.finalized')->count());
+        $this->assertSame(1, AuditLog::where('action', 'assessment.finalized')->where('subject_id', $attempt->id)->count());
         $this->travelBack();
     }
 
@@ -171,7 +171,8 @@ class ParticipantAssessmentTest extends DatabaseTestCase
                 $application->update(['snapshot_json' => $snapshot]);
             }
             $this->actingAs($application->volunteer)->postJson(route('volunteer.assessments.start', $application), ['confirmed' => 1])->assertUnprocessable();
+            $this->assertSame(0, AssessmentAttempt::where('application_id', $application->id)->count());
         }
-        $this->assertSame(0, AssessmentAttempt::count());
+        $this->assertSame(0, AssessmentAttempt::where('application_id', $application->id)->count());
     }
 }

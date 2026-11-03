@@ -41,6 +41,8 @@ class ScreeningService
             if (! $evaluation['passed']) {
                 app(VolunteerEmailService::class)->enqueue($locked, VolunteerEmailService::FAILED);
             }
+            app(NotificationService::class)->enqueue('application.screened:'.$locked->id.':'.$locked->revision.':'.$locked->volunteer_id,
+                $locked->volunteer, ['type' => 'application.screened', 'application_id' => $locked->id]);
 
             return $evaluation;
         });

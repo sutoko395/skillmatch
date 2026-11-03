@@ -1,5 +1,12 @@
 # UAT dan kriteria selesai lintas anggota
 
+## Perbaikan alur terintegrasi - 3 November 2026
+
+Fondasi schema bersama dan notifikasi internal tersedia; email tetap channel mail.
+Rincian lingkup dan verifikasi ada pada docs/INTEGRATED_FLOWS_HANDOFF.md.
+
+
+
 Pemeriksaan pelestarian hasil kerja pada setiap perubahan: catat lingkup yang
 disetujui, branch/commit dasar dan halaman/alur terdampak. Bandingkan hasil dengan
 implementasi sebelum perubahan; pastikan fitur, navigasi dan tampilan di luar

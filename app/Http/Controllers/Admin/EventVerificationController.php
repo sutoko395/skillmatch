@@ -9,6 +9,7 @@ use App\Services\AuditService;
 use App\Services\EntitlementService;
 use App\Services\EventConfiguration;
 use App\Services\EventPublicationService;
+use App\Services\NotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -72,6 +73,8 @@ class EventVerificationController extends Controller
             $event->update(['status' => 'approved', 'verification_note' => null, 'verified_at' => now()]);
             app(AuditService::class)->record(auth()->user(), 'event.approved', $event, ['after' => ['status' => 'approved']]);
             app(EntitlementService::class)->activate($event);
+            app(NotificationService::class)->enqueue('event.approved:'.$event->id.':'.$event->revision.':'.$event->organizer_id,
+                $event->organizer, ['type' => 'event.approved', 'event_id' => $event->id]);
         }, 3);
         try {
             app(EventPublicationService::class)->publish($event->fresh(), auth()->user());
@@ -99,6 +102,8 @@ class EventVerificationController extends Controller
             abort_unless($event->status === 'pending', 409, 'Event sudah diproses.');
             $event->update(['status' => 'rejected', 'verification_note' => $validated['verification_note'], 'verified_at' => now()]);
             app(AuditService::class)->record(auth()->user(), 'event.rejected', $event, ['after' => ['status' => 'rejected']], 'revision_required');
+            app(NotificationService::class)->enqueue('event.rejected:'.$event->id.':'.$event->revision.':'.$event->organizer_id,
+                $event->organizer, ['type' => 'event.rejected', 'event_id' => $event->id]);
         }, 3);
 
         return redirect()

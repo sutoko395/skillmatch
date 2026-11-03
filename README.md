@@ -1,5 +1,12 @@
 # SkillMatch
 
+## Perbaikan alur terintegrasi - 3 November 2026
+
+Fondasi schema bersama dan notifikasi internal tersedia; email tetap channel mail.
+Rincian lingkup dan verifikasi ada pada docs/INTEGRATED_FLOWS_HANDOFF.md.
+
+
+
 ## Seleksi dan pelaksanaan A3 — 28 Oktober 2026
 
 Organizer yang organisasinya disetujui Admin memakai alur auth Organizer existing;

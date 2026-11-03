@@ -1,5 +1,12 @@
 # PRD SkillMatch Volunteer — acuan tim empat anggota
 
+## Perbaikan alur terintegrasi - 3 November 2026
+
+Fondasi schema bersama dan notifikasi internal tersedia; email tetap channel mail.
+Rincian lingkup dan verifikasi ada pada docs/INTEGRATED_FLOWS_HANDOFF.md.
+
+
+
 Keputusan pelestarian hasil kerja, 28 Oktober 2026: perubahan fitur/alur/tampilan
 yang sudah dibangun harus tercakup dalam persetujuan pengguna. Instruksi terbaru
 yang eksplisit cukup untuk lingkupnya; penggantian di luar lingkup memerlukan
