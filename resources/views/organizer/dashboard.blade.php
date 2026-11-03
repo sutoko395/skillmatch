@@ -80,7 +80,7 @@
                 </span>
             </div>
             <p class="mt-4 text-3xl font-bold text-slate-900">{{ number_format($pendingApplications) }}</p>
-            <p class="mt-1 text-xs text-slate-500">Berstatus submitted</p>
+            <p class="mt-1 text-xs text-slate-500">Kandidat siap diputuskan (Siap Ditinjau)</p>
         </div>
 
     </div>
@@ -202,4 +202,6 @@
     </div>
 
 </div>
+@include('activity.organizer')
+@include('notifications.summary')
 @endsection

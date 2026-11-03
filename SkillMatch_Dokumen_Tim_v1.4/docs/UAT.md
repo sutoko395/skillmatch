@@ -2,13 +2,15 @@
 
 ## Perbaikan alur terintegrasi - 3 November 2026
 
-Fondasi schema bersama dan notifikasi internal tersedia; email tetap channel mail.
-Rincian lingkup dan verifikasi ada pada docs/INTEGRATED_FLOWS_HANDOFF.md.
-Penghapusan akun tanpa riwayat tetap tersedia; akun dengan data terkait dilindungi.
-Revisi identitas organisasi memerlukan konfirmasi dan pemeriksaan ulang.
-Owner dapat melengkapi tenggat event lama sekali tanpa mengubah snapshot.
-Endpoint paket memiliki form mandiri; modal existing tetap dipertahankan.
-
+Keputusan terbaru dan bukti implementasi ada pada [handoff perbaikan alur](../../docs/INTEGRATED_FLOWS_HANDOFF.md).
+Penghapusan akun tanpa data terkait tetap tersedia; akun bersejarah dilindungi.
+Revisi identitas organisasi memerlukan konfirmasi dan review ulang, penolakan
+bercatatan dapat diajukan ulang. Event lama dapat melengkapi tenggat kosong sekali
+melalui aksi owner yang diaudit; snapshot existing tidak diubah, hanya metadata
+tenggat kosong yang dapat membaca perbaikan eksplisit. Aktivitas dan notifikasi
+website memakai layanan nyata serta outbox existing yang dibedakan dari email.
+Layout, modal dan fitur existing dipertahankan. Catatan tahap sebelumnya di bawah
+bersifat historis bila menyebut layanan tersebut belum tersedia.
 
 
 Pemeriksaan pelestarian hasil kerja pada setiap perubahan: catat lingkup yang

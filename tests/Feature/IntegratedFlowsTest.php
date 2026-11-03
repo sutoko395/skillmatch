@@ -174,4 +174,16 @@ class IntegratedFlowsTest extends DatabaseTestCase
         $this->actingAs($owner)->get(route('admin.packages.edit', $package))->assertForbidden();
     }
 
+    public function test_activity_counts_ready_candidates_and_paginated_volunteer_data_are_scoped(): void
+    {
+        $application = $this->participantApplication();
+        $application->update(['status' => 'under_review']);
+        $owner = $application->event->organizer;
+        $activity = app(ActivityReadService::class)->forOrganizer($owner);
+        $this->assertSame(1, $activity['pendingApplications']);
+        $this->assertSame(0, app(ActivityReadService::class)->forOrganizer(User::factory()->create(['role' => 'organizer']))['pendingApplications']);
+        $this->actingAs($owner)->get(route('organizer.activity.index'))->assertOk()->assertSee('Kandidat siap diputuskan');
+        $this->actingAs($application->volunteer)->get(route('volunteer.activity.index'))->assertOk()
+            ->assertViewHas('applicationCount', 1)->assertSee('Langkah berikutnya')->assertSee('Notifikasi terbaru');
+    }
 }

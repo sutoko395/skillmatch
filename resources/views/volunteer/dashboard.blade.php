@@ -68,7 +68,7 @@
             </div>
 
             <p class="mt-2 text-3xl font-bold text-indigo-600">
-                {{ $applications->count() }}
+                {{ $applicationCount }}
             </p>
 
             <p class="mt-1 text-sm text-slate-500">
@@ -282,7 +282,7 @@
             </div>
 
             <span class="inline-flex w-fit rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700">
-                {{ $applications->count() }} kegiatan
+                {{ $applicationCount }} kegiatan
             </span>
         </div>
 
@@ -329,4 +329,7 @@
 
 </div>
 
+{{ $applications->links() }}
+@include('activity.volunteer')
+@include('notifications.summary')
 @endsection
