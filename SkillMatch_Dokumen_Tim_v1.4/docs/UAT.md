@@ -241,3 +241,11 @@ Login dan registrasi diperbarui secara visual. Bukti: 40 tes auth/FoundationAcce
 ## Regresi paket awal dan kartu
 
 DefaultPackageTest memeriksa nilai awal sesuai keputusan, seeding ulang setelah rename/edit/nonaktif tanpa reset/duplikasi, perubahan admin tampil pada kartu aktif dan tidak mengubah snapshot order/event lama. Bersama A2EventTest, HomeTest dan RegistrationTest: 24 tes / 183 assertion lulus pada MySQL tes. Pemilihan paket tetap mengikuti limit dan Policy existing; fitur lanjutan yang belum terintegrasi tidak dinyatakan lulus.
+
+## UAT tambahan - koordinasi peserta
+
+- Owner memperbarui koordinasi pada event published tanpa mengubah jadwal, snapshot, paket atau keputusan seleksi. Semua field kosong tetap dapat melanjutkan alur existing.
+- Hanya accepted pemilik lamaran melihat grup/PIC; under_review/rejected/withdrawn/cancelled, user lain, Admin dan guest tidak mendapat nilai privat. Pembatalan event mencabut akses; accepted baru melihat data terkini. Periksa HTML dan endpoint langsung, bukan hanya tombol.
+- Tolak URL non-HTTPS, user/password URL, input terlalu panjang dan revision stale. Replay identik tidak menggandakan notifikasi/audit. Pengosongan menarik tautan.
+- Pembaruan hanya memberi notifikasi accepted; URL/kontak tidak ada pada payload/audit. Kegagalan notifikasi membatalkan transaksi. Completed/cancelled menolak edit.
+- Review desktop/mobile dan submit native dengan CSRF; tidak ada input arahan/titik kumpul/waktu kedatangan. Gabung grup membuka tab baru. Integrasi keanggotaan grup tetap manual eksternal.

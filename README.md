@@ -478,3 +478,6 @@ Bukti dan batas pengujian ada di [handoff matching](docs/A4_MATCHING_HANDOFF.md)
 
 - [Panduan pengembangan dan pembagian tugas](docs/DEVELOPMENT.md).
 - [Spesifikasi produk, desain dan UAT](SkillMatch_Dokumen_Tim_v1.4/README.md).
+
+
+Koordinasi peserta: Organizer dapat mengisi tautan grup HTTPS, nama PIC dan kontak PIC pada detail event. Semuanya opsional; hanya peserta accepted melihatnya pada detail lamaran. Titik kumpul/waktu kedatangan disampaikan melalui grup. Jalankan `php artisan migrate` untuk tabel tambahan. Lihat [handoff koordinasi peserta](docs/PARTICIPANT_COORDINATION_HANDOFF.md) untuk akses, route, notifikasi dan batas integrasi.

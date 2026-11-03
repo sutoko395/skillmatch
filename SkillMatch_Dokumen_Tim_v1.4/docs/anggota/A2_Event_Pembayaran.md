@@ -92,3 +92,7 @@ A2 sudah melengkapi HomeController, welcome.blade.php dan event-card bersama kat
 ## Paket awal yang disepakati pengguna
 
 Free: gratis/2 posisi/30 lamaran/7 hari. Standard: Rp30.000/5/100/30. Premium: Rp50.000/10/300/60. DefaultPackageSeeder membuat paket tanpa menimpa edit admin; kartu membaca database. Demo Free/Standard tetap fixture terpisah. Admin dapat mengedit nama/harga/limit/status; harga snapshot event/order lama tidak berubah. Paket awal tidak menyelesaikan dependensi A3/A4.
+
+## Tambahan A2 - koordinasi peserta
+
+Owner mengelola tautan grup HTTPS/nama PIC/kontak PIC opsional melalui detail event dan EventCoordinationService. Route terpisah events.coordination.update agar konfigurasi rekrutmen published tetap terkunci. Tabel event_coordinations dan migration tambahan mengikuti handoff docs/PARTICIPANT_COORDINATION_HANDOFF.md root aplikasi. Tidak membuat input arahan/titik kumpul/waktu kedatangan; semuanya melalui grup. Bukan syarat payment/publish. A3 memasang DTO privat pada detail accepted dan A4 memakai notifikasi database existing.

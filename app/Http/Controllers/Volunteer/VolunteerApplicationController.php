@@ -8,6 +8,7 @@ use App\Models\Assessment;
 use App\Models\EventPosition;
 use App\Services\ApplicationService;
 use App\Services\AssessmentService;
+use App\Services\EventCoordinationService;
 use App\Services\ProfileEligibilityService;
 use App\Services\RecruitmentScheduleService;
 use Carbon\CarbonImmutable;
@@ -84,7 +85,9 @@ class VolunteerApplicationController extends Controller
                 ->first();
         }
 
-        return view('volunteer.applications.show', compact('application', 'eligibility', 'recruitmentDates', 'assessmentSummary'));
+        $coordination = app(EventCoordinationService::class)->forParticipant($application, Auth::user());
+
+        return view('volunteer.applications.show', compact('application', 'eligibility', 'recruitmentDates', 'assessmentSummary', 'coordination'));
     }
 
     public function submit(Request $request, Application $application)

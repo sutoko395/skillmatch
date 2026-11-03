@@ -48,6 +48,8 @@ Route::middleware([
             ->name('activity.index');
 
         Route::resource('events', EventController::class);
+        Route::put('events/{event}/coordination', [EventController::class, 'updateCoordination'])
+            ->name('events.coordination.update');
         Route::post('events/{event}/recruitment-repair', [EventController::class, 'repairRecruitment'])
             ->name('events.recruitment-repair');
 

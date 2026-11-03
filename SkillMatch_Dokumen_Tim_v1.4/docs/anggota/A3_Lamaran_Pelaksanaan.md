@@ -125,3 +125,7 @@ Katalog/detail dan beranda publik kini sudah tersedia. Integrasikan CTA lamaran 
 ### Gate integrasi yang masih diperlukan
 
 Uji submit ulang dan dua proses pada batas lamaran, rollback counter saat dokumen/snapshot gagal, withdrawal tanpa pemulihan limit, perubahan master paket setelah pembelian, akses pemilik/role/status, cancelled menolak submit, serta cancellation bersamaan dengan submit/seleksi/attempt. Mock A3 pada tes A2 dan reserve counter A2 tidak membuktikan semua gate ini lulus. A3 dapat mengerjakan bagian independen dengan fixture kontrak sambil menunggu evaluasi/attempt A4.
+
+## Tambahan A3 - akses koordinasi peserta
+
+Detail lamaran menggunakan EventCoordinationService.forParticipant untuk status accepted aktual milik Volunteer aktif dan event non-cancelled. Data privat tidak berada pada snapshot atau katalog. Penerimaan menampilkan koordinasi terbaru; withdrawn/cancelled kehilangan akses. Jadwal tugas, absensi per sesi dan completion tetap berlaku tanpa syarat isi koordinasi. Tidak ada input arahan, titik kumpul atau waktu kedatangan. Keanggotaan grup dikelola eksternal oleh organizer. Lihat docs/PARTICIPANT_COORDINATION_HANDOFF.md root aplikasi.

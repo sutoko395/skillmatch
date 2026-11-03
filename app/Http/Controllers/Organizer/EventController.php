@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\City;
 use App\Models\Event;
 use App\Models\Package;
+use App\Services\EventCoordinationService;
 use App\Services\EventPublicationService;
 use App\Services\EventService;
 use App\Services\PackageService;
@@ -128,6 +129,7 @@ class EventController extends Controller
         Gate::authorize('update', $event);
 
         return view('organizer.events.show', [
+            'coordination' => app(EventCoordinationService::class)->forOrganizer($event, auth()->user()),
             'event' => $event->load([
                 'positions.positionSkills.skill',
                 'positions.schedules',
@@ -146,6 +148,12 @@ class EventController extends Controller
         return back()->with('success', 'Event diajukan untuk moderasi.');
     }
 
+    public function updateCoordination(Request $request, Event $event, EventCoordinationService $service)
+    {
+        $service->update($event, $request->user(), $request->all());
+
+        return redirect()->route('organizer.events.show', $event)->with('success', 'Koordinasi peserta tersimpan. Peserta yang sudah diterima dapat melihat pembaruannya.');
+    }
 
     public function repairRecruitment(Request $request, Event $event, RecruitmentScheduleService $service)
     {

@@ -33,6 +33,7 @@
     </ol>
 
     <div class="space-y-6">
+        @include('organizer.events.coordination')
 
         @if(!$event->assessment_deadline && !$event->decision_deadline && in_array($event->status, ['pending', 'approved']) && $event->lifecycle_status === 'upcoming')
             <x-section-card>

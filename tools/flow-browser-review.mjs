@@ -4,8 +4,9 @@ import { pathToFileURL } from 'node:url';
 import { createServer } from 'node:http';
 
 const sessionMode = process.argv.includes('--sessions');
-const directory = path.resolve(`storage/app/private/${sessionMode ? 'session-review' : 'flow-review'}`);
-const pages = sessionMode ? ['execution', 'session-detail', 'session-history'] : ['organizer', 'volunteer', 'profile', 'legacy', 'packages', 'package-form', 'organizers', 'notifications'];
+const coordinationMode = process.argv.includes('--coordination');
+const directory = path.resolve(`storage/app/private/${coordinationMode ? 'coordination-review' : sessionMode ? 'session-review' : 'flow-review'}`);
+const pages = coordinationMode ? ['coordination-owner', 'coordination-participant', 'coordination-empty'] : sessionMode ? ['execution', 'session-detail', 'session-history'] : ['organizer', 'volunteer', 'profile', 'legacy', 'packages', 'package-form', 'organizers', 'notifications'];
 const browser = await chromium.launch({
     executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe',
     headless: true,
@@ -25,6 +26,24 @@ try {
                 alpine: Boolean(window.Alpine),
             }));
             if (!state.readable || state.overflow || !state.alpine) throw new Error(`Layout/runtime failure: ${name} ${width}`);
+            if (coordinationMode) {
+                await page.getByRole('heading', { name: 'Koordinasi Peserta', exact: true }).waitFor({ state: 'visible' });
+                if (name === 'coordination-owner') {
+                    for (const label of ['Tautan grup', 'Nama PIC', 'Kontak PIC']) {
+                        await page.getByLabel(label, { exact: true }).waitFor({ state: 'visible' });
+                    }
+                    const fields = await page.locator('#koordinasi-peserta input:not([type=hidden])').count();
+                    if (fields !== 3) throw new Error('Unexpected coordination input fields.');
+                }
+                if (name === 'coordination-participant') {
+                    const link = page.getByRole('link', { name: /Gabung grup peserta/ });
+                    if (await link.getAttribute('target') !== '_blank' || await link.getAttribute('rel') !== 'noopener noreferrer') throw new Error('Invalid external group link.');
+                }
+                if (name === 'coordination-empty') {
+                    await page.getByText(/Organizer belum membagikan tautan grup/).waitFor({ state: 'visible' });
+                    if (await page.getByRole('link', { name: /Gabung grup peserta/ }).count()) throw new Error('Empty coordination exposes a group button.');
+                }
+            }
             if (name === 'profile') {
                 await page.getByRole('button', { name: 'Edit Profil', exact: true }).click();
                 await page.locator('[name=confirm_reverification]').waitFor({ state: 'visible' });

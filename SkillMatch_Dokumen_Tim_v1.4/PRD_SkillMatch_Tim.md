@@ -339,3 +339,7 @@ Keputusan pengguna berdasarkan gambar paket:
 | Premium | Rp50.000 | 10 | 300 | 60 |
 
 Ini nilai awal yang dapat diedit admin, bukan konstanta harga checkout. Harga/limit berasal database dan disnapshot saat dipilih/dibeli. Alur screening/assessment/seleksi/dokumen/attendance pada kartu dijelaskan sebagai fitur dalam pengembangan sampai modul A3/A4 terintegrasi.
+
+## Keputusan pengguna - koordinasi peserta, 3 November 2026
+
+Satu tautan grup opsional per event beserta nama/kontak PIC. Tidak ada field arahan, titik kumpul atau waktu kedatangan; organizer menyampaikannya melalui grup. Hanya owner dan Volunteer aktif pemilik lamaran accepted pada event non-cancelled yang dapat membaca. Bisa diperbarui owner sebelum completed/cancelled walau rekrutmen terkunci. Pembaruan memberi notifikasi internal tanpa URL/kontak dalam payload; accepted baru melihat versi terbaru di detail lamaran. Bukan syarat publikasi/pembayaran/seleksi/kehadiran/completion. Jadwal tugas dan absensi per sesi tetap berlaku. Keanggotaan grup dikelola eksternal. Lihat docs/PARTICIPANT_COORDINATION_HANDOFF.md pada root aplikasi.

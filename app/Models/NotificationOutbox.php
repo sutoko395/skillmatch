@@ -36,6 +36,10 @@ class NotificationOutbox extends Model
 
     public function label(): string
     {
+        if ($this->type === 'event.coordination_updated') {
+            return 'Koordinasi peserta diperbarui. Buka detail lamaran untuk melihat informasi terbaru.';
+        }
+
         return match ($this->type) {
             'organizer.reviewed' => 'Hasil peninjauan organisasi: '.match ($this->data['status'] ?? '') {
                 'active' => 'disetujui', 'inactive' => 'perlu revisi', default => 'menunggu pemeriksaan'

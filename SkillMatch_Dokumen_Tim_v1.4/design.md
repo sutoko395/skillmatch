@@ -363,3 +363,7 @@ Permintaan pengguna: label menu, judul halaman dan title browser admin menggunak
 ## Kartu paket berdasarkan keputusan pengguna
 
 Beranda menampilkan kartu Free/Standard/Premium dari paket aktif database: judul, harga besar (Gratis untuk 0), per event, batas posisi/lamaran/hari dan CTA Mulai sebagai Organizer. Tampilan kartu putih berborder/radius mengikuti gambar pengguna dan identitas indigo. Status fitur screening/assessment/seleksi/dokumen/attendance yang belum tersedia tertulis Dalam pengembangan. Admin memiliki Edit paket dan badge status; Organizer memilih dari kartu yang sama. Grid beradaptasi 1/2/3 kolom, tanpa label rekomendasi palsu.
+
+## Koordinasi peserta - 3 November 2026
+
+Tambahkan section Koordinasi Peserta pada detail event organizer dengan tiga field opsional: Tautan grup, Nama PIC, Kontak PIC; tombol Simpan koordinasi, error revisi dan validasi field. Pertahankan seluruh section existing. Detail lamaran accepted menampilkan tombol Gabung grup peserta (tab baru), PIC dan kontak, atau placeholder organizer belum membagikan tautan. Bukan konten publik; withdrawn/cancelled tidak menerima section. Tidak ada input titik kumpul, waktu kedatangan atau arahan. Teks menyebut informasi tersebut disampaikan melalui grup. Completed/cancelled menampilkan riwayat read-only untuk owner. Gunakan layout/komponen/Alpine existing.
