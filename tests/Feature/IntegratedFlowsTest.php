@@ -36,6 +36,21 @@ class IntegratedFlowsTest extends DatabaseTestCase
         return $owner;
     }
 
+    public function test_account_with_history_cannot_lose_profile_or_file_and_unused_account_remains_deletable(): void
+    {
+        $owner = $this->organizer();
+        app(AuditService::class)->record($owner, 'organizer.test', $owner);
+        $admin = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($admin)->delete(route('admin.organizers.destroy', $owner))->assertForbidden();
+        $this->assertNotNull($owner->fresh()->organizerProfile);
+        $this->assertSame(1, $owner->organizerDocuments()->count());
+        Storage::disk('local')->assertExists('organizers/fixture.pdf');
+        $empty = User::factory()->create();
+        $this->delete(route('admin.volunteers.destroy', $empty))->assertRedirect();
+        $this->assertNull($empty->fresh());
+        $this->assertDatabaseHas('audit_logs', ['action' => 'account.deleted', 'subject_id' => $empty->id]);
+    }
+
     public function test_internal_notification_dedupe_rollback_ownership_and_email_isolation(): void
     {
         $user = User::factory()->create();
@@ -55,6 +70,23 @@ class IntegratedFlowsTest extends DatabaseTestCase
         $this->assertNotNull($row->fresh()->read_at);
         $this->artisan('a4:send-volunteer-emails')->assertSuccessful();
         $this->assertSame(0, $row->fresh()->attempts);
+    }
+
+    public function test_account_delete_rolls_back_when_audit_fails_without_deleting_document(): void
+    {
+        $owner = $this->organizer();
+        $admin = User::factory()->create(['role' => 'admin']);
+        $this->mock(AuditService::class, fn ($mock) => $mock->shouldReceive('record')->once()->andThrow(new \RuntimeException('Synthetic audit failure')));
+        $this->withoutExceptionHandling();
+        try {
+            $this->actingAs($admin)->delete(route('admin.organizers.destroy', $owner));
+            $this->fail('Expected audit failure');
+        } catch (\RuntimeException $exception) {
+            $this->assertSame('Synthetic audit failure', $exception->getMessage());
+        }
+        $this->assertNotNull($owner->fresh()->organizerProfile);
+        $this->assertSame(1, $owner->organizerDocuments()->count());
+        Storage::disk('local')->assertExists('organizers/fixture.pdf');
     }
 
 }

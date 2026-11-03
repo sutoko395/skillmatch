@@ -796,7 +796,7 @@
                             <span class="font-semibold text-slate-700">
                                 {{ $organizer->name }}
                             </span>
-                            secara permanen.
+                            secara permanen jika belum memiliki riwayat. Akun yang memiliki data terkait harus dinonaktifkan agar dokumen dan riwayat tetap tersedia.
                         </p>
 
                         <form

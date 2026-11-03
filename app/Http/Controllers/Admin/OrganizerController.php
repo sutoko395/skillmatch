@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\AccountManagementService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -102,18 +103,7 @@ class OrganizerController extends Controller
 
         Gate::authorize('manageOrganizer', $user);
 
-        $documents = $user->organizerDocuments()->get();
-
-        foreach ($documents as $document) {
-            if ($document->file_path) {
-                Storage::delete($document->file_path);
-            }
-
-            $document->delete();
-        }
-
-        $user->organizerProfile()?->delete();
-        $user->delete();
+        app(AccountManagementService::class)->delete($user, auth()->user());
 
         return back()->with(
             'success',
