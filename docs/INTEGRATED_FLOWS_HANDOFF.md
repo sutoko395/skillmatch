@@ -29,6 +29,10 @@ Commit bertahap sesuai tugas; branch fix/integrated-application-flows, basis 406
   screening/assessment existing; tidak ada bypass untuk data lama yang tidak valid.
 
 
+- Endpoint tambah/edit paket kini mempunyai view form mandiri. Modal daftar existing
+  tetap tersedia. Validasi, Policy, dan snapshot harga/manfaat tetap memakai A2.
+
+
 - `NotificationService.enqueue` memakai notification_outbox existing, channel database,
   di transaksi bisnis. Notifikasi website tersedia segera setelah commit, tanpa SMTP
   atau worker delivery tambahan. Email tetap channel mail dan worker existing.

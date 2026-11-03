@@ -7,6 +7,7 @@ Rincian lingkup dan verifikasi ada pada docs/INTEGRATED_FLOWS_HANDOFF.md.
 Penghapusan akun tanpa riwayat tetap tersedia; akun dengan data terkait dilindungi.
 Revisi identitas organisasi memerlukan konfirmasi dan pemeriksaan ulang.
 Owner dapat melengkapi tenggat event lama sekali tanpa mengubah snapshot.
+Endpoint paket memiliki form mandiri; modal existing tetap dipertahankan.
 
 
 

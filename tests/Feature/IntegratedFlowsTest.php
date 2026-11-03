@@ -161,4 +161,17 @@ class IntegratedFlowsTest extends DatabaseTestCase
         $this->assertGuest();
     }
 
+    public function test_direct_package_forms_and_existing_modals_keep_server_validation_and_access_checks(): void
+    {
+        [$owner, $event, $position, $package] = $this->fixture();
+        $admin = User::factory()->create(['role' => 'admin']);
+        $snapshot = $event->package_snapshot;
+        $this->actingAs($admin)->get(route('admin.packages.index'))->assertOk()->assertSee('Tambah Paket')->assertSee('Edit Paket');
+        $this->get(route('admin.packages.create'))->assertOk()->assertSee('Simpan Paket');
+        $this->get(route('admin.packages.edit', $package))->assertOk()->assertSee($package->name);
+        $this->putJson(route('admin.packages.update', $package), ['price' => -1])->assertUnprocessable();
+        $this->assertEquals($snapshot, $event->fresh()->package_snapshot);
+        $this->actingAs($owner)->get(route('admin.packages.edit', $package))->assertForbidden();
+    }
+
 }
