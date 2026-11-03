@@ -69,3 +69,7 @@ SF mempertahankan beranda baseline yang sudah berfungsi: hero, CTA Masuk/Daftar 
 ## Pemulihan ringkasan pengguna - 5 Oktober 2026
 
 SF memulihkan gaya kartu dan informasi profil berguna dari dashboard pengguna pada route Aktivitas final. Kelengkapan Volunteer memakai ProfileEligibilityService; kota/skill/availability dan kontak/status Organizer dibaca dari pemilik sesi. Sidebar/route dashboard lama tidak dihidupkan kembali; route lama tetap redirect. Ringkasan kegiatan penuh tetap A4. Angka nol hardcoded, link kosong dan query Event approved sebagai published tidak dipakai.
+
+## Perbaikan SF - validasi nomor profil
+
+PhoneNumber merupakan aturan bersama untuk nomor profil Volunteer/Organizer (8-15 digit dan + opsional di depan). VolunteerProfileService turut memvalidasi saat dipanggil langsung; eligibility menandai phone invalid sebagai missing. x-phone-field mempertahankan komponen/form/layout existing dengan validasi native dan filter Alpine. Jangan backfill nomor atau mengubah snapshot lama. Kontak PIC tetap menerima teks email/nama pengguna. Lihat docs/FORM_VALIDATION_HANDOFF.md di root aplikasi untuk scope dan bukti pengujian.

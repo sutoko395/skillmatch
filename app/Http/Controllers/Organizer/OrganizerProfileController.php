@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\OrganizerDocument;
 use App\Models\OrganizerProfile;
 use App\Models\User;
+use App\Rules\PhoneNumber;
 use App\Services\AuditService;
 use App\Services\NotificationService;
 use Illuminate\Http\RedirectResponse;
@@ -69,7 +70,7 @@ class OrganizerProfileController extends Controller
         $validated = $request->validate([
             'organization_name' => ['required', 'string', 'max:255'],
             'contact_person' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:30'],
+            'phone' => ['bail', 'required', new PhoneNumber],
             'address' => ['required', 'string', 'max:1000'],
             'city' => ['required', 'string', 'max:255'],
             'website' => ['nullable', 'url:http,https', 'max:255'],

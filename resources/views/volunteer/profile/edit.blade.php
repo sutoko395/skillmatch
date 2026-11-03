@@ -40,12 +40,7 @@
                     required
                 />
 
-                <x-form-field
-                    name="phone"
-                    label="Nomor telepon"
-                    :value="$volunteerProfile?->phone"
-                    required
-                />
+                <x-phone-field :value="$volunteerProfile?->phone" required />
 
             </div>
 
@@ -88,6 +83,7 @@
                     name="birth_date"
                     label="Tanggal lahir"
                     type="date"
+                    :max="now()->format('Y-m-d')"
                     :value="$volunteerProfile?->birth_date?->format('Y-m-d')"
                     required
                 />

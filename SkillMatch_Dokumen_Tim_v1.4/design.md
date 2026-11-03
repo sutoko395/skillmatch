@@ -367,3 +367,7 @@ Beranda menampilkan kartu Free/Standard/Premium dari paket aktif database: judul
 ## Koordinasi peserta - 3 November 2026
 
 Tambahkan section Koordinasi Peserta pada detail event organizer dengan tiga field opsional: Tautan grup, Nama PIC, Kontak PIC; tombol Simpan koordinasi, error revisi dan validasi field. Pertahankan seluruh section existing. Detail lamaran accepted menampilkan tombol Gabung grup peserta (tab baru), PIC dan kontak, atau placeholder organizer belum membagikan tautan. Bukan konten publik; withdrawn/cancelled tidak menerima section. Tidak ada input titik kumpul, waktu kedatangan atau arahan. Teks menyebut informasi tersebut disampaikan melalui grup. Completed/cancelled menampilkan riwayat read-only untuk owner. Gunakan layout/komponen/Alpine existing.
+
+## Perbaikan input kontak dan batas form - 3 November 2026
+
+Pertahankan layout/modal existing, gunakan x-phone-field pada profil Volunteer dan buat/edit Organizer dengan type tel, keyboard/autocomplete tel, 8-15 digit dan + opsional. Tampilkan contoh/error Indonesia; tolak ketikan/paste huruf tanpa mengubahnya diam-diam menjadi nomor lain. Constraint native dan validasi server tetap berlaku tanpa Alpine. Field Kontak PIC tetap teks karena mendukung email/nama pengguna. Tambahkan max/step=1 existing pada input paket dan max tanggal hari ini pada tanggal lahir; tidak mengubah desain atau aturan bisnis lainnya.

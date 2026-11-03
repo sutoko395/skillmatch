@@ -10,7 +10,7 @@
             @if($package->exists) @method('PUT') @endif
             <x-form-field name="name" label="Nama Paket" :value="old('name', $package->name)" required />
             @foreach(['price' => 'Harga (Rupiah)', 'max_positions' => 'Maksimal Posisi', 'max_applications' => 'Maksimal Lamaran Terkirim', 'max_registration_days' => 'Maksimal Hari Pendaftaran'] as $field => $label)
-                <x-form-field :name="$field" :label="$label" type="number" :value="old($field, $package->$field)" :min="$field === 'price' ? 0 : 1" required />
+                <x-form-field :name="$field" :label="$label" type="number" :value="old($field, $package->$field)" :min="$field === 'price' ? 0 : 1" :max="['price' => 1000000000, 'max_positions' => 1000, 'max_applications' => 1000000, 'max_registration_days' => 365][$field]" step="1" required />
             @endforeach
             <x-form-field name="is_active" label="Status">
                 <select id="is_active" name="is_active" class="w-full rounded-xl border-slate-300">

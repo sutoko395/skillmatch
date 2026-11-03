@@ -316,3 +316,5 @@ Permintaan pengguna setelah beranda: login/register memakai auth-layout dan auth
 ## Konfigurasi awal paket
 
 DefaultPackageSeeder menambahkan Free, Standard dan Premium sesuai keputusan pengguna (lihat PRD/README) setelah UserSeeder, hanya local/testing. Nilai dapat diubah admin; seeding ulang memakai marker audit agar edit, rename dan nonaktif tidak di-reset. Paket demo tetap fixture terpisah. HomeController/package-card menampilkan harga/limit aktual. Tidak ada migration baru; integrasi assessment, lamaran dan attendance tetap milik A3/A4.
+
+Perbaikan validasi profil dan form sejenis 3 November 2026: lihat [FORM_VALIDATION_HANDOFF](FORM_VALIDATION_HANDOFF.md). Aturan telepon bersama untuk Volunteer/Organizer, perlindungan service/eligibility, constraint browser paket/tanggal lahir; tanpa migration atau perubahan data kerja. Status pengujian dan batas audit tercatat pada handoff.

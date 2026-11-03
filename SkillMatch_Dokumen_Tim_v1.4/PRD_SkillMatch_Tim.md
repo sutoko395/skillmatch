@@ -343,3 +343,7 @@ Ini nilai awal yang dapat diedit admin, bukan konstanta harga checkout. Harga/li
 ## Keputusan pengguna - koordinasi peserta, 3 November 2026
 
 Satu tautan grup opsional per event beserta nama/kontak PIC. Tidak ada field arahan, titik kumpul atau waktu kedatangan; organizer menyampaikannya melalui grup. Hanya owner dan Volunteer aktif pemilik lamaran accepted pada event non-cancelled yang dapat membaca. Bisa diperbarui owner sebelum completed/cancelled walau rekrutmen terkunci. Pembaruan memberi notifikasi internal tanpa URL/kontak dalam payload; accepted baru melihat versi terbaru di detail lamaran. Bukan syarat publikasi/pembayaran/seleksi/kehadiran/completion. Jadwal tugas dan absensi per sesi tetap berlaku. Keanggotaan grup dikelola eksternal. Lihat docs/PARTICIPANT_COORDINATION_HANDOFF.md pada root aplikasi.
+
+## Perbaikan validasi nomor telepon - 3 November 2026
+
+Nomor profil Volunteer/Organizer wajib string 8-15 digit ASCII dengan + opsional hanya di awal. Huruf, spasi, pemisah, notasi ilmiah dan format lain ditolak dengan error field phone. Nol awal dan + dipertahankan; ini validasi format, bukan verifikasi kepemilikan nomor. Nomor lama tidak diubah otomatis; nomor tidak valid membuat profil Volunteer belum lengkap sampai diperbaiki. Snapshot/histori lama tetap. Kontak PIC tetap dapat berupa nomor/email/nama pengguna sesuai kontrak koordinasi. Batas tanggal lahir dan angka paket pada browser disamakan dengan server existing, tanpa aturan umur atau limit paket baru.

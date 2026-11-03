@@ -62,7 +62,7 @@
                             required
                         />
 
-                        <x-form-field name="phone" label="Nomor telepon" :value="old('phone')" required />
+                        <x-phone-field :value="old('phone')" required />
                     </div>
 
                     <div>
@@ -415,7 +415,7 @@
                                         required
                                     />
 
-                                    <x-form-field name="phone" label="Nomor telepon" :value="old('phone', $profile->phone)" required />
+                                    <x-phone-field :value="old('phone', $profile->phone)" required />
                                 </div>
 
                                 <x-form-field

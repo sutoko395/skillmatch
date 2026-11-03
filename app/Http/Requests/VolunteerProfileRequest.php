@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\PhoneNumber;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -16,7 +17,7 @@ class VolunteerProfileRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:30'],
+            'phone' => ['bail', 'required', new PhoneNumber],
             'city_id' => ['required', 'integer', Rule::exists('cities', 'id')->where('is_active', true)],
             'birth_date' => ['required', 'date_format:Y-m-d', 'before_or_equal:today'],
             'gender' => ['required', Rule::in(['male', 'female'])],

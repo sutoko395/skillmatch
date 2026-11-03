@@ -249,3 +249,10 @@ DefaultPackageTest memeriksa nilai awal sesuai keputusan, seeding ulang setelah 
 - Tolak URL non-HTTPS, user/password URL, input terlalu panjang dan revision stale. Replay identik tidak menggandakan notifikasi/audit. Pengosongan menarik tautan.
 - Pembaruan hanya memberi notifikasi accepted; URL/kontak tidak ada pada payload/audit. Kegagalan notifikasi membatalkan transaksi. Completed/cancelled menolak edit.
 - Review desktop/mobile dan submit native dengan CSRF; tidak ada input arahan/titik kumpul/waktu kedatangan. Gabung grup membuka tab baru. Integrasi keanggotaan grup tetap manual eksternal.
+
+## Regresi validasi profil dan form sejenis
+
+- Nomor berhuruf/campuran, terlalu pendek/panjang, spasi/pemisah, notasi ilmiah, + ganda dan array ditolak melalui endpoint profil Volunteer/Organizer; tidak ada simpan parsial atau perubahan status organisasi.
+- Nomor lokal dengan nol awal dan internasional dengan + tersimpan sebagai string. Filter browser menolak ketik/paste huruf; nilai script/autofill salah tetap gagal native validation dan server. Periksa tanpa JS juga.
+- Profil lama bernomor invalid tidak dianggap lengkap sampai diperbaiki; data lama dan snapshot tidak ditulis ulang. Panggilan langsung service juga ditolak bila phone invalid.
+- Modal/halaman paket memakai max/step existing server; tanggal lahir tidak bisa memilih masa depan. Kontak PIC tetap menerima email/nama pengguna. Tidak mengubah aturan umur, harga atau limit paket.
