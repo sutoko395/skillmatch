@@ -9,6 +9,14 @@ Commit bertahap sesuai tugas; branch fix/integrated-application-flows, basis 406
   `is_active` Organizer secara terpisah dari `organizer_status` melalui modal existing.
 
 
+- Revisi nama organisasi, alamat, kota atau KTP dari organisasi active memerlukan
+  konfirmasi eksplisit sebelum menjadi pending. Kontak/website/deskripsi biasa tidak
+  mereset approval. Perbaikan inactive dikirim ulang menjadi pending. Admin wajib
+  catatan bila inactive dan wajib revision terbaru; review stale ditolak. Persetujuan
+  membutuhkan profil dan metadata KTP. Catatan ditampilkan pada profil/pending.
+  Upload/preview tetap disk local privat; berkas lama dihapus setelah commit.
+
+
 - `NotificationService.enqueue` memakai notification_outbox existing, channel database,
   di transaksi bisnis. Notifikasi website tersedia segera setelah commit, tanpa SMTP
   atau worker delivery tambahan. Email tetap channel mail dan worker existing.

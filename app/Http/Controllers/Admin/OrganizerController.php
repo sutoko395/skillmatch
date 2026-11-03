@@ -3,14 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\OrganizerDocument;
 use App\Models\User;
 use App\Services\AccountManagementService;
+use App\Services\AuditService;
+use App\Services\NotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\View\View;
-use App\Models\OrganizerDocument;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class OrganizerController extends Controller
 {
@@ -81,13 +85,34 @@ class OrganizerController extends Controller
                 'required',
                 'in:pending,active,inactive',
             ],
+            'verification_note' => ['required_if:organizer_status,inactive', 'nullable', 'string', 'min:5', 'max:1000'],
+            'revision' => ['required', 'integer', 'min:0'],
+            'is_active' => ['sometimes', 'boolean'],
         ]);
 
         $status = $validated['organizer_status'];
 
-        $user->update([
-            'organizer_status' => $status,
-        ]);
+        DB::transaction(function () use ($user, $status, $validated) {
+            $locked = User::whereKey($user->id)->lockForUpdate()->firstOrFail();
+            if ((int) $validated['revision'] !== (int) $locked->organizer_revision) {
+                throw ValidationException::withMessages(['revision' => 'Pengajuan telah berubah. Muat ulang sebelum memutuskan.']);
+            }
+            $document = $locked->organizerDocuments()->where('document_type', 'ktp')->latest('id')->first();
+            if ($status === 'active' && (! $locked->organizerProfile || ! $document || ! Storage::disk('local')->exists($document->file_path))) {
+                throw ValidationException::withMessages(['organizer_status' => 'Lengkapi profil dan KTP sebelum persetujuan.']);
+            }
+            $before = $locked->organizer_status;
+            $beforeActive = $locked->is_active;
+            $locked->forceFill(['organizer_status' => $status,
+                'is_active' => $validated['is_active'] ?? $locked->is_active,
+                'organizer_verification_note' => $validated['verification_note'] ?? null,
+                'organizer_revision' => $locked->organizer_revision + 1])->save();
+            app(AuditService::class)->record(auth()->user(), 'organizer.reviewed', $locked,
+                ['before' => ['organizer_status' => $before, 'is_active' => $beforeActive],
+                    'after' => ['organizer_status' => $status, 'is_active' => $locked->is_active, 'revision' => $locked->organizer_revision]]);
+            app(NotificationService::class)->enqueue('organizer.reviewed:'.$locked->id.':'.$locked->organizer_revision.':'.$locked->id,
+                $locked, ['type' => 'organizer.reviewed', 'status' => $status]);
+        }, 3);
 
         return back()->with(
             'success',
@@ -121,11 +146,11 @@ class OrganizerController extends Controller
         );
 
         abort_unless(
-            Storage::exists($document->file_path),
+            Storage::disk('local')->exists($document->file_path),
             404
         );
 
-        return Storage::response(
+        return Storage::disk('local')->response(
             $document->file_path,
             $document->document_name
         );

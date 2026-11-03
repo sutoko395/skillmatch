@@ -51,6 +51,40 @@ class IntegratedFlowsTest extends DatabaseTestCase
         $this->assertDatabaseHas('audit_logs', ['action' => 'account.deleted', 'subject_id' => $empty->id]);
     }
 
+    public function test_identity_revision_requires_confirmation_and_contact_only_edit_preserves_approval(): void
+    {
+        $owner = $this->organizer();
+        $this->actingAs($owner)->post(route('organizer.profile.update'), array_replace($this->profileData(), ['phone' => '08111111111']))
+            ->assertSessionHasNoErrors();
+        $this->assertSame('active', $owner->fresh()->organizer_status);
+        $revision = $owner->fresh()->organizer_revision;
+        $changed = array_replace($this->profileData(), ['organization_name' => 'Nama organisasi baru']);
+        $this->post(route('organizer.profile.update'), $changed)->assertSessionHasErrors('confirm_reverification');
+        $this->assertSame('Organisasi Uji', $owner->fresh()->organizerProfile->organization_name);
+        $this->assertSame($revision, $owner->fresh()->organizer_revision);
+        $this->post(route('organizer.profile.update'), $changed + ['confirm_reverification' => 1])->assertSessionHasNoErrors();
+        $this->assertSame('pending', $owner->fresh()->organizer_status);
+        $this->actingAs($owner->fresh())->get(route('organizer.events.index'))->assertRedirect(route('organizer.profile.pending'));
+    }
+
+    public function test_admin_revision_note_resubmission_stale_review_and_notification(): void
+    {
+        $owner = $this->organizer();
+        $admin = User::factory()->create(['role' => 'admin']);
+        $url = route('admin.organizers.update-status', $owner);
+        $this->actingAs($admin)->patchJson($url, ['organizer_status' => 'inactive', 'revision' => 0])->assertUnprocessable();
+        $this->patch($url, ['organizer_status' => 'inactive', 'revision' => 0, 'verification_note' => 'Perbaiki alamat organisasi'])->assertSessionHasNoErrors();
+        $this->actingAs($owner->fresh())->get(route('organizer.profile.pending'))->assertOk()->assertSee('Perbaiki alamat organisasi');
+        $this->post(route('organizer.profile.update'), $this->profileData())->assertSessionHasNoErrors();
+        $this->assertSame('pending', $owner->fresh()->organizer_status);
+        $this->assertDatabaseHas('notification_outbox', ['recipient_id' => $admin->id, 'channel' => 'database',
+            'dedupe_key' => 'organizer.submitted:'.$owner->id.':'.$owner->fresh()->organizer_revision.':'.$admin->id]);
+        $this->actingAs($admin)->patchJson($url, ['organizer_status' => 'active', 'revision' => 1])->assertUnprocessable();
+        $this->patch($url, ['organizer_status' => 'active', 'revision' => $owner->fresh()->organizer_revision])->assertSessionHasNoErrors();
+        $this->assertSame('active', $owner->fresh()->organizer_status);
+        $this->assertSame(2, NotificationOutbox::where('recipient_id', $owner->id)->where('type', 'organizer.reviewed')->count());
+    }
+
     public function test_internal_notification_dedupe_rollback_ownership_and_email_isolation(): void
     {
         $user = User::factory()->create();
@@ -87,6 +121,20 @@ class IntegratedFlowsTest extends DatabaseTestCase
         $this->assertNotNull($owner->fresh()->organizerProfile);
         $this->assertSame(1, $owner->organizerDocuments()->count());
         Storage::disk('local')->assertExists('organizers/fixture.pdf');
+    }
+
+    public function test_missing_identity_file_blocks_approval_and_suspension_is_separate_from_review(): void
+    {
+        $owner = $this->organizer();
+        $admin = User::factory()->create(['role' => 'admin']);
+        Storage::disk('local')->delete('organizers/fixture.pdf');
+        $this->actingAs($admin)->patchJson(route('admin.organizers.update-status', $owner), ['organizer_status' => 'active', 'revision' => 0])
+            ->assertUnprocessable()->assertJsonValidationErrors('organizer_status');
+        $this->patch(route('admin.organizers.update-status', $owner), ['organizer_status' => 'pending', 'is_active' => 0, 'revision' => 0])
+            ->assertRedirect()->assertSessionHasNoErrors();
+        $this->assertFalse($owner->fresh()->is_active);
+        $this->actingAs($owner->fresh())->get(route('organizer.profile.edit'))->assertForbidden();
+        $this->assertGuest();
     }
 
 }
