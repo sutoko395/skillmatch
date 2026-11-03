@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Application;
 use App\Models\Attendance;
+use App\Models\AttendanceSession;
 use App\Models\AuditLog;
 use App\Models\Event;
 use App\Services\A2Dependencies;
@@ -32,7 +33,7 @@ class RetryA3Notifications extends Command
             return self::FAILURE;
         }
         $logs = AuditLog::where('id', '>', $after)->whereIn('action', [
-            'application.submitted', 'application.accepted', 'application.rejected', 'application.withdrawn', 'application.cancelled', 'attendance.recorded', 'event.completed',
+            'application.submitted', 'application.accepted', 'application.rejected', 'application.withdrawn', 'application.cancelled', 'attendance.recorded', 'attendance.session_recorded', 'event.completed',
         ])->orderBy('id')->limit($limit)->get();
         foreach ($logs as $log) {
             try {
@@ -50,6 +51,12 @@ class RetryA3Notifications extends Command
                         if ($attendance) {
                             $targets = [$attendance->application->volunteer];
                             $payload['application_id'] = $attendance->application_id;
+                        }
+                    } elseif ($log->subject_type === (new AttendanceSession)->getMorphClass()) {
+                        $session = AttendanceSession::with('attendance.application.volunteer')->find($log->subject_id);
+                        if ($session) {
+                            $targets = [$session->attendance->application->volunteer];
+                            $payload['application_id'] = $session->attendance->application_id;
                         }
                     } elseif ($log->subject_type === (new Event)->getMorphClass()) {
                         $event = Event::find($log->subject_id);

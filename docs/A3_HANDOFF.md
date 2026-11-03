@@ -1,5 +1,18 @@
 # Serah-terima A3 — seleksi dan pelaksanaan, 28 Oktober 2026
 
+## Kehadiran per sesi/hari - keputusan pengguna 3 November 2026
+
+Organizer mencatat setiap sesi/hari dari snapshot jadwal tugas peserta accepted.
+Interval melewati tengah malam dipisah menurut tanggal WIB. Completion menunggu
+seluruh sesi selesai dan tercatat; partisipasi berhasil jika semua sesi hadir.
+Absensi lama tetap berlabel per kegiatan, tidak disalin sebagai hadir setiap hari.
+Konversi legacy pada event nonterminal meminta konfirmasi/alasan dan menyimpan arsip.
+Halaman, filter, rekap dan route lama dipertahankan dengan kompatibilitas terbatas
+untuk satu sesi; beberapa sesi harus dicatat melalui endpoint per sesi.
+Schema, aturan, endpoint, demo dan bukti tes: [handoff sesi](SESSION_ATTENDANCE_HANDOFF.md).
+Ketentuan lama yang membatasi attendance satu catatan per event digantikan keputusan ini.
+
+
 Perbaikan integrasi auth Volunteer setelah merge A3: registrasi/pengiriman ulang
 email dan redirect verifikasi disambungkan kembali dengan gate ApplicationService.
 Browser mendapat alur verifikasi sebelum store/submit/upload/hapus dokumen,

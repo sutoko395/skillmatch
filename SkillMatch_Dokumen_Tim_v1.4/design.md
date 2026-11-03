@@ -1,5 +1,18 @@
 # Design specification SkillMatch
 
+## Kehadiran per sesi/hari - keputusan pengguna 3 November 2026
+
+Organizer mencatat setiap sesi/hari dari snapshot jadwal tugas peserta accepted.
+Interval melewati tengah malam dipisah menurut tanggal WIB. Completion menunggu
+seluruh sesi selesai dan tercatat; partisipasi berhasil jika semua sesi hadir.
+Absensi lama tetap berlabel per kegiatan, tidak disalin sebagai hadir setiap hari.
+Konversi legacy pada event nonterminal meminta konfirmasi/alasan dan menyimpan arsip.
+Halaman, filter, rekap dan route lama dipertahankan dengan kompatibilitas terbatas
+untuk satu sesi; beberapa sesi harus dicatat melalui endpoint per sesi.
+Schema, aturan, endpoint, demo dan bukti tes: [handoff sesi](../docs/SESSION_ATTENDANCE_HANDOFF.md).
+Ketentuan lama yang membatasi attendance satu catatan per event digantikan keputusan ini.
+
+
 ## Perbaikan alur terintegrasi - 3 November 2026
 
 Keputusan terbaru dan bukti implementasi ada pada [handoff perbaikan alur](../docs/INTEGRATED_FLOWS_HANDOFF.md).
@@ -235,7 +248,7 @@ Auto-save gagal menampilkan "Jawaban belum tersimpan, coba lagi"; jangan menutup
 
 Di detail event → Pelaksanaan. Header nama/jadwal/lokasi/status event. Rekap ringkas: Peserta diterima, Hadir, Tidak hadir, Belum dicatat. Ini rekap operasional event, bukan dashboard Organizer.
 
-Tabel: Nama, Posisi, Kehadiran, Waktu pencatatan, Catatan, Aksi. Default unrecorded berlabel "Belum dicatat". Organizer menekan Catat, memilih Hadir/Tidak hadir, catatan opsional, Simpan. Edit sesudah event selesai meminta alasan wajib. Volunteer hanya melihat hasil.
+Tabel mempertahankan Nama/Posisi dan rekap peserta; tiap sesi menampilkan tanggal/jam WIB, Kehadiran, Waktu pencatatan, Catatan dan Aksi. Filter tanggal/status berlaku untuk sesi. Default unrecorded berlabel "Belum dicatat". Organizer menekan Catat, memilih Hadir/Tidak hadir, catatan opsional, Simpan. Edit sesudah event selesai meminta alasan wajib. Volunteer hanya melihat hasil.
 
 Bulk action jika ada: checkbox peserta eligible → "Tandai hadir (n)" → konfirmasi nama/jumlah. Jangan default menandai semua hadir. Completion button "Selesaikan Event" membuka ringkasan dan blocked reasons untuk belum akhir jadwal, seleksi menggantung, atau kehadiran belum dicatat. Waktu pencatatan tidak disebut jam datang.
 

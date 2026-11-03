@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Application;
 use App\Models\ApplicationDocument;
 use App\Models\Attendance;
+use App\Models\AttendanceSession;
 use App\Models\AuditLog;
 use App\Models\Event;
 use App\Models\NotificationOutbox;
@@ -28,6 +29,7 @@ class AccountManagementService
                 || Application::where('volunteer_id', $subject->id)->orWhere('decision_by', $subject->id)->exists()
                 || AuditLog::where('actor_id', $subject->id)->exists()
                 || Attendance::where('recorded_by', $subject->id)->exists()
+                || AttendanceSession::where('recorded_by', $subject->id)->exists()
                 || NotificationOutbox::where('recipient_id', $subject->id)->exists();
             abort_if($used, 403, 'Akun memiliki data terkait. Nonaktifkan akun untuk mempertahankan dokumen dan riwayat.');
             $paths = $subject->organizerDocuments()->pluck('file_path')->filter()->all();

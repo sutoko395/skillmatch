@@ -89,7 +89,8 @@ class SelectionService
             }
             $this->transition($application, $actor, $status, $reason);
             if ($status === 'accepted') {
-                Attendance::firstOrCreate(['application_id' => $application->id], ['status' => 'unrecorded']);
+                $attendance = Attendance::firstOrCreate(['application_id' => $application->id], ['status' => 'unrecorded']);
+                app(AttendanceSessionService::class)->prepareLocked($attendance, $application, $actor);
             }
 
             return $application;
@@ -162,9 +163,11 @@ class SelectionService
                     $this->fail('Pengunduran peserta hanya sebelum kegiatan dimulai.');
                 }
                 $attendance = Attendance::where('application_id', $application->id)->lockForUpdate()->first();
-                if ($attendance && $attendance->status !== 'unrecorded') {
+                if ($attendance && ($attendance->status !== 'unrecorded' || $attendance->legacy_record !== null
+                    || $attendance->sessions()->where('status', '!=', 'unrecorded')->exists())) {
                     $this->fail('Kehadiran sudah dicatat; pengunduran ditolak.');
                 }
+                $attendance?->sessions()->delete();
                 $attendance?->delete();
             } elseif (! in_array($application->status, self::PENDING, true)) {
                 $this->fail('Status lamaran tidak dapat ditarik.');

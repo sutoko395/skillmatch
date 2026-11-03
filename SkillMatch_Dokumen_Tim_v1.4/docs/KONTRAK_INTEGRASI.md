@@ -1,5 +1,18 @@
 # Kontrak integrasi empat anggota
 
+## Kehadiran per sesi/hari - keputusan pengguna 3 November 2026
+
+Organizer mencatat setiap sesi/hari dari snapshot jadwal tugas peserta accepted.
+Interval melewati tengah malam dipisah menurut tanggal WIB. Completion menunggu
+seluruh sesi selesai dan tercatat; partisipasi berhasil jika semua sesi hadir.
+Absensi lama tetap berlabel per kegiatan, tidak disalin sebagai hadir setiap hari.
+Konversi legacy pada event nonterminal meminta konfirmasi/alasan dan menyimpan arsip.
+Halaman, filter, rekap dan route lama dipertahankan dengan kompatibilitas terbatas
+untuk satu sesi; beberapa sesi harus dicatat melalui endpoint per sesi.
+Schema, aturan, endpoint, demo dan bukti tes: [handoff sesi](../../docs/SESSION_ATTENDANCE_HANDOFF.md).
+Ketentuan lama yang membatasi attendance satu catatan per event digantikan keputusan ini.
+
+
 ## Perbaikan alur terintegrasi - 3 November 2026
 
 Keputusan terbaru dan bukti implementasi ada pada [handoff perbaikan alur](../../docs/INTEGRATED_FLOWS_HANDOFF.md).
@@ -139,7 +152,8 @@ Versi 1.4.2 • Pasangan [PRD induk](../PRD_SkillMatch_Tim.md). Nama di bawah me
 | assessments, assessment_questions, assessment_options | Baru | A4; event_position_id, version, duration_minutes, is_published; opsi benar hanya server. |
 | assessment_attempts, assessment_answers | Baru | A4; application_id unik, assessment_id/version, status, started_at, expires_at, submitted_at, score; unique attempt/question untuk jawaban. |
 | packages, orders, payment_events, event_entitlements | Baru | A2; snapshot paket, nominal integer rupiah, order_ref unik, paid_at/activated_at stabil, gateway_event_key unik. |
-| attendances | Baru | A3; application_id unik, status, recorded_by, recorded_at, note. |
+| attendances | A3 | Rekap application_id unik, status derived dari sesi, uses_sessions, legacy_record dan recorded_by/at. |
+| attendance_sessions | A3 | Rincian per sesi/hari: attendance_id, session_key unik per parent, session_date WIB, starts_at/ends_at UTC, status, revision, recorded_by/at, note dan correction_reason. |
 | notifications, notification_outbox | Baru | A4; recipient_id/tipe/data, dedupe_key unik, retry dan delivered_at. |
 | audit_logs | Baru | SF; actor_id, action, subject_type/id, before/after aman, reason, timestamp. |
 | content_pages, operational_settings | Baru | A1; teks terbatas dan allowlist settings, bukan secret atau kode. |

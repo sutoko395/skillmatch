@@ -2,15 +2,18 @@
 @section('title', 'Pelaksanaan - '.$event->title)
 @section('content')
 <div class="mx-auto max-w-7xl space-y-6">
-    <x-page-header :title="'Pelaksanaan: '.$event->title" description="Kehadiran dicatat Organizer. Waktu pencatatan bukan jam kedatangan." />
+    <x-page-header :title="'Pelaksanaan: '.$event->title" description="Kehadiran dicatat Organizer per sesi/hari tugas. Waktu pencatatan bukan jam kedatangan." />
     <a class="font-semibold text-indigo-600" href="{{ route('organizer.applications.index', $event) }}">Kembali ke pelamar</a>
     <x-section-card>
         <dl class="mb-5 grid grid-cols-2 gap-4 md:grid-cols-4">@foreach(['accepted' => 'Peserta diterima', 'present' => 'Hadir', 'absent' => 'Tidak hadir', 'unrecorded' => 'Belum dicatat'] as $key => $label)<div class="rounded-xl bg-slate-50 p-4"><dt class="text-sm text-slate-600">{{ $label }}</dt><dd class="text-2xl font-semibold">{{ $summary->$key }}</dd></div>@endforeach</dl>
+        <p class="mb-3 text-sm text-slate-600">Angka di atas adalah rekap peserta: Hadir berarti seluruh sesi hadir; Tidak hadir berarti ada sesi tidak hadir setelah semua sesi final. Catatan lama tetap ditandai per kegiatan.</p>
+        <p class="mb-5 rounded-xl bg-indigo-50 p-4 text-sm text-indigo-900">Rekap seluruh sesi event: {{ $sessionSummary->total }} catatan sesi, {{ $sessionSummary->present }} Hadir, {{ $sessionSummary->absent }} Tidak hadir, {{ $sessionSummary->unrecorded }} Belum dicatat. Satu sesi dihitung untuk setiap peserta yang bertugas.</p>
         <p class="mb-4">Status kegiatan: <strong>{{ $event->lifecycle_status }}</strong>. Jadwal: {{ $event->starts_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}–{{ $event->ends_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB.</p>
         <form method="GET" class="mb-5 flex flex-wrap gap-4">
             <label>Cari nama<input class="block rounded-lg border-slate-300" name="search" value="{{ request('search') }}" maxlength="100"></label>
             <label>Posisi<select class="block rounded-lg border-slate-300" name="position_id"><option value="">Semua posisi</option>@foreach($event->positions as $position)<option value="{{ $position->id }}" @selected(request('position_id') == $position->id)>{{ $position->name }}</option>@endforeach</select></label>
             <label>Kehadiran<select class="block rounded-lg border-slate-300" name="status"><option value="">Semua status</option>@foreach(['unrecorded' => 'Belum dicatat', 'present' => 'Hadir', 'absent' => 'Tidak hadir'] as $key => $label)<option value="{{ $key }}" @selected(request('status') === $key)>{{ $label }}</option>@endforeach</select></label>
+            <label>Hari tugas (WIB)<input type="date" name="session_date" value="{{ request('session_date') }}" class="block rounded-lg border-slate-300"></label>
             <x-primary-button>Terapkan</x-primary-button>
         </form>
         <p class="mb-2 text-sm text-slate-600">Pada layar kecil, geser tabel untuk melihat catatan dan aksi.</p>
@@ -19,11 +22,25 @@
             @forelse($applications as $application)
                 @php($attendance = $application->attendance)
                 <tr class="border-t border-slate-200">
-                    <td class="p-3">{{ $application->volunteer->name }}<br>{{ $application->position->name }}</td>
-                    <td class="p-3">{{ ['unrecorded' => 'Belum dicatat', 'present' => 'Hadir', 'absent' => 'Tidak hadir'][$attendance?->status ?? 'unrecorded'] }}<br>{{ $attendance?->recorded_at ? $attendance->recorded_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i').' WIB' : 'Belum ada waktu pencatatan' }}</td>
+                    <td class="p-3 align-top">{{ $application->volunteer->name }}<br>{{ $application->position->name }}</td>
+                    <td class="p-3 align-top">{{ ['unrecorded' => 'Belum dicatat', 'present' => 'Hadir', 'absent' => 'Tidak hadir'][$attendance?->status ?? 'unrecorded'] }}<br>{{ $attendance?->recorded_at ? 'Pembaruan terakhir: '.$attendance->recorded_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i').' WIB' : 'Belum ada waktu pencatatan' }}</td>
                     <td class="min-w-64 p-3">
-                        @if($attendance && $event->lifecycle_status !== 'cancelled')
-                        <form method="POST" action="{{ route('organizer.attendances.update', $attendance) }}" class="space-y-3" x-data="{busy:false}" @submit="busy=true">
+                        @if($attendance?->uses_sessions)
+                            @include('organizer.execution.session-forms', ['attendance' => $attendance, 'application' => $application])
+                        @elseif($attendance && $event->lifecycle_status !== 'cancelled')
+                        <p class="mb-3 text-sm font-semibold text-amber-800">Catatan lama per kegiatan; belum merupakan bukti kehadiran setiap sesi.</p>
+                        @if(!in_array($event->lifecycle_status, ['completed', 'cancelled']))
+                            <form method="POST" action="{{ route('organizer.attendances.prepare-sessions', $attendance) }}" class="mb-5 space-y-3 rounded-xl border border-indigo-200 p-4">
+                                @csrf
+                                <input type="hidden" name="revision" value="{{ $attendance->revision }}">
+                                <p class="text-sm">Siapkan sesi dari jadwal tugas saat lamaran dikirim. Kehadiran setiap sesi dimulai Belum dicatat; catatan lama yang sudah terisi tetap diarsipkan.</p>
+                                @if($attendance->status !== 'unrecorded')<label class="block">Alasan pengalihan<textarea name="reason" required minlength="5" maxlength="1000" class="block w-full rounded-lg border-slate-300"></textarea></label>@endif
+                                <label class="block text-sm"><input type="checkbox" name="confirmed" value="1" required> Saya akan mencatat setiap sesi sesuai kehadiran sebenarnya.</label>
+                                <x-primary-button>Siapkan absensi per sesi</x-primary-button>
+                            </form>
+                        @endif
+                        @if($attendance->status !== 'unrecorded')
+                        <form method="POST" action="{{ route('organizer.attendances.update', $attendance) }}" class="space-y-3" x-data="{busy:false}" @submit="if (busy) { $event.preventDefault(); } else { $nextTick(() => busy = true); }" @pageshow.window="busy=false">
                             @csrf @method('PATCH')
                             <input type="hidden" name="revision" value="{{ $attendance->revision }}">
                             <label class="block">Kehadiran<select name="status" class="ml-2 rounded-lg border-slate-300" required><option value="">Pilih</option><option value="present" @selected($attendance->status === 'present')>Hadir</option><option value="absent" @selected($attendance->status === 'absent')>Tidak hadir</option></select></label>
@@ -31,6 +48,13 @@
                             @if($event->lifecycle_status === 'completed')<label class="block">Alasan koreksi<textarea name="reason" required minlength="5" maxlength="1000" class="block w-full rounded-lg border-slate-300"></textarea></label>@endif
                             <x-primary-button x-bind:disabled="busy">Simpan kehadiran</x-primary-button>
                         </form>
+                        @endif
+                        @elseif(!$attendance && !in_array($event->lifecycle_status, ['cancelled', 'completed']))
+                            <form method="POST" action="{{ route('organizer.applications.prepare-attendance-sessions', $application) }}" class="space-y-3">
+                                @csrf
+                                <label class="block text-sm"><input type="checkbox" name="confirmed" value="1" required> Siapkan absensi peserta dari jadwal tugas saat lamaran dikirim.</label>
+                                <x-primary-button>Siapkan absensi per sesi</x-primary-button>
+                            </form>
                         @else <p>Kehadiran tidak dapat diubah.</p> @endif
                     </td>
                 </tr>
@@ -52,7 +76,7 @@
     </x-section-card>
     <x-section-card>
         <h2 class="mb-3 text-lg font-semibold">Selesaikan kegiatan</h2>
-        <p class="mb-3 text-sm text-slate-600">Hanya setelah akhir jadwal, seluruh seleksi final, dan semua peserta sudah dicatat Hadir/Tidak hadir.</p>
+        <p class="mb-3 text-sm text-slate-600">Hanya setelah akhir jadwal, seluruh seleksi final, dan semua sesi/hari tugas peserta sudah selesai serta dicatat Hadir/Tidak hadir. Catatan lama per kegiatan tetap terbaca sebagai catatan lama.</p>
         <form method="POST" action="{{ route('organizer.events.complete', $event) }}" class="space-y-3">
             @csrf
             <label class="block"><input type="checkbox" name="confirmed" value="1" required> Saya mengonfirmasi rekap kegiatan.</label>

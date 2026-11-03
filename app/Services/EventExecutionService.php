@@ -23,6 +23,24 @@ class EventExecutionService
             $application = Application::whereKey($application->id)->lockForUpdate()->firstOrFail();
             $attendance = Attendance::whereKey($attendance->id)->lockForUpdate()->firstOrFail();
             Gate::forUser($actor->fresh())->authorize('update', $attendance);
+            if ($attendance->uses_sessions) {
+                $sessions = $attendance->sessions()->lockForUpdate()->get();
+                if ($sessions->count() !== 1) {
+                    app(SelectionService::class)->fail('Pilih sesi/hari yang akan dicatat. Pembaruan seluruh sesi sekaligus tidak diizinkan.');
+                }
+                $session = $sessions->first();
+                if ((int) $attendance->revision !== (int) $data['revision']
+                    && ($session->status !== $data['status'] || $session->note !== ($data['note'] ?? null))) {
+                    app(SelectionService::class)->fail('Kehadiran telah berubah. Muat ulang sebelum menyimpan.');
+                }
+                app(AttendanceSessionService::class)->recordLocked($session, $attendance, $application, $event, $actor,
+                    [...$data, 'revision' => $session->revision]);
+
+                return $attendance->fresh();
+            }
+            if ($attendance->status === 'unrecorded') {
+                app(SelectionService::class)->fail('Siapkan absensi per sesi dari halaman Pelaksanaan sebelum mencatat kehadiran.');
+            }
             if ($application->status !== 'accepted' || $event->lifecycle_status === 'cancelled'
                 || ! $event->published_at || ! $event->starts_at || now()->lt($event->starts_at)) {
                 app(SelectionService::class)->fail('Kehadiran hanya untuk peserta diterima sejak awal kegiatan.');
@@ -73,6 +91,22 @@ class EventExecutionService
                 $fail->fail('Konfirmasikan penyelesaian dengan nol peserta.');
             }
             foreach ($accepted as $application) {
+                if ($application->attendance?->uses_sessions) {
+                    $attendance = $application->attendance;
+                    $sessions = $attendance->sessions()->lockForUpdate()->get();
+                    $expected = collect(app(AttendanceSessionService::class)->definitions($application))->pluck('session_key')->sort()->values()->all();
+                    if ($sessions->pluck('session_key')->sort()->values()->all() !== $expected
+                        || $sessions->contains(fn ($session) => ! in_array($session->status, ['present', 'absent'], true) || $session->ends_at->isFuture())) {
+                        $fail->fail('Seluruh sesi/hari tugas peserta harus selesai dan memiliki kehadiran final. Belum dicatat bukan Tidak hadir.');
+                    }
+                    $status = $sessions->contains('status', 'absent') ? 'absent' : 'present';
+                    if ($attendance->status !== $status) {
+                        $attendance->forceFill(['status' => $status, 'revision' => $attendance->revision + 1])->save();
+                        app(AuditService::class)->record($actor, 'attendance.summary_reconciled', $attendance, ['after' => ['status' => $status]]);
+                    }
+
+                    continue;
+                }
                 if (! in_array($application->attendance?->status, ['present', 'absent'], true)) {
                     $fail->fail('Seluruh peserta harus memiliki kehadiran final; Belum dicatat bukan Tidak hadir.');
                 }

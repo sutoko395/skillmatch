@@ -48,7 +48,7 @@ class NotificationOutbox extends Model
             'application.rejected' => 'Lamaran ditolak', 'application.withdrawn' => 'Lamaran ditarik',
             'application.cancelled' => 'Lamaran dibatalkan', 'application.screened' => 'Hasil screening tersedia',
             'application.matched' => 'Assessment tersedia', 'application.assessed' => 'Assessment selesai, menunggu peninjauan',
-            'attendance.recorded' => 'Kehadiran telah dicatat', 'event.completed' => 'Kegiatan selesai',
+            'attendance.recorded' => 'Kehadiran telah dicatat', 'attendance.session_recorded' => 'Kehadiran sesi tugas telah dicatat', 'event.completed' => 'Kegiatan selesai',
             'recruitment.repaired' => 'Tenggat assessment event lama telah dilengkapi',
             default => 'Pembaruan aktivitas',
         };

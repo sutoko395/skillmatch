@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Organizer;
 use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Attendance;
+use App\Models\AttendanceSession;
 use App\Models\Event;
+use App\Services\AttendanceSessionService;
 use App\Services\EventExecutionService;
 use App\Services\SelectionService;
 use Illuminate\Http\Request;
@@ -21,19 +23,34 @@ class ExecutionController extends Controller
             ->leftJoin('attendances', 'attendances.application_id', '=', 'applications.id')
             ->selectRaw("COUNT(*) AS accepted, COALESCE(SUM(attendances.status = 'present'), 0) AS present, COALESCE(SUM(attendances.status = 'absent'), 0) AS absent, COALESCE(SUM(attendances.status = 'unrecorded' OR attendances.id IS NULL), 0) AS unrecorded")
             ->first();
-        $query = $event->applications()->where('status', 'accepted')->with(['volunteer', 'position', 'attendance']);
+        $query = $event->applications()->where('status', 'accepted')->with(['volunteer', 'position', 'attendance.sessions']);
+        $filters = $request->validate(['session_date' => 'nullable|date_format:Y-m-d', 'position_id' => 'nullable|integer',
+            'status' => 'nullable|in:unrecorded,present,absent', 'search' => 'nullable|string|max:100']);
+        if (! empty($filters['session_date'])) {
+            $query->whereHas('attendance.sessions', fn ($q) => $q->where('session_date', $filters['session_date']));
+        }
         if ($request->filled('position_id')) {
             $query->where('event_position_id', $request->input('position_id'));
         }
         if ($request->filled('status')) {
-            $query->whereHas('attendance', fn ($q) => $q->where('status', $request->input('status')));
+            $query->whereHas('attendance', function ($q) use ($filters) {
+                $q->where(fn ($q) => $q->where('uses_sessions', false)->where('status', $filters['status']))
+                    ->orWhere(fn ($q) => $q->where('uses_sessions', true)->whereHas('sessions', function ($q) use ($filters) {
+                        $q->where('status', $filters['status']);
+                        if (! empty($filters['session_date'])) {
+                            $q->where('session_date', $filters['session_date']);
+                        }
+                    }));
+            });
         }
         if ($request->filled('search')) {
             $query->whereHas('volunteer', fn ($q) => $q->where('name', 'like', '%'.$request->string('search')->limit(100).'%'));
         }
         $applications = $query->orderBy('id')->paginate(20)->withQueryString();
+        $sessionSummary = AttendanceSession::whereHas('attendance.application', fn ($q) => $q->where('event_id', $event->id)->where('status', 'accepted'))
+            ->selectRaw("COUNT(*) AS total, COALESCE(SUM(status = 'present'), 0) AS present, COALESCE(SUM(status = 'absent'), 0) AS absent, COALESCE(SUM(status = 'unrecorded'), 0) AS unrecorded")->first();
 
-        return view('organizer.execution.show', compact('event', 'applications', 'summary'));
+        return view('organizer.execution.show', compact('event', 'applications', 'summary', 'sessionSummary'));
     }
 
     public function accept(Request $request, Application $application, SelectionService $service)
@@ -82,6 +99,27 @@ class ExecutionController extends Controller
         $service->record($attendance, $request->user(), $request->all());
 
         return back()->with('success', 'Kehadiran disimpan.');
+    }
+
+    public function prepareSessions(Request $request, Attendance $attendance, AttendanceSessionService $service)
+    {
+        $service->prepare($attendance, $request->user(), $request->all());
+
+        return back()->with('success', 'Sesi tugas disiapkan. Setiap sesi harus dicatat sesuai kehadiran sebenarnya.');
+    }
+
+    public function recordSession(Request $request, AttendanceSession $session, AttendanceSessionService $service)
+    {
+        $service->record($session, $request->user(), $request->all());
+
+        return back()->with('success', 'Kehadiran sesi disimpan.');
+    }
+
+    public function prepareApplicationSessions(Request $request, Application $application, AttendanceSessionService $service)
+    {
+        $service->prepareApplication($application, $request->user(), $request->all());
+
+        return back()->with('success', 'Absensi sesi peserta disiapkan dari snapshot jadwal tugas.');
     }
 
     public function complete(Request $request, Event $event, EventExecutionService $service)
