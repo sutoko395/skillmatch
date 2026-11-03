@@ -17,6 +17,18 @@ Commit bertahap sesuai tugas; branch fix/integrated-application-flows, basis 406
   Upload/preview tetap disk local privat; berkas lama dihapus setelah commit.
 
 
+- `POST organizer/events/{event}/recruitment-repair` melengkapi kedua tenggat yang
+  kosong pada event pending/approved upcoming. Hanya pemilik; konfirmasi dan alasan
+  wajib; pendaftaran < assessment (masa depan) < keputusan < awal kegiatan.
+  Pelengkapan sekali, replay nilai sama idempoten, perubahan selanjutnya ditolak.
+  Tidak membuka ulang pendaftaran, mengubah jadwal/biaya atau menulis snapshot lama.
+  `RecruitmentScheduleService.deadlineFor` memakai tanggal snapshot bila tersedia;
+  hanya tanggal snapshot yang kosong dapat membaca tenggat event dengan marker
+  perbaikan eksplisit. Ini pengecualian migrasi metadata yang diaudit, bukan backfill
+  snapshot atau tebakan tenggat. Snapshot lain yang tidak lengkap tetap ditolak oleh
+  screening/assessment existing; tidak ada bypass untuk data lama yang tidak valid.
+
+
 - `NotificationService.enqueue` memakai notification_outbox existing, channel database,
   di transaksi bisnis. Notifikasi website tersedia segera setelah commit, tanpa SMTP
   atau worker delivery tambahan. Email tetap channel mail dan worker existing.
@@ -27,6 +39,9 @@ Commit bertahap sesuai tugas; branch fix/integrated-application-flows, basis 406
   Hook: review organisasi/event, publish/payment, screening/matching/assessment,
   lamaran, attendance, cancel dan completion. Replay A2/A3 tetap tersedia.
 
+
+- Scheduler kini juga menjalankan retry screening/matching setiap menit. Tidak
+  menjalankan replay historis atau pemrosesan massal data kerja saat implementasi.
 
 `2026_11_03_000001_complete_application_flows`: kolom catatan/revision organisasi
 pada users; marker/pelaku/alasan pelengkapan tenggat pada events; application_id

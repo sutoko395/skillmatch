@@ -85,6 +85,30 @@ class IntegratedFlowsTest extends DatabaseTestCase
         $this->assertSame(2, NotificationOutbox::where('recipient_id', $owner->id)->where('type', 'organizer.reviewed')->count());
     }
 
+    public function test_legacy_repair_is_one_time_authorized_and_does_not_change_snapshot(): void
+    {
+        $application = $this->participantApplication();
+        $event = $application->event;
+        $dates = ['assessment_deadline' => $event->assessment_deadline->setTimezone('Asia/Jakarta')->format('Y-m-d\TH:i'),
+            'decision_deadline' => $event->decision_deadline->setTimezone('Asia/Jakarta')->format('Y-m-d\TH:i'),
+            'reason' => 'Melengkapi tenggat event lama', 'confirmed' => 1];
+        $event->forceFill(['assessment_deadline' => null, 'decision_deadline' => null])->save();
+        $snapshot = $application->snapshot_json;
+        unset($snapshot['assessment_deadline'], $snapshot['decision_deadline']);
+        $application->forceFill(['snapshot_json' => $snapshot])->save();
+        $url = route('organizer.events.recruitment-repair', $event);
+        $this->actingAs(User::factory()->create(['role' => 'organizer', 'organizer_status' => 'active']))->postJson($url, $dates)->assertForbidden();
+        $this->actingAs($event->organizer)->post($url, $dates)->assertSessionHasNoErrors();
+        $this->post($url, $dates)->assertSessionHasNoErrors();
+        $this->assertEquals($snapshot, $application->fresh()->snapshot_json);
+        $this->assertSame(1, AuditLog::where('action', 'event.recruitment_repaired')->where('subject_id', $event->id)->count());
+        $this->assertNotNull(app(RecruitmentScheduleService::class)->deadlineFor($application->fresh()));
+        $attempt = app(AssessmentService::class)->start($application->fresh(), $application->volunteer);
+        $this->assertTrue($attempt->expires_at->lte($event->fresh()->assessment_deadline));
+        $dates['decision_deadline'] = $event->starts_at->setTimezone('Asia/Jakarta')->format('Y-m-d\TH:i');
+        $this->postJson($url, $dates)->assertUnprocessable();
+    }
+
     public function test_internal_notification_dedupe_rollback_ownership_and_email_isolation(): void
     {
         $user = User::factory()->create();

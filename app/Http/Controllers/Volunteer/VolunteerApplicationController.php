@@ -9,6 +9,7 @@ use App\Models\EventPosition;
 use App\Services\ApplicationService;
 use App\Services\AssessmentService;
 use App\Services\ProfileEligibilityService;
+use App\Services\RecruitmentScheduleService;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -66,7 +67,8 @@ class VolunteerApplicationController extends Controller
         $snapshot = $application->status === 'draft' ? [] : ($application->snapshot_json ?? []);
         $recruitmentDates = [];
         foreach (['assessment_deadline', 'decision_deadline'] as $field) {
-            $value = array_key_exists($field, $snapshot) ? $snapshot[$field] : $application->event->$field;
+            $value = $application->status === 'draft' ? $application->event->$field
+                : app(RecruitmentScheduleService::class)->deadlineFor($application, $field);
             $recruitmentDates[$field] = $value ? CarbonImmutable::parse($value)->setTimezone('Asia/Jakarta') : null;
         }
 

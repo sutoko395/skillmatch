@@ -10,6 +10,7 @@ use App\Models\Package;
 use App\Services\EventPublicationService;
 use App\Services\EventService;
 use App\Services\PackageService;
+use App\Services\RecruitmentScheduleService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -143,6 +144,14 @@ class EventController extends Controller
         $service->submit($event, $r->user());
 
         return back()->with('success', 'Event diajukan untuk moderasi.');
+    }
+
+
+    public function repairRecruitment(Request $request, Event $event, RecruitmentScheduleService $service)
+    {
+        $service->repair($event, $request->user(), $request->all());
+
+        return redirect()->route('organizer.events.show', $event)->with('success', 'Tenggat event lama dilengkapi. Snapshot dan hasil lamaran tetap dipertahankan.');
     }
 
     public function publish(
