@@ -131,11 +131,11 @@ class A2EventTest extends DatabaseTestCase
         $this->assertSame(1, $event->positions()->count());
     }
 
-    public function test_cancellation_waits_for_a3_without_mutating_event(): void
+    public function test_cancellation_uses_integrated_a3_and_preserves_event_history(): void
     {
         [$owner,$event] = $this->fixture();
-        $this->actingAs($owner)->postJson("/organizer/events/$event->id/cancel", ['reason' => 'Kegiatan dibatalkan'])->assertUnprocessable()->assertJsonValidationErrors('cancellation');
-        $this->assertSame('upcoming', $event->fresh()->lifecycle_status);
+        $this->actingAs($owner)->postJson("/organizer/events/$event->id/cancel", ['reason' => 'Kegiatan dibatalkan'])->assertRedirect();
+        $this->assertSame('cancelled', $event->fresh()->lifecycle_status);
     }
 
     public function test_admin_package_pages_and_server_side_package_validation(): void

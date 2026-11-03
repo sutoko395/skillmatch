@@ -1,5 +1,31 @@
 # SkillMatch
 
+## Kehadiran per sesi/hari - keputusan pengguna 3 November 2026
+
+Organizer mencatat setiap sesi/hari dari snapshot jadwal tugas peserta accepted.
+Interval melewati tengah malam dipisah menurut tanggal WIB. Completion menunggu
+seluruh sesi selesai dan tercatat; partisipasi berhasil jika semua sesi hadir.
+Absensi lama tetap berlabel per kegiatan, tidak disalin sebagai hadir setiap hari.
+Konversi legacy pada event nonterminal meminta konfirmasi/alasan dan menyimpan arsip.
+Halaman, filter, rekap dan route lama dipertahankan dengan kompatibilitas terbatas
+untuk satu sesi; beberapa sesi harus dicatat melalui endpoint per sesi.
+Schema, aturan, endpoint, demo dan bukti tes: [handoff sesi](docs/SESSION_ATTENDANCE_HANDOFF.md).
+Ketentuan lama yang membatasi attendance satu catatan per event digantikan keputusan ini.
+
+
+## Perbaikan alur terintegrasi - 3 November 2026
+
+Keputusan terbaru dan bukti implementasi ada pada [handoff perbaikan alur](docs/INTEGRATED_FLOWS_HANDOFF.md).
+Penghapusan akun tanpa data terkait tetap tersedia; akun bersejarah dilindungi.
+Revisi identitas organisasi memerlukan konfirmasi dan review ulang, penolakan
+bercatatan dapat diajukan ulang. Event lama dapat melengkapi tenggat kosong sekali
+melalui aksi owner yang diaudit; snapshot existing tidak diubah, hanya metadata
+tenggat kosong yang dapat membaca perbaikan eksplisit. Aktivitas dan notifikasi
+website memakai layanan nyata serta outbox existing yang dibedakan dari email.
+Layout, modal dan fitur existing dipertahankan. Catatan tahap sebelumnya di bawah
+bersifat historis bila menyebut layanan tersebut belum tersedia.
+
+
 ## Seleksi dan pelaksanaan A3 — 28 Oktober 2026
 
 Organizer yang organisasinya disetujui Admin memakai alur auth Organizer existing;
@@ -452,3 +478,7 @@ Bukti dan batas pengujian ada di [handoff matching](docs/A4_MATCHING_HANDOFF.md)
 
 - [Panduan pengembangan dan pembagian tugas](docs/DEVELOPMENT.md).
 - [Spesifikasi produk, desain dan UAT](SkillMatch_Dokumen_Tim_v1.4/README.md).
+
+Koordinasi peserta: Organizer dapat mengisi tautan grup HTTPS, nama PIC dan kontak PIC pada detail event. Semuanya opsional; hanya peserta accepted melihatnya pada detail lamaran. Titik kumpul/waktu kedatangan disampaikan melalui grup. Jalankan `php artisan migrate` untuk tabel tambahan. Lihat [handoff koordinasi peserta](docs/PARTICIPANT_COORDINATION_HANDOFF.md) untuk akses, route, notifikasi dan batas integrasi.
+
+Validasi nomor telepon profil Volunteer/Organizer: 8-15 digit, boleh diawali +, tanpa huruf/spasi/tanda baca lain; contoh 081234567890 atau +6281234567890. Tidak ada migration atau konfigurasi baru. Rincian perbaikan dan pengujian ada pada [handoff validasi form](docs/FORM_VALIDATION_HANDOFF.md).

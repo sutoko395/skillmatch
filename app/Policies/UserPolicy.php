@@ -28,6 +28,8 @@ class UserPolicy
 
     public function delete(User $actor, User $subject): bool
     {
-        return false;
+        // AccountManagementService checks domain references under the user lock.
+        return $this->viewAdmin($actor) && $actor->id !== $subject->id
+            && in_array($subject->role, ['volunteer', 'organizer'], true);
     }
 }

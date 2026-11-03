@@ -8,7 +8,9 @@ use App\Models\Assessment;
 use App\Models\EventPosition;
 use App\Services\ApplicationService;
 use App\Services\AssessmentService;
+use App\Services\EventCoordinationService;
 use App\Services\ProfileEligibilityService;
+use App\Services\RecruitmentScheduleService;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -58,7 +60,7 @@ class VolunteerApplicationController extends Controller
             'documents',
             'screeningResult',
             'assessmentAttempt',
-            'attendance',
+            'attendance.sessions',
         ]);
 
         $eligibility = $this->profileEligibilityService->check(Auth::user());
@@ -66,7 +68,8 @@ class VolunteerApplicationController extends Controller
         $snapshot = $application->status === 'draft' ? [] : ($application->snapshot_json ?? []);
         $recruitmentDates = [];
         foreach (['assessment_deadline', 'decision_deadline'] as $field) {
-            $value = array_key_exists($field, $snapshot) ? $snapshot[$field] : $application->event->$field;
+            $value = $application->status === 'draft' ? $application->event->$field
+                : app(RecruitmentScheduleService::class)->deadlineFor($application, $field);
             $recruitmentDates[$field] = $value ? CarbonImmutable::parse($value)->setTimezone('Asia/Jakarta') : null;
         }
 
@@ -82,7 +85,9 @@ class VolunteerApplicationController extends Controller
                 ->first();
         }
 
-        return view('volunteer.applications.show', compact('application', 'eligibility', 'recruitmentDates', 'assessmentSummary'));
+        $coordination = app(EventCoordinationService::class)->forParticipant($application, Auth::user());
+
+        return view('volunteer.applications.show', compact('application', 'eligibility', 'recruitmentDates', 'assessmentSummary', 'coordination'));
     }
 
     public function submit(Request $request, Application $application)

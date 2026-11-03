@@ -5,9 +5,12 @@
 @section('content')
 <div
     class="w-full max-w-7xl mx-auto space-y-6"
-    x-data="{ editProfile: false, viewKtp: false }"
+    x-data="{ editProfile: {{ $errors->any() && $profile ? 'true' : 'false' }}, viewKtp: false }"
 >
 
+    @if($user->organizer_verification_note)
+        <div class="rounded-xl border border-amber-200 bg-amber-50 p-4"><strong>Catatan Admin:</strong> {{ $user->organizer_verification_note }}</div>
+    @endif
     @if (!$profile)
 
         <div>
@@ -59,12 +62,7 @@
                             required
                         />
 
-                        <x-form-field
-                            name="phone"
-                            label="Nomor telepon"
-                            :value="old('phone')"
-                            required
-                        />
+                        <x-phone-field :value="old('phone')" required />
                     </div>
 
                     <div>
@@ -197,7 +195,7 @@
                     {{ [
                         'pending' => 'Menunggu verifikasi',
                         'active' => 'Terverifikasi',
-                        'inactive' => 'Akun Anda Dinonaktifkan',
+                        'inactive' => 'Perlu revisi organisasi',
                     ][$user->organizer_status] }}
                 </x-status-badge>
             </div>
@@ -392,13 +390,20 @@
                             class="max-h-[80vh] overflow-y-auto"
                         >
                             @csrf
+                            @if($user->organizer_status === 'active')
+                                <label class="m-6 flex gap-3 rounded-xl bg-amber-50 p-4 text-sm text-amber-900">
+                                    <input type="checkbox" name="confirm_reverification" value="1" @checked(old('confirm_reverification'))>
+                                    Saya memahami perubahan nama organisasi, alamat, kota atau KTP akan meminta persetujuan ulang Admin. Event sementara tidak tampil publik dan pengelolaannya tertunda sampai disetujui kembali. Perubahan kontak biasa tetap dapat disimpan tanpa persetujuan ulang.
+                                </label>
+                                @error('confirm_reverification')<p class="px-6 text-sm text-red-600">{{ $message }}</p>@enderror
+                            @endif
 
                             <div class="space-y-6 px-6 py-6">
 
                                 <x-form-field
                                     name="organization_name"
                                     label="Nama organisasi"
-                                    :value="$profile->organization_name"
+                                    :value="old('organization_name', $profile->organization_name)"
                                     required
                                 />
 
@@ -406,22 +411,17 @@
                                     <x-form-field
                                         name="contact_person"
                                         label="Penanggung jawab"
-                                        :value="$profile->contact_person"
+                                        :value="old('contact_person', $profile->contact_person)"
                                         required
                                     />
 
-                                    <x-form-field
-                                        name="phone"
-                                        label="Nomor telepon"
-                                        :value="$profile->phone"
-                                        required
-                                    />
+                                    <x-phone-field :value="old('phone', $profile->phone)" required />
                                 </div>
 
                                 <x-form-field
                                     name="address"
                                     label="Alamat lengkap"
-                                    :value="$profile->address"
+                                    :value="old('address', $profile->address)"
                                     required
                                 />
 
@@ -429,7 +429,7 @@
                                     <x-form-field
                                         name="city"
                                         label="Kota"
-                                        :value="$profile->city"
+                                        :value="old('city', $profile->city)"
                                         required
                                     />
 
@@ -437,7 +437,7 @@
                                         name="website"
                                         label="Website"
                                         type="url"
-                                        :value="$profile->website"
+                                        :value="old('website', $profile->website)"
                                     />
                                 </div>
 

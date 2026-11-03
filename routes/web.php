@@ -31,3 +31,4 @@ require __DIR__.'/organizer.php';
 require __DIR__.'/auth.php';
 require __DIR__.'/public.php';
 require __DIR__.'/a3.php';
+require __DIR__.'/notifications.php';

@@ -1,5 +1,31 @@
 # Panduan pengembangan tim SkillMatch
 
+## Kehadiran per sesi/hari - keputusan pengguna 3 November 2026
+
+Organizer mencatat setiap sesi/hari dari snapshot jadwal tugas peserta accepted.
+Interval melewati tengah malam dipisah menurut tanggal WIB. Completion menunggu
+seluruh sesi selesai dan tercatat; partisipasi berhasil jika semua sesi hadir.
+Absensi lama tetap berlabel per kegiatan, tidak disalin sebagai hadir setiap hari.
+Konversi legacy pada event nonterminal meminta konfirmasi/alasan dan menyimpan arsip.
+Halaman, filter, rekap dan route lama dipertahankan dengan kompatibilitas terbatas
+untuk satu sesi; beberapa sesi harus dicatat melalui endpoint per sesi.
+Schema, aturan, endpoint, demo dan bukti tes: [handoff sesi](SESSION_ATTENDANCE_HANDOFF.md).
+Ketentuan lama yang membatasi attendance satu catatan per event digantikan keputusan ini.
+
+
+## Perbaikan alur terintegrasi - 3 November 2026
+
+Keputusan terbaru dan bukti implementasi ada pada [handoff perbaikan alur](INTEGRATED_FLOWS_HANDOFF.md).
+Penghapusan akun tanpa data terkait tetap tersedia; akun bersejarah dilindungi.
+Revisi identitas organisasi memerlukan konfirmasi dan review ulang, penolakan
+bercatatan dapat diajukan ulang. Event lama dapat melengkapi tenggat kosong sekali
+melalui aksi owner yang diaudit; snapshot existing tidak diubah, hanya metadata
+tenggat kosong yang dapat membaca perbaikan eksplisit. Aktivitas dan notifikasi
+website memakai layanan nyata serta outbox existing yang dibedakan dari email.
+Layout, modal dan fitur existing dipertahankan. Catatan tahap sebelumnya di bawah
+bersifat historis bila menyebut layanan tersebut belum tersedia.
+
+
 ## Daftar pekerjaan tersisa — pembaruan 28 Oktober 2026
 
 Daftar ini merangkum temuan yang sudah diperiksa pada branch
@@ -290,3 +316,5 @@ Permintaan pengguna setelah beranda: login/register memakai auth-layout dan auth
 ## Konfigurasi awal paket
 
 DefaultPackageSeeder menambahkan Free, Standard dan Premium sesuai keputusan pengguna (lihat PRD/README) setelah UserSeeder, hanya local/testing. Nilai dapat diubah admin; seeding ulang memakai marker audit agar edit, rename dan nonaktif tidak di-reset. Paket demo tetap fixture terpisah. HomeController/package-card menampilkan harga/limit aktual. Tidak ada migration baru; integrasi assessment, lamaran dan attendance tetap milik A3/A4.
+
+Perbaikan validasi profil dan form sejenis 3 November 2026: lihat [FORM_VALIDATION_HANDOFF](FORM_VALIDATION_HANDOFF.md). Aturan telepon bersama untuk Volunteer/Organizer, perlindungan service/eligibility, constraint browser paket/tanggal lahir; tanpa migration atau perubahan data kerja. Status pengujian dan batas audit tercatat pada handoff.

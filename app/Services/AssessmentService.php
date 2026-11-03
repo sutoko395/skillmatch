@@ -51,11 +51,11 @@ class AssessmentService
         if ($application->status !== 'assessment_pending' || ! $application->screeningResult?->passed || ! $application->matchResult) {
             $this->fail('Assessment hanya tersedia setelah lolos screening dan pencocokan selesai.');
         }
-        $date = $application->snapshot_json['assessment_deadline'] ?? null;
+        $date = app(RecruitmentScheduleService::class)->deadlineFor($application);
         if (! $date) {
             $this->fail('Tenggat assessment belum tersedia untuk lamaran ini.');
         }
-        $deadline = CarbonImmutable::parse($date)->utc()->min($event->starts_at);
+        $deadline = $date->min($event->starts_at);
         if ($event->lifecycle_status !== 'upcoming' || $event->publication_status !== 'published' || ! $event->published_at
             || now()->greaterThanOrEqualTo($deadline)) {
             $this->fail('Assessment tidak dapat dimulai karena tenggat telah berakhir atau event tidak tersedia.');
@@ -157,6 +157,10 @@ class AssessmentService
         $application->forceFill(['status' => 'under_review', 'revision' => $application->revision + 1])->save();
         app(AuditService::class)->record($actor, 'assessment.finalized', $attempt, ['after' => ['status' => $status]]);
         app(AuditService::class)->record($actor, 'application.assessed', $application, ['after' => ['status' => 'under_review', 'revision' => $application->revision]]);
+        foreach ([$application->volunteer, $application->event->organizer] as $recipient) {
+            app(NotificationService::class)->enqueue('application.assessed:'.$application->id.':'.$application->revision.':'.$recipient->id,
+                $recipient, ['type' => 'application.assessed', 'application_id' => $application->id]);
+        }
     }
 
     public function expire(Application $application): void

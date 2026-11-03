@@ -55,7 +55,7 @@ class OrganizerAssessmentTest extends DatabaseTestCase
         $this->postJson("/organizer/events/{$event->id}/submit")->assertUnprocessable()->assertJsonValidationErrors('assessment');
         $data = $this->payload();
         $this->put($url, $data)->assertRedirect();
-        $assessment = Assessment::sole();
+        $assessment = Assessment::where('event_position_id', $position->id)->sole();
         $this->assertFalse($assessment->is_published);
         $data['revision'] = $assessment->revision;
         $data['action'] = 'preview';
@@ -82,7 +82,7 @@ class OrganizerAssessmentTest extends DatabaseTestCase
     {
         [$owner, $event, $position, $url] = $this->setupPosition();
         $this->actingAs($owner)->put($url, ['action' => 'draft', 'revision' => 0])->assertRedirect();
-        $this->assertNull(Assessment::sole()->duration_minutes);
+        $this->assertNull(Assessment::where('event_position_id', $position->id)->sole()->duration_minutes);
         $this->putJson($url, $this->payload())->assertUnprocessable()->assertJsonValidationErrors('assessment');
         $other = User::factory()->create(['role' => 'organizer', 'organizer_status' => 'active']);
         $this->actingAs($other)->get($url)->assertForbidden();

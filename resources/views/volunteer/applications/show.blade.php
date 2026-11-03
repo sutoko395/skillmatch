@@ -95,6 +95,7 @@
             @endif
         </div>
         <aside class="contents xl:order-2 xl:block xl:min-w-0 xl:space-y-6" aria-label="Informasi seleksi dan posisi">
+            @include('volunteer.applications.partials.coordination')
             @include('volunteer.applications.partials.information')
         </aside>
     </div>

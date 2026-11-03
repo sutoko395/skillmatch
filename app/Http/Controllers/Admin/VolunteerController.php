@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\AccountManagementService;
+use App\Services\AuditService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
@@ -65,9 +68,13 @@ class VolunteerController extends Controller
             abort(404);
         }
 
-        $user->update([
-            'is_active' => ! $user->is_active,
-        ]);
+        DB::transaction(function () use (&$user) {
+            $user = User::whereKey($user->id)->lockForUpdate()->firstOrFail();
+            $before = $user->is_active;
+            $user->update(['is_active' => ! $before]);
+            app(AuditService::class)->record(auth()->user(), 'account.status_changed', $user,
+                ['before' => ['is_active' => $before], 'after' => ['is_active' => $user->is_active]]);
+        }, 3);
 
         return back()->with(
             'success',
@@ -85,7 +92,7 @@ class VolunteerController extends Controller
 
         Gate::authorize('manageVolunteer', $user);
 
-        $user->delete();
+        app(AccountManagementService::class)->delete($user, auth()->user());
 
         return back()->with(
             'success',

@@ -1,5 +1,31 @@
 # Design specification SkillMatch
 
+## Kehadiran per sesi/hari - keputusan pengguna 3 November 2026
+
+Organizer mencatat setiap sesi/hari dari snapshot jadwal tugas peserta accepted.
+Interval melewati tengah malam dipisah menurut tanggal WIB. Completion menunggu
+seluruh sesi selesai dan tercatat; partisipasi berhasil jika semua sesi hadir.
+Absensi lama tetap berlabel per kegiatan, tidak disalin sebagai hadir setiap hari.
+Konversi legacy pada event nonterminal meminta konfirmasi/alasan dan menyimpan arsip.
+Halaman, filter, rekap dan route lama dipertahankan dengan kompatibilitas terbatas
+untuk satu sesi; beberapa sesi harus dicatat melalui endpoint per sesi.
+Schema, aturan, endpoint, demo dan bukti tes: [handoff sesi](../docs/SESSION_ATTENDANCE_HANDOFF.md).
+Ketentuan lama yang membatasi attendance satu catatan per event digantikan keputusan ini.
+
+
+## Perbaikan alur terintegrasi - 3 November 2026
+
+Keputusan terbaru dan bukti implementasi ada pada [handoff perbaikan alur](../docs/INTEGRATED_FLOWS_HANDOFF.md).
+Penghapusan akun tanpa data terkait tetap tersedia; akun bersejarah dilindungi.
+Revisi identitas organisasi memerlukan konfirmasi dan review ulang, penolakan
+bercatatan dapat diajukan ulang. Event lama dapat melengkapi tenggat kosong sekali
+melalui aksi owner yang diaudit; snapshot existing tidak diubah, hanya metadata
+tenggat kosong yang dapat membaca perbaikan eksplisit. Aktivitas dan notifikasi
+website memakai layanan nyata serta outbox existing yang dibedakan dari email.
+Layout, modal dan fitur existing dipertahankan. Catatan tahap sebelumnya di bawah
+bersifat historis bila menyebut layanan tersebut belum tersedia.
+
+
 ## Persetujuan perubahan tampilan — 28 Oktober 2026
 
 Pertahankan tampilan existing yang sudah dibangun, termasuk layout/sidebar/navbar,
@@ -222,7 +248,7 @@ Auto-save gagal menampilkan "Jawaban belum tersimpan, coba lagi"; jangan menutup
 
 Di detail event → Pelaksanaan. Header nama/jadwal/lokasi/status event. Rekap ringkas: Peserta diterima, Hadir, Tidak hadir, Belum dicatat. Ini rekap operasional event, bukan dashboard Organizer.
 
-Tabel: Nama, Posisi, Kehadiran, Waktu pencatatan, Catatan, Aksi. Default unrecorded berlabel "Belum dicatat". Organizer menekan Catat, memilih Hadir/Tidak hadir, catatan opsional, Simpan. Edit sesudah event selesai meminta alasan wajib. Volunteer hanya melihat hasil.
+Tabel mempertahankan Nama/Posisi dan rekap peserta; tiap sesi menampilkan tanggal/jam WIB, Kehadiran, Waktu pencatatan, Catatan dan Aksi. Filter tanggal/status berlaku untuk sesi. Default unrecorded berlabel "Belum dicatat". Organizer menekan Catat, memilih Hadir/Tidak hadir, catatan opsional, Simpan. Edit sesudah event selesai meminta alasan wajib. Volunteer hanya melihat hasil.
 
 Bulk action jika ada: checkbox peserta eligible → "Tandai hadir (n)" → konfirmasi nama/jumlah. Jangan default menandai semua hadir. Completion button "Selesaikan Event" membuka ringkasan dan blocked reasons untuk belum akhir jadwal, seleksi menggantung, atau kehadiran belum dicatat. Waktu pencatatan tidak disebut jam datang.
 
@@ -337,3 +363,11 @@ Permintaan pengguna: label menu, judul halaman dan title browser admin menggunak
 ## Kartu paket berdasarkan keputusan pengguna
 
 Beranda menampilkan kartu Free/Standard/Premium dari paket aktif database: judul, harga besar (Gratis untuk 0), per event, batas posisi/lamaran/hari dan CTA Mulai sebagai Organizer. Tampilan kartu putih berborder/radius mengikuti gambar pengguna dan identitas indigo. Status fitur screening/assessment/seleksi/dokumen/attendance yang belum tersedia tertulis Dalam pengembangan. Admin memiliki Edit paket dan badge status; Organizer memilih dari kartu yang sama. Grid beradaptasi 1/2/3 kolom, tanpa label rekomendasi palsu.
+
+## Koordinasi peserta - 3 November 2026
+
+Tambahkan section Koordinasi Peserta pada detail event organizer dengan tiga field opsional: Tautan grup, Nama PIC, Kontak PIC; tombol Simpan koordinasi, error revisi dan validasi field. Pertahankan seluruh section existing. Detail lamaran accepted menampilkan tombol Gabung grup peserta (tab baru), PIC dan kontak, atau placeholder organizer belum membagikan tautan. Bukan konten publik; withdrawn/cancelled tidak menerima section. Tidak ada input titik kumpul, waktu kedatangan atau arahan. Teks menyebut informasi tersebut disampaikan melalui grup. Completed/cancelled menampilkan riwayat read-only untuk owner. Gunakan layout/komponen/Alpine existing.
+
+## Perbaikan input kontak dan batas form - 3 November 2026
+
+Pertahankan layout/modal existing, gunakan x-phone-field pada profil Volunteer dan buat/edit Organizer dengan type tel, keyboard/autocomplete tel, 8-15 digit dan + opsional. Tampilkan contoh/error Indonesia; tolak ketikan/paste huruf tanpa mengubahnya diam-diam menjadi nomor lain. Constraint native dan validasi server tetap berlaku tanpa Alpine. Field Kontak PIC tetap teks karena mendukung email/nama pengguna. Tambahkan max/step=1 existing pada input paket dan max tanggal hari ini pada tanggal lahir; tidak mengubah desain atau aturan bisnis lainnya.

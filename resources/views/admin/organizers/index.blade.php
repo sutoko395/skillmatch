@@ -683,6 +683,13 @@
 
                         @csrf
                         @method('PATCH')
+                        <input type="hidden" name="revision" value="{{ $organizer->organizer_revision }}">
+                        <label for="account_active_{{ $organizer->id }}" class="block text-sm font-semibold text-slate-700">Akses akun (terpisah dari verifikasi organisasi)</label>
+                        <select id="account_active_{{ $organizer->id }}" name="is_active" class="mb-4 mt-2 w-full rounded-xl border-slate-200">
+                            <option value="1" @selected($organizer->is_active)>Aktif</option>
+                            <option value="0" @selected(!$organizer->is_active)>Nonaktif — sesi dan akses terproteksi ditolak</option>
+                        </select>
+                        <x-form-field name="verification_note" label="Catatan pemeriksaan (wajib jika perlu revisi)" :value="old('verification_note', $organizer->organizer_verification_note)" />
 
                         <label class="block text-sm font-semibold text-slate-700">
                             Status Organizer
@@ -796,7 +803,7 @@
                             <span class="font-semibold text-slate-700">
                                 {{ $organizer->name }}
                             </span>
-                            secara permanen.
+                            secara permanen jika belum memiliki riwayat. Akun yang memiliki data terkait harus dinonaktifkan agar dokumen dan riwayat tetap tersedia.
                         </p>
 
                         <form

@@ -15,6 +15,12 @@
         </p>
     </div>
 
+    @if($user->organizer_verification_note)
+        <div class="rounded-xl border border-amber-200 bg-amber-50 p-5">
+            <p class="font-semibold">Catatan Admin</p><p class="mt-2">{{ $user->organizer_verification_note }}</p>
+            <a href="{{ route('organizer.profile.edit') }}" class="mt-3 inline-block font-semibold text-indigo-600">Perbaiki dan ajukan ulang profil</a>
+        </div>
+    @endif
     <x-section-card class="p-6 md:p-8">
         <div class="mx-auto max-w-2xl text-center">
 
@@ -36,13 +42,17 @@
             </div>
 
             <h2 class="mt-5 text-xl font-bold text-slate-800">
-                Pengajuan Organizer sedang diproses
+                {{ $user->organizer_status === 'inactive' ? 'Pengajuan memerlukan perbaikan' : 'Pengajuan Organizer sedang diproses' }}
             </h2>
 
             <p class="mt-3 text-sm leading-6 text-slate-600">
+                @if($user->organizer_status === 'inactive')
+                    Perbaiki data sesuai catatan Admin, kemudian simpan profil untuk mengajukan pemeriksaan ulang.
+                @else
                 Data organisasi dan dokumen pendukung Anda telah berhasil dikirim.
                 Admin sedang melakukan validasi akun Anda.
                 Mohon menunggu maksimal 2 hari sampai proses verifikasi selesai.
+                @endif
             </p>
 
             <div class="mt-6 rounded-xl bg-slate-50 p-5 text-sm leading-6 text-slate-600">
@@ -62,4 +72,5 @@
     </x-section-card>
 
 </div>
+@include('notifications.summary')
 @endsection

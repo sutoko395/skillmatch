@@ -22,7 +22,7 @@ class FoundationAccessTest extends DatabaseTestCase
             ['organizer', 'active', true, '/organizer/aktivitas'],
             ['organizer', 'pending', true, '/organizer/profile/pending'],
             ['organizer', 'inactive', true, '/organizer/profile/pending'],
-            ['organizer', 'pending', false, '/verify-email'],
+            ['organizer', 'pending', false, '/organizer/profile/pending'],
             ['volunteer', 'pending', false, '/verify-email'],
         ];
     }
@@ -31,6 +31,9 @@ class FoundationAccessTest extends DatabaseTestCase
     public function test_shared_login_destinations(string $role, string $status, bool $verified, string $destination): void
     {
         $user = User::factory()->create(['role' => $role, 'organizer_status' => $status, 'email_verified_at' => $verified ? now() : null]);
+        if ($role === 'organizer') {
+            $user->organizerProfile()->create(['organization_name' => 'Organisasi uji redirect']);
+        }
         $this->post('/login', ['email' => $user->email, 'password' => 'password', 'role' => 'admin'])->assertRedirect($destination);
         $this->assertAuthenticatedAs($user);
         $page = $this->get($destination)->assertOk();
@@ -45,7 +48,7 @@ class FoundationAccessTest extends DatabaseTestCase
                 ->assertViewHas('totalCategories', Category::count())
                 ->assertViewHas('pendingEvents', Event::where('status', 'pending')->count())
                 ->assertSee('Aksi Cepat Admin')
-                ->assertSee('analitik lengkap belum tersedia');
+                ->assertViewHas('chartData')->assertViewHas('range', 'year');
         }
     }
 
@@ -85,7 +88,7 @@ class FoundationAccessTest extends DatabaseTestCase
         $this->get('/admin/dashboard')->assertRedirect('/login');
         $volunteer = User::factory()->unverified()->create();
         $this->actingAs($volunteer)->get('/admin/dashboard')->assertForbidden();
-        $this->get('/volunteer/profile')->assertRedirect('/verify-email');
+        $this->get('/volunteer/profile')->assertOk();
         $organizer = User::factory()->unverified()->create(['role' => 'organizer', 'organizer_status' => 'inactive']);
         $this->actingAs($organizer)->get('/organizer/profile')->assertOk();
         $this->get('/organizer/profile/pending')->assertOk();
@@ -114,12 +117,12 @@ class FoundationAccessTest extends DatabaseTestCase
         $this->post('/register', $data)->assertSessionHasErrors('role');
         $this->assertDatabaseMissing('users', ['email' => $data['email']]);
         $data['role'] = 'organizer';
-        $this->post('/register', $data + ['is_active' => false, 'organizer_status' => 'active'])->assertRedirect('/verify-email');
+        $this->post('/register', $data + ['is_active' => false, 'organizer_status' => 'active'])->assertRedirect('/organizer/profile');
         $user = User::where('email', $data['email'])->firstOrFail();
         $this->assertTrue($user->is_active);
         $this->assertSame('pending', $user->organizer_status);
         $this->assertNull($user->email_verified_at);
-        Notification::assertSentTo($user, VerifyEmail::class);
+        Notification::assertNotSentTo($user, VerifyEmail::class);
     }
 
     public function test_logout_and_profile_policy(): void

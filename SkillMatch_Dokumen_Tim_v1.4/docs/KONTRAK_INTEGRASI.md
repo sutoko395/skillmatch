@@ -1,5 +1,31 @@
 # Kontrak integrasi empat anggota
 
+## Kehadiran per sesi/hari - keputusan pengguna 3 November 2026
+
+Organizer mencatat setiap sesi/hari dari snapshot jadwal tugas peserta accepted.
+Interval melewati tengah malam dipisah menurut tanggal WIB. Completion menunggu
+seluruh sesi selesai dan tercatat; partisipasi berhasil jika semua sesi hadir.
+Absensi lama tetap berlabel per kegiatan, tidak disalin sebagai hadir setiap hari.
+Konversi legacy pada event nonterminal meminta konfirmasi/alasan dan menyimpan arsip.
+Halaman, filter, rekap dan route lama dipertahankan dengan kompatibilitas terbatas
+untuk satu sesi; beberapa sesi harus dicatat melalui endpoint per sesi.
+Schema, aturan, endpoint, demo dan bukti tes: [handoff sesi](../../docs/SESSION_ATTENDANCE_HANDOFF.md).
+Ketentuan lama yang membatasi attendance satu catatan per event digantikan keputusan ini.
+
+
+## Perbaikan alur terintegrasi - 3 November 2026
+
+Keputusan terbaru dan bukti implementasi ada pada [handoff perbaikan alur](../../docs/INTEGRATED_FLOWS_HANDOFF.md).
+Penghapusan akun tanpa data terkait tetap tersedia; akun bersejarah dilindungi.
+Revisi identitas organisasi memerlukan konfirmasi dan review ulang, penolakan
+bercatatan dapat diajukan ulang. Event lama dapat melengkapi tenggat kosong sekali
+melalui aksi owner yang diaudit; snapshot existing tidak diubah, hanya metadata
+tenggat kosong yang dapat membaca perbaikan eksplisit. Aktivitas dan notifikasi
+website memakai layanan nyata serta outbox existing yang dibedakan dari email.
+Layout, modal dan fitur existing dipertahankan. Catatan tahap sebelumnya di bawah
+bersifat historis bila menyebut layanan tersebut belum tersedia.
+
+
 Perubahan hasil terintegrasi mengikuti persetujuan pengguna dalam
 [AGENTS.md](../../AGENTS.md#persetujuan-perubahan-hasil-kerja-dan-tampilan).
 Perubahan interface, route dan komponen bersama tidak boleh menghilangkan fitur
@@ -126,7 +152,8 @@ Versi 1.4.2 • Pasangan [PRD induk](../PRD_SkillMatch_Tim.md). Nama di bawah me
 | assessments, assessment_questions, assessment_options | Baru | A4; event_position_id, version, duration_minutes, is_published; opsi benar hanya server. |
 | assessment_attempts, assessment_answers | Baru | A4; application_id unik, assessment_id/version, status, started_at, expires_at, submitted_at, score; unique attempt/question untuk jawaban. |
 | packages, orders, payment_events, event_entitlements | Baru | A2; snapshot paket, nominal integer rupiah, order_ref unik, paid_at/activated_at stabil, gateway_event_key unik. |
-| attendances | Baru | A3; application_id unik, status, recorded_by, recorded_at, note. |
+| attendances | A3 | Rekap application_id unik, status derived dari sesi, uses_sessions, legacy_record dan recorded_by/at. |
+| attendance_sessions | A3 | Rincian per sesi/hari: attendance_id, session_key unik per parent, session_date WIB, starts_at/ends_at UTC, status, revision, recorded_by/at, note dan correction_reason. |
 | notifications, notification_outbox | Baru | A4; recipient_id/tipe/data, dedupe_key unik, retry dan delivered_at. |
 | audit_logs | Baru | SF; actor_id, action, subject_type/id, before/after aman, reason, timestamp. |
 | content_pages, operational_settings | Baru | A1; teks terbatas dan allowlist settings, bukan secret atau kode. |
@@ -377,3 +404,11 @@ Komponen Blade A2 `event-card` dipakai beranda/katalog. Form pencarian GET memak
 Konfigurasi disepakati pengguna: Free 0/2 posisi/30 lamaran/7 hari; Standard 30000/5/100/30; Premium 50000/10/300/60. DefaultPackageSeeder (local/testing) membuat melalui PackageService dan audit; marker package.default_seeded dengan reason initial_free/initial_standard/initial_premium menjaga edit, rename dan nonaktif admin ketika diulang. Paket existing bernama sama diadopsi tanpa menimpa konfigurasi. DatabaseSeeder memanggil seeder setelah UserSeeder. Tidak ada migration baru.
 
 HomeController membaca paket aktif dari database, urut harga/ID. Komponen package-card dipakai beranda, pilihan paket Organizer dan admin; state is_active hanya ditampilkan admin. GET register?role=organizer mempreseleksi radio publik yang diizinkan, bukan mengubah role akun existing. Validasi POST masih hanya volunteer/organizer. Paket nonaktif tidak tampil/dapat dipilih ulang; snapshot lama tetap dipertahankan.
+
+## Tambahan kontrak koordinasi peserta - 3 November 2026
+
+A2: tabel event_coordinations (unique event_id FK cascade untuk draft, group_url nullable text/input max2048, pic_name nullable varchar100, pic_contact nullable varchar255, revision unsigned, updated_by FK users restrict, timestamps UTC). PUT organizer/events/{event}/coordination bernama organizer.events.coordination.update; EventCoordinationService.update terpisah dari konfigurasi rekrutmen yang terkunci. A3: forParticipant mengembalikan null kecuali Volunteer aktif pemilik accepted dan event bukan cancelled; DTO ditampilkan hanya pada detail lamaran. A4: notifikasi database event.coordination_updated, dedupe event/revision/volunteer, payload type/event_id/application_id, tujuan detail lamaran. Audit hanya revision/changed_fields. Tidak ada field arahan/titik kumpul/waktu kedatangan dan tidak mengubah kontrak jadwal, snapshot, attendance, payment atau completion. Rincian di docs/PARTICIPANT_COORDINATION_HANDOFF.md root aplikasi.
+
+## Validasi profil bersama - 3 November 2026
+
+App\Rules\PhoneNumber digunakan VolunteerProfileRequest, OrganizerProfileController, VolunteerProfileService dan ProfileEligibilityService. Format: string 8-15 digit ASCII, + opsional di awal; simpan string agar nol awal tetap. Error memakai field phone; nomor lama invalid masuk missing_fields tanpa backfill/snapshot rewrite. Komponen x-phone-field memberi type tel/pattern/inputmode/autocomplete/helper dan filter Alpine; server tetap otoritatif. Tidak menambah route/schema/dependency. Kontak PIC tidak dibatasi ke angka karena mendukung email/nama pengguna. Max/step angka paket mengikuti PackageService existing; batas tanggal lahir browser mengikuti before_or_equal:today server. Handoff: docs/FORM_VALIDATION_HANDOFF.md root aplikasi.

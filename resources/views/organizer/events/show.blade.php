@@ -33,6 +33,22 @@
     </ol>
 
     <div class="space-y-6">
+        @include('organizer.events.coordination')
+
+        @if(!$event->assessment_deadline && !$event->decision_deadline && in_array($event->status, ['pending', 'approved']) && $event->lifecycle_status === 'upcoming')
+            <x-section-card>
+                <h2 class="text-lg font-bold">Lengkapi tenggat event lama</h2>
+                <p class="mt-2 text-sm text-slate-600">Isi sekali untuk membuka alur assessment. Jadwal kegiatan, paket, snapshot dan hasil lamaran tetap dipertahankan. Tenggat yang sudah diisi tidak dapat diubah lagi.</p>
+                <form method="POST" action="{{ route('organizer.events.recruitment-repair', $event) }}" class="mt-4 space-y-4">
+                    @csrf
+                    <x-form-field name="assessment_deadline" label="Tenggat assessment (WIB)" type="datetime-local" :value="old('assessment_deadline')" required />
+                    <x-form-field name="decision_deadline" label="Batas keputusan (WIB)" type="datetime-local" :value="old('decision_deadline')" required />
+                    <x-form-field name="reason" label="Alasan pelengkapan" :value="old('reason')" required />
+                    <label class="flex gap-2 text-sm"><input type="checkbox" name="confirmed" value="1" required> Saya mengonfirmasi tenggat ini untuk event dan lamaran lama yang belum mencatat tenggat.</label>
+                    <x-button type="submit">Simpan tenggat event lama</x-button>
+                </form>
+            </x-section-card>
+        @endif
 
         <x-section-card>
             <p>

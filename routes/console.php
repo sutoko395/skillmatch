@@ -15,6 +15,8 @@ Artisan::command('a2:retry-notifications', function () {
 })->purpose('Replay A2 business notifications through the A4 outbox with stable dedupe keys');
 
 Schedule::command('a4:expire-assessments')->everyMinute()->withoutOverlapping();
+Schedule::command('a4:retry-screening')->everyMinute()->withoutOverlapping();
+Schedule::command('a4:retry-matching')->everyMinute()->withoutOverlapping();
 Schedule::command('a4:remind-assessments')->everyMinute()->withoutOverlapping();
 Schedule::command('a4:send-volunteer-emails')->everyMinute()->withoutOverlapping();
 Schedule::command('a3:documents cleanup --execute')->daily()->withoutOverlapping()

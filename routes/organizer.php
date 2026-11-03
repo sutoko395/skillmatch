@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\Organizer\ApplicationController;
+use App\Http\Controllers\Organizer\AssessmentController;
 use App\Http\Controllers\Organizer\EventController;
 use App\Http\Controllers\Organizer\OrderController;
+use App\Http\Controllers\Organizer\OrganizerDashboardController;
+use App\Http\Controllers\Organizer\OrganizerProfileController;
 use App\Http\Controllers\Organizer\PositionController;
 use Illuminate\Support\Facades\Route;
 
@@ -12,16 +15,16 @@ Route::middleware([
     'role:organizer',
 ])->prefix('organizer')->name('organizer.')->group(function () {
 
-    Route::get('/profile', [\App\Http\Controllers\Organizer\OrganizerProfileController::class, 'edit'])
+    Route::get('/profile', [OrganizerProfileController::class, 'edit'])
         ->name('profile.edit');
 
-    Route::post('/profile', [\App\Http\Controllers\Organizer\OrganizerProfileController::class, 'update'])
+    Route::post('/profile', [OrganizerProfileController::class, 'update'])
         ->name('profile.update');
 
-    Route::get('/profile/pending', [\App\Http\Controllers\Organizer\OrganizerProfileController::class, 'pending'])
+    Route::get('/profile/pending', [OrganizerProfileController::class, 'pending'])
         ->name('profile.pending');
 
-    Route::get('/profile/documents/{document}/view', [\App\Http\Controllers\Organizer\OrganizerProfileController::class, 'viewDocument'])
+    Route::get('/profile/documents/{document}/view', [OrganizerProfileController::class, 'viewDocument'])
         ->name('profile.documents.view');
 
     Route::redirect('/pending', '/organizer/profile/pending');
@@ -30,21 +33,25 @@ Route::middleware([
 
         Route::get(
             'positions/{position}/assessment',
-            [\App\Http\Controllers\Organizer\AssessmentController::class, 'edit']
+            [AssessmentController::class, 'edit']
         )->name('assessments.edit');
 
         Route::put(
             'positions/{position}/assessment',
-            [\App\Http\Controllers\Organizer\AssessmentController::class, 'update']
+            [AssessmentController::class, 'update']
         )->name('assessments.update');
 
         Route::redirect('/dashboard', '/organizer/aktivitas')
             ->name('dashboard');
 
-        Route::get('/aktivitas', [\App\Http\Controllers\Organizer\OrganizerDashboardController::class, 'index'])
+        Route::get('/aktivitas', [OrganizerDashboardController::class, 'index'])
             ->name('activity.index');
 
         Route::resource('events', EventController::class);
+        Route::put('events/{event}/coordination', [EventController::class, 'updateCoordination'])
+            ->name('events.coordination.update');
+        Route::post('events/{event}/recruitment-repair', [EventController::class, 'repairRecruitment'])
+            ->name('events.recruitment-repair');
 
         Route::get(
             'events/{event}/text',
@@ -112,12 +119,12 @@ Route::middleware([
             'orders/{order}/checkout',
             [OrderController::class, 'checkout']
         )->middleware('throttle:10,1')
-        ->name('orders.checkout');
+            ->name('orders.checkout');
 
         Route::post(
             'orders/{order}/sync',
             [OrderController::class, 'sync']
         )->middleware('throttle:10,1')
-        ->name('orders.sync');
+            ->name('orders.sync');
     });
 });

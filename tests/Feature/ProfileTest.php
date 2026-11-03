@@ -66,19 +66,20 @@ class ProfileTest extends DatabaseTestCase
         $this->post('/volunteer/profile', $data)->assertSessionHasErrors(['city_id', 'skills.0.skill_id']);
     }
 
-    public function test_organizer_contact_save_preserves_both_statuses_and_requires_no_documents(): void
+    public function test_organizer_resubmits_revision_and_contact_edit_preserves_approval_without_reupload(): void
     {
         $user = User::factory()->unverified()->create(['role' => 'organizer', 'organizer_status' => 'inactive']);
         $data = ['organization_name' => 'Demo', 'contact_person' => 'Kontak demo', 'phone' => '0800000000', 'email' => 'contact@example.test', 'address' => 'Alamat demo', 'city' => 'Malang', 'description' => 'Organisasi demo'];
+        $user->organizerProfile()->create($data);
         $this->actingAs($user)->post('/organizer/profile', $data)->assertSessionHasNoErrors();
-        $this->assertSame('inactive', $user->fresh()->organizer_status);
+        $this->assertSame('pending', $user->fresh()->organizer_status);
         $this->assertTrue($user->fresh()->is_active);
         $this->get('/organizer/profile')->assertOk()->assertSee('Kontak demo');
         $user->update(['organizer_status' => 'active']);
         $data['phone'] = '0811111111';
         $this->post('/organizer/profile', $data)->assertSessionHasNoErrors();
         $data['organization_name'] = 'Identity changed';
-        $this->post('/organizer/profile', $data)->assertSessionHasErrors('organization_name');
+        $this->post('/organizer/profile', $data)->assertSessionHasErrors('confirm_reverification');
         $this->assertSame('Demo', $user->organizerProfile()->first()->organization_name);
         $this->assertSame('active', $user->fresh()->organizer_status);
     }

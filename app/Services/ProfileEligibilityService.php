@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Rules\PhoneNumber;
 
 class ProfileEligibilityService
 {
@@ -21,7 +22,7 @@ class ProfileEligibilityService
         }
         // Same identity fields as the existing profile form; account/email access is checked separately.
         foreach (['phone', 'birth_date', 'gender', 'address', 'bio'] as $field) {
-            if (blank($profile?->$field)) {
+            if (blank($profile?->$field) || ($field === 'phone' && ! PhoneNumber::isValid($profile?->phone))) {
                 $missing[] = $field;
             }
         }

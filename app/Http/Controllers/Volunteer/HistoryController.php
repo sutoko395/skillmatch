@@ -12,7 +12,7 @@ class HistoryController extends Controller
     {
         $applications = Application::where('volunteer_id', $request->user()->id)->whereNotNull('submitted_at')
             ->whereHas('event', fn ($q) => $q->whereIn('lifecycle_status', ['completed', 'cancelled']))
-            ->with(['event', 'position', 'attendance'])->latest('submitted_at')->paginate(15);
+            ->with(['event', 'position', 'attendance.sessions'])->latest('submitted_at')->paginate(15);
 
         return view('volunteer.history.index', compact('applications'));
     }

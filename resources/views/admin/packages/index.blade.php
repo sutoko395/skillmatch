@@ -170,6 +170,8 @@
                                 type="number"
                                 :value="old('price')"
                                 min="0"
+                                max="1000000000"
+                                step="1"
                                 required
                             />
 
@@ -179,6 +181,8 @@
                                 type="number"
                                 :value="old('max_positions')"
                                 min="1"
+                                max="1000"
+                                step="1"
                                 required
                             />
 
@@ -188,6 +192,8 @@
                                 type="number"
                                 :value="old('max_applications')"
                                 min="1"
+                                max="1000000"
+                                step="1"
                                 required
                             />
 
@@ -197,6 +203,8 @@
                                 type="number"
                                 :value="old('max_registration_days')"
                                 min="1"
+                                max="365"
+                                step="1"
                                 required
                             />
 
@@ -332,6 +340,8 @@
                                     type="number"
                                     :value="$package->price"
                                     min="0"
+                                    max="1000000000"
+                                    step="1"
                                     required
                                 />
 
@@ -341,6 +351,8 @@
                                     type="number"
                                     :value="$package->max_positions"
                                     min="1"
+                                    max="1000"
+                                    step="1"
                                     required
                                 />
 
@@ -350,6 +362,8 @@
                                     type="number"
                                     :value="$package->max_applications"
                                     min="1"
+                                    max="1000000"
+                                    step="1"
                                     required
                                 />
 
@@ -359,6 +373,8 @@
                                     type="number"
                                     :value="$package->max_registration_days"
                                     min="1"
+                                    max="365"
+                                    step="1"
                                     required
                                 />
 

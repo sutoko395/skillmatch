@@ -596,7 +596,7 @@
                             <span class="font-semibold text-slate-700">
                                 {{ $volunteer->name }}
                             </span>
-                            secara permanen.
+                            secara permanen jika belum memiliki riwayat. Akun yang memiliki data terkait harus dinonaktifkan.
                         </p>
 
                         <p class="mt-3 text-xs text-red-500">

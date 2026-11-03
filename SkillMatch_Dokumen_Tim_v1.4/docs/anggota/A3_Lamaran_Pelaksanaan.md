@@ -1,5 +1,20 @@
 # Brief A3 — lamaran, dokumen, seleksi, pelaksanaan
 
+## Kehadiran per sesi/hari - keputusan pengguna 3 November 2026
+
+Organizer mencatat setiap sesi/hari dari snapshot jadwal tugas peserta accepted.
+Interval melewati tengah malam dipisah menurut tanggal WIB. Completion menunggu
+seluruh sesi selesai dan tercatat; partisipasi berhasil jika semua sesi hadir.
+Absensi lama tetap berlabel per kegiatan, tidak disalin sebagai hadir setiap hari.
+Konversi legacy pada event nonterminal meminta konfirmasi/alasan dan menyimpan arsip.
+Halaman, filter, rekap dan route lama dipertahankan dengan kompatibilitas terbatas
+untuk satu sesi; beberapa sesi harus dicatat melalui endpoint per sesi.
+Schema, aturan, endpoint, demo dan bukti tes: [handoff sesi](../../../docs/SESSION_ATTENDANCE_HANDOFF.md).
+Ketentuan lama yang membatasi attendance satu catatan per event digantikan keputusan ini.
+
+
+Pembaruan integrasi 3 November 2026: lihat [handoff perbaikan alur](../../../docs/INTEGRATED_FLOWS_HANDOFF.md) untuk perilaku, interface, migration dan batas verifikasi terbaru. Tampilan dan fitur existing dipertahankan.
+
 Status lintas modul terkini: [daftar pekerjaan tersisa](../../../docs/DEVELOPMENT.md#daftar-pekerjaan-tersisa--pembaruan-28-oktober-2026).
 Pisahkan pekerjaan belum dibuat, belum diuji, dan selesai lokal yang belum diintegrasikan.
 
@@ -61,11 +76,11 @@ Gunakan private_documents dan nama acak. Download sebagai attachment dari contro
 ## Attendance yang disepakati
 
 - Hanya Organizer event; tidak ada self check-in Volunteer.
-- Satu catatan per accepted, status awal unrecorded.
+- Satu rekap per accepted, dengan rincian sesi/hari dari snapshot; setiap sesi berstatus awal unrecorded.
 - Tabel: nama, posisi, status, waktu pencatatan, catatan, aksi. Waktu pencatatan tidak diberi label jam datang.
 - Filter posisi/status dan pencarian; bulk action boleh untuk peserta yang dipilih dengan konfirmasi jumlah.
 - Completed memerlukan akhir jadwal sudah lewat dan tidak ada unrecorded. Koreksi setelah completion beralasan dan diaudit.
-- Tidak membuat sesi/QR/GPS/performance sebagai P0.
+- Sesi/hari menjadi unit kehadiran sesuai keputusan terbaru; QR/GPS/performance tetap di luar lingkup.
 
 ## Serah-terima
 
@@ -110,3 +125,7 @@ Katalog/detail dan beranda publik kini sudah tersedia. Integrasikan CTA lamaran 
 ### Gate integrasi yang masih diperlukan
 
 Uji submit ulang dan dua proses pada batas lamaran, rollback counter saat dokumen/snapshot gagal, withdrawal tanpa pemulihan limit, perubahan master paket setelah pembelian, akses pemilik/role/status, cancelled menolak submit, serta cancellation bersamaan dengan submit/seleksi/attempt. Mock A3 pada tes A2 dan reserve counter A2 tidak membuktikan semua gate ini lulus. A3 dapat mengerjakan bagian independen dengan fixture kontrak sambil menunggu evaluasi/attempt A4.
+
+## Tambahan A3 - akses koordinasi peserta
+
+Detail lamaran menggunakan EventCoordinationService.forParticipant untuk status accepted aktual milik Volunteer aktif dan event non-cancelled. Data privat tidak berada pada snapshot atau katalog. Penerimaan menampilkan koordinasi terbaru; withdrawn/cancelled kehilangan akses. Jadwal tugas, absensi per sesi dan completion tetap berlaku tanpa syarat isi koordinasi. Tidak ada input arahan, titik kumpul atau waktu kedatangan. Keanggotaan grup dikelola eksternal oleh organizer. Lihat docs/PARTICIPANT_COORDINATION_HANDOFF.md root aplikasi.

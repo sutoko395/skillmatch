@@ -131,7 +131,7 @@ class ScreeningRulesTest extends TestCase
         $snapshot['profile']['skills'][0]['name'] = '<script>unsafe</script>';
         $snapshot['profile']['skills'][0]['level'] = 'beginner';
         $evaluation = app(ScreeningRules::class)->evaluate($snapshot);
-        $application = new Application(['status' => 'screening_failed', 'volunteer_id' => 10]);
+        $application = new Application(['status' => 'screening_failed', 'volunteer_id' => 10, 'submitted_at' => now()]);
         $application->setRelation('event', new Event(['organizer_id' => 20]));
         $application->setRelation('screeningResult', new ScreeningResult([
             'passed' => false, 'checks_json' => $evaluation['checks'], 'evaluated_at' => now(),
@@ -146,7 +146,7 @@ class ScreeningRulesTest extends TestCase
 
         foreach ([['volunteer', 10, true], ['volunteer', 11, false], ['organizer', 20, true], ['organizer', 21, false], ['admin', 20, false]] as [$role, $id, $allowed]) {
             $actor = new User(['role' => $role, 'is_active' => true, 'email_verified_at' => now()]);
-            $actor->forceFill(['email_verified_at' => now()]);
+            $actor->forceFill(['email_verified_at' => now(), 'organizer_status' => 'active']);
             $actor->id = $id;
             $this->assertSame($allowed, Gate::forUser($actor)->allows('view', $application));
             $actor->is_active = false;

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\AuditLog;
+use App\Models\NotificationOutbox;
 use App\Models\Order;
 use App\Models\PaymentEvent;
 use App\Models\User;
@@ -206,27 +207,12 @@ class A2PaymentTest extends DatabaseTestCase
         [$owner,$event,$order] = $this->order();
         app(PaymentService::class)->reconcile($order, new VerifiedGatewayResult($order->order_ref, 'test-replay', 10000, 'IDR', 'settlement', 'accept', 'paid'));
         $receipt = PaymentEvent::where('order_id', $order->id)->firstOrFail();
-        $this->assertNull($receipt->notified_at);
-        $calls = [];
-        $notifications = new class($calls)
-        {
-            public array $keys = [];
-
-            public function __construct($unused) {}
-
-            public function enqueue($key, $user, $payload)
-            {
-                $this->keys[] = $key;
-            }
-        };
-        $this->app->instance(NotificationService::class, $notifications);
-        app(A2NotificationReplay::class)->run();
+        $this->assertNotNull($receipt->notified_at);
         $expected = 'payment.verified:'.$receipt->id.':1:'.$owner->id;
-        $this->assertContains($expected, $notifications->keys);
-        $this->assertNotNull($receipt->fresh()->notified_at);
-        $notifications->keys = [];
         app(A2NotificationReplay::class)->run();
-        $this->assertNotContains($expected, $notifications->keys);
+        app(A2NotificationReplay::class)->run();
+        $this->assertSame(1, NotificationOutbox::where('dedupe_key', $expected)->where('channel', 'database')->count());
+        $this->assertNotNull($receipt->fresh()->notified_at);
     }
 
     public function test_refund_requires_review_and_cannot_be_resumed_by_admin(): void

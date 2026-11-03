@@ -5,10 +5,12 @@ namespace App\Services;
 use App\Models\City;
 use App\Models\Skill;
 use App\Models\User;
+use App\Rules\PhoneNumber;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class VolunteerProfileService
@@ -17,6 +19,7 @@ class VolunteerProfileService
     {
         Gate::forUser($actor)->authorize('updateProfile', $actor);
         abort_unless($actor->role === 'volunteer', 403);
+        Validator::make($data, ['phone' => ['bail', 'required', new PhoneNumber]])->validate();
         DB::transaction(function () use ($actor, $data) {
             $user = User::whereKey($actor->id)->lockForUpdate()->firstOrFail();
             abort_unless($user->is_active && $user->role === 'volunteer', 403);

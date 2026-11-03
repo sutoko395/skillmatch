@@ -1,5 +1,7 @@
 # Brief A4 — screening, assessment, matching, aktivitas
 
+Pembaruan integrasi 3 November 2026: lihat [handoff perbaikan alur](../../../docs/INTEGRATED_FLOWS_HANDOFF.md) untuk perilaku, interface, migration dan batas verifikasi terbaru. Tampilan dan fitur existing dipertahankan.
+
 Status lintas modul terkini: [daftar pekerjaan tersisa](../../../docs/DEVELOPMENT.md#daftar-pekerjaan-tersisa--pembaruan-28-oktober-2026).
 Pisahkan pekerjaan belum dibuat, belum diuji, dan selesai lokal yang belum diintegrasikan.
 
@@ -128,3 +130,7 @@ ActivityReadService membaca status sumber events/orders/applications milik pengg
 ### Gate integrasi yang masih diperlukan
 
 Uji assessment incomplete menahan submit/publish, versi snapshot tetap setelah edit, kesiapan valid membuka alur sesuai seluruh syarat publikasi, replay/outbox ganda tidak menggandakan notifikasi, rollback domain/outbox konsisten, attempt cancelled tidak hidup lagi, serta aktivitas hanya membaca data pengguna yang berwenang. Tes mock A4 pada A2 bukan bukti gate ini lulus. Harga/limit awal dan bukti A2 tersedia di [A2_HANDOFF](../../../docs/A2_HANDOFF.md); pastikan commit A2 disepakati tersedia pada branch A4, tidak mengasumsikan sudah merge ke main.
+
+## Tambahan A4 - notifikasi koordinasi peserta
+
+Jenis event.coordination_updated memakai NotificationService database existing; dedupe event/revision/volunteer, payload hanya type/event_id/application_id, tujuan detail lamaran. Kirim hanya kepada accepted pada transaksi pembaruan owner. URL grup dan kontak PIC tidak boleh masuk payload/audit/email. Tidak mengubah assessment/matching atau penerimaan existing. Lihat docs/PARTICIPANT_COORDINATION_HANDOFF.md root aplikasi.

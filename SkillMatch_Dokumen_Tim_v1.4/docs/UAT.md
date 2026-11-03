@@ -1,5 +1,31 @@
 # UAT dan kriteria selesai lintas anggota
 
+## Kehadiran per sesi/hari - keputusan pengguna 3 November 2026
+
+Organizer mencatat setiap sesi/hari dari snapshot jadwal tugas peserta accepted.
+Interval melewati tengah malam dipisah menurut tanggal WIB. Completion menunggu
+seluruh sesi selesai dan tercatat; partisipasi berhasil jika semua sesi hadir.
+Absensi lama tetap berlabel per kegiatan, tidak disalin sebagai hadir setiap hari.
+Konversi legacy pada event nonterminal meminta konfirmasi/alasan dan menyimpan arsip.
+Halaman, filter, rekap dan route lama dipertahankan dengan kompatibilitas terbatas
+untuk satu sesi; beberapa sesi harus dicatat melalui endpoint per sesi.
+Schema, aturan, endpoint, demo dan bukti tes: [handoff sesi](../../docs/SESSION_ATTENDANCE_HANDOFF.md).
+Ketentuan lama yang membatasi attendance satu catatan per event digantikan keputusan ini.
+
+
+## Perbaikan alur terintegrasi - 3 November 2026
+
+Keputusan terbaru dan bukti implementasi ada pada [handoff perbaikan alur](../../docs/INTEGRATED_FLOWS_HANDOFF.md).
+Penghapusan akun tanpa data terkait tetap tersedia; akun bersejarah dilindungi.
+Revisi identitas organisasi memerlukan konfirmasi dan review ulang, penolakan
+bercatatan dapat diajukan ulang. Event lama dapat melengkapi tenggat kosong sekali
+melalui aksi owner yang diaudit; snapshot existing tidak diubah, hanya metadata
+tenggat kosong yang dapat membaca perbaikan eksplisit. Aktivitas dan notifikasi
+website memakai layanan nyata serta outbox existing yang dibedakan dari email.
+Layout, modal dan fitur existing dipertahankan. Catatan tahap sebelumnya di bawah
+bersifat historis bila menyebut layanan tersebut belum tersedia.
+
+
 Pemeriksaan pelestarian hasil kerja pada setiap perubahan: catat lingkup yang
 disetujui, branch/commit dasar dan halaman/alur terdampak. Bandingkan hasil dengan
 implementasi sebelum perubahan; pastikan fitur, navigasi dan tampilan di luar
@@ -215,3 +241,18 @@ Login dan registrasi diperbarui secara visual. Bukti: 40 tes auth/FoundationAcce
 ## Regresi paket awal dan kartu
 
 DefaultPackageTest memeriksa nilai awal sesuai keputusan, seeding ulang setelah rename/edit/nonaktif tanpa reset/duplikasi, perubahan admin tampil pada kartu aktif dan tidak mengubah snapshot order/event lama. Bersama A2EventTest, HomeTest dan RegistrationTest: 24 tes / 183 assertion lulus pada MySQL tes. Pemilihan paket tetap mengikuti limit dan Policy existing; fitur lanjutan yang belum terintegrasi tidak dinyatakan lulus.
+
+## UAT tambahan - koordinasi peserta
+
+- Owner memperbarui koordinasi pada event published tanpa mengubah jadwal, snapshot, paket atau keputusan seleksi. Semua field kosong tetap dapat melanjutkan alur existing.
+- Hanya accepted pemilik lamaran melihat grup/PIC; under_review/rejected/withdrawn/cancelled, user lain, Admin dan guest tidak mendapat nilai privat. Pembatalan event mencabut akses; accepted baru melihat data terkini. Periksa HTML dan endpoint langsung, bukan hanya tombol.
+- Tolak URL non-HTTPS, user/password URL, input terlalu panjang dan revision stale. Replay identik tidak menggandakan notifikasi/audit. Pengosongan menarik tautan.
+- Pembaruan hanya memberi notifikasi accepted; URL/kontak tidak ada pada payload/audit. Kegagalan notifikasi membatalkan transaksi. Completed/cancelled menolak edit.
+- Review desktop/mobile dan submit native dengan CSRF; tidak ada input arahan/titik kumpul/waktu kedatangan. Gabung grup membuka tab baru. Integrasi keanggotaan grup tetap manual eksternal.
+
+## Regresi validasi profil dan form sejenis
+
+- Nomor berhuruf/campuran, terlalu pendek/panjang, spasi/pemisah, notasi ilmiah, + ganda dan array ditolak melalui endpoint profil Volunteer/Organizer; tidak ada simpan parsial atau perubahan status organisasi.
+- Nomor lokal dengan nol awal dan internasional dengan + tersimpan sebagai string. Filter browser menolak ketik/paste huruf; nilai script/autofill salah tetap gagal native validation dan server. Periksa tanpa JS juga.
+- Profil lama bernomor invalid tidak dianggap lengkap sampai diperbaiki; data lama dan snapshot tidak ditulis ulang. Panggilan langsung service juga ditolak bila phone invalid.
+- Modal/halaman paket memakai max/step existing server; tanggal lahir tidak bisa memilih masa depan. Kontak PIC tetap menerima email/nama pengguna. Tidak mengubah aturan umur, harga atau limit paket.

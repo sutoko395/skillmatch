@@ -1,5 +1,31 @@
 # PRD SkillMatch Volunteer — acuan tim empat anggota
 
+## Kehadiran per sesi/hari - keputusan pengguna 3 November 2026
+
+Organizer mencatat setiap sesi/hari dari snapshot jadwal tugas peserta accepted.
+Interval melewati tengah malam dipisah menurut tanggal WIB. Completion menunggu
+seluruh sesi selesai dan tercatat; partisipasi berhasil jika semua sesi hadir.
+Absensi lama tetap berlabel per kegiatan, tidak disalin sebagai hadir setiap hari.
+Konversi legacy pada event nonterminal meminta konfirmasi/alasan dan menyimpan arsip.
+Halaman, filter, rekap dan route lama dipertahankan dengan kompatibilitas terbatas
+untuk satu sesi; beberapa sesi harus dicatat melalui endpoint per sesi.
+Schema, aturan, endpoint, demo dan bukti tes: [handoff sesi](../docs/SESSION_ATTENDANCE_HANDOFF.md).
+Ketentuan lama yang membatasi attendance satu catatan per event digantikan keputusan ini.
+
+
+## Perbaikan alur terintegrasi - 3 November 2026
+
+Keputusan terbaru dan bukti implementasi ada pada [handoff perbaikan alur](../docs/INTEGRATED_FLOWS_HANDOFF.md).
+Penghapusan akun tanpa data terkait tetap tersedia; akun bersejarah dilindungi.
+Revisi identitas organisasi memerlukan konfirmasi dan review ulang, penolakan
+bercatatan dapat diajukan ulang. Event lama dapat melengkapi tenggat kosong sekali
+melalui aksi owner yang diaudit; snapshot existing tidak diubah, hanya metadata
+tenggat kosong yang dapat membaca perbaikan eksplisit. Aktivitas dan notifikasi
+website memakai layanan nyata serta outbox existing yang dibedakan dari email.
+Layout, modal dan fitur existing dipertahankan. Catatan tahap sebelumnya di bawah
+bersifat historis bila menyebut layanan tersebut belum tersedia.
+
+
 Keputusan pelestarian hasil kerja, 28 Oktober 2026: perubahan fitur/alur/tampilan
 yang sudah dibangun harus tercakup dalam persetujuan pengguna. Instruksi terbaru
 yang eksplisit cukup untuk lingkupnya; penggantian di luar lingkup memerlukan
@@ -69,7 +95,7 @@ Dokumen ini adalah sumber aturan bisnis. [Kontrak integrasi](docs/KONTRAK_INTEGR
 | Instruksi pengguna | Total empat anggota; pekerjaan A1 pada ZIP dihitung; melanjutkan teknologi dan identitas visual ZIP; upload tanpa ClamAV; login bersama dengan panel admin terpisah; attendance manual oleh Organizer. |
 | Kebutuhan dari PRD v1.3 | Screening otomatis, assessment pilihan ganda, matching 50/30/20, pembayaran sandbox, notifikasi internal, riwayat, admin analitik, Ringkasan Aktivitas pengguna. |
 | Penyesuaian v1.4.2 | Login bersama dan pembagian SF/A1; MySQL/InnoDB tetap sebagai database; validasi upload sinkron menggantikan karantina/pemindaian; level skill ZIP digunakan dengan aturan pada bagian 7. |
-| Baseline implementasi yang ditetapkan paket ini | Satu lamaran per Volunteer per event; satu attendance per peserta per event; satu paket per event; satu attempt assessment; status dan transisi pada kontrak. |
+| Baseline implementasi yang ditetapkan paket ini | Satu lamaran per Volunteer per event; satu rekap peserta dengan attendance per sesi/hari; satu paket per event; satu attempt assessment; status dan transisi pada kontrak. |
 | Belum keputusan bisnis final | Harga/manfaat paket, kategori awal, durasi/jumlah soal, dan angka retensi. Pakai fixture demo berlabel dan konfigurasi; tidak diperlakukan sebagai harga produksi. |
 
 ## 2. Pengguna dan batas akses
@@ -236,12 +262,12 @@ Nilai = jawaban benar / jumlah soal × 100; kosong salah. Nilai assessment terpi
 - Satu Volunteer satu lamaran per event, termasuk lamaran withdrawn; MVP tidak menyediakan submit ulang atau ganti posisi sesudah submit. Draft dapat diganti posisi dengan reset dokumen/requirement yang tidak sesuai.
 - Volunteer dapat menarik lamaran sebelum accepted; setelah accepted, pengunduran diri ditangani Organizer sebelum kegiatan dimulai dengan alasan dan status withdrawn. Catat audit; jangan menghapus lamaran.
 - Seleksi menerima under_review saja dan harus dilakukan sebelum starts_at event. Transaksi tulis memeriksa ulang kuota, entitlement, akun, lifecycle, dan bentrok dengan jadwal peserta accepted di event lain yang tidak cancelled. Transaksi MySQL/InnoDB dan urutan row lock pada baseline tools wajib diuji.
-- Attendance: unrecorded, present, absent. Unrecorded tidak disamakan dengan absent. Satu catatan per lamaran accepted, dibuat saat acceptance.
-- Organizer mencatat sejak awal event sampai diselesaikan. Timestamp pencatatan bukan jam kedatangan. MVP tidak mencatat check-in/out atau shift.
-- Event baru dapat completed setelah akhir jadwal, tidak ada assessment/lamaran seleksi yang menggantung, dan seluruh peserta accepted memiliki attendance. Jika tidak ada peserta, completion diizinkan dengan konfirmasi jumlah nol.
+- Attendance: unrecorded, present, absent. Unrecorded tidak disamakan dengan absent. Satu rekap per lamaran accepted dengan rincian sesi/hari dari snapshot, dibuat saat acceptance.
+- Organizer mencatat setiap sesi sejak awal sesi tugas; koreksi completed wajib alasan. Timestamp pencatatan bukan jam kedatangan. Tidak ada check-in/out mandiri, QR atau GPS.
+- Event baru dapat completed setelah akhir jadwal, tidak ada assessment/lamaran seleksi yang menggantung, dan seluruh sesi/hari tugas peserta accepted sudah berakhir dan tercatat final. Jika tidak ada peserta, completion diizinkan dengan konfirmasi jumlah nol.
 - Lamaran nonfinal dapat ditutup Organizer sebelum completion melalui layanan penutupan dengan alasan, status rejected (termasuk assessment belum selesai); jangan mengubah yang sudah withdrawn/rejected/screening_failed. Ini jalur penutupan terkontrol, bukan seleksi penerimaan bypass.
 - Koreksi attendance setelah completed hanya oleh Organizer pemilik dengan alasan dan audit; riwayat membaca status terbaru. Histori tidak disalin ke tabel kedua.
-- Completed + accepted + present = partisipasi berhasil. Accepted + absent tetap tampil sebagai tidak hadir. Cancelled ditandai dibatalkan.
+- Completed + accepted + seluruh sesi present = partisipasi berhasil. Campuran present/absent tampil sebagai Partisipasi tidak lengkap; seluruh absent sebagai Tidak hadir. Cancelled ditandai dibatalkan.
 
 ## 8. Admin dan Ringkasan Aktivitas
 
@@ -313,3 +339,11 @@ Keputusan pengguna berdasarkan gambar paket:
 | Premium | Rp50.000 | 10 | 300 | 60 |
 
 Ini nilai awal yang dapat diedit admin, bukan konstanta harga checkout. Harga/limit berasal database dan disnapshot saat dipilih/dibeli. Alur screening/assessment/seleksi/dokumen/attendance pada kartu dijelaskan sebagai fitur dalam pengembangan sampai modul A3/A4 terintegrasi.
+
+## Keputusan pengguna - koordinasi peserta, 3 November 2026
+
+Satu tautan grup opsional per event beserta nama/kontak PIC. Tidak ada field arahan, titik kumpul atau waktu kedatangan; organizer menyampaikannya melalui grup. Hanya owner dan Volunteer aktif pemilik lamaran accepted pada event non-cancelled yang dapat membaca. Bisa diperbarui owner sebelum completed/cancelled walau rekrutmen terkunci. Pembaruan memberi notifikasi internal tanpa URL/kontak dalam payload; accepted baru melihat versi terbaru di detail lamaran. Bukan syarat publikasi/pembayaran/seleksi/kehadiran/completion. Jadwal tugas dan absensi per sesi tetap berlaku. Keanggotaan grup dikelola eksternal. Lihat docs/PARTICIPANT_COORDINATION_HANDOFF.md pada root aplikasi.
+
+## Perbaikan validasi nomor telepon - 3 November 2026
+
+Nomor profil Volunteer/Organizer wajib string 8-15 digit ASCII dengan + opsional hanya di awal. Huruf, spasi, pemisah, notasi ilmiah dan format lain ditolak dengan error field phone. Nol awal dan + dipertahankan; ini validasi format, bukan verifikasi kepemilikan nomor. Nomor lama tidak diubah otomatis; nomor tidak valid membuat profil Volunteer belum lengkap sampai diperbaiki. Snapshot/histori lama tetap. Kontak PIC tetap dapat berupa nomor/email/nama pengguna sesuai kontrak koordinasi. Batas tanggal lahir dan angka paket pada browser disamakan dengan server existing, tanpa aturan umur atau limit paket baru.

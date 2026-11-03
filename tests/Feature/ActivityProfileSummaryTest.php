@@ -17,8 +17,8 @@ class ActivityProfileSummaryTest extends DatabaseTestCase
         $this->actingAs($user)->get('/volunteer/aktivitas?user_id='.$other->id)
             ->assertOk()->assertViewIs('volunteer.dashboard')
             ->assertSee('Kota lama sendiri')->assertDontSee('Kota akun lain')
-            ->assertSee('01/11/2026 09:00')->assertSee('01/11/2026 12:00')
-            ->assertSee('Perlu dilengkapi')->assertSee('Weekend')
+            ->assertSee('01/11/2026')->assertSee('09:00')->assertSee('12:00')->assertSee('WIB')
+            ->assertSee('Perlu Dilengkapi')->assertSee('Weekend')
             ->assertDontSee('Event Tersedia');
         $this->get('/volunteer/dashboard')->assertRedirect('/volunteer/aktivitas');
     }
@@ -33,7 +33,7 @@ class ActivityProfileSummaryTest extends DatabaseTestCase
             ->assertOk()->assertViewIs('organizer.dashboard')
             ->assertSee('Organisasi sendiri')->assertSee('Kontak sendiri')
             ->assertDontSee('Organisasi rahasia lain')->assertSee('Terverifikasi')
-            ->assertSee('Pengelolaan kegiatan belum tersedia')
+            ->assertSee('Tindak lanjut kegiatan')
             ->assertDontSee('Total Event')->assertDontSee('Total Pendaftar')
             ->assertDontSee('href="#"', false)->assertDontSee('Buat Event');
         $this->get('/organizer/dashboard')->assertRedirect('/organizer/aktivitas');

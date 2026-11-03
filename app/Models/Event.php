@@ -58,6 +58,7 @@ class Event extends Model
             'cancelled_at' => 'immutable_datetime',
             'submitted_at' => 'immutable_datetime',
             'verified_at' => 'datetime',
+            'recruitment_repaired_at' => 'immutable_datetime',
             'package_snapshot' => 'array',
         ];
     }
