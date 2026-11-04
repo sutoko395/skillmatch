@@ -1,0 +1,62 @@
+{
+    "suite": "E2E-03 Payment & Transaction Journey",
+    "status": "PASS",
+    "steps": [
+        {
+            "id": "TC-01",
+            "description": "Login Organizer dan membuka event existing",
+            "status": "PASS"
+        },
+        {
+            "id": "TC-02",
+            "description": "Membuka halaman kelola assessment posisi",
+            "status": "PASS"
+        },
+        {
+            "id": "TC-03",
+            "description": "Assessment sudah dipublikasikan sebelumnya",
+            "status": "PASS"
+        },
+        {
+            "id": "TC-04",
+            "description": "Konfirmasi dan publikasi assessment",
+            "status": "PASS"
+        },
+        {
+            "id": "TC-05",
+            "description": "Event sudah berstatus menunggu moderasi",
+            "status": "PASS"
+        },
+        {
+            "id": "TC-06",
+            "description": "Admin menyetujui event",
+            "status": "PASS"
+        },
+        {
+            "id": "TC-07",
+            "description": "Event sudah berstatus published",
+            "status": "PASS"
+        },
+        {
+            "id": "TC-08",
+            "description": "Event tampil pada halaman publik",
+            "status": "PASS"
+        },
+        {
+            "id": "TC-10",
+            "description": "Posisi relawan tersimpan dari tahap sebelumnya",
+            "status": "PASS"
+        },
+        {
+            "id": "TC-09",
+            "description": "Data posisi relawan sudah tersedia dari tahap sebelumnya",
+            "status": "PASS"
+        }
+    ],
+    "event_title": "E2E Event 20261104210900",
+    "error": "Message: invalid selector: Unable to locate an element with the xpath expression //tr[.//*[contains(normalize-space(), \"E2E Event 20261104210900\"))]] because of the following error:\nSyntaxError: Failed to execute 'evaluate' on 'Document': The string '//tr[.//*[contains(normalize-space(), \"E2E Event 20261104210900\"))]]' is not a valid XPath expression.\n  (Session info: chrome=156.0.8078.80); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidselectorexception\nStacktrace:\nSymbols not available. Dumping unresolved backtrace:\n\t(No symbol) [0x7ff7f201be65]\n\t(No symbol) [0x7ff7f1f235f0]\n\t(No symbol) [0x7ff7f1d926d3]\n\t(No symbol) [0x7ff7f1d95af0]\n\t(No symbol) [0x7ff7f256e2a0]\n\t(No symbol) [0x7ff7f256e40f]\n\t(No symbol) [0x7ff7f259d41f]\n\t(No symbol) [0x7ff7f259db3c]\n\t(No symbol) [0x7ff7f25cbbb7]\n\t(No symbol) [0x7ff7f1dc6661]\n\t(No symbol) [0x7ff7f1dab969]\n\t(No symbol) [0x7ff7f1dacca3]\n\t(No symbol) [0x7ff7f2495af1]\n\t(No symbol) [0x7ff7f24b67f7]\n\t(No symbol) [0x7ff7f24ace20]\n\t(No symbol) [0x7ff7f213ff8e]\n\t(No symbol) [0x7ff7f1f32865]\n\t(No symbol) [0x7ff7f1f2d1d4]\n\t(No symbol) [0x7ff7f1f2d364]\n\t(No symbol) [0x7ff7f1f1644c]\n\t(No symbol) [0x7ffeb2dddda7]\n\t(No symbol) [0x7ffeb4a5ee4c]\n",
+    "failed_at": "http://127.0.0.1:8000/admin/event-verification",
+    "traceback": "Traceback (most recent call last):\n  File \"C:\\laragon\\www\\skillmatch\\tests-e2e\\journeys\\e2e03\\payment_approval.py\", line 291, in main\n    verification_row = aw.until(EC.presence_of_element_located((\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\SUTOKO\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python312\\site-packages\\selenium\\webdriver\\support\\wait.py\", line 112, in until\n    value = method(self._driver)\n            ^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\SUTOKO\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python312\\site-packages\\selenium\\webdriver\\support\\expected_conditions.py\", line 96, in _predicate\n    return driver.find_element(*locator)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\SUTOKO\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python312\\site-packages\\selenium\\webdriver\\remote\\webdriver.py\", line 914, in find_element\n    return self.execute(Command.FIND_ELEMENT, {\"using\": by, \"value\": value})[\"value\"]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\SUTOKO\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python312\\site-packages\\selenium\\webdriver\\remote\\webdriver.py\", line 506, in execute\n    self.error_handler.check_response(response)\n  File \"C:\\Users\\SUTOKO\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python312\\site-packages\\selenium\\webdriver\\remote\\errorhandler.py\", line 232, in check_response\n    raise exception_class(message, screen, stacktrace)\nselenium.common.exceptions.InvalidSelectorException: Message: invalid selector: Unable to locate an element with the xpath expression //tr[.//*[contains(normalize-space(), \"E2E Event 20261104210900\"))]] because of the following error:\nSyntaxError: Failed to execute 'evaluate' on 'Document': The string '//tr[.//*[contains(normalize-space(), \"E2E Event 20261104210900\"))]]' is not a valid XPath expression.\n  (Session info: chrome=156.0.8078.80); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidselectorexception\nStacktrace:\nSymbols not available. Dumping unresolved backtrace:\n\t(No symbol) [0x7ff7f201be65]\n\t(No symbol) [0x7ff7f1f235f0]\n\t(No symbol) [0x7ff7f1d926d3]\n\t(No symbol) [0x7ff7f1d95af0]\n\t(No symbol) [0x7ff7f256e2a0]\n\t(No symbol) [0x7ff7f256e40f]\n\t(No symbol) [0x7ff7f259d41f]\n\t(No symbol) [0x7ff7f259db3c]\n\t(No symbol) [0x7ff7f25cbbb7]\n\t(No symbol) [0x7ff7f1dc6661]\n\t(No symbol) [0x7ff7f1dab969]\n\t(No symbol) [0x7ff7f1dacca3]\n\t(No symbol) [0x7ff7f2495af1]\n\t(No symbol) [0x7ff7f24b67f7]\n\t(No symbol) [0x7ff7f24ace20]\n\t(No symbol) [0x7ff7f213ff8e]\n\t(No symbol) [0x7ff7f1f32865]\n\t(No symbol) [0x7ff7f1f2d1d4]\n\t(No symbol) [0x7ff7f1f2d364]\n\t(No symbol) [0x7ff7f1f1644c]\n\t(No symbol) [0x7ffeb2dddda7]\n\t(No symbol) [0x7ffeb4a5ee4c]\n\n",
+    "public_url": "http://127.0.0.1:8000/events/35",
+    "completed_at": "2026-11-04T21:24:17"
+}

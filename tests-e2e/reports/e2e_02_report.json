@@ -1,0 +1,62 @@
+{
+    "suite": "E2E-02 Event Management & Publication",
+    "status": "PASS",
+    "steps": [
+        {
+            "id": "TC-01",
+            "description": "Login Organizer dan membuka event existing",
+            "status": "PASS"
+        },
+        {
+            "id": "TC-02",
+            "description": "Membuka halaman kelola assessment posisi",
+            "status": "PASS"
+        },
+        {
+            "id": "TC-03",
+            "description": "Assessment sudah dipublikasikan sebelumnya",
+            "status": "PASS"
+        },
+        {
+            "id": "TC-04",
+            "description": "Konfirmasi dan publikasi assessment",
+            "status": "PASS"
+        },
+        {
+            "id": "TC-05",
+            "description": "Event sudah disetujui admin",
+            "status": "PASS"
+        },
+        {
+            "id": "TC-06",
+            "description": "Event sudah disetujui admin",
+            "status": "PASS"
+        },
+        {
+            "id": "TC-07",
+            "description": "Event sudah berstatus published",
+            "status": "PASS"
+        },
+        {
+            "id": "TC-08",
+            "description": "Event tampil pada halaman publik",
+            "status": "PASS"
+        },
+        {
+            "id": "TC-10",
+            "description": "Posisi relawan tersimpan dari tahap sebelumnya",
+            "status": "PASS"
+        },
+        {
+            "id": "TC-09",
+            "description": "Data posisi relawan sudah tersedia dari tahap sebelumnya",
+            "status": "PASS"
+        }
+    ],
+    "event_title": "E2E Event 20261104200800",
+    "error": "Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception\nStacktrace:\nSymbols not available. Dumping unresolved backtrace:\n\t(No symbol) [0x7ff79c7ebe65]\n\t(No symbol) [0x7ff79c6f35f0]\n\t(No symbol) [0x7ff79cae1dad]\n\t(No symbol) [0x7ff79c57b753]\n\t(No symbol) [0x7ff79c58d972]\n\t(No symbol) [0x7ff79c58b813]\n\t(No symbol) [0x7ff79c58b37c]\n\t(No symbol) [0x7ff79c54d64b]\n\t(No symbol) [0x7ff79c54d822]\n\t(No symbol) [0x7ff79c54da35]\n\t(No symbol) [0x7ff79cc65af1]\n\t(No symbol) [0x7ff79cc867f7]\n\t(No symbol) [0x7ff79cc7ce20]\n\t(No symbol) [0x7ff79c90ff8e]\n\t(No symbol) [0x7ff79c702865]\n\t(No symbol) [0x7ff79cd1c483]\n\t(No symbol) [0x7ff79c54c6b4]\n\t(No symbol) [0x7ff79ccc94af]\n\t(No symbol) [0x7ffeb2dddda7]\n\t(No symbol) [0x7ffeb4a5ee4c]\n",
+    "failed_at": "unknown",
+    "traceback": "Traceback (most recent call last):\n  File \"C:\\laragon\\www\\skillmatch\\tests-e2e\\journeys\\publication_continue.py\", line 256, in main\n    aw.until(lambda d: \"Event disetujui\" in body_text(d)\n  File \"C:\\Users\\SUTOKO\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python312\\site-packages\\selenium\\webdriver\\support\\wait.py\", line 112, in until\n    value = method(self._driver)\n            ^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\laragon\\www\\skillmatch\\tests-e2e\\journeys\\publication_continue.py\", line 257, in <lambda>\n    or (\"/admin/event-verification\" in d.current_url\n                                       ^^^^^^^^^^^^^\n  File \"C:\\Users\\SUTOKO\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python312\\site-packages\\selenium\\webdriver\\remote\\webdriver.py\", line 641, in current_url\n    return self.execute(Command.GET_CURRENT_URL)[\"value\"]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\SUTOKO\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python312\\site-packages\\selenium\\webdriver\\remote\\webdriver.py\", line 506, in execute\n    self.error_handler.check_response(response)\n  File \"C:\\Users\\SUTOKO\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python312\\site-packages\\selenium\\webdriver\\remote\\errorhandler.py\", line 232, in check_response\n    raise exception_class(message, screen, stacktrace)\nselenium.common.exceptions.InvalidSessionIdException: Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception\nStacktrace:\nSymbols not available. Dumping unresolved backtrace:\n\t(No symbol) [0x7ff79c7ebe65]\n\t(No symbol) [0x7ff79c6f35f0]\n\t(No symbol) [0x7ff79cae1dad]\n\t(No symbol) [0x7ff79c57b753]\n\t(No symbol) [0x7ff79c58d972]\n\t(No symbol) [0x7ff79c58b813]\n\t(No symbol) [0x7ff79c58b37c]\n\t(No symbol) [0x7ff79c54d64b]\n\t(No symbol) [0x7ff79c54d822]\n\t(No symbol) [0x7ff79c54da35]\n\t(No symbol) [0x7ff79cc65af1]\n\t(No symbol) [0x7ff79cc867f7]\n\t(No symbol) [0x7ff79cc7ce20]\n\t(No symbol) [0x7ff79c90ff8e]\n\t(No symbol) [0x7ff79c702865]\n\t(No symbol) [0x7ff79cd1c483]\n\t(No symbol) [0x7ff79c54c6b4]\n\t(No symbol) [0x7ff79ccc94af]\n\t(No symbol) [0x7ffeb2dddda7]\n\t(No symbol) [0x7ffeb4a5ee4c]\n\n",
+    "public_url": "http://127.0.0.1:8000/events/34",
+    "completed_at": "2026-11-04T20:52:56"
+}

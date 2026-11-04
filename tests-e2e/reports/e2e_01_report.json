@@ -1,0 +1,62 @@
+[
+    {
+        "test": "TC-01 Homepage",
+        "status": "PASS",
+        "detail": ""
+    },
+    {
+        "test": "TC-02 Katalog Event",
+        "status": "PASS",
+        "detail": ""
+    },
+    {
+        "test": "TC-03 Pencarian Judul",
+        "status": "PASS",
+        "detail": ""
+    },
+    {
+        "test": "TC-04 Filter Kota",
+        "status": "PASS",
+        "detail": ""
+    },
+    {
+        "test": "TC-05 Filter Kategori",
+        "status": "PASS",
+        "detail": ""
+    },
+    {
+        "test": "TC-06 Filter Tanggal",
+        "status": "PASS",
+        "detail": ""
+    },
+    {
+        "test": "TC-07 Reset Filter",
+        "status": "PASS",
+        "detail": ""
+    },
+    {
+        "test": "TC-08 Detail Event",
+        "status": "PASS",
+        "detail": ""
+    },
+    {
+        "test": "TC-09 Form Registrasi",
+        "status": "PASS",
+        "detail": ""
+    },
+    {
+        "test": "TC-10 Form Login",
+        "status": "PASS",
+        "detail": ""
+    },
+    {
+        "test": "TC-11 Reset Password",
+        "status": "PASS",
+        "detail": "Halaman lupa password dan form pengiriman tautan reset tersedia."
+    },
+    {
+        "test": "TC-12 Informasi Paket Organizer",
+        "status": "PASS",
+        "detail": "5 paket ditampilkan."
+    }
+]
