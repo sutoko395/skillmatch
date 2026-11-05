@@ -2,6 +2,7 @@
 @section('title',$event->title)
 @section('content')
 <x-page-header :title="$event->title" :description="$event->organizer->organizerProfile?->organization_name ?? $event->organizer->name" />
+@if($event->cover_image_path)<x-event-cover :event="$event" class="mb-6" />@endif
 <div class="space-y-6"><x-section-card><p class="whitespace-pre-line">{{ $event->description }}</p><p class="mt-4">{{ $event->location }} &middot; {{ $event->cityRecord?->name }}</p><p>{{ $event->starts_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} - {{ $event->ends_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</p><p class="mt-2">Pendaftaran {{ $event->registration_opens_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} sampai {{ $event->registration_deadline->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</p></x-section-card>
 @foreach($event->positions as $position)<x-section-card><h2 class="text-xl font-semibold">{{ $position->name }}</h2><p class="mt-2">Kuota: {{ $position->quota }}</p><p class="mt-2 whitespace-pre-line">{{ $position->description }}</p>
 <h3 class="mt-4 font-semibold">Skill</h3><ul class="mt-2 list-inside list-disc">@foreach($position->positionSkills as $s)<li>{{ $s->skill->name }} - {{ $s->minimum_level }} ({{ $s->is_required ? 'wajib' : 'preferensi' }})</li>@endforeach</ul>

@@ -256,3 +256,11 @@ DefaultPackageTest memeriksa nilai awal sesuai keputusan, seeding ulang setelah 
 - Nomor lokal dengan nol awal dan internasional dengan + tersimpan sebagai string. Filter browser menolak ketik/paste huruf; nilai script/autofill salah tetap gagal native validation dan server. Periksa tanpa JS juga.
 - Profil lama bernomor invalid tidak dianggap lengkap sampai diperbaiki; data lama dan snapshot tidak ditulis ulang. Panggilan langsung service juga ditolak bila phone invalid.
 - Modal/halaman paket memakai max/step existing server; tanggal lahir tidak bisa memilih masa depan. Kontak PIC tetap menerima email/nama pengguna. Tidak mengubah aturan umur, harga atau limit paket.
+
+## Foto sampul event — keputusan 5 November 2026
+
+Organizer menambah/mengganti/menghapus foto opsional pada create/edit draft yang masih editable. JPG/PNG/WebP maksimal 5 MB, rekomendasi 1600 × 900; kartu konsisten 16:9 dengan fallback ilustrasi. Kolom nullable events.cover_image_path; input cover_image dan remove_cover_image, path ditentukan server. GET /events/{event}/cover (events.cover) mengikuti visibility event atau pemilik/admin aktif. Tidak mengubah moderasi/publikasi/paket/pembayaran maupun dokumen privat. Detail implementasi, UAT dan bukti tes tersedia pada docs/DEVELOPMENT.md#foto-sampul-event di root repository.
+
+## Electric Blue Publik dan Auth — keputusan 6 November 2026
+
+Permintaan pengguna mengizinkan penerapan FigCraft Electric Blue / 06 Publik dan Auth pada landing, katalog, login dan registrasi. Blue #2563EB, Navy #0F172A, Peach #FB923C, Off-white #F8FAFC; judul editorial Georgia dan body Inter. Tampilan operasional tiga role tetap. Data, filter, pagination, upload foto, validasi, satu login/guard web dan seluruh aturan bisnis existing dipertahankan. UAT: periksa kelima tampilan desktop/mobile, menu, pencarian/filter/reset, kartu foto, role registrasi, error dan toggle password. Bukti implementasi dan tes ada pada docs/DEVELOPMENT.md#electric-blue-publik-auth di root repository; belum menyatakan seluruh UAT tim lulus.

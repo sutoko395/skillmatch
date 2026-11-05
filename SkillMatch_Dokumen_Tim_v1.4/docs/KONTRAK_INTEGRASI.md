@@ -412,3 +412,7 @@ A2: tabel event_coordinations (unique event_id FK cascade untuk draft, group_url
 ## Validasi profil bersama - 3 November 2026
 
 App\Rules\PhoneNumber digunakan VolunteerProfileRequest, OrganizerProfileController, VolunteerProfileService dan ProfileEligibilityService. Format: string 8-15 digit ASCII, + opsional di awal; simpan string agar nol awal tetap. Error memakai field phone; nomor lama invalid masuk missing_fields tanpa backfill/snapshot rewrite. Komponen x-phone-field memberi type tel/pattern/inputmode/autocomplete/helper dan filter Alpine; server tetap otoritatif. Tidak menambah route/schema/dependency. Kontak PIC tidak dibatasi ke angka karena mendukung email/nama pengguna. Max/step angka paket mengikuti PackageService existing; batas tanggal lahir browser mengikuti before_or_equal:today server. Handoff: docs/FORM_VALIDATION_HANDOFF.md root aplikasi.
+
+## Foto sampul event — keputusan 5 November 2026
+
+Organizer menambah/mengganti/menghapus foto opsional pada create/edit draft yang masih editable. JPG/PNG/WebP maksimal 5 MB, rekomendasi 1600 × 900; kartu konsisten 16:9 dengan fallback ilustrasi. Kolom nullable events.cover_image_path; input cover_image dan remove_cover_image, path ditentukan server. GET /events/{event}/cover (events.cover) mengikuti visibility event atau pemilik/admin aktif. Tidak mengubah moderasi/publikasi/paket/pembayaran maupun dokumen privat. Detail implementasi, UAT dan bukti tes tersedia pada docs/DEVELOPMENT.md#foto-sampul-event di root repository.

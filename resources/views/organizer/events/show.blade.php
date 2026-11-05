@@ -12,6 +12,7 @@
         description="Persetujuan admin, pembayaran dan publikasi merupakan tahap yang berbeda."
     />
 
+    @if($event->cover_image_path)<x-event-cover :event="$event" class="mb-6" />@endif
     @php
         $editable =
             !$event->published_at &&

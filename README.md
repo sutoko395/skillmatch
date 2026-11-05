@@ -482,3 +482,32 @@ Bukti dan batas pengujian ada di [handoff matching](docs/A4_MATCHING_HANDOFF.md)
 Koordinasi peserta: Organizer dapat mengisi tautan grup HTTPS, nama PIC dan kontak PIC pada detail event. Semuanya opsional; hanya peserta accepted melihatnya pada detail lamaran. Titik kumpul/waktu kedatangan disampaikan melalui grup. Jalankan `php artisan migrate` untuk tabel tambahan. Lihat [handoff koordinasi peserta](docs/PARTICIPANT_COORDINATION_HANDOFF.md) untuk akses, route, notifikasi dan batas integrasi.
 
 Validasi nomor telepon profil Volunteer/Organizer: 8-15 digit, boleh diawali +, tanpa huruf/spasi/tanda baca lain; contoh 081234567890 atau +6281234567890. Tidak ada migration atau konfigurasi baru. Rincian perbaikan dan pengujian ada pada [handoff validasi form](docs/FORM_VALIDATION_HANDOFF.md).
+
+## Foto sampul event — 5 November 2026
+
+Organizer dapat menambah, mengganti, dan menghapus satu foto opsional dari popup
+Buat Event maupun halaman Buat/Edit Event. Format JPG/PNG/WebP, maksimum 5 MB;
+rekomendasi 1600 × 900 px. Kartu dan detail menggunakan sampul yang sama dengan
+rasio 16:9 dan object-cover; tanpa foto menampilkan ilustrasi bawaan.
+Jalankan `php artisan migrate` untuk kolom nullable `events.cover_image_path`, lalu
+`npm run build` (atau server Vite yang sedang aktif). File disimpan pada disk
+`public`, direktori `event-covers`, dengan nama acak. URL `events.cover` menyajikan
+foto melalui aplikasi, sehingga fitur ini tidak membutuhkan `storage:link`.
+Pastikan direktori storage dapat ditulis dan batas PHP upload_max_filesize serta
+post_max_size cukup untuk foto 5 MB beserta field form.
+
+Foto draft terbatas pemilik aktif/admin aktif; foto publik mengikuti visibility
+event existing. Upload tetap mengikuti aturan edit draft/rejected tanpa transaksi,
+tidak mengubah moderasi, paket, pembayaran, atau publikasi. Untuk event yang sudah
+terkunci, foto tidak dapat diubah melalui koreksi teks.
+
+Implementasi dan bukti: [handoff upload sampul](docs/DEVELOPMENT.md#foto-sampul-event).
+
+## Electric Blue Publik dan Auth — 6 November 2026
+
+Landing, katalog, login dan registrasi menerapkan desain FigCraft Electric Blue /
+06 Publik dan Auth. Backend, route, guard, visibilitas event, filter dan pagination
+existing dipertahankan. Tidak memerlukan migration/dependensi baru untuk redesign.
+Jalankan `npm run build` atau server `npm run dev` yang biasa; bila public/hot ada,
+Laravel memakai server Vite aktif. Tinjau `/`, `/events`, `/login`, dan `/register`.
+Lingkup, bukti tes/browser dan batas: [handoff](docs/DEVELOPMENT.md#electric-blue-publik-auth).

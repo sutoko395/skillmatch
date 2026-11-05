@@ -18,6 +18,7 @@
     <x-section-card class="p-6 md:p-7">
         <form
             method="POST"
+            enctype="multipart/form-data"
             action="{{ $event->exists ? route('organizer.events.update', $event) : route('organizer.events.store') }}"
             class="space-y-6"
             x-data="eventPackageForm(@js($packages), @js(old('package_id', $event->package_snapshot['id'] ?? '')), @js(old('registration_opens_at', $event->registration_opens_at?->setTimezone('Asia/Jakarta')->format('Y-m-d\TH:i') ?? '')), @js(old('registration_deadline', $event->registration_deadline?->setTimezone('Asia/Jakarta')->format('Y-m-d\TH:i') ?? '')))"
@@ -39,6 +40,8 @@
                 required
                 maxlength="255"
             />
+
+            <x-event-cover-upload :event="$event" />
 
             <x-form-field
                 name="description"

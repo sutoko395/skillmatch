@@ -1,11 +1,13 @@
 
 
 import Alpine from 'alpinejs';
+import eventCoverUpload from './event-cover-upload';
 import eventPackageForm from './event-package-form';
 import paymentStatus from './payment-status';
 import assessmentAttempt from './assessment-attempt';
 
 window.Alpine = Alpine;
+Alpine.data('eventCoverUpload', eventCoverUpload);
 
 Alpine.data('eventPackageForm', eventPackageForm);
 Alpine.data('paymentStatus', paymentStatus);

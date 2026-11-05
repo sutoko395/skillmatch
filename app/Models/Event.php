@@ -14,6 +14,7 @@ class Event extends Model
         'organizer_id',
         'category_id',
         'title',
+        'cover_image_path',
         'description',
         'location',
         'city',

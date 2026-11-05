@@ -38,8 +38,10 @@ class FoundationAccessTest extends DatabaseTestCase
         $this->assertAuthenticatedAs($user);
         $page = $this->get($destination)->assertOk();
         $this->get('/')->assertOk()
-            ->assertSeeText('Hubungkan Talent Relawan dengan Event Terbaik')
-            ->assertSee($role === 'admin' ? 'Buka Panel Admin' : 'Buka Aktivitas Saya');
+            ->assertSeeText('Punya skill.')
+            ->assertSee($role === 'admin' ? 'Panel Admin' : 'Aktivitas')
+            ->assertSee(route($role === 'admin' ? 'admin.dashboard' : $role.'.activity.index'))
+            ->assertSee(route('logout'));
         if ($role === 'admin') {
             $page->assertViewIs('admin.dashboard')
                 ->assertViewHas('totalVolunteers', User::where('role', 'volunteer')->count())

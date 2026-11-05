@@ -21,7 +21,7 @@ class HomeTest extends DatabaseTestCase
     {
         $this->get('/')->assertOk()->assertViewHas('events', fn ($events) => $events->isEmpty())
             ->assertSee('Peluang berikutnya sedang dipersiapkan')->assertSee('UNTUK VOLUNTEER')
-            ->assertSee('UNTUK ORGANIZER')->assertSee('masih dalam pengembangan')
+            ->assertSee('UNTUK ORGANIZER')->assertSee('Punya skill.')
             ->assertSee(route('events.index'))->assertSee('name="search"', false);
     }
 

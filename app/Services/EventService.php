@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -103,6 +104,10 @@ class EventService
             );
 
             $event->delete();
+            if ($event->cover_image_path) {
+                $coverPath = $event->cover_image_path;
+                DB::afterCommit(fn () => Storage::disk('public')->delete($coverPath));
+            }
         }, 3);
     }
 
@@ -122,6 +127,48 @@ class EventService
     }
 
     public function save(
+        User $actor,
+        array $input,
+        ?Event $event = null
+    ): Event {
+        Gate::forUser($actor)->authorize($event ? 'update' : 'create', $event ?? Event::class);
+        if ($event) {
+            $this->editable($event);
+        }
+        $cover = Validator::make($input, [
+            'cover_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'remove_cover_image' => ['sometimes', 'boolean'],
+        ], [
+            'cover_image.image' => 'Pilih berkas gambar yang valid.',
+            'cover_image.mimes' => 'Foto harus berformat JPG, PNG, atau WebP.',
+            'cover_image.max' => 'Ukuran foto maksimal 5 MB.',
+            'cover_image.uploaded' => 'Foto gagal diunggah. Pilih ulang foto dan coba kembali.',
+        ])->validate();
+
+        $path = null;
+        try {
+            if (! empty($cover['cover_image'])) {
+                $path = $cover['cover_image']->store('event-covers', 'public');
+                if (! $path) {
+                    throw ValidationException::withMessages(['cover_image' => 'Foto gagal disimpan. Silakan coba kembali.']);
+                }
+            }
+            // Never accept a client-supplied storage path.
+            unset($input['cover_image_path']);
+            if ($path || ($cover['remove_cover_image'] ?? false)) {
+                $input['cover_image_path'] = $path;
+            }
+
+            return $this->persistDraft($actor, $input, $event);
+        } catch (\Throwable $exception) {
+            if ($path) {
+                Storage::disk('public')->delete($path);
+            }
+            throw $exception;
+        }
+    }
+
+    private function persistDraft(
         User $actor,
         array $input,
         ?Event $event = null
@@ -154,6 +201,7 @@ class EventService
             }
 
             $data = Validator::make($input, [
+                'cover_image_path' => ['sometimes', 'nullable', 'string'],
                 'title' => ['required', 'string', 'max:255'],
                 'package_id' => [$event->package_snapshot ? 'sometimes' : 'required', 'integer'],
                 'description' => ['required', 'string', 'max:10000'],
@@ -266,6 +314,7 @@ class EventService
                 ->setTimezone('Asia/Jakarta')
                 ->format('H:i:s');
 
+            $oldCover = $event->cover_image_path;
             $event->forceFill($data);
             app(PackageService::class)->assertFits($event, $snapshot);
             if ($event->exists && $event->isDirty(['starts_at', 'ends_at', 'registration_deadline'])) {
@@ -284,6 +333,10 @@ class EventService
                 }
             }
             $event->save();
+
+            if ($oldCover && $oldCover !== $event->cover_image_path) {
+                DB::afterCommit(fn () => Storage::disk('public')->delete($oldCover));
+            }
 
             if ($beforePackage !== $snapshot) {
                 app(AuditService::class)->record($actor, 'event.package_selected', $event, ['after' => ['revision' => $event->revision]]);

@@ -1,5 +1,7 @@
 # Panduan pengembangan tim SkillMatch
 
+Pemeriksaan terbaru 6 November 2026: lihat [laporan seluruh sistem](#pemeriksaan-sistem-2026-11-06). Semua 330 tes backend dan 15 tes frontend lulus setelah penyelarasan teks landing pada dua tes. Masih ada temuan SMTP reset password serta UI audit/konten/settings Admin yang belum tersedia; hasil tes bukan pernyataan seluruh fitur produk atau integrasi eksternal selesai. Catatan historis di bawah harus dibaca bersama laporan terbaru.
+
 ## Kehadiran per sesi/hari - keputusan pengguna 3 November 2026
 
 Organizer mencatat setiap sesi/hari dari snapshot jadwal tugas peserta accepted.
@@ -318,3 +320,271 @@ Permintaan pengguna setelah beranda: login/register memakai auth-layout dan auth
 DefaultPackageSeeder menambahkan Free, Standard dan Premium sesuai keputusan pengguna (lihat PRD/README) setelah UserSeeder, hanya local/testing. Nilai dapat diubah admin; seeding ulang memakai marker audit agar edit, rename dan nonaktif tidak di-reset. Paket demo tetap fixture terpisah. HomeController/package-card menampilkan harga/limit aktual. Tidak ada migration baru; integrasi assessment, lamaran dan attendance tetap milik A3/A4.
 
 Perbaikan validasi profil dan form sejenis 3 November 2026: lihat [FORM_VALIDATION_HANDOFF](FORM_VALIDATION_HANDOFF.md). Aturan telepon bersama untuk Volunteer/Organizer, perlindungan service/eligibility, constraint browser paket/tanggal lahir; tanpa migration atau perubahan data kerja. Status pengujian dan batas audit tercatat pada handoff.
+
+<a id="foto-sampul-event"></a>
+
+## Upload foto sampul event — 5 November 2026
+
+Lingkup yang disetujui: implementasi upload foto Organizer dan tampilan pada kartu,
+berdasarkan rancangan FigCraft. Layout, navigasi dan fitur existing dipertahankan.
+Branch `feature/event-cover-upload`, basis `78fe040` dari `design/wildthingz-skillmatch`.
+Belum commit/push. File FigCraft lokal tetap dipertahankan.
+
+- Migration `2026_11_05_000001_add_cover_image_path_to_events.php`: kolom string
+  nullable `events.cover_image_path`. Diterapkan pada database kerja dan MySQL
+  `skillmatch_testing`; tidak reset data atau menjalankan seluruh migration pending.
+- EventService::save tetap otoritas penyimpanan; menerima cover_image (UploadedFile)
+  dan remove_cover_image (boolean). Path dari klien diabaikan. JPG/PNG/WebP maksimal
+  5120 KB. Berkas baru dibuang bila penyimpanan event gagal; sampul lama dihapus
+  setelah commit penggantian/penghapusan. Hapus draft awal juga membersihkan foto
+  setelah commit. Perubahan transaksi tetap memakai locking existing.
+- GET /events/{event}/cover (`events.cover`) memeriksa visibility public atau
+  pemilik/admin aktif; respons private/no-store dan nosniff. Tidak perlu symlink.
+- Komponen event-cover-upload dipakai popup Create dan form Create/Edit;
+  event-cover dipakai kartu Organizer, kartu publik bersama landing/katalog,
+  dan detail Organizer/publik. Preview lokal Alpine, validasi awal, hapus,
+  revoke object URL. Validasi server tetap berlaku tanpa JavaScript.
+- Penyimpanan menggunakan storage/app/public/event-covers. Dokumen privat A3
+  tidak berubah. Junction public/storage yang ditemukan mengarah ke project lain
+  tidak disentuh; endpoint foto membaca disk aplikasi ini langsung.
+
+Validasi: EventCoverUploadTest 4 passed / 39 assertions; A2EventTest 17 passed /
+118 assertions; EventPackageFirstTest 6 passed / 83 assertions. Total 27 backend
+passed / 240 assertions. Frontend event-cover-upload.test.mjs: 3 passed.
+Vite build, Blade view:cache, Pint dan git diff --check lulus. Build dan tes Node
+memerlukan eksekusi di luar sandbox setelah spawn EPERM. Tes DB menggunakan guard
+Tests/TestCase.php (MySQL skillmatch_testing terpisah), tanpa RefreshDatabase.
+
+Belum diperiksa lewat browser; tidak mengklaim review visual atau seluruh UAT lulus.
+Pembersihan setelah commit dicakup implementasi, belum diuji terpisah pada commit
+nyata karena tes fitur menggunakan DatabaseTransactions.
+
+Demo/UAT: masuk Organizer aktif, buka Event Saya > Buat Event, pilih paket dan
+isi field; pilih JPG/PNG/WebP <=5 MB, periksa preview dan simpan draft. Foto harus
+muncul di kartu Event Saya serta detail. Edit draft untuk ganti/hapus. Foto tanpa
+upload memakai ilustrasi 16:9. Coba SVG, gambar >5 MB, event milik Organizer lain,
+dan event published: perubahan harus ditolak. Setelah proses moderasi/publikasi
+existing selesai, foto harus muncul pada landing/katalog/detail publik. URL foto
+draft untuk guest mengembalikan 404. Batas PHP upload/post perlu mendukung 5 MB.
+
+<a id="electric-blue-publik-auth"></a>
+
+## Electric Blue / 06 Publik dan Auth — 6 November 2026
+
+Permintaan pengguna: implementasikan desain FigCraft Electric Blue / 06 Publik dan
+Auth. Basis commit 78fe040. Branch aktual feature/event-cover-upload; pembuatan
+branch terpisah ditolak pengguna sehingga pekerjaan dilanjutkan pada branch tugas
+existing. Perubahan upload foto dan empat file FigCraft lokal dipertahankan.
+Belum commit, push, PR, merge, atau deployment.
+
+### Hasil
+
+- Landing: hero navy, judul Georgia, ilustrasi asli FigCraft, logo TEMU asli,
+  ribbon skill, pencarian, kegiatan publik, cara kerja, dua jalur peran, Organizer,
+  paket aktif, FAQ, CTA dan footer. Mengikuti data server existing, tanpa statistik,
+  harga, kegiatan atau paket statis. Enam preview kegiatan dan seluruh paket aktif
+  tetap mengikuti HomeController existing. Jumlah section menyesuaikan data nyata.
+- Katalog: heading editorial, seluruh filter judul/kota/kategori/tanggal WIB,
+  jumlah hasil, reset, empty state, pagination dengan query, kartu 16:9.
+- Login/registrasi: panel merek dan form sesuai FigCraft, input dan validasi existing,
+  remember me, lupa password, toggle kata sandi, loading, role Volunteer/Organizer,
+  helper onboarding dan tautan antar halaman. Radio dipilih juga tanpa Alpine;
+  old role ditanam dengan @js agar aman. Layout auth memakai scroll dokumen agar
+  registrasi/error tetap terjangkau pada layar kecil. Form reset/verifikasi yang
+  memakai auth-layout ikut mendapat shell konsisten; endpoint/backend tidak berubah.
+- Komponen public-navigation/footer/brand baru hanya untuk shell public/auth.
+  CSS eb-* dibatasi .electric-public/.electric-auth atau elemen khusus public/auth.
+  Layout/navigasi/CSS operasional Admin, Organizer, Volunteer tidak didesain ulang.
+  package-card bersama tidak diubah; override khusus container paket landing.
+- Tiga aset SVG diekspor dari layer FigCraft, palet diselaraskan: blue #2563EB,
+  navy #0F172A, peach #FB923C, off-white #F8FAFC. Judul editorial Georgia,
+  body Inter lokal. Simbol TEMU diekspor asli, teks merek tetap HTML.
+- Menu mobile, fokus keyboard, native details FAQ, reduced motion, gambar dekoratif
+  alt kosong, sampul event deskriptif. Navigasi tetap terlihat bila JS tidak aktif.
+
+### Batas integrasi
+
+Tidak ada migration/route/controller/layanan baru untuk redesign ini. Migration dan
+route sampul berasal dari tugas upload sebelumnya. Auth tetap satu web guard,
+GET/POST login bersama dan POST logout dengan CSRF. Tidak ada role chooser login,
+admin registration, statistik palsu atau bypass visibility/moderasi/pembayaran.
+Keterangan lama yang menyebut lamaran/assessment belum tersedia diperbarui mengikuti
+implementasi terintegrasi saat ini; keputusan seleksi tetap Organizer.
+
+Baseline sebelum perubahan diperiksa dari Blade/layout, controller, tests dan
+riwayat Git; screenshot sebelum perubahan tidak dibuat. Referensi visual dibaca
+langsung dari layer dan pratinjau file skillmatch-electric-blue-system.figcraft.
+Dokumen FigCraft tidak dimodifikasi pada tugas implementasi ini.
+
+### Verifikasi
+
+- HomeTest: 3 passed / 41 assertions, termasuk empty state, visibility, kapasitas,
+  batas enam kegiatan dan urutan.
+- Seluruh tests/Feature/Auth: 20 passed / 59 assertions (login, registrasi, logout,
+  password reset/update/confirmation, email verification).
+- A2EventTest: 17 passed / 118 assertions, termasuk katalog/filter/detail dan akses.
+- EventCoverUploadTest: 4 passed / 39 assertions.
+- Total suite relevan: 44 passed / 257 assertions. MySQL skillmatch_testing,
+  DatabaseTransactions dan guard tests existing; bukan database kerja.
+- Vite production build, Blade view:cache, Pint dan git diff --check dijalankan.
+- Chrome headless memakai server lokal 127.0.0.1:8096 dengan database testing,
+  lima URL pada 1440 dan 390 px: /, /events, /login,
+  /register?role=volunteer, /register?role=organizer. Lulus pemeriksaan overflow
+  horizontal, gambar, Alpine, preselection role, pergantian role, password toggle,
+  menu mobile dan kesejajaran tiga kartu pada desktop. Screenshot diperiksa untuk
+  landing desktop dan registrasi mobile. Bukti sementara di TEMP, tidak ditambah
+  ke repository. Data paket/kegiatan screenshot berasal dari database tes.
+- Ditemukan dan diperbaiki BOM pada Blade yang sempat menjadi anonymous grid item;
+  pemeriksaan browser diulang setelah perbaikan. Tidak membuang data tes existing.
+
+Belum audit aksesibilitas menyeluruh/lintas browser, belum UAT tim atau demo seluruh
+role. Interaksi browser tidak mengirim registrasi nyata; POST auth ditutup tes PHP.
+Tidak mengklaim kesamaan pixel absolut untuk isi/data dinamis atau viewport lain.
+
+### Menjalankan / meninjau
+
+Gunakan aplikasi Herd yang biasa, npm run dev untuk HMR atau npm run build bila
+memakai aset production. Refresh /, /events, /login dan /register. Jika public/hot
+ada, Laravel memakai server Vite aktif; build bukan pengganti server dev tersebut.
+Masuk akun existing untuk memeriksa navigasi role; tidak mengubah akun/database.
+Cek filter dan reset katalog, tombol daftar per peran, menu mobile, error form,
+lupa kata sandi, toggle kata sandi serta visibilitas foto event. Alur upload foto
+mengikuti docs/DEVELOPMENT.md#foto-sampul-event. Tidak ada dependensi baru.
+
+<a id="pemeriksaan-sistem-2026-11-06"></a>
+
+## Pemeriksaan seluruh sistem SkillMatch ? 6 November 2026
+
+Pemeriksaan pada branch `feature/event-cover-upload`, basis `78fe040`, termasuk
+perubahan lokal upload sampul dan Electric Blue yang belum commit. Tidak commit,
+push, merge, reset database, mengirim email nyata, atau membuat transaksi gateway.
+
+**Kesimpulan:** semua 330 tes backend yang tersedia lulus, tetapi belum berarti
+seluruh spesifikasi produk dan integrasi eksternal selesai. Ditemukan satu masalah
+penanganan SMTP dan dua area Admin yang belum tersedia pada checkout ini.
+
+| Pemeriksaan | Hasil aktual | Batas |
+|---|---|---|
+| Seluruh PHPUnit Unit + Feature | 330 lulus, 0 gagal; 2395 assertion | MySQL skillmatch_testing; guard Tests/TestCase; bukan DB kerja |
+| Tes frontend Node | 15 lulus, 0 gagal | Upload preview, batas paket, sinkronisasi pembayaran/navigation |
+| Pemeriksaan halaman lintas role tambahan | 17 halaman merespons 200 | Render HTTP Laravel, bukan pengujian interaksi browser setiap halaman |
+| Simulasi kegagalan SMTP reset password | HTTP 500 berhasil direproduksi | Temuan bug; simulasi exception, tidak mengirim email |
+| Vite build | Lulus | Bukan bukti seluruh alur UI |
+| Kompilasi seluruh Blade | Lulus | php artisan view:cache |
+| Pint pada file berubah / git diff --check | Lulus | Pemeriksaan format dan whitespace |
+| Jadwal otomatis | Enam jadwal terdaftar | schedule:list tidak membuktikan daemon/cron sedang berjalan |
+
+Pengujian halaman tambahan dan simulasi SMTP dijalankan sebagai 18 kasus sementara
+(19 assertion); 1 kasus sengaja mengharapkan 500 untuk membuktikan bug. Tidak
+menggabungkan angka tersebut sebagai fitur yang lulus. Semua akun tambahan dibuat
+pada transaksi database tes dan di-rollback. /volunteer/documents tidak termasuk
+halaman sistem: upload dokumen melekat pada lamaran, bukan index dokumen global.
+
+### Temuan yang perlu ditindaklanjuti
+
+1. **Reset password ketika SMTP gagal:** PasswordResetLinkController::store memanggil
+   Password::sendResetLink tanpa menangani TransportException. Simulasi exception
+   membuktikan HTTP 500, belum ada pesan gagal/retry yang ramah. Alur reset normal
+   lulus tes, pengiriman email sungguhan/inbox belum diverifikasi. Tidak diubah pada
+   tugas pemeriksaan ini.
+2. **Admin konten/pengaturan:** brief A1_Akun_Admin.md tahap 7 mewajibkan pengelolaan
+   teks/settings dengan allowlist. Tidak ditemukan controller, route atau view
+   manajemen konten/settings Admin pada checkout aktif. Konten landing saat ini
+   Blade; bukan CMS. Perlu keputusan implementasi PIC A1 bila fitur itu diperlukan.
+3. **Halaman audit Admin:** AuditService, model/log append-only dan tes audit tersedia
+   dan lulus. Namun, UI baca/filter/pagination audit tahap 8 brief A1 belum ditemukan
+   pada route/controller/view Admin. Backend audit tidak sama dengan halaman audit.
+4. **Dokumentasi historis:** sebagian DEVELOPMENT/README lama masih menyebut layanan
+   notifikasi/aktivitas belum tersedia. Kode NotificationService, ActivityReadService
+   serta tes deduplikasi, scope, rollback dan ownership saat ini tersedia dan lulus.
+   Jangan menafsirkan catatan lama sebagai kegagalan modul saat ini.
+
+### Perbaikan pemeriksaan regresi yang dilakukan
+
+Run pertama: 330 tes, 322 lulus, 8 gagal, 2359 assertion. Semua kegagalan berasal
+ExampleTest (1) dan FoundationAccessTest::test_shared_login_destinations (7 dataset)
+yang masih menuntut headline/label CTA landing lama. Kedua file tes diselaraskan
+dengan redesign yang sudah disetujui: headline baru, tautan katalog/registrasi,
+navigasi sesuai role dan POST logout. Pemeriksaan autentikasi, intended URL,
+role, akun aktif, CSRF dan data dashboard tidak dihapus. Run ulang seluruh suite:
+330 lulus / 2395 assertion. Tidak mengubah kode aplikasi/aturan bisnis pada audit ini.
+
+### Batas yang belum dibuktikan
+
+- Pembayaran Midtrans Sandbox eksternal, webhook publik dan simulasi pelanggan nyata
+  belum dijalankan pada audit ini; 21 tes payment memakai respons gateway tiruan.
+- Pengiriman SMTP nyata, penerimaan inbox dan klik tautan email belum diuji.
+- Scheduler/worker daemon berjalan terus-menerus belum diperiksa; hanya daftar jadwal.
+- Pengujian browser semua tombol/perjalanan ketiga role, seluruh UAT, load/p95,
+  keamanan menyeluruh, restore backup operasional serta konkurensi multiproses baru
+  tidak dijalankan pada audit ini. Tes locking/idempotensi existing tetap lulus.
+- Bukti Chrome publik/auth desktop/mobile berasal dari tugas redesign sebelumnya,
+  bukan diklaim sebagai pemeriksaan baru seluruh UI pada audit ini.
+- Suite Playwright pada worktree skillmatch-integration tidak dijalankan karena
+  checkout terpisah tidak otomatis memuat perubahan lokal pada branch saat ini.
+
+### Hasil per kelas tes
+
+| Kelas | Kasus | Assertion | Status |
+|---|---:|---:|---|
+| Unit\ApplicationDocumentPolicyTest | 4 | 42 | Lulus |
+| Unit\ExampleTest | 1 | 1 | Lulus |
+| Unit\MatchingServiceTest | 14 | 32 | Lulus |
+| Unit\OrganizerAssessmentValidationTest | 4 | 21 | Lulus |
+| Unit\ScreeningRulesTest | 16 | 50 | Lulus |
+| Feature\A2EventTest | 17 | 118 | Lulus |
+| Feature\A2PaymentTest | 21 | 128 | Lulus |
+| Feature\A3ApplicationDocumentsTest | 8 | 67 | Lulus |
+| Feature\A3ApplicationTest | 15 | 79 | Lulus |
+| Feature\A3ExecutionTest | 17 | 112 | Lulus |
+| Feature\A3RetentionTest | 9 | 38 | Lulus |
+| Feature\ActivityProfileSummaryTest | 2 | 26 | Lulus |
+| Feature\AuditTest | 2 | 7 | Lulus |
+| Feature\Auth\AuthenticationTest | 4 | 8 | Lulus |
+| Feature\Auth\EmailVerificationTest | 3 | 6 | Lulus |
+| Feature\Auth\PasswordConfirmationTest | 3 | 4 | Lulus |
+| Feature\Auth\PasswordResetTest | 4 | 8 | Lulus |
+| Feature\Auth\PasswordUpdateTest | 2 | 8 | Lulus |
+| Feature\Auth\RegistrationTest | 4 | 25 | Lulus |
+| Feature\DefaultPackageTest | 2 | 17 | Lulus |
+| Feature\EventCityTest | 6 | 75 | Lulus |
+| Feature\EventCoordinationTest | 5 | 78 | Lulus |
+| Feature\EventCoverUploadTest | 4 | 39 | Lulus |
+| Feature\EventPackageFirstTest | 6 | 83 | Lulus |
+| Feature\ExampleTest | 1 | 8 | Lulus |
+| Feature\FoundationAccessTest | 22 | 159 | Lulus |
+| Feature\FoundationIntegrityTest | 4 | 24 | Lulus |
+| Feature\HomeTest | 3 | 41 | Lulus |
+| Feature\IntegratedFlowsTest | 9 | 78 | Lulus |
+| Feature\MatchingTest | 17 | 78 | Lulus |
+| Feature\NavigationAssetsTest | 4 | 60 | Lulus |
+| Feature\OrganizerAssessmentTest | 3 | 36 | Lulus |
+| Feature\OrganizerKtpUploadTest | 5 | 42 | Lulus |
+| Feature\ParticipantAssessmentTest | 12 | 100 | Lulus |
+| Feature\PhoneValidationTest | 5 | 131 | Lulus |
+| Feature\PositionScheduleModeTest | 5 | 33 | Lulus |
+| Feature\ProfileTest | 4 | 40 | Lulus |
+| Feature\RecruitmentScheduleTest | 14 | 84 | Lulus |
+| Feature\ScreeningTest | 12 | 49 | Lulus |
+| Feature\SessionAttendanceTest | 9 | 77 | Lulus |
+| Feature\VolunteerAssessmentInfoTest | 7 | 105 | Lulus |
+| Feature\VolunteerEmailTest | 12 | 82 | Lulus |
+| Feature\VolunteerVerificationFlowTest | 9 | 96 | Lulus |
+
+### Pengulangan
+
+`php artisan test --log-junit=storage/logs/system-check-junit.xml`
+
+`node --test tests/Frontend/*.test.mjs`
+
+`npm run build`
+
+`php artisan view:cache`
+
+`php vendor/bin/pint --dirty --test`
+
+`php artisan schedule:list`
+
+Bukti JUnit terbaru berada pada storage/logs/system-check-junit.xml dan
+system-route-audit-junit.xml (tidak untuk commit). Helper pemeriksaan role/SMTP
+berada di TEMP, tidak menambah kerangka pengujian permanen ke repository.
