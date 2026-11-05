@@ -31,6 +31,7 @@
         @forelse($events as $event)
             <x-section-card class="p-6">
                 <div class="flex h-full flex-col">
+                    <x-event-cover :event="$event" class="mb-4" />
                     <div>
                         <a
                             href="{{ route('organizer.events.show', $event) }}"
@@ -133,6 +134,7 @@
 
                 <form
                     method="POST"
+                    enctype="multipart/form-data"
                     action="{{ route('organizer.events.store') }}"
                     class="space-y-5 p-6"
                     x-data="eventPackageForm(@js($packages), @js(old('package_id', '')), @js(old('registration_opens_at', '')), @js(old('registration_deadline', '')))"
@@ -149,6 +151,8 @@
                         required
                         maxlength="255"
                     />
+
+                    <x-event-cover-upload />
 
                     <x-form-field
                         name="description"

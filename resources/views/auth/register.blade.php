@@ -8,7 +8,7 @@
         action="{{ route('register') }}"
         x-data="{
             submitting: false,
-            role: '{{ old('role', request('role') === 'organizer' ? 'organizer' : 'volunteer') }}'
+            role: @js(old('role', request('role') === 'organizer' ? 'organizer' : 'volunteer'))
         }"
         @submit="submitting = true"
         class="space-y-3.5"
@@ -26,6 +26,7 @@
                         type="radio"
                         name="role"
                         value="volunteer"
+                        @checked(old('role', request('role') === 'organizer' ? 'organizer' : 'volunteer') === 'volunteer')
                         x-model="role"
                         class="peer absolute left-4 top-4 h-4 w-4 border-slate-300 text-indigo-600 focus:ring-indigo-500"
                         required
@@ -47,6 +48,7 @@
                         type="radio"
                         name="role"
                         value="organizer"
+                        @checked(old('role', request('role') === 'organizer' ? 'organizer' : 'volunteer') === 'organizer')
                         x-model="role"
                         class="peer absolute left-4 top-4 h-4 w-4 border-slate-300 text-indigo-600 focus:ring-indigo-500"
                         required

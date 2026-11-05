@@ -9,12 +9,13 @@
     @include('layouts.fonts')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-bg-light font-sans text-txt-light-primary antialiased">
+<body class="electric-public font-sans antialiased">
     <a href="#main" class="sr-only focus:not-sr-only">Lewati navigasi</a>
-    @include('layouts.navigation')
-    <main id="main" class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <x-flash />
+    <x-public-navigation />
+    <main id="main" @class(['eb-public-main', 'eb-container eb-interior' => !request()->routeIs('home')])>
+        <div class="eb-container"><x-flash /></div>
         @yield('content')
     </main>
+    <x-public-footer />
 </body>
 </html>

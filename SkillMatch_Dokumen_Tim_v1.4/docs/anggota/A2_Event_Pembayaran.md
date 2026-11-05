@@ -96,3 +96,7 @@ Free: gratis/2 posisi/30 lamaran/7 hari. Standard: Rp30.000/5/100/30. Premium: R
 ## Tambahan A2 - koordinasi peserta
 
 Owner mengelola tautan grup HTTPS/nama PIC/kontak PIC opsional melalui detail event dan EventCoordinationService. Route terpisah events.coordination.update agar konfigurasi rekrutmen published tetap terkunci. Tabel event_coordinations dan migration tambahan mengikuti handoff docs/PARTICIPANT_COORDINATION_HANDOFF.md root aplikasi. Tidak membuat input arahan/titik kumpul/waktu kedatangan; semuanya melalui grup. Bukan syarat payment/publish. A3 memasang DTO privat pada detail accepted dan A4 memakai notifikasi database existing.
+
+## Foto sampul event — keputusan 5 November 2026
+
+Organizer menambah/mengganti/menghapus foto opsional pada create/edit draft yang masih editable. JPG/PNG/WebP maksimal 5 MB, rekomendasi 1600 × 900; kartu konsisten 16:9 dengan fallback ilustrasi. Kolom nullable events.cover_image_path; input cover_image dan remove_cover_image, path ditentukan server. GET /events/{event}/cover (events.cover) mengikuti visibility event atau pemilik/admin aktif. Tidak mengubah moderasi/publikasi/paket/pembayaran maupun dokumen privat. Detail implementasi, UAT dan bukti tes tersedia pada docs/DEVELOPMENT.md#foto-sampul-event di root repository.

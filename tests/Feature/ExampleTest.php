@@ -15,9 +15,12 @@ class ExampleTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200)
-            ->assertSeeText('Hubungkan Talent Relawan dengan Event Terbaik')
-            ->assertSee('Mulai Berkontribusi')
-            ->assertSee('Kenali apa yang sudah tersedia')
-            ->assertSee('Event untuk dijelajahi');
+            ->assertSeeText('Punya skill.')
+            ->assertSeeText('Bikin berarti.')
+            ->assertSee('Buat akun SkillMatch')
+            ->assertSee('Sebelum')
+            ->assertSee('Lihat semua event')
+            ->assertSee(route('events.index'))
+            ->assertSee(route('register'));
     }
 }
