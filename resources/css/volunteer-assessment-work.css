@@ -1,0 +1,34 @@
+/* Kerjakan assessment.svg (FigCraft, 1440 x 1000). Attempt page only. */
+.volunteer-assessment-work { background: #f8fafc; color: #0f172a; }
+.vaa-attempt > header h1 { font-size: 32px; line-height: 40px; font-weight: 700; }
+.vaa-attempt > header p { color: #475569; font-size: 14px; line-height: 20px; overflow-wrap: anywhere; }
+.vaa-attempt .shadow-sm { box-shadow: none; }
+.vaa-attempt .border-slate-200 { border-color: #e2e8f0; }
+.vaa-status { font-size: 14px; line-height: 20px; }
+.vaa-status .text-slate-600 { color: #475569; }
+.vaa-status p[role="status"] { color: #0f172a; }
+.vaa-questions > h2 { font-size: 14px; line-height: 20px; }
+.vaa-question legend { font-size: 14px; line-height: 20px; overflow-wrap: anywhere; }
+.vaa-question label { min-height: 50px; padding: 14px 12px; font-size: 14px; line-height: 20px; }
+.vaa-question label > span { min-width: 0; overflow-wrap: anywhere; }
+.vaa-question input[type="radio"] { flex-shrink: 0; margin-top: 2px; color: #2563eb; --tw-ring-color: #2563eb; }
+.vaa-attempt button { min-height: 44px; border-radius: 10px; padding: 11px 18px; font-size: 14px; line-height: 20px; font-weight: 600; text-transform: none; letter-spacing: normal; }
+.vaa-attempt button.bg-indigo-600 { background: #2563eb; }
+.vaa-attempt button.bg-indigo-600:hover { background: #1d4ed8; }
+.vaa-attempt button:disabled { opacity: 1; background: #f1f5f9; border-color: #e2e8f0; color: #94a3b8; }
+.vaa-attempt button:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+.vaa-navigation h2 { font-size: 14px; line-height: 20px; }
+.vaa-navigation [aria-label="Nomor soal"] { display: flex; flex-wrap: wrap; gap: 4px; }
+.vaa-navigation [aria-label="Nomor soal"] > button { width: 40px; padding: 0; }
+.vaa-navigation p { line-height: 16px; }
+.vaa-attempt .vaa-actions { border-radius: 12px; }
+.vaa-actions > button:first-child { border-color: #cbd5e1; color: #2563eb; }
+.vaa-questions > div:last-child > button { border-color: #cbd5e1; }
+@media (max-width: 639px) {
+    .vaa-attempt > header h1 { font-size: 28px; line-height: 36px; }
+    .vaa-attempt .vaa-status { position: static; }
+    .vaa-question { padding: 20px; }
+    .vaa-attempt .vaa-actions { position: static; gap: 12px; }
+    .vaa-actions > button { flex: 1 1 100%; }
+    .vaa-navigation > button { color: #2563eb; }
+}

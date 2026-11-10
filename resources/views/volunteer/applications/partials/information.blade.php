@@ -1,14 +1,5 @@
 @if ($status === 'accepted' && !$eventCancelled)
-    <x-section-card class="order-1">
-        <h2 class="text-lg font-bold text-slate-900">Kehadiran</h2>
-        <p class="mt-4"><span class="inline-flex rounded-full px-3 py-1 text-sm font-semibold {{ ($application->attendance?->status ?? 'unrecorded') === 'present' ? 'bg-emerald-50 text-emerald-800' : (($application->attendance?->status ?? 'unrecorded') === 'absent' ? 'bg-rose-50 text-rose-800' : 'bg-slate-100 text-slate-700') }}">{{ ['unrecorded' => 'Belum dicatat', 'present' => 'Hadir', 'absent' => 'Tidak hadir'][$application->attendance?->status ?? 'unrecorded'] }}</span></p>
-        <p class="mt-3 text-sm text-slate-600">Kehadiran dicatat oleh penyelenggara.</p>
-        <x-attendance-session-summary :attendance="$application->attendance" />
-        @if ($application->decision_reason)
-            <p class="mt-4 text-sm font-medium text-slate-700">Catatan dari penyelenggara</p>
-            <p class="mt-1 break-words whitespace-pre-line text-sm text-slate-600">{{ $application->decision_reason }}</p>
-        @endif
-    </x-section-card>
+    @include('volunteer.applications.partials.attendance')
 @elseif ($terminal)
     <x-section-card class="order-1 {{ $status === 'rejected' ? '!border-rose-200 !bg-rose-50/70' : '!bg-slate-50' }}">
         <h2 class="text-lg font-bold text-slate-900">{{ $status === 'rejected' ? 'Hasil seleksi' : 'Status lamaran' }}</h2>
@@ -82,7 +73,7 @@
                 $eventStartsAtWib = $application->event->starts_at->copy()->setTimezone('Asia/Jakarta');
                 $eventEndsAtWib = $application->event->ends_at->copy()->setTimezone('Asia/Jakarta');
             @endphp
-            <details class="mt-3 text-sm">
+            <details class="vd-event-time mt-3 text-sm" @if(in_array($status, ['draft', 'submitted', 'screening_failed', 'rejected', 'accepted'], true)) open @endif>
                 <summary class="w-fit cursor-pointer rounded font-medium text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Waktu event</summary>
                 <p class="mt-2 text-slate-600">{{ $eventStartsAtWib->format('d/m/Y H:i') }} &ndash; {{ $eventEndsAtWib->format($eventStartsAtWib->isSameDay($eventEndsAtWib) ? 'H:i' : 'd/m/Y H:i') }} WIB</p>
             </details>

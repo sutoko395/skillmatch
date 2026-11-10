@@ -1,5 +1,6 @@
 @extends('volunteer.layouts.sidebar')
 @section('title', 'Detail Lamaran - ' . $application->event->title)
+@section('page-class', 'volunteer-application-detail ' . match ($application->status) { 'draft' => 'volunteer-application-draft', 'submitted' => 'volunteer-application-submitted', 'screening_failed' => 'volunteer-application-screening-failed', 'rejected' => 'volunteer-application-rejected', 'accepted' => $application->event->lifecycle_status === 'cancelled' ? '' : 'volunteer-application-accepted', default => '' })
 @section('content')
 @php
     $status = $application->status;
@@ -31,48 +32,10 @@
         default => 'border-indigo-200 bg-indigo-50 text-indigo-900',
     };
 @endphp
-<div class="mx-auto max-w-7xl space-y-6">
-    <header class="space-y-4">
-        <a href="{{ route('volunteer.applications.index') }}" class="inline-flex w-fit items-center gap-2 rounded-xl border border-indigo-200 bg-white px-3 py-2 text-sm font-semibold text-indigo-700 shadow-sm transition hover:border-indigo-300 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-            <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m7 7-7-7 7-7" /></svg>
-            Lamaran Saya
-        </a>
-        <x-page-header title="Detail Lamaran" :description="$application->event->title . ' · Posisi: ' . $application->position->name" />
-    </header>
+<div class="vd-detail mx-auto max-w-7xl space-y-6">
+    @include('volunteer.applications.partials.detail-header')
 
-    {{-- The panel layout already renders success and validation messages. --}}
-    @if ($canOpenAssessment)
-        <div id="assessment-summary" class="scroll-mt-24">
-            <x-volunteer-application-assessment :application="$application" :assessment="$assessmentSummary" :deadline="$recruitmentDates['assessment_deadline']" featured />
-        </div>
-    @else
-        <section aria-label="Status lamaran" class="rounded-2xl border p-5 sm:p-6 {{ $bannerColor }}">
-            <div class="flex items-start gap-4">
-                <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/70" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-6 w-6">
-                        @if ($status === 'accepted' && !$eventCancelled)
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m5 12 4 4L19 6" />
-                        @else
-                            <circle cx="12" cy="12" r="9" /><path stroke-linecap="round" d="M12 11v5m0-9v.01" />
-                        @endif
-                    </svg>
-                </span>
-                <div class="min-w-0 flex-1">
-                    <h2 class="text-xl font-bold">{{ $bannerTitle }}</h2>
-                    <p class="mt-1 text-sm leading-relaxed">{{ $bannerText }}</p>
-                    @if ($status !== 'accepted')
-                        <div class="mt-3"><x-application-status :application="$application" /></div>
-                    @endif
-                    @if ($status === 'draft')
-                        <form method="POST" action="{{ route('volunteer.applications.submit', $application) }}" class="mt-4">
-                            @csrf
-                            <x-button type="submit">Kirimkan Lamaran</x-button>
-                        </form>
-                    @endif
-                </div>
-            </div>
-        </section>
-    @endif
+    @include('volunteer.applications.partials.status-banner')
 
     @if ($status === 'draft' && !($eligibility['complete'] ?? true))
         <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
@@ -82,16 +45,13 @@
         </div>
     @endif
 
-    <div class="flex flex-col gap-6 xl:grid xl:items-start xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+    <div class="vd-grid flex flex-col gap-6 xl:grid xl:items-start xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <div class="order-2 min-w-0 space-y-6 xl:order-1">
             @include('volunteer.applications.partials.progress')
             @include('volunteer.applications.partials.documents')
 
             @if (in_array($status, ['submitted', 'assessment_pending', 'under_review'], true))
-                <details class="rounded-2xl border border-slate-200 bg-white shadow-sm">
-                    <summary class="cursor-pointer rounded-2xl p-5 text-sm font-semibold text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">Kelola penarikan lamaran</summary>
-                    <div class="px-4 pb-4"><x-application-selection :application="$application" /></div>
-                </details>
+                @include('volunteer.applications.partials.withdrawal')
             @endif
         </div>
         <aside class="contents xl:order-2 xl:block xl:min-w-0 xl:space-y-6" aria-label="Informasi seleksi dan posisi">

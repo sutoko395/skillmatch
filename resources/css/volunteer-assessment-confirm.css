@@ -1,0 +1,35 @@
+/* Sebelum assessment.svg (1440 x 1000): confirmation only. */
+.volunteer-assessment-confirm { background: #f8fafc; color: #0f172a; }
+.vac-confirm > header h1 { font-size: 32px; line-height: 40px; font-weight: 700; }
+.vac-confirm > header p { font-size: 14px; line-height: 20px; color: #475569; overflow-wrap: anywhere; }
+.vac-card { padding: 24px 32px 32px; border: 1px solid #e2e8f0; border-radius: 16px; background: #fff; }
+.vac-card > h2 { font-size: 18px; line-height: 24px; font-weight: 700; }
+.vac-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+.vac-stats > div { min-width: 0; min-height: 84px; padding: 16px; border-radius: 12px; background: #f8fafc; }
+.vac-stats dt { color: #64748b; font-size: 12px; line-height: 16px; }
+.vac-stats dd { margin-top: 4px; color: #0f172a; font-size: 20px; line-height: 28px; font-weight: 700; }
+.vac-deadline { margin-top: 20px; padding: 16px; border-radius: 12px; background: #eff6ff; }
+.vac-deadline p:first-child { color: #475569; font-size: 14px; line-height: 20px; }
+.vac-deadline p:last-child { margin-top: 8px; color: #2563eb; font-size: 18px; line-height: 24px; }
+.vac-rules { margin-top: 16px; }
+.vac-rules h3 { font-size: 16px; line-height: 24px; font-weight: 600; }
+.vac-rules ol { display: grid; gap: 16px; margin-top: 8px; }
+.vac-rules li { display: flex; align-items: flex-start; gap: 16px; }
+.vac-rules li > span { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: #f1f5f9; color: #64748b; font-size: 12px; font-weight: 600; }
+.vac-rules p { min-width: 0; max-width: 600px; color: #475569; font-size: 14px; line-height: 22px; }
+.vac-actions { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-top: 24px; padding-top: 24px; border-top: 1px solid #e2e8f0; }
+.vac-actions > a,
+.vac-actions > button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 11px 20px; border: 1px solid transparent; border-radius: 10px; font-size: 14px; line-height: 20px; font-weight: 600; }
+.vac-actions .vac-back { min-width: 202px; justify-content: flex-start; border-color: #cbd5e1; background: white; color: #0f172a; }
+.vac-back:hover { background: #f8fafc; }
+.vac-actions .vac-start { min-width: 172px; justify-content: flex-start; background: #2563eb; color: white; }
+.vac-start:hover { background: #1d4ed8; }
+.vac-actions > :focus-visible { outline-color: #2563eb; }
+@media (max-width: 639px) {
+    .vac-confirm > header h1 { font-size: 28px; line-height: 36px; }
+    .vac-card { padding: 24px; }
+    .vac-stats { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    .vac-actions { flex-direction: column-reverse; align-items: stretch; gap: 12px; }
+    .vac-actions .vac-back,
+    .vac-actions .vac-start { min-width: 0; justify-content: center; width: 100%; }
+}

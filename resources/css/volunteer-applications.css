@@ -1,0 +1,29 @@
+/* layout terukur.svg: Volunteer application list, FigCraft 1440 x 1000. */
+.volunteer-applications { background: #f8fafc; color: #0f172a; }
+.vl-applications { max-width: none; }
+.vl-applications > header h1 { font-size: 32px; line-height: 40px; font-weight: 700; }
+.vl-applications > header p { margin-top: 8px; color: #475569; font-size: 14px; line-height: 20px; }
+.vl-card { padding: 24px; background: white; border: 1px solid #e2e8f0; border-radius: 16px; }
+.vl-card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+.vl-card h2 { font-size: 20px; font-weight: 700; line-height: 28px; overflow-wrap: anywhere; }
+.vl-position { margin-top: 4px; color: #475569; font-size: 14px; line-height: 20px; overflow-wrap: anywhere; }
+.vl-status { flex-shrink: 0; max-width: 40%; }
+.vl-status > span { display: block; min-width: 196px; border-radius: 999px; padding: 6px 14px; font-size: 12px; line-height: 18px; overflow-wrap: anywhere; }
+.vl-location { margin-top: 20px; }
+.vl-card dt { color: #64748b; font-size: 12px; line-height: 16px; }
+.vl-card dd { margin-top: 6px; color: #0f172a; font-size: 14px; line-height: 20px; overflow-wrap: anywhere; }
+.vl-card-footer { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 24px; margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 16px; }
+.vl-dates { display: grid; grid-template-columns: repeat(2, minmax(0, 310px)); gap: 0; }
+.vl-detail { display: inline-flex; align-items: center; justify-content: center; min-width: 156px; min-height: 44px; border-radius: 10px; padding: 12px 20px; background: #2563eb; color: #fff; font-size: 14px; font-weight: 600; line-height: 20px; }
+.vl-detail:hover { background: #1d4ed8; }
+.vl-detail:focus-visible { outline-color: #2563eb; }
+@media (max-width: 639px) {
+    .vl-applications > header h1 { font-size: 28px; line-height: 36px; }
+    .vl-card { padding: 20px; }
+    .vl-card-heading { flex-direction: column; gap: 12px; }
+    .vl-status { max-width: 100%; }
+    .vl-status > span { min-width: 0; }
+    .vl-card-footer { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+    .vl-dates { gap: 16px; }
+    .vl-detail { width: 100%; }
+}

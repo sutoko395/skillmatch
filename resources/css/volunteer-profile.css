@@ -1,0 +1,38 @@
+/* Profil Volunteer.svg, FigCraft. Scoped to the profile page. */
+.volunteer-profile { background: #f8fafc; color: #0f172a; }
+.vp-profile { max-width: none; }
+.vp-profile > header h1 { font-size: 30px; line-height: 36px; font-weight: 700; }
+.vp-profile > header p { font-size: 14px; line-height: 20px; color: #475569; }
+.vp-profile section { box-shadow: none; border-color: #e2e8f0; }
+.vp-profile section h2 { color: #0f172a; }
+.vp-profile input,
+.vp-profile select,
+.vp-profile textarea { border-color: #cbd5e1; box-shadow: none; font-size: 14px; line-height: 20px; }
+.vp-profile input,
+.vp-profile select { height: 44px; }
+.vp-profile textarea { min-height: 100px; border-radius: 14px; }
+.vp-profile select { border-color: #e2e8f0; border-radius: 14px; }
+.vp-profile input:focus,
+.vp-profile select:focus,
+.vp-profile textarea:focus { border-color: #2563eb; --tw-ring-color: #2563eb; }
+.vp-profile input:focus-visible,
+.vp-profile select:focus-visible,
+.vp-profile textarea:focus-visible,
+.vp-profile button:focus-visible { outline-color: #2563eb; }
+.vp-profile section:first-of-type label { font-weight: 500; color: #475569; }
+.vp-profile section:first-of-type .text-slate-600 { color: #475569; }
+.vp-profile button { min-height: 44px; border-radius: 10px; font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: normal; text-transform: none; box-shadow: none; }
+.vp-profile button[type="button"] { color: #334155; border-color: #cbd5e1; }
+.vp-profile button[type="submit"] { background: #2563eb; }
+.vp-profile button[type="submit"]:hover { background: #1d4ed8; }
+.vp-profile button:focus { --tw-ring-color: #2563eb; }
+.vp-profile [data-row] { border-color: #e2e8f0; background: #f8fafc80; }
+.vp-profile .border-orange-100 { border-color: #e2e8f0; background: #fff0e7; }
+.volunteer-profile .volunteer-main > [role="status"].bg-amber-50 { background: #fffbeb; border-color: #fde68a; }
+@media (max-width: 639px) {
+    .vp-profile > header h1 { font-size: 26px; line-height: 32px; }
+    .vp-profile input,
+    .vp-profile select,
+    .vp-profile textarea { min-width: 0; max-width: 100%; }
+    .vp-profile [data-saving-form] > div:last-child > button { width: 100%; }
+}
