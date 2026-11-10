@@ -1,3 +1,13 @@
+@import './volunteer-activity.css';
+@import './volunteer-profile.css';
+@import './volunteer-applications.css';
+@import './volunteer-application-draft.css';
+@import './volunteer-application-submitted.css';
+@import './volunteer-application-screening-failed.css';
+@import './volunteer-assessment-confirm.css';
+@import './volunteer-assessment-work.css';
+@import './volunteer-application-accepted.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

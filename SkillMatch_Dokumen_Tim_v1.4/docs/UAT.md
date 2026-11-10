@@ -1,3 +1,123 @@
+## Pemeriksaan desain Lamaran Diterima — 9 November 2026
+
+Bandingkan accepted dengan `Lamaran diterima.svg`: banner hijau, timeline,
+assessment terkirim, koordinasi grup/PIC, kehadiran per sesi, jadwal/posisi dan
+dokumen. Periksa 1440/768/390, grup kosong, beberapa sesi/status, dokumen dan
+catatan. Belum dicatat berbeda dengan hadir/tidak hadir. Tidak ada aksi edit
+lamaran/assessment ulang. Akses koordinasi tetap untuk accepted pemilik sah;
+event dibatalkan menampilkan pembatalan, bukan banner diterima hijau.
+Bukti aktual/batas uji: [handoff diterima](../../docs/VOLUNTEER_ACCEPTED_DESIGN_HANDOFF.md).
+## Pemeriksaan Assessment Gagal Simpan — 9 November 2026
+
+Simulasikan koneksi gagal pada preview/test: pesan sesuai `Assessment · gagal
+simpan.svg`, jawaban radio tetap dipilih, revision tidak naik, tombol simpan
+kembali aktif dan timer tidak direset. Pulihkan transport lalu simpan: respons
+sukses memperbarui revision/status tanpa menghilangkan pilihan. Periksa
+1440/768/390 dan pastikan footer mobile tidak menutupi navigasi. Jangan memutus
+atau memalsukan endpoint produksi untuk demo. Bukti aktual dan batas simulasi:
+[handoff gagal simpan](../../docs/VOLUNTEER_ASSESSMENT_SAVE_FAILURE_HANDOFF.md).
+## Pemeriksaan desain Kerjakan Assessment — 9 November 2026
+
+Bandingkan attempt dengan `Kerjakan assessment.svg` pada 1440/768/390: sidebar
+navy, timer/status, soal/radio, nomor soal/legend, sebelumnya/berikutnya dan
+simpan/kirim. Periksa jawaban tetap dipilih saat berpindah, hitungan terjawab,
+nomor aktif/terjawab, fokus keyboard, daftar soal mobile, status simpan/gagal,
+konfirmasi kirim, expiry dan pemulihan setelah reload. Server tetap menentukan
+waktu/status/penilaian dan tidak mengirim kunci jawaban ke peserta.
+Bukti aktual (bedakan mock browser dan backend) pada
+[handoff pengerjaan](../../docs/VOLUNTEER_ASSESSMENT_WORK_DESIGN_HANDOFF.md).
+## Pemeriksaan desain Sebelum Assessment — 9 November 2026
+
+Bandingkan konfirmasi GET assessment dengan `Sebelum assessment.svg`: shell navy,
+kartu tengah, jumlah soal/durasi nyata, satu kesempatan, batas selesai WIB,
+ketentuan bernomor dan tombol kembali/mulai. Periksa 1440/768/390, teks panjang,
+error dan navigasi keyboard. GET/kembali tidak memulai attempt. POST terkonfirmasi
+memulai atau memulihkan attempt yang sama; hak akses/tenggat/status tetap dicek
+server. Bukti aktual dan batas uji: [handoff konfirmasi](../../docs/VOLUNTEER_ASSESSMENT_CONFIRM_DESIGN_HANDOFF.md).
+## Regresi sidebar detail lamaran — 9 November 2026
+
+Buka Lihat Detail untuk draft, submitted, screening_failed, assessment_pending,
+under_review, accepted, rejected, withdrawn dan cancelled. Sidebar harus navy
+#0F172A, menu Lamaran Saya aktif/ikon avatar biru #2563EB di desktop dan mobile.
+Warna shell tidak bergantung pada status atau tersedianya desain konten.
+Aturan assessment, keputusan dan dokumen tetap existing. Bukti aktual pada
+[handoff koreksi sidebar](../../docs/VOLUNTEER_DETAIL_SIDEBAR_FIX.md).
+## Pemeriksaan desain Rejected — 9 November 2026
+
+Bandingkan rejected dengan `Lamaran · Rejected.svg`: banner, timeline keputusan,
+panel hasil seleksi dengan waktu WIB dan catatan, screening/assessment terbuka,
+jadwal posisi dan dokumen. Periksa 1440/768/390, catatan kosong/panjang/berisi tag,
+metadata screening/assessment tidak tersedia dan dokumen kosong/terisi.
+Catatan harus escaped; tidak ada aksi draft/penarikan/mulai assessment. Keputusan
+historis tidak berubah mengikuti contoh desain. Bukti aktual dan batas uji:
+[handoff Rejected](../../docs/VOLUNTEER_REJECTED_DESIGN_HANDOFF.md).
+## Pemeriksaan desain Screening Gagal — 9 November 2026
+
+Bandingkan screening_failed dengan `Lamaran · Screening gagal.svg`: banner rose,
+penanda gagal, alasan screening terbuka, assessment tidak tersedia, panel status,
+jadwal posisi dan dokumen. Periksa 1440/768/390, alasan panjang/beberapa alasan,
+hasil belum tersedia dan dokumen kosong/terisi. Rincian tetap dapat dilipat.
+Tidak ada hasil/alasan palsu atau aksi upload/hapus/kirim ulang/penarikan; endpoint
+assessment tetap menolak status gagal. Bukti aktual dan batas pemeriksaan:
+[handoff Screening Gagal](../../docs/VOLUNTEER_SCREENING_FAILED_DESIGN_HANDOFF.md).
+## Pemeriksaan desain Submitted — 9 November 2026
+
+Bandingkan status submitted dengan `Lamaran · Submitted.svg`, termasuk banner,
+timeline, rincian screening/assessment terbuka, pengumuman/jadwal/posisi, dokumen
+kosong/terisi, dan panel penarikan terbuka dengan tombol merah. Periksa viewport
+1440/768/390, rincian dapat dilipat, tenggat WIB, hasil screening belum tersedia,
+serta assessment tanpa metadata. Tidak boleh menampilkan lolos/angka palsu.
+Sesudah submit tidak ada upload/hapus/kirim ulang; unduh tetap terotorisasi.
+Penarikan tetap mengikuti izin, status, batas waktu, dan aturan final existing.
+Bukti aktual: [handoff Submitted](../../docs/VOLUNTEER_APPLICATION_SUBMITTED_DESIGN_HANDOFF.md).
+## Pemeriksaan desain Lengkapi Lamaran — 9 November 2026
+
+Bandingkan detail lamaran draft dengan `Lengkapi lamaran.svg`: banner, kirim,
+perkembangan, daftar dokumen, form unggah satu kolom dan panel informasi kanan.
+Periksa viewport 1440/768/390, dokumen kosong/terisi, profil belum lengkap,
+flash/error, nama berkas, Unduh/Hapus, pilihan CV/pendukung, serta batas unggah
+existing. Dokumen tetap privat dan hanya pemilik sah memperoleh akses. Kirim,
+upload dan hapus tetap memerlukan pemeriksaan server/verifikasi existing.
+Pastikan status setelah submit, assessment, hasil seleksi dan kehadiran tetap
+memakai alur existing. Hasil aktual/batas uji pada
+[handoff draft](../../docs/VOLUNTEER_APPLICATION_DRAFT_DESIGN_HANDOFF.md).
+## Pemeriksaan desain Lamaran Saya — 9 November 2026
+
+Referensi `layout terukur.svg`, route `/volunteer/applications`. Bandingkan
+1440 px dengan SVG, lalu periksa 768/390 px: judul/posisi, badge status kanan
+atas, lokasi, waktu dibuat/dikirim WIB, dan Lihat Detail. Daftar kosong tetap
+informatif; draft tidak memiliki tanggal kirim; pagination menampilkan halaman
+selanjutnya. Link detail milik sendiri berfungsi dan akses akun lain ditolak.
+Badge mengikuti status existing, bukan contoh statis SVG. Hasil aktual dan batas
+uji: [handoff daftar lamaran](../../docs/VOLUNTEER_APPLICATIONS_DESIGN_HANDOFF.md).
+## Pemeriksaan desain Profil Volunteer — 9 November 2026
+
+Referensi disetujui: `Profil Volunteer.svg`; route `/volunteer/profile`.
+Bandingkan desktop 1440 px dengan SVG dan periksa responsif 768/390 px.
+Pastikan menu Profil & Skill aktif, pengingat email kondisional, identitas dan
+nilai tersimpan tampil, error/old input dipertahankan, dan tambah/hapus skill
+serta interval menghasilkan nama input unik. Periksa label WIB, pembatasan nomor
+telepon, batas bio/tanggal lahir, tombol simpan dan keadaan menyimpan. Simpan
+hanya data akun sendiri; endpoint lintas role tetap ditolak. Bukti aktual dan
+batas pemeriksaan pada [handoff profil](../../docs/VOLUNTEER_PROFILE_DESIGN_HANDOFF.md),
+bukan klaim seluruh UAT aplikasi lulus.
+## Pemeriksaan desain Ringkasan Aktivitas Volunteer — 9 November 2026
+
+Desain terbaru yang disetujui pengguna: `Ringkasan Aktivitas.svg` dari FigCraft.
+Lingkup `/volunteer/aktivitas`, lokal tanpa commit/push. Skenario tambahan:
+
+- Bandingkan desktop 1440 px: sidebar 288 px/navy, navbar 64 px, kartu putih,
+  aksen biru, tiga statistik, kolom kelengkapan profil/skill, dan urutan seksi SVG.
+- Periksa 1024, 768 dan 390 px: kartu menyusun ulang, teks tidak keluar layar,
+  drawer mobile dapat dibuka, ditutup, dan ditutup melalui Escape.
+- Periksa menu akun, tautan profil/lamaran/riwayat/website, assessment dengan
+  deadline aktif/kedaluwarsa, jadwal accepted dan notifikasi milik akun sendiri.
+- Periksa profil lengkap/belum lengkap, daftar kosong/terisi, pagination dan
+  pengingat verifikasi. Data contoh SVG tidak menjadi data aplikasi.
+
+Hasil aktual dan keterbatasan dicatat pada
+[handoff desain](../../docs/VOLUNTEER_ACTIVITY_DESIGN_HANDOFF.md);
+penambahan ini bukan klaim seluruh UAT aplikasi sudah lulus.
 # UAT dan kriteria selesai lintas anggota
 
 ## Kehadiran per sesi/hari - keputusan pengguna 3 November 2026

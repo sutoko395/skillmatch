@@ -1,0 +1,42 @@
+/* FigCraft: shared shell for Activity/Profile; dashboard styles remain scoped. */
+.volunteer-activity { background: #f8fafc; color: #0f172a; }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-sidebar { background: #0f172a; box-shadow: none; }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-sidebar.translate-x-0 { transform: translateX(0); }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-sidebar .bg-orange-500,
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-topbar .bg-orange-500 { background: #2563eb; }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-sidebar [class*="text-orange-"] { color: #cbd5e1; }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-sidebar p[class*="uppercase"] { color: #94a3b8; }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-sidebar nav a[aria-current="page"] { background: #2563eb; color: #fff; border-color: #2563eb; box-shadow: none; }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-sidebar nav a:hover { color: #fff; }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-topbar { background: #fff; border: 0; backdrop-filter: none; }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-topbar .text-orange-600 { color: #2563eb; }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-main { padding-bottom: 32px; }
+.va-dashboard { max-width: none; }
+.va-dashboard .shadow-sm { box-shadow: none; }
+.va-dashboard .border-slate-200 { border-color: #e2e8f0; }
+.va-dashboard .text-indigo-600,
+.va-dashboard .text-indigo-700 { color: #2563eb; }
+.va-dashboard .bg-indigo-50 { background: #eff6ff; }
+.va-dashboard .bg-indigo-600 { background: #2563eb; }
+.va-dashboard a.hover\:bg-indigo-700:hover { background: #1d4ed8; }
+.va-dashboard a.hover\:text-indigo-700:hover { color: #1d4ed8; }
+.va-dashboard .text-slate-500 { color: #64748b; }
+.va-dashboard > :first-child h1 { letter-spacing: -.025em; }
+.va-dashboard > :first-child p:last-child { max-width: 672px; }
+.va-profile-grid > :last-child .border-dashed { border-style: solid; }
+.va-dashboard .bg-amber-50 { background: #fffbeb; }
+.va-dashboard .border-amber-200 { border-color: #fde68a; }
+.va-stats .va-status-pill,
+.va-applications .va-status-pill { padding-block: 0; }
+.va-next-steps .va-action-row { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 104px; }
+.va-button { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; min-width: 224px; min-height: 44px; border-radius: 8px; padding: 12px 20px; background: #2563eb; color: white; font-size: 14px; font-weight: 600; text-align: center; }
+.va-button:hover { background: #1d4ed8; }
+.va-dashboard > section[aria-label="Notifikasi terbaru"] > div > p { border-style: solid; background: #f8fafc; }
+@media (min-width: 1024px) {
+    .va-dashboard .va-profile-grid { grid-template-columns: minmax(0, 2.06fr) minmax(0, 1fr); }
+    .va-profile-grid > :first-child { grid-column: span 1; }
+}
+@media (max-width: 639px) {
+    .va-next-steps .va-action-row { align-items: stretch; flex-direction: column; gap: 16px; }
+    .va-button { width: 100%; }
+}

@@ -1,3 +1,183 @@
+## Lamaran Diterima — desain FigCraft, 9 November 2026
+
+Referensi `Lamaran diterima.svg` (1440 x 1662), detail Volunteer accepted pada
+event tidak dibatalkan. Lokal tanpa commit/push. Shell navy, banner emerald,
+timeline penerimaan dengan rincian terbuka, dokumen, koordinasi peserta, kehadiran
+per sesi, jadwal dan informasi posisi mengikuti SVG. Kehadiran dipisah sebagai
+partial, memakai rekap/sesi existing. Mobile mempertahankan koordinasi/kehadiran
+lebih awal sesuai urutan operasional existing.
+
+Status, tanggal WIB, screening/assessment, grup/PIC dan absensi berasal dari data
+nyata. Koordinasi tetap melalui layanan terotorisasi; tidak memasang grup/PIC
+contoh SVG. Tanpa data grup/kehadiran menampilkan keadaan kosong existing.
+Event dibatalkan tidak memakai banner penerimaan hijau. Tidak mengubah Policy,
+route, schema, transisi atau layanan. PRD/kontrak tetap berlaku. Bukti/batas:
+[handoff diterima](../docs/VOLUNTEER_ACCEPTED_DESIGN_HANDOFF.md).
+## Assessment Gagal Simpan — desain FigCraft, 9 November 2026
+
+Referensi `Assessment · gagal simpan.svg` (1440 x 1000) memakai layout attempt
+yang sudah diterapkan, dengan pesan kegagalan pada baris status di bawah timer/
+hitungan jawaban. Pesan existing tetap kondisional sesuai hasil request; tidak
+dijadikan error statis atau banner baru. Pilihan lokal/revision/queue dan retry
+menggunakan implementasi assessment-attempt.js existing tanpa perubahan.
+
+Perbaikan responsif: pada layar kecil timer/footer tidak sticky agar pesan
+panjang dan footer dua tombol tidak menutupi navigasi sebelumnya/berikutnya.
+Selector scoped diperkuat agar mengalahkan utility sticky. Desktop tetap sama.
+Lokal tanpa commit/push. PRD/kontrak tetap berlaku. Bukti/batas pemeriksaan:
+[handoff gagal simpan](../docs/VOLUNTEER_ASSESSMENT_SAVE_FAILURE_HANDOFF.md).
+## Kerjakan Assessment — desain FigCraft, 9 November 2026
+
+Referensi `Kerjakan assessment.svg` (1440 x 1000). Halaman attempt Volunteer
+memakai shell navy, header, kartu timer/status penyimpanan, soal kiri, navigasi
+nomor kanan, tombol sebelumnya/berikutnya dan footer simpan/kirim sesuai SVG.
+Status terjawab/aktif/fokus tetap terlihat. Mobile memakai tombol daftar soal
+yang dapat dibuka/tutup dan footer tombol penuh. Timer tidak sticky pada mobile
+kecil agar tidak menutupi soal; desktop mempertahankan sticky existing.
+
+Bagian status, navigasi, panel soal dan footer dipisah menjadi partial Blade.
+Semua x-data/x-ref/event/nama input, radio terpilih, revision, timer, autosave,
+konfirmasi kirim dan fallback tanpa JavaScript dipertahankan. JavaScript/service
+assessment tidak berubah; tidak ada soal/jawaban/timer contoh SVG dipasang ke data
+aplikasi. PRD/kontrak tetap berlaku. Lokal tanpa commit/push. Bukti/batas uji:
+[handoff pengerjaan](../docs/VOLUNTEER_ASSESSMENT_WORK_DESIGN_HANDOFF.md).
+## Sebelum Assessment — desain FigCraft, 9 November 2026
+
+Referensi `Sebelum assessment.svg` (1440 x 1000), halaman konfirmasi GET assessment
+sebelum attempt dimulai. Lokal tanpa commit/push. Shell navy, konten tengah
+maksimal 768 px, kartu putih, tiga ringkasan (jumlah soal, durasi, satu kesempatan),
+perkiraan batas akhir WIB, ketentuan bernomor, garis pemisah dan tombol Kembali/
+Mulai mengikuti SVG. Mobile menyusun ringkasan dan tombol vertikal.
+
+Summary, rules dan actions terpisah menjadi partial. Jumlah soal/durasi dan
+expires_at tetap dari AssessmentService/Controller existing, bukan contoh SVG.
+POST start, CSRF dan confirmed=1 tetap; GET tidak memulai attempt. Ketentuan satu
+kali, durasi/tenggat terpendek, waktu tetap berjalan, otorisasi dan server timer
+tidak berubah. Halaman pengerjaan assessment belum didesain ulang pada tahap ini.
+PRD/kontrak tetap berlaku. Bukti/batas: [handoff konfirmasi](../docs/VOLUNTEER_ASSESSMENT_CONFIRM_DESIGN_HANDOFF.md).
+## Koreksi shell detail semua status — 9 November 2026
+
+Koreksi pengguna: sidebar masih oranye ketika membuka Lihat Detail untuk status
+yang belum memiliki desain konten, misalnya assessment_pending. Sidebar/navbar
+navy/biru kini mengikuti kelas dasar volunteer-application-detail pada seluruh
+status detail lamaran, tanpa bergantung pada kelas desain konten per status.
+Layout/isi halaman untuk status lain tetap existing; koreksi ini hanya shell.
+Aktivitas, profil, daftar lamaran dan role lain mempertahankan tampilannya.
+Bukti: [handoff koreksi sidebar](../docs/VOLUNTEER_DETAIL_SIDEBAR_FIX.md).
+## Detail Rejected — desain FigCraft, 9 November 2026
+
+Referensi `Lamaran · Rejected.svg` (1440 x 1568) untuk detail lamaran Volunteer
+berstatus rejected, lokal tanpa commit/push. Shell navy/biru, banner rose,
+timeline dengan keputusan Belum terpilih, panel Hasil seleksi rose berisi waktu
+WIB/catatan, jadwal posisi, informasi posisi dan dokumen mengikuti SVG.
+Rincian screening, assessment dan Waktu event terbuka default, dapat dilipat.
+Catatan organizer tetap di-escape sebagai teks; contoh SVG tidak menjadi data.
+
+Komponen detail existing dan CSS scoped yang sudah disetujui dipakai ulang.
+Keputusan, tanggal, catatan, hasil screening/assessment dan dokumen tetap dari
+data nyata, tanpa perubahan schema/route/Policy/service/transisi. Tidak memberi
+aksi kirim ulang, upload/hapus, penarikan atau mulai assessment pada status ini.
+PRD/kontrak tetap berlaku. Bukti dan batas uji:
+[handoff Rejected](../docs/VOLUNTEER_REJECTED_DESIGN_HANDOFF.md).
+## Detail Screening Gagal — desain FigCraft, 9 November 2026
+
+Referensi `Lamaran · Screening gagal.svg` (1440 x 1759) berlaku khusus status
+screening_failed pada detail Volunteer. Lokal tanpa commit/push. Shell navy,
+banner rose, indikator timeline gagal, alasan hasil screening terbuka, panel
+status kanan, jadwal posisi, informasi posisi dan dokumen mengikuti SVG.
+Rincian assessment serta Waktu event terbuka; assessment tetap tidak tersedia.
+Komponen existing dipakai ulang dan alasan berasal dari checks_json, bukan SVG.
+
+CSS dasar detail dibagikan dengan Draft/Submitted dan CSS rose khusus dipisah.
+Status/alasan, endpoint, Policy, gate screening, formula, snapshot dan privasi
+file tidak berubah. Tidak ada aksi upload/hapus/kirim ulang/penarikan untuk status
+terminal ini. PRD/kontrak tetap berlaku. Bukti dan batas uji:
+[handoff Screening Gagal](../docs/VOLUNTEER_SCREENING_FAILED_DESIGN_HANDOFF.md).
+## Detail Lamaran Submitted — desain FigCraft, 9 November 2026
+
+Referensi `Lamaran · Submitted.svg` (1440 x 1946), diterapkan pada detail
+Volunteer ketika status submitted. Lokal tanpa commit/push. Shell navy/biru dan
+layout dua kolom memakai komponen detail existing. Banner menunggu evaluasi atau
+pencocokan mengikuti hasil screening nyata. Rincian screening, assessment,
+Waktu event dan penarikan terbuka secara default, tetap dapat dilipat. Tombol
+penarikan merah; dokumen setelah submit tetap hanya-baca. Angka assessment,
+tenggat dan hasil screening tidak diambil dari contoh SVG.
+
+CSS spesifik Submitted terpisah; bagian dasar detail dibagikan dengan Draft.
+Status lain tidak didesain ulang. Tidak mengubah rumus, transisi, gate, Policy,
+route, schema, service, privasi dokumen atau sifat final penarikan. PRD/kontrak
+tetap berlaku. Bukti dan batas pemeriksaan:
+[handoff Submitted](../docs/VOLUNTEER_APPLICATION_SUBMITTED_DESIGN_HANDOFF.md).
+## Lengkapi Lamaran — desain FigCraft, 9 November 2026
+
+Referensi pengguna `Lengkapi lamaran.svg` (1440 x 1808) diterapkan khusus detail
+lamaran berstatus draft, `/volunteer/applications/{application}`. Lokal tanpa
+commit/push. Shell navy/biru, tombol kembali, header, banner draft, dua kolom
+perkembangan/dokumen dan pengumuman/jadwal/informasi posisi mengikuti SVG.
+Dokumen tersusun vertikal dengan aksi Unduh/Hapus di bawah identitas; form unggah
+satu kolom, ikon jadwal outline dan waktu event terbuka saat draft. Native file
+picker/tanggal tetap mengikuti browser. Mobile menyusun panel ke satu kolom.
+
+Header dan banner dipisah sebagai partial; partial perkembangan, dokumen,
+informasi serta komponen existing dipakai ulang. Flash sukses hanya mengikuti
+hasil operasi nyata. Pengingat profil tidak lengkap, dokumen kosong, error,
+status non-draft, assessment, penarikan, koordinasi dan attendance dipertahankan.
+CSS dibatasi `volunteer-application-draft`; status lain tidak didesain ulang.
+Tidak ada perubahan aturan unggah, Policy, privasi dokumen, transisi, schema,
+route atau service. PRD/kontrak tetap berlaku. Bukti dan batas validasi:
+[handoff draft](../docs/VOLUNTEER_APPLICATION_DRAFT_DESIGN_HANDOFF.md).
+## Lamaran Saya — desain FigCraft, 9 November 2026
+
+Pengguna menyetujui `layout terukur.svg` (1440 x 1000) untuk daftar lamaran
+Volunteer di `/volunteer/applications`, lokal tanpa commit/push. Sidebar navy
+288 px dan navbar putih 64 px mengikuti halaman Volunteer yang sudah disetujui.
+Menu Lamaran Saya aktif biru. Kartu putih berborder/radius 16 px memuat judul dan
+posisi di kiri, status di kanan atas, label lokasi, garis pemisah, waktu dibuat/
+dikirim dalam WIB serta tombol Lihat Detail biru. Mobile menyusun status dan
+footer ke bawah tanpa mengubah alur. Kartu terpisah di partial list-card; komponen
+status existing, sumber data akun, empty state, pagination dan otorisasi tetap.
+Desain detail lamaran dan halaman lain tidak termasuk perubahan ini. PRD,
+kontrak, schema dan status bisnis tetap berlaku. Bukti dan batas validasi:
+[handoff daftar lamaran](../docs/VOLUNTEER_APPLICATIONS_DESIGN_HANDOFF.md).
+## Profil Volunteer — desain FigCraft, 9 November 2026
+
+Instruksi pengguna melanjutkan desain Volunteer dengan `Profil Volunteer.svg`
+(1440 x 1828). Lingkup `/volunteer/profile`, lokal tanpa commit/push. Gunakan
+sidebar navy #0F172A, menu Profil & Skill aktif biru #2563EB, header putih 64 px,
+latar #F8FAFC, konten berjarak 32 px dari sidebar pada desktop, kartu putih,
+input 44 px, judul 30 px, serta tombol berlabel normal sesuai SVG. Bagian
+identitas, skill, ketersediaan, dan aksi simpan dipisahkan menjadi partial Blade;
+komponen field/phone, baris skill/interval, CSRF, old input, error dan validasi
+existing dipakai ulang. Form tetap satu POST ke route existing. Pengingat
+verifikasi hanya muncul untuk akun yang belum terverifikasi; data contoh dalam
+SVG bukan data aplikasi. Tanggal dan waktu memakai WIB sesuai kontrak existing.
+
+Style shell biru dipakai bersama Ringkasan Aktivitas; halaman Volunteer lain,
+Organizer dan Admin mempertahankan tampilannya. Ketentuan sidebar pengguna lama
+digantikan desain pengguna untuk kedua halaman yang sudah disetujui ini.
+Tidak ada perubahan schema, status bisnis, Policy atau interface layanan;
+PRD/kontrak tetap berlaku. Bukti dan batas validasi ada pada
+[handoff profil](../docs/VOLUNTEER_PROFILE_DESIGN_HANDOFF.md).
+## Ringkasan Aktivitas Volunteer — desain FigCraft, 9 November 2026
+
+Keputusan pengguna: implementasikan `Ringkasan Aktivitas.svg` pada halaman
+`/volunteer/aktivitas`, hanya sisi Volunteer, lokal tanpa commit/push/publikasi.
+Desain yang disetujui memakai sidebar navy #0F172A selebar 288 px, header putih
+64 px, aksen biru #2563EB, latar #F8FAFC, kartu putih dengan border/radius lembut,
+serta Inter. Pada desktop konten mulai x=320 px; jarak kartu 24 px, tiga kartu
+statistik berjarak 16 px, kolom profil dan skill mengikuti rasio pada SVG.
+Ketentuan lama tentang penggantian sidebar pengguna tidak berlaku pada halaman
+ini sesuai desain terbaru pengguna. Halaman Volunteer lainnya, Organizer dan
+Admin mempertahankan tampilan existing.
+
+Bagian sambutan, statistik, kelengkapan profil, skill, ketersediaan, kegiatan,
+dan langkah berikutnya dipisahkan menjadi partial Blade di
+`resources/views/volunteer/activity/`. Sidebar/navbar existing dipakai ulang;
+style baru dibatasi kelas `volunteer-activity`. Nama, hitungan, status, daftar,
+tenggat, dan notifikasi tetap berasal dari data/layanan existing, bukan isi
+contoh SVG. Tanggal lamaran ditampilkan dalam WIB; tidak ada perubahan schema,
+route, Policy, transisi, atau interface layanan. FR-18 dan kontrak data tetap
+berlaku. Bukti dan batas validasi: [handoff desain](../docs/VOLUNTEER_ACTIVITY_DESIGN_HANDOFF.md).
 # Design specification SkillMatch
 
 ## Kehadiran per sesi/hari - keputusan pengguna 3 November 2026

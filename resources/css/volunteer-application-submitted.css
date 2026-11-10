@@ -1,0 +1,22 @@
+/* Lamaran · Submitted.svg: submitted state, without changing selection rules. */
+.volunteer-application-submitted { background: #f8fafc; color: #0f172a; }
+:is(.volunteer-application-submitted, .volunteer-application-screening-failed, .volunteer-application-rejected, .volunteer-application-accepted) .vd-progress details > summary { list-style: none; padding: 16px 30px; border-bottom: 1px solid #e2e8f0; color: #2563eb; }
+:is(.volunteer-application-submitted, .volunteer-application-screening-failed, .volunteer-application-rejected, .volunteer-application-accepted) .vd-progress details > summary::-webkit-details-marker { display: none; }
+:is(.volunteer-application-submitted, .volunteer-application-screening-failed, .volunteer-application-rejected, .volunteer-application-accepted) .vd-progress details > div { margin-top: 16px; margin-left: 16px; }
+:is(.volunteer-application-submitted, .volunteer-application-screening-failed, .volunteer-application-rejected, .volunteer-application-accepted) .vd-progress details { margin-top: 16px; }
+:is(.volunteer-application-submitted, .volunteer-application-screening-failed, .volunteer-application-rejected, .volunteer-application-accepted) .vd-progress > ol > li:not(:last-child) { padding-bottom: 40px; }
+:is(.volunteer-application-submitted, .volunteer-application-screening-failed, .volunteer-application-rejected, .volunteer-application-accepted) .vd-progress span.bg-indigo-600 { background: #2563eb; border-color: #2563eb; }
+:is(.volunteer-application-submitted, .volunteer-application-screening-failed, .volunteer-application-rejected, .volunteer-application-accepted) .vd-documents li.border-dashed { border-style: solid; background: white; }
+.volunteer-application-submitted .vd-withdrawal > summary { padding: 16px 32px; list-style: none; border-bottom: 1px solid #e2e8f0; }
+.volunteer-application-submitted .vd-withdrawal > summary::-webkit-details-marker { display: none; }
+.volunteer-application-submitted .vd-withdrawal > div { padding-top: 16px; }
+.volunteer-application-submitted .vd-withdrawal label { font-size: 14px; line-height: 20px; }
+.volunteer-application-submitted .vd-withdrawal textarea { min-height: 70px; border-color: #cbd5e1; border-radius: 8px; font-size: 14px; }
+.volunteer-application-submitted .vd-withdrawal button.bg-indigo-600 { background: #dc2626; }
+.volunteer-application-submitted .vd-withdrawal button.bg-indigo-600:hover { background: #b91c1c; }
+@media (max-width: 639px) {
+    :is(.volunteer-application-submitted, .volunteer-application-screening-failed, .volunteer-application-rejected, .volunteer-application-accepted) .vd-progress details > summary { padding-inline: 0; }
+    :is(.volunteer-application-submitted, .volunteer-application-screening-failed, .volunteer-application-rejected, .volunteer-application-accepted) .vd-progress details > div { margin-left: 0; }
+    .volunteer-application-submitted .vd-withdrawal > summary { padding-inline: 20px; }
+    :is(.volunteer-application-submitted, .volunteer-application-screening-failed, .volunteer-application-rejected, .volunteer-application-accepted) .vd-progress section[aria-label="Informasi assessment"] dl { grid-template-columns: minmax(0, 1fr); }
+}

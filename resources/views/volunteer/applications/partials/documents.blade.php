@@ -1,4 +1,4 @@
-<x-section-card>
+<x-section-card class="vd-documents">
     <div class="-mx-6 -mt-6 rounded-t-2xl border-b border-orange-100 bg-orange-50 px-6 py-4">
         <h2 class="text-lg font-bold text-slate-900">Dokumen lamaran</h2>
     </div>

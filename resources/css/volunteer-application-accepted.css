@@ -1,0 +1,8 @@
+/* Lamaran diterima.svg. Accepted application detail only. */
+.volunteer-application-accepted .vd-detail > section[aria-label="Status lamaran"] { border-color: #a7f3d0; background: #ecfdf5; color: #065f46; }
+.volunteer-application-accepted #koordinasi-peserta { border-color: #bfdbfe; }
+.volunteer-application-accepted #koordinasi-peserta a.bg-indigo-600 { border-radius: 10px; background: #2563eb; padding: 12px 18px; }
+.volunteer-application-accepted #koordinasi-peserta a.bg-indigo-600:hover { background: #1d4ed8; }
+.volunteer-application-accepted #koordinasi-peserta dd { overflow-wrap: anywhere; }
+.volunteer-application-accepted .vd-progress section[aria-label="Informasi assessment"] .bg-indigo-600 { background: #2563eb; }
+.volunteer-application-accepted .vd-attendance { overflow-wrap: anywhere; }

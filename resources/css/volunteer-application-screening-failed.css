@@ -1,0 +1,7 @@
+/* FigCraft: shared rose styling for Screening Failed and Rejected. */
+:is(.volunteer-application-screening-failed, .volunteer-application-rejected) { background: #f8fafc; color: #0f172a; }
+:is(.volunteer-application-screening-failed, .volunteer-application-rejected) .vd-detail > section[aria-label="Status lamaran"] { background: #fff1f2; border-color: #fecdd3; color: #9f1239; }
+:is(.volunteer-application-screening-failed, .volunteer-application-rejected) .vd-progress section[aria-label="Hasil screening"] > h2 { color: #0f172a; }
+:is(.volunteer-application-screening-failed, .volunteer-application-rejected) .vd-progress section[aria-label="Hasil screening"] ul { overflow-wrap: anywhere; }
+:is(.volunteer-application-screening-failed, .volunteer-application-rejected) .vd-progress section[aria-label="Hasil screening"] li { padding: 12px; }
+:is(.volunteer-application-screening-failed, .volunteer-application-rejected) .vd-progress section[aria-label="Informasi assessment"] p { overflow-wrap: anywhere; }
