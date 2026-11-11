@@ -1,3 +1,10 @@
+## Desain Semua notifikasi Volunteer — 11 November 2026
+
+Dari Aktivitas buka Semua notifikasi. Periksa shell navy/biru, konten, kosong,
+read/unread, tanggal WIB, detail/baca dan pagination pada 1440/768/390.
+Akses pemilik dan channel tetap dibatasi. Role lain tetap desain existing.
+Bukti/batas: [handoff notifikasi](../../docs/VOLUNTEER_NOTIFICATIONS_DESIGN_HANDOFF.md).
+
 ## Detail event publik konsisten dengan panel — 11 November 2026
 
 Periksa guest dan akun aktif pada /events/{event}: konten seperti panel, navbar/

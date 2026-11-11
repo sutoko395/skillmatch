@@ -1,3 +1,10 @@
+## Notifikasi Volunteer — 11 November 2026
+
+Permintaan pengguna: halaman Semua notifikasi mengikuti panel navy/biru.
+Kartu putih, kembali ke Aktivitas, keadaan kosong berikon, penanda read/unread,
+tanggal WIB dan aksi detail/baca. Role lain dan ringkasan dashboard tetap.
+Bukti/batas: [handoff notifikasi](../docs/VOLUNTEER_NOTIFICATIONS_DESIGN_HANDOFF.md).
+
 ## Detail event publik disamakan dengan panel — 11 November 2026
 
 Sesuai pengguna, /events/{event} memakai konten detail yang sama dengan panel
