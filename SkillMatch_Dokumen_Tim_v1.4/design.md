@@ -1,3 +1,11 @@
+## Riwayat Partisipasi — desain SVG, 11 November 2026
+
+Mengikuti Riwayat Partisipasi.svg (1440 × 1000): sidebar navy/menu biru,
+kartu putih, tautan judul biru, badge kanan, kotak waktu/hasil dan catatan amber.
+Partial kartu terpisah; data, status dan rincian sesi existing dipertahankan.
+Hasil sukses hanya dari attendance aktual, cancelled bukan sukses.
+Bukti/batas: [handoff riwayat](../docs/VOLUNTEER_HISTORY_DESIGN_HANDOFF.md).
+
 ## Detail lamaran: penarikan — 11 November 2026
 
 Desain disetujui melalui Penarikan pada detail lamaran.svg. Status under_review

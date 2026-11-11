@@ -1,3 +1,11 @@
+## Pemeriksaan desain Riwayat Partisipasi — 11 November 2026
+
+Bandingkan Riwayat Partisipasi.svg pada 1440/768/390: shell, badge, judul,
+kotak waktu WIB/hasil, catatan lama dan sesi. Periksa kosong, hadir, absent,
+unrecorded, sesi campuran, cancelled dan bukan accepted. Catatan lama tetap
+terlihat, judul menuju detail dan pagination existing tersedia.
+Bukti/batas: [handoff riwayat](../../docs/VOLUNTEER_HISTORY_DESIGN_HANDOFF.md).
+
 ## Pemeriksaan penarikan pada detail — 11 November 2026
 
 Bandingkan under_review dengan Penarikan pada detail lamaran.svg pada

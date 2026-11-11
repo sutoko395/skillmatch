@@ -1,17 +1,11 @@
 @extends('volunteer.layouts.sidebar')
 @section('title', 'Riwayat Partisipasi')
+@section('page-class', 'volunteer-history')
 @section('content')
-<div class="mx-auto max-w-7xl space-y-6">
+<div class="vh-history mx-auto max-w-7xl space-y-6">
     <x-page-header title="Riwayat Partisipasi" description="Hasil berasal dari keputusan dan kehadiran aktual. Belum dicatat berbeda dengan Tidak hadir." />
     @forelse($applications as $application)
-        <x-section-card>
-            <a class="text-lg font-semibold text-indigo-600" href="{{ route('volunteer.applications.show', $application) }}">{{ $application->event->title }}</a>
-            <p>{{ $application->position->name }}</p>
-            <p class="text-sm text-slate-600">{{ $application->event->starts_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</p>
-            <p class="mt-2 font-semibold">{{ $application->event->lifecycle_status === 'cancelled' ? 'Dibatalkan' : ($application->status === 'accepted' ? ($application->attendance?->participationLabel() ?? 'Belum dicatat') : 'Tidak berpartisipasi') }}</p>
-            <x-application-status :application="$application" />
-            <x-attendance-session-summary :attendance="$application->attendance" />
-        </x-section-card>
+        @include('volunteer.history.partials.participation-card')
     @empty <x-section-card>Belum ada riwayat kegiatan selesai atau dibatalkan.</x-section-card> @endforelse
     {{ $applications->links() }}
 </div>
