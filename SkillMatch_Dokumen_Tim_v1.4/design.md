@@ -1,3 +1,10 @@
+## Lamaran ditarik — desain SVG, 11 November 2026
+
+Mengikuti Lamaran ditarik.svg (1440 × 1568): banner netral, kartu putih,
+status/waktu/alasan kanan, rincian screening/assessment dan waktu event terbuka.
+Withdrawn tetap final, dokumen hanya-baca dan alasan di-escape. Data nyata.
+Bukti/batas: [handoff ditarik](../docs/VOLUNTEER_WITHDRAWN_DESIGN_HANDOFF.md).
+
 ## Riwayat Partisipasi — desain SVG, 11 November 2026
 
 Mengikuti Riwayat Partisipasi.svg (1440 × 1000): sidebar navy/menu biru,

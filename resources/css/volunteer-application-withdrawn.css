@@ -1,0 +1,4 @@
+/* Lamaran ditarik.svg: final withdrawn state. */
+.volunteer-application-withdrawn .vd-detail > section[aria-label="Status lamaran"] { background: #f1f5f9; border-color: #e2e8f0; color: #1e293b; }
+.volunteer-application-withdrawn .vd-detail .whitespace-pre-line,
+.volunteer-application-withdrawn .vd-progress section[aria-label="Informasi assessment"] { overflow-wrap: anywhere; }

@@ -1,3 +1,11 @@
+## Pemeriksaan desain Lamaran ditarik — 11 November 2026
+
+Bandingkan withdrawn dengan SVG pada 1440/768/390: banner abu-abu, kartu status,
+alasan/tanggal, timeline, rincian dan dokumen. Periksa alasan kosong/panjang/
+markup, assessment kosong/cancelled/submitted dan event cancelled. Tidak ada
+submit/upload/hapus/assessment/tarik ulang; alasan markup harus berupa teks.
+Bukti/batas: [handoff ditarik](../../docs/VOLUNTEER_WITHDRAWN_DESIGN_HANDOFF.md).
+
 ## Pemeriksaan desain Riwayat Partisipasi — 11 November 2026
 
 Bandingkan Riwayat Partisipasi.svg pada 1440/768/390: shell, badge, judul,
