@@ -1,3 +1,18 @@
+## Detail katalog panel Volunteer — 11 November 2026
+
+GET /volunteer/events/{event}, volunteer.events.show, middleware auth,
+account.active, role:volunteer. CatalogController.show dan publiclyVisible
+existing; view detail memakai sidebar hanya untuk route panel. /events/{event}
+tetap publik. Transisi/POST lamaran existing tidak berubah.
+
+## Tambahan navigasi katalog Volunteer — 11 November 2026
+
+GET /volunteer/events, volunteer.events.index: auth, account.active, role:volunteer.
+Memakai CatalogController.index dan query publiclyVisible existing, dengan view
+panel Volunteer. Filter/pagination sama dengan katalog publik /events yang tetap
+tersedia. Detail/lamaran/Policy tidak berubah. Disetujui pengguna untuk navigasi
+katalog di dalam panel.
+
 # Kontrak integrasi empat anggota
 
 ## Kehadiran per sesi/hari - keputusan pengguna 3 November 2026

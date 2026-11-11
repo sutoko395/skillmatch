@@ -1,3 +1,21 @@
+## Detail event dalam panel Volunteer — 11 November 2026
+
+Sesuai persetujuan lanjutan pengguna, gambar/judul/CTA katalog panel menuju
+volunteer.events.show dengan sidebar dan tautan kembali ke katalog panel.
+Isi posisi/persyaratan serta alur melamar existing dipakai ulang.
+
+## Koreksi Jelajahi Event dalam panel — 11 November 2026
+
+Sesuai pengguna, menu menuju /volunteer/events dengan sidebar Volunteer, filter,
+kartu event dan pagination. Katalog /events publik tetap. Detail event masih
+menggunakan events.show existing. Lingkup hanya halaman jelajah dalam panel.
+
+## Navigasi Jelajahi Event Volunteer — 11 November 2026
+
+Persetujuan pengguna: menu Jelajahi Event di sidebar langsung menuju events.index
+(/events), sebelum Lihat Website Utama. Gaya menu existing dipertahankan.
+Bukti/batas: [handoff navigasi](../docs/VOLUNTEER_EXPLORE_EVENT_HANDOFF.md).
+
 ## Kegiatan dibatalkan — desain SVG, 11 November 2026
 
 Mengikuti Kegiatan dibatalkan.svg (1440 × 1568): banner abu-abu, kartu putih,

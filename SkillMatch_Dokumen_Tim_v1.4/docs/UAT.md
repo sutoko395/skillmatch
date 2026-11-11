@@ -1,3 +1,24 @@
+## Navigasi detail event panel — 11 November 2026
+
+Klik gambar/judul/Lihat posisi dan persyaratan dari /volunteer/events: menuju
+/volunteer/events/{event}, sidebar tetap, kembali ke katalog panel. Periksa
+posisi/persyaratan dan alur lamaran existing. Event unpublished harus 404.
+Tes akses/link/view lulus; visual/klik browser detail belum diuji.
+
+## Katalog dalam panel Volunteer — 11 November 2026
+
+Menu Jelajahi Event menuju /volunteer/events; sidebar tetap terlihat. Cari/reset
+dan pagination tetap di route panel. Guest ke login, Organizer ditolak; /events
+tetap katalog publik. Detail event masih halaman existing. Tes akses/view lulus;
+klik dan visual browser belum diperiksa. Lihat handoff navigasi terbaru.
+
+## Navigasi katalog dari panel Volunteer — 11 November 2026
+
+Login Volunteer, buka sidebar (mobile: tombol menu), pilih Jelajahi Event.
+Pastikan menuju /events dalam tab yang sama. Lihat Website Utama tetap tersedia.
+Pemeriksaan klik browser belum dijalankan; validasi route/build pada
+[handoff navigasi](../../docs/VOLUNTEER_EXPLORE_EVENT_HANDOFF.md).
+
 ## Pemeriksaan desain Kegiatan dibatalkan — 11 November 2026
 
 Bandingkan cancelled dengan SVG pada 1440/768/390: banner netral, kartu status,

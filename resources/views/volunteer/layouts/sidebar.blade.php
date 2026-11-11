@@ -242,6 +242,18 @@
             <div class="my-4 border-t border-white/10"></div>
 
             <a
+                href="{{ route('volunteer.events.index') }}"
+                @if(Request::routeIs('volunteer.events.*')) aria-current="page" @endif
+                class="flex items-center gap-3 rounded-xl border border-transparent px-4 py-3 text-sm font-medium transition-all duration-150 hover:bg-white/5 hover:text-white {{ Request::routeIs('volunteer.events.*') ? 'bg-blue-600 text-white' : 'text-orange-100/70' }}"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-5 w-5 shrink-0" aria-hidden="true">
+                    <circle cx="10.5" cy="10.5" r="6.5" />
+                    <path stroke-linecap="round" d="m16 16 4 4" />
+                </svg>
+                <span>Jelajahi Event</span>
+            </a>
+
+            <a
                 href="{{ url('/') }}"
                 class="flex items-center gap-3 rounded-xl border border-transparent px-4 py-2.5 text-sm font-medium text-orange-100/70 transition-all duration-150 hover:bg-white/5 hover:text-white"
             >
