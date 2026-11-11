@@ -1,3 +1,11 @@
+## Pemeriksaan penarikan pada detail — 11 November 2026
+
+Bandingkan under_review dengan Penarikan pada detail lamaran.svg pada
+1440/768/390: kartu, rincian terbuka, kolom alasan dan tombol merah.
+Pastikan panel dapat dilipat, data nyata, dokumen hanya-baca dan tidak overflow.
+Penarikan tetap final melalui endpoint existing; uji hanya pada data tes.
+Bukti/batas: [handoff penarikan](../../docs/VOLUNTEER_WITHDRAWAL_DESIGN_HANDOFF.md).
+
 ## Pemeriksaan desain Lamaran Diterima — 9 November 2026
 
 Bandingkan accepted dengan `Lamaran diterima.svg`: banner hijau, timeline,

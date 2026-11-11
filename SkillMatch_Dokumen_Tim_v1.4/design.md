@@ -1,3 +1,10 @@
+## Detail lamaran: penarikan — 11 November 2026
+
+Desain disetujui melalui Penarikan pada detail lamaran.svg. Status under_review
+memakai kartu detail putih, rincian dan panel penarikan terbuka, alasan opsional
+dan tombol merah. Data serta aturan penarikan existing dipertahankan.
+Bukti dan batas: [handoff penarikan](../docs/VOLUNTEER_WITHDRAWAL_DESIGN_HANDOFF.md).
+
 ## Lamaran Diterima — desain FigCraft, 9 November 2026
 
 Referensi `Lamaran diterima.svg` (1440 x 1662), detail Volunteer accepted pada
