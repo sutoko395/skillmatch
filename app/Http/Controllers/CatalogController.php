@@ -27,7 +27,7 @@ class CatalogController extends Controller
             $query->where('starts_at', '<', $date->addDay()->utc())->where('ends_at', '>', $date->utc());
         }
 
-        return view('events.index', ['events' => $query->paginate(12)->withQueryString(), 'cities' => City::where('is_active', true)->orderBy('name')->get(), 'categories' => Category::where('is_active', true)->orderBy('name')->get()]);
+        return view($r->routeIs('volunteer.events.index') ? 'volunteer.events.index' : 'events.index', ['events' => $query->paginate(12)->withQueryString(), 'cities' => City::where('is_active', true)->orderBy('name')->get(), 'categories' => Category::where('is_active', true)->orderBy('name')->get()]);
     }
 
     public function show(Event $event)

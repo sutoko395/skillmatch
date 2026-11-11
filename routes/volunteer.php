@@ -5,6 +5,7 @@ use App\Http\Controllers\Volunteer\VolunteerDashboardController;
 use App\Http\Controllers\Volunteer\VolunteerDocumentController;
 use App\Http\Controllers\Volunteer\VolunteerProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CatalogController;
 
 Route::middleware([
     'auth',
@@ -14,6 +15,9 @@ Route::middleware([
     ->prefix('volunteer')
     ->name('volunteer.')
     ->group(function () {
+
+        Route::get('/events', [CatalogController::class, 'index'])->name('events.index');
+        Route::get('/events/{event}', [CatalogController::class, 'show'])->name('events.show');
 
         Route::redirect('/dashboard', '/volunteer/aktivitas')
             ->name('dashboard');
