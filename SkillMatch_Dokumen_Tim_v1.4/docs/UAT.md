@@ -1,3 +1,10 @@
+## Perapian detail event panel — 11 November 2026
+
+Periksa 1440/768/390: header, dua kolom/satu kolom mobile, skill/kuota, jadwal,
+persyaratan dan tombol biru. Data tetap dinamis; kuota bukan sisa tempat.
+Periksa kondisi buka/tutup/limit/email dan POST lamaran existing. View publik
+tetap. Bukti/batas: [handoff detail event](../../docs/VOLUNTEER_EVENT_DETAIL_DESIGN_HANDOFF.md).
+
 ## Navigasi detail event panel — 11 November 2026
 
 Klik gambar/judul/Lihat posisi dan persyaratan dari /volunteer/events: menuju

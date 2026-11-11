@@ -34,6 +34,6 @@ class CatalogController extends Controller
     {
         abort_unless(Event::publiclyVisible()->whereKey($event->id)->exists(), 404);
 
-        return view('events.show', ['event' => $event->load(['positions.positionSkills.skill', 'positions.schedules', 'positions.requirements', 'cityRecord', 'category', 'organizer.organizerProfile', 'entitlement'])]);
+        return view(request()->routeIs('volunteer.events.show') ? 'volunteer.events.show' : 'events.show', ['event' => $event->load(['positions.positionSkills.skill', 'positions.schedules', 'positions.requirements', 'cityRecord', 'category', 'organizer.organizerProfile', 'entitlement'])]);
     }
 }

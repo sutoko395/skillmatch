@@ -1,3 +1,10 @@
+## Perapian detail event Volunteer — 11 November 2026
+
+Disetujui pengguna: layout dua kolom, deskripsi/posisi kiri, ringkasan jadwal
+dan lokasi kanan. Skill/kuota berupa badge, persyaratan terpisah, tombol biru
+normal case. Mobile satu kolom. View publik dan aturan lamaran dipertahankan.
+Bukti/batas: [handoff detail event](../docs/VOLUNTEER_EVENT_DETAIL_DESIGN_HANDOFF.md).
+
 ## Detail event dalam panel Volunteer — 11 November 2026
 
 Sesuai persetujuan lanjutan pengguna, gambar/judul/CTA katalog panel menuju
