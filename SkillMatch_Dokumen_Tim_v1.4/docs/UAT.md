@@ -1,3 +1,10 @@
+## Detail event publik konsisten dengan panel — 11 November 2026
+
+Periksa guest dan akun aktif pada /events/{event}: konten seperti panel, navbar/
+footer publik, tautan kembali katalog publik, CTA sesuai role/verifikasi/waktu.
+Periksa desktop/mobile dan panel tetap bersidebar. Bukti/batas:
+[handoff publik](../../docs/PUBLIC_EVENT_DETAIL_DESIGN_HANDOFF.md).
+
 ## Perapian detail event panel — 11 November 2026
 
 Periksa 1440/768/390: header, dua kolom/satu kolom mobile, skill/kuota, jadwal,
