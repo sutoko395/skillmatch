@@ -1,16 +1,16 @@
 /* FigCraft: shared shell for Activity/Profile; dashboard styles remain scoped. */
 .volunteer-activity { background: #f8fafc; color: #0f172a; }
-:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-sidebar { background: #0f172a; box-shadow: none; }
-:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-sidebar.translate-x-0 { transform: translateX(0); }
-:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-sidebar .bg-orange-500,
-:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-topbar .bg-orange-500 { background: #2563eb; }
-:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-sidebar [class*="text-orange-"] { color: #cbd5e1; }
-:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-sidebar p[class*="uppercase"] { color: #94a3b8; }
-:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-sidebar nav a[aria-current="page"] { background: #2563eb; color: #fff; border-color: #2563eb; box-shadow: none; }
-:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-sidebar nav a:hover { color: #fff; }
-:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-topbar { background: #fff; border: 0; backdrop-filter: none; }
-:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-topbar .text-orange-600 { color: #2563eb; }
-:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work) .volunteer-main { padding-bottom: 32px; }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work, .volunteer-history) .volunteer-sidebar { background: #0f172a; box-shadow: none; }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work, .volunteer-history) .volunteer-sidebar.translate-x-0 { transform: translateX(0); }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work, .volunteer-history) .volunteer-sidebar .bg-orange-500,
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work, .volunteer-history) .volunteer-topbar .bg-orange-500 { background: #2563eb; }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work, .volunteer-history) .volunteer-sidebar [class*="text-orange-"] { color: #cbd5e1; }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work, .volunteer-history) .volunteer-sidebar p[class*="uppercase"] { color: #94a3b8; }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work, .volunteer-history) .volunteer-sidebar nav a[aria-current="page"] { background: #2563eb; color: #fff; border-color: #2563eb; box-shadow: none; }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work, .volunteer-history) .volunteer-sidebar nav a:hover { color: #fff; }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work, .volunteer-history) .volunteer-topbar { background: #fff; border: 0; backdrop-filter: none; }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work, .volunteer-history) .volunteer-topbar .text-orange-600 { color: #2563eb; }
+:is(.volunteer-activity, .volunteer-profile, .volunteer-applications, .volunteer-application-detail, .volunteer-assessment-confirm, .volunteer-assessment-work, .volunteer-history) .volunteer-main { padding-bottom: 32px; }
 .va-dashboard { max-width: none; }
 .va-dashboard .shadow-sm { box-shadow: none; }
 .va-dashboard .border-slate-200 { border-color: #e2e8f0; }
