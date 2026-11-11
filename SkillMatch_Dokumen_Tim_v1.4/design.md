@@ -1,3 +1,10 @@
+## Kegiatan dibatalkan — desain SVG, 11 November 2026
+
+Mengikuti Kegiatan dibatalkan.svg (1440 × 1568): banner abu-abu, kartu putih,
+status/tanggal/alasan, jadwal posisi dan rincian terbuka. Pembatalan tetap
+menghentikan proses; data, dokumen dan otorisasi existing dipertahankan.
+Bukti/batas: [handoff pembatalan](../docs/VOLUNTEER_CANCELLED_DESIGN_HANDOFF.md).
+
 ## Lamaran ditarik — desain SVG, 11 November 2026
 
 Mengikuti Lamaran ditarik.svg (1440 × 1568): banner netral, kartu putih,
