@@ -1,0 +1,8 @@
+.ve-detail { color: #0f172a; }
+.ve-detail .shadow-sm { box-shadow: none; }
+.ve-detail section { border-color: #e2e8f0; }
+.ve-detail .ve-apply button { background: #2563eb; border-radius: 10px; padding: 12px 20px; min-height: 44px; font-size: 14px; line-height: 20px; font-weight: 600; text-transform: none; letter-spacing: normal; }
+.ve-detail .ve-apply button:hover { background: #1d4ed8; }
+.ve-detail .ve-apply button:focus-visible { outline-color: #2563eb; }
+.ve-detail { overflow-wrap: anywhere; }
+@media(max-width:639px) { .ve-detail .ve-apply button { width: 100%; } }
