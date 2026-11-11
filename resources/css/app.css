@@ -8,6 +8,7 @@
 @import './volunteer-assessment-confirm.css';
 @import './volunteer-assessment-work.css';
 @import './volunteer-application-accepted.css';
+@import './volunteer-application-withdrawn.css';
 
 @tailwind base;
 @tailwind components;

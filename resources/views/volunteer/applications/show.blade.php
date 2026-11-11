@@ -1,6 +1,6 @@
 @extends('volunteer.layouts.sidebar')
 @section('title', 'Detail Lamaran - ' . $application->event->title)
-@section('page-class', 'volunteer-application-detail ' . match ($application->status) { 'draft' => 'volunteer-application-draft', 'submitted', 'under_review' => 'volunteer-application-submitted', 'screening_failed' => 'volunteer-application-screening-failed', 'rejected' => 'volunteer-application-rejected', 'accepted' => $application->event->lifecycle_status === 'cancelled' ? '' : 'volunteer-application-accepted', default => '' })
+@section('page-class', 'volunteer-application-detail ' . match ($application->status) { 'draft' => 'volunteer-application-draft', 'submitted', 'under_review' => 'volunteer-application-submitted', 'screening_failed' => 'volunteer-application-screening-failed', 'rejected' => 'volunteer-application-rejected', 'withdrawn' => 'volunteer-application-withdrawn', 'accepted' => $application->event->lifecycle_status === 'cancelled' ? '' : 'volunteer-application-accepted', default => '' })
 @section('content')
 @php
     $status = $application->status;
