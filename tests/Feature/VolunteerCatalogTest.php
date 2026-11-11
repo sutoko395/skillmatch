@@ -25,6 +25,11 @@ class VolunteerCatalogTest extends TestCase
             ->assertSee(route('volunteer.events.index'));
         $this->get(route('volunteer.events.index'))->assertOk()->assertSee(route('volunteer.events.show', $event));
         $this->get(route('events.show', $event))->assertOk()->assertDontSee('volunteer-sidebar');
+        auth()->forgetGuards();
+        $this->get(route('events.show', $event))->assertOk()
+            ->assertSee('Tentang kegiatan')->assertSee('Informasi kegiatan')
+            ->assertSee('Persyaratan dan dokumen')->assertSee('Masuk untuk melamar')
+            ->assertSee(route('events.index'))->assertDontSee('volunteer-sidebar');
     }
 
     public function test_catalog_stays_in_volunteer_panel_and_public_catalog_remains_public(): void

@@ -1,3 +1,11 @@
+## Detail event publik disamakan dengan panel — 11 November 2026
+
+Sesuai pengguna, /events/{event} memakai konten detail yang sama dengan panel
+Volunteer: kartu dua kolom, ringkasan, badge, persyaratan dan tombol biru.
+Navbar/footer publik tetap. Partial bersama events/partials/detail memakai
+catalogRoute sesuai konteks. Guest/otorisasi/alur lamaran existing dipertahankan.
+Bukti: [handoff publik](../docs/PUBLIC_EVENT_DETAIL_DESIGN_HANDOFF.md).
+
 ## Perapian detail event Volunteer — 11 November 2026
 
 Disetujui pengguna: layout dua kolom, deskripsi/posisi kiri, ringkasan jadwal
