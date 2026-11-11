@@ -73,7 +73,7 @@
                 $eventStartsAtWib = $application->event->starts_at->copy()->setTimezone('Asia/Jakarta');
                 $eventEndsAtWib = $application->event->ends_at->copy()->setTimezone('Asia/Jakarta');
             @endphp
-            <details class="vd-event-time mt-3 text-sm" @if(in_array($status, ['draft', 'submitted', 'under_review', 'screening_failed', 'rejected', 'accepted', 'withdrawn'], true)) open @endif>
+            <details class="vd-event-time mt-3 text-sm" @if(in_array($status, ['draft', 'submitted', 'under_review', 'screening_failed', 'rejected', 'accepted', 'withdrawn', 'cancelled'], true) || $eventCancelled) open @endif>
                 <summary class="w-fit cursor-pointer rounded font-medium text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Waktu event</summary>
                 <p class="mt-2 text-slate-600">{{ $eventStartsAtWib->format('d/m/Y H:i') }} &ndash; {{ $eventEndsAtWib->format($eventStartsAtWib->isSameDay($eventEndsAtWib) ? 'H:i' : 'd/m/Y H:i') }} WIB</p>
             </details>

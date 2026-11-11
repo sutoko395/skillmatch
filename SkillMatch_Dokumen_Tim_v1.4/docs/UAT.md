@@ -1,3 +1,11 @@
+## Pemeriksaan desain Kegiatan dibatalkan — 11 November 2026
+
+Bandingkan cancelled dengan SVG pada 1440/768/390: banner netral, kartu status,
+tanggal/alasan, timeline, rincian dan dokumen. Periksa alasan kosong/markup,
+attempt cancelled/submitted dan dokumen ready. Tidak ada aksi mulai assessment;
+koordinasi peserta tetap tidak tersedia ketika event cancelled.
+Bukti/batas: [handoff pembatalan](../../docs/VOLUNTEER_CANCELLED_DESIGN_HANDOFF.md).
+
 ## Pemeriksaan desain Lamaran ditarik — 11 November 2026
 
 Bandingkan withdrawn dengan SVG pada 1440/768/390: banner abu-abu, kartu status,

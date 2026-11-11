@@ -86,7 +86,7 @@
                     @if ($step['date'])<p class="mt-1 text-xs text-slate-500">{{ $step['date']->copy()->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</p>@endif
 
                     @if ($step['key'] === 'screening' && $status !== 'draft')
-                        <details class="mt-3" @if (in_array($status, ['screening_failed', 'submitted', 'under_review', 'rejected', 'accepted', 'withdrawn'], true)) open @endif>
+                        <details class="mt-3" @if (in_array($status, ['screening_failed', 'submitted', 'under_review', 'rejected', 'accepted', 'withdrawn', 'cancelled'], true) || $eventCancelled) open @endif>
                             <summary class="w-fit cursor-pointer rounded text-sm font-semibold text-indigo-700 hover:text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">Lihat rincian screening</summary>
                             <div class="mt-3"><x-application-screening :application="$application" :show-evaluation-info="false" /></div>
                         </details>
@@ -94,7 +94,7 @@
                         @if ($canOpenAssessment)
                             <a href="#assessment-summary" class="mt-3 inline-block rounded text-sm font-semibold text-indigo-700 underline underline-offset-4 focus:outline-none focus:ring-2 focus:ring-indigo-500">Lihat informasi assessment &uarr;</a>
                         @else
-                            <details class="mt-3" @if (in_array($status, ['assessment_pending', 'submitted', 'under_review', 'screening_failed', 'rejected', 'accepted', 'withdrawn'], true)) open @endif>
+                            <details class="mt-3" @if (in_array($status, ['assessment_pending', 'submitted', 'under_review', 'screening_failed', 'rejected', 'accepted', 'withdrawn', 'cancelled'], true) || $eventCancelled) open @endif>
                                 <summary class="w-fit cursor-pointer rounded text-sm font-semibold text-indigo-700 hover:text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">Lihat rincian assessment</summary>
                                 <div class="mt-3"><x-volunteer-application-assessment :application="$application" :assessment="$assessmentSummary" :deadline="$recruitmentDates['assessment_deadline']" /></div>
                             </details>
