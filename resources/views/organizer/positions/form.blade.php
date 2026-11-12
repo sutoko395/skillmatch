@@ -201,7 +201,7 @@
 
                 <button
                     type="button"
-                    class="text-sm font-semibold text-indigo-700 hover:underline"
+                    class="organizer-secondary-button"
                     @click="skills.push({
                         skill_id: '',
                         minimum_level: 'beginner',
@@ -293,7 +293,7 @@
 
                 <button
                     type="button"
-                    class="text-sm font-semibold text-indigo-700 hover:underline"
+                    class="organizer-secondary-button"
                     @click="schedules.push({
                         starts_at: eventStart,
                         ends_at: eventEnd
@@ -389,7 +389,7 @@
 
                 <button
                     type="button"
-                    class="text-sm font-semibold text-indigo-700 hover:underline"
+                    class="organizer-secondary-button"
                     @click="requirements.push({
                         name: '',
                         description: '',
@@ -422,7 +422,7 @@
 
                 <a
                     href="{{ route('organizer.events.show', $event) }}"
-                    class="text-sm font-semibold text-indigo-700 hover:underline"
+                    class="organizer-secondary-button"
                 >
                     Kembali
                 </a>

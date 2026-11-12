@@ -43,7 +43,7 @@
 </head>
 
 <body
-    class="min-h-screen overflow-x-hidden bg-slate-50 text-slate-900 antialiased"
+    class="organizer-panel min-h-screen overflow-x-hidden bg-slate-50 text-slate-900 antialiased"
     x-data="{
         userDropdownOpen: false,
         mobileSidebarOpen: false,
@@ -64,7 +64,7 @@
 <aside
     :inert="!desktop && !mobileSidebarOpen"
     :class="mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-    class="fixed inset-y-0 left-0 z-50 flex h-screen w-72 -translate-x-full flex-col bg-[#211d52] text-white shadow-xl transition-transform duration-300 ease-in-out lg:translate-x-0"
+    class="organizer-sidebar fixed inset-y-0 left-0 z-50 flex h-screen w-72 -translate-x-full flex-col bg-slate-900 text-white transition-transform duration-300 ease-in-out lg:translate-x-0"
 >
     <div class="flex h-16 shrink-0 items-center justify-between border-b border-white/10 px-6">
         <a
@@ -101,10 +101,11 @@
 
         <a
             href="{{ route('organizer.activity.index') }}"
+            aria-current="{{ Request::routeIs('organizer.activity.*') ? 'page' : 'false' }}"
             class="flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-200
             {{ Request::routeIs('organizer.activity.*')
-                ? 'border-white/5 bg-white/10 text-white shadow-sm'
-                : 'border-transparent text-slate-400 hover:bg-white/5 hover:text-white' }}"
+                ? 'border-blue-600 bg-blue-600 text-white'
+                : 'border-transparent text-slate-300 hover:bg-white/5 hover:text-white' }}"
         >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-5 w-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.5h6V21H3v-7.5Zm6-10.5h6v18H9V3Zm6 6h6v12h-6V9Z"/>
@@ -114,10 +115,11 @@
 
         <a
             href="{{ route('organizer.events.index') }}"
+            aria-current="{{ Request::routeIs('organizer.events.*') ? 'page' : 'false' }}"
             class="flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-200
             {{ Request::routeIs('organizer.events.*')
-                ? 'border-white/5 bg-white/10 text-white shadow-sm'
-                : 'border-transparent text-slate-400 hover:bg-white/5 hover:text-white' }}"
+                ? 'border-blue-600 bg-blue-600 text-white'
+                : 'border-transparent text-slate-300 hover:bg-white/5 hover:text-white' }}"
         >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-5 w-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3.75h10.5A2.25 2.25 0 0 1 19.5 6v14.25l-4.5-2.25-3 2.25-3-2.25-4.5 2.25V6a2.25 2.25 0 0 1 2.25-2.25Z"/>
@@ -127,10 +129,11 @@
 
         <a
             href="{{ route('organizer.profile.edit') }}"
+            aria-current="{{ Request::routeIs('organizer.profile.*') ? 'page' : 'false' }}"
             class="flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-200
             {{ Request::routeIs('organizer.profile.*')
-                ? 'border-white/5 bg-white/10 text-white shadow-sm'
-                : 'border-transparent text-slate-400 hover:bg-white/5 hover:text-white' }}"
+                ? 'border-blue-600 bg-blue-600 text-white'
+                : 'border-transparent text-slate-300 hover:bg-white/5 hover:text-white' }}"
         >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-5 w-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6.75a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.25a7.5 7.5 0 0 1 15 0"/>
@@ -142,7 +145,7 @@
 
         <a
             href="{{ url('/') }}"
-            class="flex items-center gap-3 rounded-xl border border-transparent px-4 py-2.5 text-sm font-medium text-slate-400 transition-all duration-150 hover:bg-white/5 hover:text-white"
+            class="flex items-center gap-3 rounded-xl border border-transparent px-4 py-2.5 text-sm font-medium text-slate-300 transition-all duration-150 hover:bg-white/5 hover:text-white"
         >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-5 w-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-18c2.485 2.485 4 6.514 4 9s-1.515 6.515-4 9m0-18C9.515 5.485 8 9.514 8 12s1.515 6.515 4 9m-8.25-9h16.5"/>
@@ -154,7 +157,7 @@
 
 <div class="flex min-h-screen flex-1 flex-col lg:pl-72">
 
-    <header class="fixed left-0 right-0 top-0 z-30 h-16 border-b border-slate-100 bg-white/80 backdrop-blur-md lg:left-72">
+    <header class="organizer-topbar fixed left-0 right-0 top-0 z-30 h-16 border-b border-slate-100 bg-white lg:left-72">
         <div class="flex h-full items-center justify-between px-4 sm:px-6 lg:justify-end lg:px-8">
 
             <button
@@ -229,7 +232,7 @@
         </div>
     </header>
 
-    <main class="flex-1 px-4 pb-8 pt-24 sm:px-6 lg:px-8">
+    <main class="organizer-main min-w-0 flex-1 px-4 pb-8 pt-24 sm:px-6 lg:px-8">
         <x-flash />
         @yield('content')
     </main>

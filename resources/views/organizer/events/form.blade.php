@@ -129,7 +129,7 @@
 
                 <a
                     href="{{ route('organizer.events.index') }}"
-                    class="text-sm font-semibold text-indigo-700 hover:underline"
+                    class="organizer-secondary-button"
                 >
                     Kembali
                 </a>
