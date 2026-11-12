@@ -71,7 +71,7 @@
                     <div class="mt-6 border-t border-slate-100 pt-4">
                         <a
                             href="{{ route('organizer.events.show', $event) }}"
-                            class="text-sm font-semibold text-indigo-700 hover:underline"
+                            class="organizer-secondary-button"
                         >
                             Kelola event →
                         </a>

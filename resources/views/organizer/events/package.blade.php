@@ -3,7 +3,7 @@
 @section('title', 'Pilih Paket')
 
 @section('content')
-<div class="w-full max-w-7xl mx-auto space-y-6">
+<div class="organizer-packages w-full max-w-7xl mx-auto space-y-6">
 
     <div>
         <h1 class="text-2xl font-bold text-slate-800">

@@ -51,68 +51,64 @@
             </x-section-card>
         @endif
 
-        <x-section-card>
-            <p>
-                Moderasi:
-                <strong>{{ $event->status }}</strong>
-                &middot;
-                Publikasi:
-                <strong>{{ $event->publication_status }}</strong>
-                &middot;
-                Pelaksanaan:
-                <strong>{{ $event->lifecycle_status }}</strong>
-            </p>
+        <x-section-card class="organizer-event-info">
+            <h2 class="text-lg font-semibold">Informasi kegiatan</h2>
+            <dl class="organizer-event-statuses">
+                <div><dt>Moderasi</dt><dd><span>{{ $event->status }}</span></dd></div>
+                <div><dt>Publikasi</dt><dd><span class="organizer-publication-status">{{ $event->publication_status }}</span></dd></div>
+                <div><dt>Pelaksanaan</dt><dd><span>{{ $event->lifecycle_status }}</span></dd></div>
+            </dl>
 
             @if ($event->verification_note)
-                <p class="mt-3">
+                <p class="rounded-xl bg-amber-50 p-4 text-sm text-amber-900">
                     Catatan admin: {{ $event->verification_note }}
                 </p>
             @endif
 
-            <p class="mt-3 whitespace-pre-line">
-                {{ $event->description }}
-            </p>
-
-            <p class="mt-3">
-                {{ $event->location }}
-                &middot;
-                {{ $event->city }}
-            </p>
-
-            <p>
-                {{ $event->starts_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}
-                -
-                {{ $event->ends_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}
-                WIB
-            </p>
-
-            <p>
-                Deadline:
-                {{ $event->registration_deadline?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}
-                WIB
-            </p>
-
-            @if ($event->published_at && !in_array($event->lifecycle_status, ['completed', 'cancelled']))
-                @if (!$event->assessment_deadline && !$event->decision_deadline)
-                    <p class="mt-3 text-sm text-slate-600">Tenggat rekrutmen belum tersedia untuk event ini.</p>
-                @endif
-            @endif
-
-            <dl class="mt-3 space-y-2 text-sm">
-                <div>
-                    <dt class="font-semibold">Tenggat assessment (WIB)</dt>
-                    <dd>{{ $event->assessment_deadline?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') ?? 'Belum diisi' }}</dd>
+            <dl class="organizer-event-meta">
+                <div class="md:col-span-2">
+                    <dt>Deskripsi kegiatan</dt>
+                    <dd class="whitespace-pre-line">{{ $event->description }}</dd>
                 </div>
                 <div>
-                    <dt class="font-semibold">Batas akhir keputusan EO (WIB)</dt>
-                    <dd>{{ $event->decision_deadline?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') ?? 'Belum diisi' }}</dd>
+                    <dt>Lokasi</dt>
+                    <dd>{{ $event->location }} &middot; {{ $event->city }}</dd>
+                </div>
+                <div>
+                    <dt>Pelaksanaan (WIB)</dt>
+                    <dd>{{ $event->starts_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}
+                        - {{ $event->ends_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</dd>
                 </div>
             </dl>
+
+            <div class="organizer-recruitment">
+                <h3 class="mb-4 text-sm font-semibold">Jadwal rekrutmen</h3>
+                <dl>
+                    <div>
+                        <dt>Deadline pendaftaran (WIB)</dt>
+                        <dd>{{ $event->registration_deadline?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</dd>
+                    </div>
+                    <div>
+                        <dt>Tenggat assessment (WIB)</dt>
+                        <dd>{{ $event->assessment_deadline?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') ?? 'Belum diisi' }}</dd>
+                    </div>
+                    <div>
+                        <dt>Batas akhir keputusan EO (WIB)</dt>
+                        <dd>{{ $event->decision_deadline?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') ?? 'Belum diisi' }}</dd>
+                    </div>
+                </dl>
+
+                @if ($event->published_at && !in_array($event->lifecycle_status, ['completed', 'cancelled']))
+                    @if (!$event->assessment_deadline && !$event->decision_deadline)
+                        <p class="mt-4 rounded-xl bg-amber-50 p-3 text-sm text-amber-800">Tenggat rekrutmen belum tersedia untuk event ini.</p>
+                    @endif
+                @endif
+            </div>
 
             @if ($event->published_at && !in_array($event->lifecycle_status, ['completed', 'cancelled']))
                 <a
                     href="{{ route('organizer.events.text', $event) }}"
-                    class="mt-4 inline-block text-indigo-700 underline"
+                    class="organizer-secondary-button justify-self-start"
                 >
                     Koreksi judul/deskripsi
                 </a>
@@ -121,7 +117,7 @@
             @if ($editable)
                 <a
                     href="{{ route('organizer.events.edit', $event) }}"
-                    class="mt-4 inline-block text-indigo-700 underline"
+                    class="organizer-secondary-button justify-self-start"
                 >
                     Edit konfigurasi event
                 </a>
@@ -129,15 +125,15 @@
         </x-section-card>
 
         <x-section-card>
-            <div class="flex flex-wrap justify-between gap-3">
-                <h2 class="text-xl font-semibold">
+            <div class="organizer-section-heading">
+                <h2 class="text-lg font-semibold">
                     Posisi dan jadwal
                 </h2>
 
                 @if ($editable)
                     <a
                         href="{{ route('organizer.events.positions.create', $event) }}"
-                        class="text-indigo-700 underline"
+                        class="organizer-secondary-button"
                     >
                         Tambah posisi
                     </a>
@@ -147,33 +143,44 @@
             @forelse ($event->positions as $position)
                 <article
                     id="position-{{ $position->id }}"
-                    class="mt-4 border-t border-slate-200 pt-4"
+                    class="organizer-position-card"
                 >
                     <h3 class="font-semibold">
                         {{ $position->name }}
-                        &middot;
-                        Kuota {{ $position->quota }}
                     </h3>
+
+                    <span class="mt-2 inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">Kuota {{ $position->quota }}</span>
 
                     <p>
                         {{ $position->description }}
                     </p>
 
-                    <p class="text-sm">
-                        {{ $position->positionSkills
-                            ->map(fn ($s) => $s->skill->name . ' (' . $s->minimum_level . ')')
-                            ->join(', ') }}
-                    </p>
+                    <div class="organizer-position-grid">
+                        <div>
+                            <h4 class="mb-2 text-xs font-medium text-slate-500">Skill dan level minimum</h4>
+                            <p class="text-sm">
+                                {{ $position->positionSkills
+                                    ->map(fn ($s) => $s->skill->name . ' (' . $s->minimum_level . ')')
+                                    ->join(', ') }}
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="mb-2 text-xs font-medium text-slate-500">Jadwal posisi (WIB)</h4>
+                            <p class="text-sm font-semibold">{{ $position->follows_event_schedule ? 'Jadwal mengikuti event' : 'Jadwal tugas khusus' }}</p>
+                            @foreach ($position->schedules as $slot)
+                                <p class="text-sm">
+                                    {{ $slot->starts_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}
+                                    -
+                                    {{ $slot->ends_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}
+                                    WIB
+                                </p>
+                            @endforeach
+                        </div>
+                    </div>
 
-                    <p class="mt-2 text-sm text-slate-600">{{ $position->follows_event_schedule ? 'Jadwal mengikuti event' : 'Jadwal tugas khusus' }}</p>
-                    @foreach ($position->schedules as $slot)
-                        <p class="text-sm">
-                            {{ $slot->starts_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}
-                            -
-                            {{ $slot->ends_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}
-                            WIB
-                        </p>
-                    @endforeach
+                    @if($position->requirements->isNotEmpty())
+                        <h4 class="mb-2 mt-5 text-xs font-medium text-slate-500">Persyaratan tambahan</h4>
+                    @endif
 
                     @foreach ($position->requirements as $requirement)
                         <p class="mt-2 text-sm">
@@ -192,7 +199,7 @@
                         @if ($editable)
                             <a
                                 href="{{ route('organizer.events.positions.edit', [$event, $position]) }}"
-                                class="text-indigo-700 underline"
+                                class="organizer-secondary-button"
                             >
                                 Edit posisi
                             </a>
@@ -222,10 +229,10 @@
         </x-section-card>
 
         <x-section-card>
-            <h2 id="assessment" class="text-xl font-semibold">Assessment</h2>
+            <h2 id="assessment" class="organizer-section-heading text-lg font-semibold">Assessment</h2>
             @forelse($event->positions as $position)
                 @php($assessment = $position->assessments->first())
-                <div class="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4">
+                <div class="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-5">
                     <div>
                         <p class="font-semibold">{{ $position->name }}</p>
                         <p class="text-sm text-slate-600">{{ $assessment?->is_published ? 'Dipublikasikan · Terkunci' : ($assessment ? 'Draft assessment' : 'Belum dibuat') }}</p>
@@ -233,7 +240,7 @@
                             <p class="mt-1 text-sm text-slate-700">{{ $assessment->questions_count }} soal · {{ $assessment->duration_minutes !== null ? $assessment->duration_minutes . ' menit' : 'Durasi belum diatur' }}</p>
                         @endif
                     </div>
-                    <a href="{{ route('organizer.assessments.edit', $position) }}" class="text-sm font-semibold text-indigo-700 underline">{{ $assessment?->is_published || !$editable ? 'Lihat Assessment' : 'Kelola Assessment' }}</a>
+                    <a href="{{ route('organizer.assessments.edit', $position) }}" class="organizer-secondary-button">{{ $assessment?->is_published || !$editable ? 'Lihat Assessment' : 'Kelola Assessment' }}</a>
                 </div>
             @empty
                 <p class="mt-4 text-sm text-slate-600">Tambahkan posisi di bagian Posisi dan jadwal terlebih dahulu untuk membuat assessment.</p>
@@ -241,22 +248,18 @@
         </x-section-card>
 
         <x-section-card>
-            <h2 class="text-xl font-semibold">
+            <h2 class="organizer-section-heading text-lg font-semibold">
                 Paket dan pembayaran
             </h2>
 
             @if ($event->package_snapshot)
-                <p class="mt-3">
-                    {{ $event->package_snapshot['name'] }}
-                    &middot;
-                    Rp {{ number_format($event->package_snapshot['price'], 0, ',', '.') }}
-                </p>
-
-                <p>
-                    {{ $event->package_snapshot['max_positions'] }} posisi;
-                    {{ $event->package_snapshot['max_applications'] }} lamaran;
-                    maksimal {{ $event->package_snapshot['max_registration_days'] }} hari pendaftaran.
-                </p>
+                <p class="font-semibold">{{ $event->package_snapshot['name'] }}</p>
+                <p class="mt-1 text-xl font-semibold">Rp {{ number_format($event->package_snapshot['price'], 0, ',', '.') }}</p>
+                <dl class="organizer-package-summary mt-5">
+                    <div><dt>Posisi</dt><dd class="text-sm font-semibold">{{ $event->package_snapshot['max_positions'] }}</dd></div>
+                    <div><dt>Lamaran</dt><dd class="text-sm font-semibold">{{ $event->package_snapshot['max_applications'] }}</dd></div>
+                    <div><dt>Maksimal hari pendaftaran</dt><dd class="text-sm font-semibold">{{ $event->package_snapshot['max_registration_days'] }}</dd></div>
+                </dl>
             @else
                 <p class="mt-3">
                     Paket belum dipilih.
@@ -266,14 +269,14 @@
             @if ($editable)
                 <a
                     href="{{ route('organizer.packages.select', $event) }}"
-                    class="mt-3 inline-block text-indigo-700 underline"
+                    class="organizer-secondary-button mt-4"
                 >
                     Ubah paket
                 </a>
             @endif
 
             @if ($event->entitlement)
-                <p class="mt-3 text-emerald-700">
+                <p class="mt-4 rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700">
                     Hak paket aktif sejak
                     {{ $event->entitlement->activated_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}
                     WIB.
@@ -316,7 +319,7 @@
         </x-section-card>
 
         <x-section-card>
-            <h2 class="text-xl font-semibold">
+            <h2 class="text-lg font-semibold">
                 Tindakan
             </h2>
 
@@ -355,7 +358,7 @@
                 @if ($event->publication_status === 'published')
                     <a
                         href="{{ route('events.show', $event) }}"
-                        class="text-indigo-700 underline"
+                        class="organizer-secondary-button"
                     >
                         Lihat halaman publik
                     </a>
@@ -364,7 +367,7 @@
                 @if ($event->publication_status === 'published' || $event->entitlement)
                     <a
                         href="{{ route('organizer.applications.index', $event) }}"
-                        class="inline-flex items-center rounded-lg bg-indigo-50 px-3 py-1.5 text-sm font-semibold text-indigo-700 hover:bg-indigo-100"
+                        class="organizer-secondary-button"
                     >
                         Kelola Pelamar Event &rarr;
                     </a>
@@ -373,7 +376,7 @@
 
             @if (in_array($event->lifecycle_status, ['upcoming', 'ongoing']))
                 <form
-                    class="mt-6 space-y-3"
+                    class="organizer-event-cancel mt-6 space-y-3"
                     method="POST"
                     action="{{ route('organizer.events.cancel', $event) }}"
                     x-data
@@ -381,6 +384,7 @@
                 >
                     @csrf
 
+                    <h3 class="text-sm font-semibold text-rose-700">Pembatalan event</h3>
                     <x-form-field
                         name="reason"
                         label="Alasan pembatalan"

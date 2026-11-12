@@ -1,3 +1,18 @@
+## Desain panel Organizer — 12 November 2026
+
+Lingkup disetujui pengguna: tampilan Organizer mengikuti 33 referensi layar pada
+halaman FigCraft `Electric Blue / 02 Organizer`. Periksa sidebar navy, menu aktif
+biru, header/kartu putih, form dan tombol normal case, ringkasan event/posisi/paket,
+serta pembayaran. Pastikan halaman pending/revisi tetap tersedia, state kosong/
+error/loading tidak disembunyikan, tanggal WIB dan data asli dipertahankan.
+Pada mobile periksa drawer, form, ringkasan satu kolom dan tabel yang dapat digeser.
+Modal buat event/profil existing tetap tersedia; tidak mengganti alurnya dengan
+halaman statis dari desain. Periksa regresi Admin, Volunteer dan publik.
+
+Bukti tes dan visual terarah: [handoff Organizer](../../docs/ORGANIZER_FIGCRAFT_DESIGN_HANDOFF.md).
+Pemeriksaan fixture bukan tanda seluruh UAT bisnis atau pembayaran Sandbox
+end-to-end lulus; kriteria bisnis existing tetap berlaku.
+
 ## Desain Semua notifikasi Volunteer — 11 November 2026
 
 Dari Aktivitas buka Semua notifikasi. Periksa shell navy/biru, konten, kosong,

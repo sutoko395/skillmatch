@@ -67,7 +67,7 @@
     <x-section-card>
         <h2 class="mb-3 text-lg font-semibold">Tutup seleksi tertunda</h2>
         <p class="mb-3 text-sm text-slate-600">Lamaran yang masih menunggu evaluasi, assessment, atau tinjauan akan ditolak dengan alasan ini. Keputusan final tetap disimpan.</p>
-        <form method="POST" action="{{ route('organizer.events.close-selection', $event) }}" class="space-y-3">
+        <form method="POST" action="{{ route('organizer.events.close-selection', $event) }}" class="organizer-execution-close space-y-3">
             @csrf
             <label class="block">Alasan penutupan<textarea name="reason" required minlength="5" maxlength="1000" class="block w-full rounded-lg border-slate-300">{{ old('reason') }}</textarea></label>
             <label class="block"><input type="checkbox" name="confirmed" value="1" required> Saya mengonfirmasi penutupan seluruh lamaran tertunda.</label>

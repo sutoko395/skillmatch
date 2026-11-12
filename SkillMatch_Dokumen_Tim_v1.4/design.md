@@ -1,3 +1,19 @@
+## Panel Organizer mengikuti FigCraft — 12 November 2026
+
+Keputusan pengguna: ubah hanya tampilan role Organizer berdasarkan halaman
+`Electric Blue / 02 Organizer` pada `skillmatch-electric-blue-system.figcraft`,
+di branch baru. Sidebar navy #0F172A, menu aktif/tombol biru #2563EB, Inter,
+header putih, latar #F8FAFC, kartu putih tanpa bayangan dan kontrol membulat.
+Ringkasan status/jadwal, posisi dan paket pada detail event ditata berkelompok;
+detail pembayaran dua kolom pada desktop dan satu kolom pada mobile.
+Keputusan ini mengatasi pedoman visual Organizer lama dalam dokumen ini.
+
+Komponen bersama tetap dipakai dengan CSS terbatas pada `organizer-panel`.
+Field, route, method/CSRF, Alpine, aturan/validasi, status dan data dinamis tetap.
+Data contoh di FigCraft tidak dipasang ke aplikasi. Tampilan role lain tetap.
+PRD/kontrak dan README setup tetap berlaku. Bukti/batas pemeriksaan:
+[handoff Organizer](../docs/ORGANIZER_FIGCRAFT_DESIGN_HANDOFF.md).
+
 ## Notifikasi Volunteer — 11 November 2026
 
 Permintaan pengguna: halaman Semua notifikasi mengikuti panel navy/biru.

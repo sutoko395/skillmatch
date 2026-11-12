@@ -169,7 +169,7 @@
                         <div class="flex items-center justify-between text-sm text-slate-500">
                             <span>{{ number_format($event->applicants_count) }} pelamar</span>
                             <a href="{{ route('organizer.applications.index', $event) }}"
-                               class="font-semibold text-indigo-600 hover:text-indigo-800">
+                               class="organizer-secondary-button">
                                 Kelola pelamar
                             </a>
                         </div>
