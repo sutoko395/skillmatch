@@ -1,3 +1,20 @@
+## Panel Admin mengikuti FigCraft — 12 November 2026
+
+Sesuai permintaan lanjutan pengguna, tampilan Admin mengikuti 17 frame pada
+`Electric Blue / 01 Admin` di `skillmatch-electric-blue-system.figcraft`.
+Struktur halaman, navigasi bertingkat dan modal existing dipertahankan: sidebar
+navy #0F172A, menu aktif abu-abu transparan, header/kartu putih tanpa bayangan,
+aksen #2563EB dan tindakan destruktif utama berwarna peach #FB923C.
+Filter akun tersusun vertikal pada mobile. Badge tetap memiliki label status.
+
+Grafik memakai data/pemilihan seri existing dengan garis biru lurus, titik penuh,
+grid horizontal dan tanpa legend yang mengulang judul seri. Angka contoh desain
+tidak disalin ke runtime. Nama posisi pada verifikasi membaca `EventPosition.name`
+yang sudah ada, menggantikan binding view `position_name` yang menghasilkan kosong.
+CSS terbatas `admin-panel`; backend, route, field form dan role lain tetap.
+PRD/kontrak/brief dan README setup tetap berlaku. Bukti/batas pemeriksaan:
+[handoff Admin](../docs/ADMIN_FIGCRAFT_DESIGN_HANDOFF.md).
+
 ## Panel Organizer mengikuti FigCraft — 12 November 2026
 
 Keputusan pengguna: ubah hanya tampilan role Organizer berdasarkan halaman

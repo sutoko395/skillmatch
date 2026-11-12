@@ -43,7 +43,7 @@
 
 
 </head>
-<body class="h-full overflow-x-hidden font-sans bg-bg-light text-txt-light-primary antialiased" x-data="{ userDropdownOpen: false, mobileSidebarOpen: false, desktop: window.innerWidth >= 1024 }" @resize.window="desktop = window.innerWidth >= 1024" @keydown.escape.window="mobileSidebarOpen = false; userDropdownOpen = false; $refs.menu.focus()">
+<body class="admin-panel h-full overflow-x-hidden font-sans bg-bg-light text-txt-light-primary antialiased" x-data="{ userDropdownOpen: false, mobileSidebarOpen: false, desktop: window.innerWidth >= 1024 }" @resize.window="desktop = window.innerWidth >= 1024" @keydown.escape.window="mobileSidebarOpen = false; userDropdownOpen = false; $refs.menu.focus()">
 
     <!-- Overlay Mobile -->
     <div x-show="mobileSidebarOpen" 
@@ -56,7 +56,7 @@
     <!-- Sidebar Utama -->
     <aside :inert="!desktop && !mobileSidebarOpen"
         :class="mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-        class="-translate-x-full lg:translate-x-0 fixed inset-y-0 left-0 w-72 bg-bg-brand text-txt-dark-primary flex flex-col h-screen shadow-xl select-none z-50 transition-transform duration-300 ease-in-out">
+        class="admin-sidebar -translate-x-full lg:translate-x-0 fixed inset-y-0 left-0 w-72 bg-bg-brand text-txt-dark-primary flex flex-col h-screen select-none z-50 transition-transform duration-300 ease-in-out">
         
         <!-- Logo Sidebar -->
         <div class="p-6 h-16 border-b border-white/10 flex items-center justify-between shrink-0">
@@ -273,7 +273,7 @@
     <div class="flex-1 lg:pl-72 flex flex-col min-h-screen">    
         
         <!-- Navbar Top Bar -->
-        <header class="fixed top-0 right-0 left-0 lg:left-72 h-16 bg-white/80 backdrop-blur-md border-b border-slate-100 z-30 select-none">
+        <header class="admin-topbar fixed top-0 right-0 left-0 lg:left-72 h-16 bg-white border-b border-slate-100 z-30 select-none">
             <div class="w-full h-full px-4 sm:px-6 lg:px-8 flex justify-between lg:justify-end items-center">
                 
                 <button x-ref="menu" aria-label="Buka navigasi admin" :aria-expanded="mobileSidebarOpen" @click="mobileSidebarOpen = true" class="p-2 text-slate-600 hover:text-slate-900 lg:hidden focus:outline-none rounded-xl hover:bg-slate-50 cursor-pointer">
@@ -326,7 +326,7 @@
             </div>
         </header>
 
-        <main class="flex-1 pt-24 px-4 sm:px-6 lg:px-8 pb-8">
+        <main class="admin-main min-w-0 flex-1 pt-24 px-4 sm:px-6 lg:px-8 pb-8">
             @yield('content')
         </main>
         

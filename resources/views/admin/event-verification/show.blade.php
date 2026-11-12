@@ -3,7 +3,7 @@
 @section('title', 'Periksa Event')
 
 @section('content')
-<div class="w-full max-w-7xl mx-auto space-y-6">
+<div class="admin-event-review w-full max-w-7xl mx-auto space-y-6">
 
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -143,7 +143,7 @@
 
                                 <div>
                                     <h3 class="font-bold text-slate-800">
-                                        {{ $position->position_name }}
+                                        {{ $position->name }}
                                     </h3>
 
                                     <p class="mt-1 text-sm text-slate-500">
