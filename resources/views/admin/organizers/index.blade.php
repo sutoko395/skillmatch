@@ -12,7 +12,7 @@
         documentName: null,
         documentType: null
     }"
-    class="w-full max-w-7xl mx-auto space-y-6"
+    class="admin-users w-full max-w-7xl mx-auto space-y-6"
 >
 
     <div>
@@ -37,7 +37,7 @@
         </div>
     @endif
 
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="admin-summary grid grid-cols-2 lg:grid-cols-4 gap-4">
 
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
             <p class="text-xs font-semibold text-slate-400">
@@ -86,7 +86,7 @@
         <form
             method="GET"
             action="{{ route('admin.organizers.index') }}"
-            class="flex items-end gap-3"
+            class="admin-user-filters flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end lg:flex-nowrap"
         >
 
             <div class="flex-1 min-w-0">
@@ -105,7 +105,7 @@
 
             </div>
 
-            <div class="w-52 flex-shrink-0">
+            <div class="w-full sm:w-52 flex-shrink-0">
 
                 <label class="block text-sm font-semibold text-slate-700 mb-2">
                     Status

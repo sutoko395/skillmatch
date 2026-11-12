@@ -27,7 +27,7 @@
         </div>
     @endif
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="admin-summary grid grid-cols-1 md:grid-cols-3 gap-4">
 
         <div class="bg-white rounded-2xl border border-amber-100 shadow-sm p-5">
             <p class="text-xs font-semibold text-slate-400">

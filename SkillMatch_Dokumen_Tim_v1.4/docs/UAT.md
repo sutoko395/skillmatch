@@ -1,3 +1,19 @@
+## Desain panel Admin — 12 November 2026
+
+Periksa tampilan sesuai halaman FigCraft `Electric Blue / 01 Admin`: sidebar
+navy/menu aktif abu-abu, header putih, aksen biru, kartu tanpa bayangan, badge
+berlabel dan form/modal membulat. Dashboard mempertahankan angka/data asli,
+filter periode serta perpindahan seri grafik. Nama posisi harus tampil dari
+field `name` existing pada halaman pemeriksaan event.
+
+Periksa filter akun pada layar kecil, geser tabel di dalam pembungkusnya,
+drawer dan submenu, modal View/Edit/Delete akun, modal master/paket, dan modal
+penolakan event. Jangan mengirim aksi destruktif pada akun/data kerja untuk demo.
+Semua form/method/CSRF, batas akses, moderasi, dokumen privat, status pembayaran,
+pagination dan snapshot existing tetap berlaku. Tampilan Organizer/Volunteer
+harus tetap sama. Bukti terarah dan batas pengujian:
+[handoff Admin](../../docs/ADMIN_FIGCRAFT_DESIGN_HANDOFF.md).
+
 ## Desain panel Organizer — 12 November 2026
 
 Lingkup disetujui pengguna: tampilan Organizer mengikuti 33 referensi layar pada

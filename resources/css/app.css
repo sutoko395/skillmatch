@@ -11,6 +11,7 @@
 @import './volunteer-application-accepted.css';
 @import './volunteer-application-withdrawn.css';
 @import './organizer-panel.css';
+@import './admin-panel.css';
 
 @tailwind base;
 @tailwind components;

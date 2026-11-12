@@ -3,7 +3,7 @@
 @section('title', 'Dashboard Utama Admin')
 
 @section('content')
-<div class="mx-auto w-full max-w-7xl space-y-6">
+<div class="admin-dashboard mx-auto w-full max-w-7xl space-y-6">
 
     <div class="relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-sm md:p-8">
         <div class="absolute -right-4 -top-4 h-32 w-32 rounded-full bg-indigo-500/10 blur-xl"></div>
@@ -257,17 +257,17 @@ document.addEventListener('DOMContentLoaded', function () {
         volunteers: {
             title: 'Tren Pendaftaran Volunteer',
             label: 'Volunteer baru',
-            color: '#4f46e5'
+            color: '#2563eb'
         },
         organizers: {
             title: 'Tren Pendaftaran Organizer',
             label: 'Organizer baru',
-            color: '#059669'
+            color: '#2563eb'
         },
         transactions: {
             title: 'Tren Transaksi Bulanan',
             label: 'Transaksi dibuat',
-            color: '#0284c7'
+            color: '#2563eb'
         }
     };
 
@@ -288,8 +288,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     data: chartData[type],
                     borderColor: config.color,
                     backgroundColor: config.color + '20',
-                    fill: true,
-                    tension: 0.3,
+                    fill: false,
+                    tension: 0,
+                    borderWidth: 3,
+                    pointBackgroundColor: config.color,
+                    pointBorderColor: config.color,
                     pointRadius: 4,
                     pointHoverRadius: 6
                 }]
@@ -302,14 +305,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     mode: 'index'
                 },
                 scales: {
+                    x: {
+                        grid: { display: false },
+                        border: { display: false },
+                        ticks: { color: '#64748b' }
+                    },
                     y: {
                         beginAtZero: true,
-                        ticks: { precision: 0 }
+                        grid: { color: '#e2e8f0' },
+                        border: { display: false },
+                        ticks: { precision: 0, color: '#64748b' }
                     }
                 },
                 plugins: {
                     legend: {
-                        display: true,
+                        display: false,
                         position: 'bottom'
                     }
                 }
