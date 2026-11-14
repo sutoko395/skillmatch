@@ -36,3 +36,24 @@
     .vp-profile textarea { min-width: 0; max-width: 100%; }
     .vp-profile [data-saving-form] > div:last-child > button { width: 100%; }
 }
+
+/* Profile density aligned with the compact Volunteer panel. */
+.vp-profile button[data-add] { color: #2563eb; border-color: #93c5fd; background: #fff; }
+.vp-profile button[data-add]:hover { color: #1d4ed8; border-color: #60a5fa; background: #eff6ff; }
+.vp-profile button[data-add]:focus-visible { outline-color: #2563eb; --tw-ring-color: #2563eb; }
+.vp-profile button[data-remove] { color: #be123c; border-color: #fecdd3; background: #fff; }
+.vp-profile button[data-remove]:hover { color: #9f1239; border-color: #fda4af; background: #fff1f2; }
+.vp-profile button[data-remove]:focus-visible { outline-color: #e11d48; --tw-ring-color: #e11d48; }
+.vp-profile > header h1 { font-size: 28px; line-height: 36px; }
+.vp-profile [data-saving-form] > section { padding: 20px; }
+.vp-profile [data-saving-form] > section > .border-b { padding-bottom: 12px; margin-bottom: 16px; }
+.vp-profile section.space-y-5 > * + * { margin-top: 16px; }
+.vp-profile .grid.gap-5 { gap: 16px; }
+.vp-profile textarea { min-height: 84px; }
+.vp-profile [data-row] { padding: 12px; }
+.vp-profile [data-repeater] [data-rows] + template + div { margin-top: 12px; }
+@media(min-width:768px) {
+    .vp-profile [data-repeater="skills"] [data-row] { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: end; gap: 12px; }
+    .vp-profile [data-repeater="skills"] [data-row] > div:last-child { margin-top: 0; }
+}
+@media(max-width:639px) { .vp-profile [data-saving-form] > section { padding: 16px; } }

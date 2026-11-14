@@ -33,7 +33,7 @@
     <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:col-span-2 lg:col-span-1">
         <div class="flex items-center justify-between">
             <p class="text-sm font-medium text-slate-500">
-                Kegiatan Diikuti
+                Lamaran Terkirim
             </p>
 
             <span class="rounded-xl bg-indigo-50 p-2 text-indigo-600">
@@ -49,7 +49,7 @@
         </p>
 
         <p class="mt-1 text-sm text-slate-500">
-            Kegiatan yang sudah Anda lamar.
+            Total lamaran yang sudah dikirim.
         </p>
     </div>
 

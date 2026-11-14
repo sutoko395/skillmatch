@@ -1,3 +1,47 @@
+## Usia otomatis dan profil ringkas — 14 November 2026
+
+Ubah tanggal lahir: usia ikut berubah sesuai hari WIB. Periksa ulang tahun,
+kabisat, kosong/invalid/masa depan. Usia tidak editable atau tersimpan terpisah.
+Periksa form/repeater di desktop/mobile dan POST existing.
+Bukti/batas: [handoff usia](../../docs/VOLUNTEER_PROFILE_AGE_HANDOFF.md).
+
+## Panel penarikan ringkas — 14 November 2026
+
+Periksa summary dapat dilipat, peringatan final, alasan opsional dan tombol merah.
+POST/CSRF/otorisasi/aturan final tetap. Periksa 1440/768/390 dan pesan error.
+Bukti/pemulihan: [handoff panel](../../docs/VOLUNTEER_WITHDRAWAL_REFINE_HANDOFF.md).
+
+## Detail lamaran ringkas — 14 November 2026
+
+Periksa 1440/768/390: banner, timeline, rincian, koordinasi/kehadiran dan jadwal
+lebih padat. Dokumen terisi/kosong/purged, aksi desktop kanan/mobile bertumpuk.
+Status dan akses tetap. Bukti/batas: [handoff detail ringkas](../../docs/VOLUNTEER_APPLICATION_DETAIL_COMPACT_HANDOFF.md).
+
+## Riwayat Partisipasi ringkas — 14 November 2026
+
+Periksa padding/heading/badge, tautan judul kegiatan dan hasil cancelled/hadir/absent/
+unrecorded serta rincian sesi/catatan lama pada 1440/768/390.
+Bukti/batas: [handoff riwayat ringkas](../../docs/VOLUNTEER_HISTORY_COMPACT_HANDOFF.md).
+
+## Dashboard ringkas — 14 November 2026
+
+Periksa 1440/768/390: sambutan, statistik, kesiapan profil, skill, ketersediaan,
+kegiatan/tindakan/notifikasi tetap tersedia dengan padding lebih padat.
+Status Indonesia dan warna gagal sesuai lamaran. Angka lamaran tetap aktual.
+Bukti/batas/pemulihan: [handoff dashboard](../../docs/VOLUNTEER_DASHBOARD_COMPACT_HANDOFF.md).
+
+## Sidebar Volunteer ringkas — 14 November 2026
+
+Periksa lebar desktop 256 px dan offset navbar/konten sejajar. Menu/nama/email
+tetap terbaca. Pada mobile periksa drawer, overlay dan tutup/buka.
+Bukti/batas: [handoff sidebar](../../docs/VOLUNTEER_SIDEBAR_COMPACT_HANDOFF.md).
+
+## Kepadatan kartu Lamaran Saya — 14 November 2026
+
+Periksa zoom 100% pada 1440/768/390: kartu lebih ringkas, badge sesuai teks,
+tanggal/tombol tetap terbaca dan tidak overflow. Periksa draft/kosong/pagination.
+Bukti/batas: [handoff compact](../../docs/VOLUNTEER_APPLICATIONS_COMPACT_HANDOFF.md).
+
 ## Desain panel Admin — 12 November 2026
 
 Periksa tampilan sesuai halaman FigCraft `Electric Blue / 01 Admin`: sidebar
@@ -489,3 +533,8 @@ Organizer menambah/mengganti/menghapus foto opsional pada create/edit draft yang
 ## Electric Blue Publik dan Auth — keputusan 6 November 2026
 
 Permintaan pengguna mengizinkan penerapan FigCraft Electric Blue / 06 Publik dan Auth pada landing, katalog, login dan registrasi. Blue #2563EB, Navy #0F172A, Peach #FB923C, Off-white #F8FAFC; judul editorial Georgia dan body Inter. Tampilan operasional tiga role tetap. Data, filter, pagination, upload foto, validasi, satu login/guard web dan seluruh aturan bisnis existing dipertahankan. UAT: periksa kelima tampilan desktop/mobile, menu, pencarian/filter/reset, kartu foto, role registrasi, error dan toggle password. Bukti implementasi dan tes ada pada docs/DEVELOPMENT.md#electric-blue-publik-auth di root repository; belum menyatakan seluruh UAT tim lulus.
+
+
+Detail event panel (14 November): periksa 1440/768/390, tanggal panjang
+dan kartu posisi ringkas tanpa overflow; kondisi CTA existing tetap.
+Preview fixture lulus audit lebar; browser akun nyata belum diuji ulang.

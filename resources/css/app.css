@@ -1,4 +1,5 @@
 @import './volunteer-activity.css';
+@import './volunteer-catalog.css';
 @import './volunteer-event-detail.css';
 @import './volunteer-history.css';
 @import './volunteer-profile.css';
@@ -10,6 +11,7 @@
 @import './volunteer-assessment-work.css';
 @import './volunteer-application-accepted.css';
 @import './volunteer-application-withdrawn.css';
+@import './volunteer-application-compact.css';
 @import './organizer-panel.css';
 @import './admin-panel.css';
 

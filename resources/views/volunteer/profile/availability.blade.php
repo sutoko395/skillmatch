@@ -73,7 +73,7 @@
 
         <div>
             <x-secondary-button data-add>
-                Tambah interval
+                <span aria-hidden="true" class="mr-2 text-lg leading-none">+</span> Tambah interval
             </x-secondary-button>
         </div>
 

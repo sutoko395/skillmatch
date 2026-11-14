@@ -1,0 +1,51 @@
+/* Compact application detail, scoped away from list/assessment work pages. */
+.volunteer-application-detail .vd-detail .vd-withdrawal { box-shadow: none; }
+.volunteer-application-detail .vd-detail .vd-withdrawal > summary { padding: 14px 20px; border-radius: 16px; list-style: revert; }
+.volunteer-application-detail .vd-detail .vd-withdrawal[open] > summary { border-bottom: 1px solid #e2e8f0; border-radius: 16px 16px 0 0; }
+.volunteer-application-detail .vd-detail .vd-withdrawal > .vd-withdrawal-content { padding: 16px 20px 20px; }
+.volunteer-application-detail .vd-detail .vd-withdrawal textarea { min-height: 72px; font-size: 14px; border-radius: 8px; }
+.volunteer-application-detail .vd-detail { max-width: none; }
+.volunteer-application-detail .vd-detail > * + * { margin-top: 16px; }
+.volunteer-application-detail .vd-detail .vd-grid { gap: 20px; }
+.volunteer-application-detail .vd-detail .vd-grid > div > * + *,
+.volunteer-application-detail .vd-detail .vd-grid > aside > * + * { margin-top: 16px; }
+.volunteer-application-detail .vd-detail > header > a { padding: 10px 16px; min-height: 44px; }
+.volunteer-application-detail .vd-detail > header h1 { font-size: 28px; line-height: 36px; }
+.volunteer-application-detail .vd-detail > header > header { margin-top: 8px; margin-bottom: 0; }
+.volunteer-application-detail .vd-detail section { padding: 20px; box-shadow: none; }
+.volunteer-application-detail .vd-detail h2 { font-size: 18px; line-height: 26px; }
+.volunteer-application-detail .vd-detail > section[aria-label="Status lamaran"] { padding: 16px 20px; }
+.volunteer-application-detail .vd-detail .vd-progress > div:first-child,
+.volunteer-application-detail .vd-detail .vd-documents > div:first-child { margin: 0; padding: 0 0 12px; background: transparent; }
+.volunteer-application-detail .vd-detail .vd-progress > ol { margin-top: 16px; }
+.volunteer-application-detail .vd-detail .vd-progress > ol > li:not(:last-child) { padding-bottom: 16px; }
+.volunteer-application-detail .vd-detail .vd-progress details { margin-top: 8px; }
+.volunteer-application-detail .vd-detail .vd-progress details > summary { padding: 10px 0; min-height: 44px; border-bottom: 0; }
+.volunteer-application-detail .vd-detail .vd-progress details > div { margin-top: 8px; margin-left: 0; }
+.volunteer-application-detail .vd-detail .vd-progress details section { padding: 16px; }
+.volunteer-application-detail .vd-detail .vd-documents li { padding: 12px; }
+.volunteer-application-detail .vd-detail .vd-documents li > div:last-child { margin-top: 10px; margin-left: 0; gap: 8px; }
+.volunteer-application-detail .vd-detail .vd-documents li > div:only-child { margin-top: 0; }
+.volunteer-application-detail .vd-detail .vd-documents li a,
+.volunteer-application-detail .vd-detail .vd-documents li button { padding: 8px 12px; }
+.volunteer-application-detail .vd-detail #koordinasi-peserta a.bg-indigo-600 { padding: 10px 16px; }
+.volunteer-application-detail .vd-detail .vd-event-time { margin-top: 16px; margin-left: 0; }
+.volunteer-application-detail .vd-detail .vd-event-time summary { padding-bottom: 8px; }
+.volunteer-application-detail .vd-detail .vd-event-time p { margin-left: 0; padding-top: 10px; }
+@media(min-width:640px) {
+    .volunteer-application-detail .vd-detail .vd-documents li:not(.border-dashed) { display: flex; flex-direction: row; align-items: center; gap: 12px; }
+    .volunteer-application-detail .vd-detail .vd-documents li > div:last-child { margin-top: 0; }
+}
+@media(max-width:639px) {
+    .volunteer-application-detail .vd-detail section { padding: 16px; }
+    .volunteer-application-detail .vd-detail > header h1 { font-size: 26px; line-height: 34px; }
+}
+
+/* Second spacing pass; body type and readable control heights stay unchanged. */
+.volunteer-application-detail .vd-detail > header > header > p { margin-top: 4px; }
+.volunteer-application-detail .vd-detail #koordinasi-peserta { padding: 16px 20px; }
+.volunteer-application-detail .vd-detail #koordinasi-peserta > p { margin-top: 6px; line-height: 20px; }
+.volunteer-application-detail .vd-detail #koordinasi-peserta > a { margin-top: 12px; }
+.volunteer-application-detail .vd-detail #koordinasi-peserta > dl { margin-top: 12px; }
+.volunteer-application-detail .vd-detail #koordinasi-peserta dd { margin-top: 2px; }
+@media(max-width:639px) { .volunteer-application-detail .vd-detail #koordinasi-peserta { padding: 16px; } }

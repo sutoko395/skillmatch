@@ -64,3 +64,19 @@ sidebar. Fixture publikasi lewat layanan existing, MySQL khusus tes, rollback.
 Klik/visual browser detail belum diuji. Satu percobaan tes awal gagal karena
 mass-assignment fixture entitlement; fixture diperbaiki memakai layanan publikasi,
 tanpa mengubah model runtime.
+
+## Katalog panel lebih ringkas — 14 November 2026
+
+Pengguna menyetujui heading ringkas serta kartu putih utuh berborder untuk setiap
+event. Wrapper ve-catalog dan CSS volunteer-catalog.css scoped, diimpor app.css.
+Heading Jelajahi Event, filter padat, font sans, kartu padding16, jarak20, grid
+3/2/1 kolom. Komponen event-card/route/filter/pagination/data tetap; publik tidak
+diubah. Build/view:cache/diff --check lulus. VolunteerCatalogTest 2 tes/27 assertion
+lulus pada MySQL khusus tes. Fixture kosong/terisi tanpa simpan CDP1440/768/390
+tidak overflow; desktop diperiksa visual. Klik akun nyata belum diuji.
+Tanpa commit/push, perubahan lokal lain dipertahankan.
+
+Koreksi pengguna: heading promosi serif Ada kegiatan. Ada tempat untukmu.
+dipertahankan bersama eyebrow dan deskripsi asli. Ukuran responsif 30–44 px,
+jarak judul12 px; kartu/filter ringkas tetap. Scoped panel saja. Build dan
+view:cache lulus; visual browser ukuran heading baru belum diperiksa ulang.
