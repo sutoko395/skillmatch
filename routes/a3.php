@@ -10,6 +10,7 @@ Route::middleware(['auth', 'account.active', 'role:organizer', 'organizer.active
         Route::post('applications/{application}/reject', [ExecutionController::class, 'reject'])->name('applications.reject');
         Route::post('applications/{application}/withdraw', [ExecutionController::class, 'withdraw'])->name('applications.withdraw');
         Route::post('events/{event}/close-selection', [ExecutionController::class, 'close'])->name('events.close-selection');
+        Route::get('execution', [ExecutionController::class, 'index'])->name('execution.index');
         Route::get('events/{event}/execution', [ExecutionController::class, 'show'])->name('execution.show');
         Route::patch('attendances/{attendance}', [ExecutionController::class, 'record'])->name('attendances.update');
         Route::post('attendances/{attendance}/sessions', [ExecutionController::class, 'prepareSessions'])->name('attendances.prepare-sessions');

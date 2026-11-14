@@ -3,12 +3,12 @@
 @section('content')
 <div class="mx-auto max-w-7xl space-y-6">
     <x-page-header :title="'Pelaksanaan: '.$event->title" description="Kehadiran dicatat Organizer per sesi/hari tugas. Waktu pencatatan bukan jam kedatangan." />
-    <a class="font-semibold text-indigo-600" href="{{ route('organizer.applications.index', $event) }}">Kembali ke pelamar</a>
+    <a class="font-semibold text-indigo-600" href="{{ route('organizer.execution.index') }}">Kembali ke daftar pelaksanaan</a>
     <x-section-card>
         <dl class="mb-5 grid grid-cols-2 gap-4 md:grid-cols-4">@foreach(['accepted' => 'Peserta diterima', 'present' => 'Hadir', 'absent' => 'Tidak hadir', 'unrecorded' => 'Belum dicatat'] as $key => $label)<div class="rounded-xl bg-slate-50 p-4"><dt class="text-sm text-slate-600">{{ $label }}</dt><dd class="text-2xl font-semibold">{{ $summary->$key }}</dd></div>@endforeach</dl>
         <p class="mb-3 text-sm text-slate-600">Angka di atas adalah rekap peserta: Hadir berarti seluruh sesi hadir; Tidak hadir berarti ada sesi tidak hadir setelah semua sesi final. Catatan lama tetap ditandai per kegiatan.</p>
         <p class="mb-5 rounded-xl bg-indigo-50 p-4 text-sm text-indigo-900">Rekap seluruh sesi event: {{ $sessionSummary->total }} catatan sesi, {{ $sessionSummary->present }} Hadir, {{ $sessionSummary->absent }} Tidak hadir, {{ $sessionSummary->unrecorded }} Belum dicatat. Satu sesi dihitung untuk setiap peserta yang bertugas.</p>
-        <p class="mb-4">Status kegiatan: <strong>{{ $event->lifecycle_status }}</strong>. Jadwal: {{ $event->starts_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}–{{ $event->ends_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB.</p>
+        <p class="mb-4">Status kegiatan: <x-organizer-status :status="$event->lifecycle_status" />. Jadwal: {{ $event->starts_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}–{{ $event->ends_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB.</p>
         <form method="GET" class="mb-5 flex flex-wrap gap-4">
             <label>Cari nama<input class="block rounded-lg border-slate-300" name="search" value="{{ request('search') }}" maxlength="100"></label>
             <label>Posisi<select class="block rounded-lg border-slate-300" name="position_id"><option value="">Semua posisi</option>@foreach($event->positions as $position)<option value="{{ $position->id }}" @selected(request('position_id') == $position->id)>{{ $position->name }}</option>@endforeach</select></label>

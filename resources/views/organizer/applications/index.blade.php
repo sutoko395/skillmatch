@@ -10,7 +10,7 @@
     <div class="flex flex-wrap items-center justify-between gap-4">
         <x-page-header :title="'Daftar Pelamar: ' . $event->title" description="Kelola dan tinjau lamaran yang masuk untuk setiap posisi kegiatan ini." />
         <a href="{{ route('organizer.events.show', $event) }}" class="inline-flex items-center text-sm font-semibold text-slate-600 hover:text-slate-900">
-            &larr; Kembali ke Detail Event
+            &larr; Kembali ke Detail Kegiatan
         </a>
     </div>
 

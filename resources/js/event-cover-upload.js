@@ -2,6 +2,7 @@ export default (existing = null, removed = false) => ({
     preview: removed ? null : existing,
     removed,
     error: '',
+    saving: false,
     objectUrl: null,
     choose(event) {
         const file = event.target.files[0];
@@ -18,6 +19,13 @@ export default (existing = null, removed = false) => ({
         this.objectUrl = URL.createObjectURL(file);
         this.preview = this.objectUrl;
         this.removed = false;
+    },
+    cancel() {
+        this.release();
+        this.preview = existing;
+        this.removed = false;
+        this.error = '';
+        this.$refs.file.value = '';
     },
     remove() {
         this.release();

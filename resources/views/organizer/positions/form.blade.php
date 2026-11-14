@@ -224,9 +224,9 @@
                 <div class="space-y-3">
                     <label class="flex items-center gap-3 text-sm font-medium">
                         <input type="radio" name="follows_event_schedule" value="1" @checked($followsEvent) @change="followsEvent = true" class="text-indigo-600 focus:ring-indigo-500">
-                        Ikuti jadwal event
+                        Ikuti jadwal kegiatan
                     </label>
-                    <p class="pl-7 text-sm text-slate-600">Posisi bertugas sepanjang jadwal event dan mengikuti perubahan jadwal event draft.</p>
+                    <p class="pl-7 text-sm text-slate-600">Posisi bertugas sepanjang jadwal kegiatan dan mengikuti perubahan jadwal kegiatan draft.</p>
                     <label class="flex items-center gap-3 text-sm font-medium">
                         <input type="radio" name="follows_event_schedule" value="0" @checked(! $followsEvent) @change="followsEvent = false" class="text-indigo-600 focus:ring-indigo-500">
                         Atur jadwal tugas khusus
@@ -239,7 +239,7 @@
                 @if($singleDay)
                     <p class="text-sm text-slate-600">Tanggal tugas: {{ $event->starts_at->copy()->setTimezone('Asia/Jakarta')->format('d/m/Y') }}. Ubah jam sesuai kebutuhan posisi.</p>
                 @else
-                    <p class="text-sm text-slate-600">Pilih tanggal dan jam tugas dalam rentang event.</p>
+                    <p class="text-sm text-slate-600">Pilih tanggal dan jam tugas dalam rentang kegiatan.</p>
                 @endif
                 <template x-for="(slot, i) in schedules" :key="i">
                     <div class="grid gap-4 rounded-xl bg-slate-50 p-4 md:grid-cols-3">
@@ -301,7 +301,7 @@
                 >
                     + Tambah jadwal
                 </button>
-                <p class="text-sm text-slate-600">Jadwal tugas harus berada dalam rentang event. Waktu ditampilkan dalam WIB.</p>
+                <p class="text-sm text-slate-600">Jadwal tugas harus berada dalam rentang kegiatan. Waktu ditampilkan dalam WIB.</p>
                 </div>
             </fieldset>
 

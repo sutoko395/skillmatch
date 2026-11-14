@@ -1,3 +1,48 @@
+## Update sampul langsung dari detail EO - 14 November 2026
+
+PATCH /organizer/events/{event}/cover, organizer.events.cover.update, A2 melalui
+EventController::updateCover dan EventService::updateCover. Middleware organizer
+existing, CSRF dan Policy update; service memeriksa editable sebelum upload dan
+mengulang setelah lock User lalu Event. Hanya cover_image required JPG/PNG/WebP
+maks5MB dipakai; field klien lain tidak mengubah data. Event cover path dan
+revision diperbarui, audit event.cover_updated, gambar lama dihapus afterCommit;
+file baru dibersihkan jika transaksi gagal. Tidak ada schema baru atau perubahan
+aturan published/orders/entitlement/lifecycle. Redirect sukses ke detail dengan
+flash; validasi gagal memakai error Laravel existing.
+
+## Parameter daftar kegiatan EO - 14 November 2026
+
+GET organizer.events.index menerima search nullable string maks 255 (title,
+trim, substring literal) serta status nullable draft/pending/approved/rejected
+untuk moderasi. Kombinasi AND, organizer_id selalu aktor. Pagination 12 tetap,
+menyimpan kedua parameter. Route, middleware, schema dan layanan mutasi tetap;
+tidak mengubah publication_status/lifecycle_status.
+
+## Hub Pelaksanaan & Kehadiran Organizer - 14 November 2026
+
+Tambahan GET `/organizer/execution` bernama `organizer.execution.index` pada
+routes/a3.php, ExecutionController::index (A3). Middleware auth/account.active/
+role:organizer/organizer.active dan Gate create Event existing. Query selalu
+organizer_id dari aktor, tidak menerima pemilik dari request; dengan count
+applications.status=accepted seperti rekap detail, pagination 12. Daftar semua
+kegiatan milik EO menautkan `organizer.execution.show` existing; link kembali
+pada detail pelaksanaan menuju hub ini. Kartu navigasi atas detail event dihapus
+sesuai keputusan pengguna. Route show, seleksi, attendance/sesi, completion,
+status dan schema tetap, tanpa perubahan otorisasi mutasi atau syarat waktu.
+
+## Menu Kelola Pelamar EO - 14 November 2026
+
+Tambahan GET `/organizer/applications`, nama `organizer.applications.overview`,
+`Organizer\ApplicationController::overview` (presentasi A3). Memakai middleware
+auth/account.active/role:organizer/organizer.active dan Gate create Event existing.
+Halaman hanya membaca event dengan organizer_id milik aktor, menghitung lamaran
+submitted_at not null, pagination 12, lalu menautkan organizer.applications.index
+per event. Tidak menerima organizer_id sebagai sumber otorisasi. Route kandidat
+per event/detail, seleksi, dokumen, status dan schema existing tidak berubah.
+Ini pintu navigasi baru, bukan alur seleksi atau otorisasi baru. Ringkasan EO
+menghapus dua panel daftar dan tombol buat sesuai keputusan pengguna terbaru;
+statistik existing tetap dihitung dengan aturan yang sama.
+
 ## Detail katalog panel Volunteer — 11 November 2026
 
 GET /volunteer/events/{event}, volunteer.events.show, middleware auth,

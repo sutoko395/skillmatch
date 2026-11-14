@@ -1,3 +1,245 @@
+## Notifikasi sementara EO - 14 November 2026
+
+Simpan koreksi: toast centang hijau bertuliskan Perubahan berhasil disimpan
+muncul kanan atas tanpa mendorong konten, hilang sekitar5detik, dapat ditutup ?.
+Periksa390/768/1440px, pesan panjang membungkus, keyboard/fokus dan reduced motion.
+Hover/fokus menunda hilang. Error dan daftar validasi tidak otomatis menghilang;
+role lain tetap memakai tampilan notifikasi existing. Toast tidak menutup modal/
+drawer (z-index di bawah keduanya). Tanpa JS pesan tetap terlihat.
+
+## Keseragaman detail draf dan published EO - 14 November 2026
+
+Bandingkan kartu Informasi kegiatan, subkartu posisi/jadwal, ringkasan asesmen,
+nav dan warna tombol draf/published di390/768/1440px. Published menampilkan Edit
+pensil di header informasi dengan label aksesibel khusus judul/deskripsi,
+menuju form koreksi teks existing. Tombol Lihat Asesmen/halaman publik/pelamar
+outline biru; aksi pembatalan tetap merah. Posisi published tanpa baris aksi
+kosong dan tidak mendapat tambah/edit/hapus. Upload cover/paket/jadwal tetap
+terkunci, request langsung tetap ditolak. Koreksi teks dan koordinasi mengikuti
+aturan existing, tidak ada perubahan status/data melalui perubahan desain ini.
+
+## Label pembatalan draf EO - 14 November 2026
+
+Draf belum diajukan: judul Pembatalan draf, tombol Batalkan draf dan konfirmasi
+data tetap tersimpan. Kegiatan pernah diajukan/published: Pembatalan kegiatan,
+Batalkan kegiatan dan konfirmasi lamaran terkait. Tidak ada kalimat teknis
+ketergantungan layanan. Selesai/dibatalkan tidak menampilkan form seperti
+existing. Tidak ada perubahan route/validasi/transisi atau aturan hapus draf.
+
+## Ikon ringkasan asesmen - 14 November 2026
+
+Periksa nama posisi, ikon clipboard, status dengan file/gembok, jumlah soal
+berikon daftar dan durasi berikon jam. Draf/belum dibuat/published memakai data
+actual; jumlah/durasi hanya tampil bila assessment ada, durasi null berlabel
+Belum diatur. Mobile metadata dapat membungkus tanpa overflow. Kelola/Lihat
+Asesmen tetap menuju posisi yang benar dan mengikuti editable existing.
+
+## Subkartu posisi EO - 14 November 2026
+
+Periksa setiap posisi memiliki dua subkartu di dalam kartu utama: deskripsi/
+skill/persyaratan serta jadwal. Nama/kuota di atas, aksi di bawah. Desktop dua
+kolom, mobile bertumpuk tanpa overflow; deskripsi panjang membungkus dan baris
+baru tetap. Mode mengikuti kegiatan/khusus, seluruh slot WIB dan persyaratan
+wajib/preferensi/dokumen tetap lengkap. Edit/hapus tetap sesuai status/hak akses.
+
+## Pemilih file langsung pada sampul EO - 14 November 2026
+
+Klik Ubah/Tambah gambar di bawah cover: pemilih file terbuka tanpa pindah halaman.
+File valid menjadi preview; Simpan menyimpan sampul saja, Batal mengembalikan
+preview awal tanpa mengubah database. Uji batal dialog, file invalid/lebih5MB,
+error upload, menyimpan/disabled, owner lain dan status terkunci. Judul/jadwal/
+status/paket tetap setelah upload. Published tidak mendapat form dan request
+langsung ditolak. Mobile kontrol tidak menimpa gambar. Ini menggantikan UAT
+sebelumnya yang mengharapkan tombol menuju input di form edit.
+
+## Tombol Edit dan Ubah gambar EO - 14 November 2026
+
+Periksa Edit outline biru sedikit lebih besar dengan pensil. Pada detail editable,
+Ubah gambar pada sampul atau Tambah gambar jika kosong menuju input foto di form
+edit. Pilih gambar baru, periksa preview, simpan dan periksa sampul berubah.
+Coba hapus, file invalid/lebih5MB, owner lain dan published: aturan upload/
+editable existing tetap. Cek mobile overlay tidak terpotong. Published tetap
+hanya koreksi teks dan koordinasi sesuai aturan, tanpa tombol ganti gambar.
+
+## Keterbacaan kartu Informasi kegiatan EO - 14 November 2026
+
+Periksa bar tiga status tidak tampil pada kartu Ringkasan detail; status daftar
+masih tersedia. Ikon pada enam label metadata, judul/label/isi berbeda ukuran,
+tanggal di atas jam WIB, rentang mulai-sampai-akhir lengkap termasuk lintas hari.
+Periksa deskripsi/lokasi panjang, jadwal kosong, nilai tanggal/jam sama seperti
+data existing, 390/768/1440px tanpa overflow. Edit tetap mengikuti hak/status,
+catatan admin dan seluruh bagian/form existing masih tersedia.
+
+## Navigasi bagian detail EO - 14 November 2026
+
+Pada detail draf/pending/published, periksa enam tautan anchor mengarah ke bagian
+yang benar, highlight biru mengikuti klik dan scroll, serta bagian tidak tertutup
+panel sticky. Mobile dapat menggeser deretan tombol; dokumen tidak melebar.
+Periksa fokus keyboard, hash URL, drawer dan Kembali merah. Semua konten/form
+masih tersedia tanpa memilih tab; tanpa JS tautan anchor tetap bekerja.
+
+## Penempatan akun dan Keluar EO - 14 November 2026
+
+Periksa nama/inisial akun aktif dan Organizer di atas Ringkasan Aktivitas,
+terpisah garis/jarak seperti pemisah setelah Profil Organisasi. Keluar berada
+setelah Lihat situs utama dengan highlight merah. Bar akun desktop hilang,
+mobile tetap menyediakan buka/tutup drawer, Escape dan backdrop. Profil tetap
+dapat dibuka melalui menu. Keluar harus POST dengan CSRF, mengakhiri sesi dan
+kembali ke login; GET tidak boleh mengeluarkan akun. Cek nama panjang dan
+scroll sidebar pada layar pendek. Layout role lain tetap.
+
+## Header dan tombol daftar EO - 14 November 2026
+
+Pada Kegiatan Saya, baris Semua kegiatan dan jumlah tidak ditampilkan lagi.
+Tombol Buat Kegiatan lebih besar dan memiliki ikon plus; klik tetap membuka
+modal existing. Periksa desktop/mobile dan filter; ketentuan pemeriksaan badge
+jumlah hasil pada catatan sebelumnya tidak berlaku untuk tampilan ini.
+
+## Pencarian dan filter moderasi EO - 14 November 2026
+
+Cari sebagian nama, gabungkan dengan setiap status moderasi, pindah halaman,
+lalu Reset. Hanya kegiatan pemilik muncul; jumlah dan pagination mengikuti
+filter. Hasil kosong berbeda dari belum ada kegiatan. %, _ dan ! menjadi teks
+literal. Periksa label, fokus keyboard, 390/768/1440 px dan modal Buat Kegiatan.
+
+## Ikon dan hierarki metadata Kegiatan Saya - 14 November 2026
+
+Periksa judul lebih menonjol dari tanggal/jam/lokasi, ikon kalender/jam/pin,
+serta tanggal/jam WIB yang sama dengan data existing. Tanggal/jam bisa membungkus,
+lokasi panjang tidak overflow, jadwal kosong berlabel, ikon dekoratif aria-hidden
+serta label pembaca layar tersedia. Badge/thumbnail/aksi/modal tetap. Periksa
+390/768/1440 px, termasuk judul/lokasi panjang.
+
+## Menu mandiri pelaksanaan EO - 14 November 2026
+
+Periksa sidebar Pelaksanaan & Kehadiran setelah Kelola Pelamar. Daftar hanya
+kegiatan aktor, jumlah hanya accepted, jadwal WIB, status aktual, kosong dan
+pagination. Kelola pelaksanaan menuju endpoint existing; Kembali ke daftar
+pelaksanaan mengarah hub baru. Detail event tanpa kartu navigasi pelaksanaan.
+Uji guest/non-EO/pending/nonaktif dan request pemilik asing; pastikan aturan
+pencatatan/sesi/completion existing tetap. Periksa 390/768/1440 dan drawer.
+
+## Navigasi atas detail kegiatan - 14 November 2026
+
+Periksa topbar Kegiatan Saya pada detail; judul konten/tab tetap nama kegiatan.
+Kembali berupa tombol biru tanpa panah dan menuju daftar. Kartu navigasi atas
+hanya menyisakan Pelaksanaan dan kehadiran. Menu Kelola Pelamar dan endpoint
+existing tetap tersedia; halaman EO lain tetap memakai judul topbar masing-masing.
+
+## Pemulihan ukuran badge status - 14 November 2026
+
+Periksa badge status daftar kegiatan kembali 11 px/padding 4x8 px/radius 6 px.
+Warna hijau/biru/kuning dan label tetap, membungkus tanpa overflow pada mobile.
+
+## Tombol kelola sekunder - 14 November 2026
+
+Periksa Kelola kegiatan putih/border biru tipis/teks biru, hover biru muda, lebih
+kecil dari Buat Kegiatan biru solid. Tautan detail, fokus keyboard dan target
+mobile tetap. Badge moderasi hijau, publikasi biru, pelaksanaan kuning.
+
+## Koreksi badge publikasi EO - 14 November 2026
+
+Periksa daftar Kegiatan Saya: moderasi hijau, publikasi biru dan pelaksanaan
+kuning, teks status tetap lengkap. Tombol Kelola belum berubah pada koreksi ini.
+
+## Badge dan tombol daftar kegiatan - 14 November 2026
+
+Periksa jumlah kegiatan sebagai badge kecil, Kelola kegiatan biru lebih kecil
+dari Buat Kegiatan dan tanpa panah. Tiga badge kecil tetap terbaca: Moderasi/
+Publikasi hijau, Pelaksanaan kuning, label status tidak berubah. Periksa draf,
+published, rejected/cancelled, kosong, pagination, modal buat dan 390/768/1440.
+Pastikan tautan kelola tetap menuju detail event yang benar; konteks/status tidak
+hilang hanya demi ukuran. Halaman role lain dan detail event tetap.
+
+## Logo EO sama dengan landing - 14 November 2026
+
+Periksa sidebar desktop/drawer mobile memakai simbol empat kelopak biru seperti
+landing page menggantikan S. Teks SKILLMATCH/Panel Organisasi dan link Ringkasan
+existing tetap. Periksa landing/footer/auth masih menampilkan simbol beserta teks.
+
+## Ukuran judul kelompok tindak lanjut - 14 November 2026
+
+Periksa judul kelompok 16 px, nama kegiatan 14 px, judul utama 18 px. Judul tetap
+hitam lembut; badge kecil dan titik warna tetap. Periksa pembungkusan di mobile.
+
+## Kartu putih dan titik penanda tindak lanjut - 14 November 2026
+
+Periksa kepala kartu putih dengan titik biru/hijau dekoratif dan judul gelap.
+Jumlah tindakan berada di samping judul masing-masing kartu (sesuai collection,
+bukan total database); badge gabungan tidak tampil. Tidak ada garis bawah judul
+atau baris pertama; garis hanya di antara kegiatan. Periksa kosong dan terisi,
+judul membungkus, tombol/fokus dan desktop/mobile. Statistik serta route tetap.
+
+## Kepala kedua kartu kuning penuh - 14 November 2026
+
+Periksa Persiapan dan rekrutmen serta Pelaksanaan: kepala kartu kuning sangat muda dari
+tepi kiri ke kanan dan menempel bagian atas, sudut mengikuti kartu, teks keemasan.
+Tidak ada jarak putih di sekitar kepala kartu. Isi putih dan tombol biru tetap.
+Periksa desktop/mobile, judul membungkus, isi terisi/kosong dan fokus keyboard.
+
+## Baris judul persiapan/pelaksanaan - 14 November 2026
+
+Periksa baris judul Persiapan dan rekrutmen biru sangat muda/teks biru dan
+Pelaksanaan kuning sangat muda/teks keemasan. Isi kartu tetap putih; judul panjang
+membungkus dan tampilan terisi/kosong tetap terbaca pada desktop/mobile.
+
+## Aksen statistik lebih jelas - 14 November 2026
+
+Periksa border biru/hijau lebih tegas, kuning lebih cerah dan judul Lamaran
+Belum Ditinjau kuning keemasan, ikon selaras. Angka hitam, layout serta ungu tetap.
+
+## Dua kartu tindak lanjut dan aksen statistik - 14 November 2026
+
+Periksa judul statistik biru/hijau/ungu dan border ungu lebih jelas. Perlu
+Ditindaklanjuti berada di luar dua kartu putih terpisah; kartu persiapan/rekrutmen
+dan pelaksanaan tetap muncul dengan keadaan kosong masing-masing. Tombol biru
+lebih kecil tanpa panah, target mobile 44 px, tautan tujuan tetap. Periksa kondisi
+terisi/kosong/pending/revisi/approved pada 390/768/1440 px dan fokus keyboard.
+
+## Panel tindak lanjut baris ringkas - 14 November 2026
+
+Periksa satu judul Perlu Ditindaklanjuti dan jumlah tindakan yang ditampilkan,
+kelompok persiapan/rekrutmen serta pelaksanaan, nama kegiatan terpisah dari
+keterangan, dan tombol kanan desktop/bawah mobile. Uji draf, pending moderasi,
+revisi, approved belum publikasi, seleksi lewat tenggat dan pelaksanaan. Aksi
+menuju detail/pelamar/pelaksanaan milik EO; tidak ada aksi mutasi langsung.
+Periksa kosong satu/kedua kelompok, judul panjang, 390/768/1440 px. Identitas
+organisasi tidak lagi ditampilkan di panel ini. Query/angka/status backend tetap.
+
+## Warna statistik EO - 14 November 2026
+
+Periksa border Total Kegiatan biru, Kegiatan Aktif hijau, Total Pelamar ungu
+beserta ikon ungu, serta Lamaran Belum Ditinjau amber. Latar kartu tetap putih,
+angka dan susunan sama. Prioritas Anda belum diubah pada permintaan warna ini.
+
+## Koreksi Ringkasan dan Kelola Pelamar - 14 November 2026
+
+Periksa Ringkasan EO: Pelamar Terbaru, panel Kegiatan Saya dan tombol Buat Kegiatan
+tidak tampil; statistik mendahului Prioritas Anda, notifikasi tetap ada. Sidebar
+Kegiatan Saya tetap ada dan menu Kelola Pelamar menuju kegiatan milik EO saja.
+Periksa jumlah lamaran mengecualikan draf, keadaan tanpa kegiatan, pagination dan
+tautan kandidat existing. Parameter organizer_id asing tidak boleh memperluas
+hasil; endpoint kandidat kegiatan asing tetap 403. Guest, non-EO, akun nonaktif
+dan organisasi pending mengikuti pembatas existing. Periksa tampilan 390/768/1440.
+Bukti aktual: [handoff EO](../../docs/ORGANIZER_UI_REFINEMENT_HANDOFF.md).
+
+## Panel EO ringkas - 14 November 2026
+
+Periksa Ringkasan Aktivitas, Kegiatan Saya, detail kegiatan dan halaman pendukung
+pada 390/768/1440 px. Sidebar 256 px, header/konten sejajar, drawer dapat dibuka,
+ditutup dan ditutup dengan Escape. Tindak lanjut tampil sebelum angka statistik,
+termasuk keadaan kosong. Daftar kegiatan memakai thumbnail kecil; judul panjang,
+lokasi, status, pagination dan aksi tetap terbaca tanpa overflow.
+
+Moderasi/publikasi/pelaksanaan tetap tiga konteks berbeda dengan label Indonesia;
+disetujui tidak berarti dipublikasikan. Semua tautan bagian detail menuju konten
+existing yang tetap terbuka. Form koordinasi di bawah asesmen menyimpan melalui
+endpoint existing. Periksa modal Buat Kegiatan, unggah cover, form posisi dan
+asesmen, pengajuan/publikasi, paket/order, pelamar/kehadiran dan profil pending.
+Akses langsung lintas role/pemilik harus tetap ditolak. Periksa pula role lain
+karena stylesheet aplikasi dibangun bersama. Hasil nyata dan bagian belum diuji
+tercantum pada [handoff EO](../../docs/ORGANIZER_UI_REFINEMENT_HANDOFF.md).
+
 ## Usia otomatis dan profil ringkas — 14 November 2026
 
 Ubah tanggal lahir: usia ikut berubah sesuai hari WIB. Periksa ulang tahun,

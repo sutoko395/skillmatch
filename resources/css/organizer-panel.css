@@ -139,3 +139,276 @@
     .organizer-main h1 { overflow-wrap: anywhere; }
     .organizer-main form.flex.flex-wrap > label { max-width: 100%; }
 }
+
+/* Organizer refinement, 14 November 2026. Restricted to the organizer shell. */
+.organizer-panel { --organizer-line: #e2e8f0; }
+.organizer-panel .organizer-sidebar { width: 256px; }
+.organizer-panel .organizer-sidebar nav > a { min-height: 44px; border-radius: 9px; }
+.organizer-panel .organizer-sidebar h2 { font-size: 14px; letter-spacing: .035em; }
+.organizer-panel .organizer-sidebar > div:first-child { padding-inline: 20px; }
+.organizer-panel .organizer-main { padding-top: 88px; }
+.organizer-panel .organizer-main h1 { font-size: 24px; line-height: 1.3; letter-spacing: -.025em; }
+.organizer-panel .organizer-main h2 { letter-spacing: -.015em; }
+.organizer-panel .organizer-main section.rounded-2xl { border-radius: 12px; }
+.organizer-panel .organizer-main section.p-6 { padding: 20px; }
+.organizer-panel .organizer-secondary-button { padding: 9px 14px; border-radius: 8px; font-size: 13px; }
+.organizer-panel .organizer-status {
+    display: inline-flex; align-items: center; gap: 4px; width: fit-content; max-width: 100%;
+    padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600;
+    line-height: 1.5; overflow-wrap: anywhere;
+}
+.organizer-panel .organizer-status-context { font-weight: 400; }
+.organizer-panel .organizer-status--neutral { background: #f1f5f9; color: #475569; }
+.organizer-panel .organizer-status--blue { background: #eff6ff; color: #1d4ed8; }
+.organizer-panel .organizer-status--success { background: #ecfdf5; color: #047857; }
+.organizer-panel .organizer-status--warning { background: #fffbeb; color: #92400e; }
+.organizer-panel .organizer-status--danger { background: #fff1f2; color: #be123c; }
+.organizer-panel .organizer-event-list { overflow: hidden; border: 1px solid var(--organizer-line); border-radius: 12px; background: #fff; }
+.organizer-panel .organizer-list-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 18px 20px; border-bottom: 1px solid var(--organizer-line); }
+.organizer-panel .organizer-event-row { display: grid; grid-template-columns: 112px minmax(0, 1fr) auto; align-items: center; gap: 20px; padding: 20px; }
+.organizer-panel .organizer-event-row + .organizer-event-row { border-top: 1px solid #f1f5f9; }
+.organizer-panel .organizer-event-thumbnail { width: 112px; height: 88px; aspect-ratio: auto; border-radius: 8px; }
+.organizer-panel .organizer-event-thumbnail svg { width: 30px; height: 30px; }
+.organizer-panel .organizer-event-thumbnail > div { gap: 4px; }
+.organizer-panel .organizer-event-thumbnail span { font-size: 10px; }
+.organizer-panel .organizer-event-title { color: #0f172a; font-size: 17px; font-weight: 600; line-height: 1.5; overflow-wrap: anywhere; }
+.organizer-panel .organizer-event-title:hover { color: var(--organizer-blue); text-decoration: underline; text-underline-offset: 3px; }
+.organizer-panel .organizer-event-manage { white-space: nowrap; }
+.organizer-panel .organizer-metrics { gap: 12px; }
+.organizer-panel .organizer-metrics > div { padding: 16px; border-radius: 10px; background: #fff; border-color: var(--organizer-line); }
+.organizer-panel .organizer-metrics > div > p.text-3xl { margin-top: 8px; font-size: 26px; line-height: 1.2; }
+.organizer-panel .organizer-metrics > div > div > span:last-child { padding: 6px; border-radius: 8px; }
+/* Visible metric borders follow their blue, green, purple and yellow accents. */
+.organizer-panel .organizer-metrics > .organizer-metric--blue { border-color: #60a5fa; }
+.organizer-panel .organizer-metrics > .organizer-metric--green { border-color: #34d399; }
+.organizer-panel .organizer-metrics > .organizer-metric--purple { border-color: #c084fc; }
+.organizer-panel .organizer-metrics > div:last-child { border-color: #facc15; }
+.organizer-panel .organizer-dashboard > div > section > div:first-child { padding: 16px 20px; }
+.organizer-panel .organizer-dashboard > div > section > div:first-child > p { font-size: 12px; }
+.organizer-panel .organizer-action-panel { border: 1px solid var(--organizer-line); border-radius: 12px; background: white; padding: 20px; }
+.organizer-panel .organizer-action-heading { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }
+.organizer-panel .organizer-eyebrow { color: #2563eb; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.organizer-panel .organizer-action-row { padding: 12px 0; border-top: 1px solid #f1f5f9; font-size: 14px; }
+.organizer-panel .organizer-action-row > p { font-size: 13px; line-height: 1.6; }
+.organizer-panel .organizer-back-link { display: inline-flex; align-items: center; min-height: 44px; margin-top: -12px; margin-bottom: 8px; color: #64748b; font-size: 13px; }
+.organizer-panel .organizer-back-link:hover { color: #2563eb; }
+.organizer-panel .organizer-event-detail { max-width: 1280px; margin-inline: auto; }
+.organizer-panel .organizer-event-actions { padding: 12px 16px; border: 1px solid var(--organizer-line); border-radius: 10px; background: white; font-size: 13px; }
+.organizer-panel .organizer-event-actions a { display: inline-flex; align-items: center; min-height: 44px; }
+.organizer-panel .organizer-detail-cover { max-height: 220px; aspect-ratio: 4 / 1; }
+.organizer-panel .organizer-setup-steps { gap: 8px; padding: 0; }
+.organizer-panel .organizer-setup-steps li { padding: 6px 10px; border: 1px solid var(--organizer-line); border-radius: 6px; background: #fff; font-size: 12px; }
+.organizer-panel .organizer-section-nav { position: sticky; top: 80px; z-index: 20; display: flex; gap: 4px; overflow-x: auto; margin-bottom: 20px; padding: 8px; border: 1px solid var(--organizer-line); border-radius: 12px; background: #fff; box-shadow: 0 2px 6px rgb(15 23 42 / .04); }
+.organizer-panel .organizer-section-nav a { display: inline-flex; flex: 1 0 auto; align-items: center; justify-content: center; min-height: 44px; padding: 8px 14px; border-radius: 8px; color: #475569; font-size: 13px; font-weight: 500; white-space: nowrap; transition: background-color .15s, color .15s; }
+.organizer-panel .organizer-section-nav a:hover { background: #f1f5f9; color: #1d4ed8; }
+.organizer-panel .organizer-section-nav a[aria-current="location"] { background: #eff6ff; color: #1d4ed8; font-weight: 600; }
+.organizer-panel .organizer-section-nav a:focus-visible { outline: 2px solid #2563eb; outline-offset: -2px; }
+.organizer-panel .organizer-event-detail :is(section[id], h2[id]) { scroll-margin-top: 164px; }
+.organizer-panel .organizer-event-info { gap: 18px; }
+.organizer-panel .organizer-event-statuses { padding: 12px 14px; gap: 12px; }
+.organizer-panel .organizer-event-meta { gap: 16px; }
+.organizer-panel .organizer-recruitment { padding-top: 16px; }
+.organizer-panel .organizer-position-card { padding: 16px; background: #fff; }
+.organizer-panel .organizer-position-card .organizer-position-grid { gap: 16px; margin-top: 16px; }
+.organizer-panel .organizer-section-heading { margin-bottom: 16px; padding-bottom: 12px; }
+@media (min-width: 1024px) {
+    .organizer-panel .organizer-workspace { padding-left: 256px; }
+    .organizer-panel .organizer-topbar { left: 256px; }
+}
+@media (max-width: 767px) {
+    .organizer-panel .organizer-event-row { grid-template-columns: 72px minmax(0, 1fr); gap: 12px; padding: 16px; align-items: start; }
+    .organizer-panel .organizer-event-thumbnail { width: 72px; height: 72px; }
+    .organizer-panel .organizer-event-thumbnail span { display: none; }
+    .organizer-panel .organizer-event-manage { grid-column: 2; justify-self: start; }
+    .organizer-panel .organizer-list-heading { padding: 16px; }
+    .organizer-panel .organizer-event-title { font-size: 16px; }
+    .organizer-panel .organizer-action-panel { padding: 16px; }
+    .organizer-panel .organizer-main section.p-6 { padding: 16px; }
+    .organizer-panel .organizer-event-statuses { grid-template-columns: 1fr; }
+    .organizer-panel .organizer-event-statuses > div { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+    .organizer-panel .organizer-event-statuses dt { margin-bottom: 0; }
+    .organizer-panel .organizer-detail-cover { aspect-ratio: 16 / 7; }
+    .organizer-panel .organizer-section-nav { padding: 6px; }
+}
+
+.organizer-panel .organizer-application-status > span { padding: 4px 8px; border-radius: 6px; font-size: 11px; line-height: 1.5; }
+
+/* Follow-up rows approved after the organizer dashboard review. */
+.organizer-panel .organizer-action-heading { margin-bottom: 0; }
+.organizer-panel .organizer-action-group { margin-top: 16px; padding: 20px; border: 1px solid var(--organizer-line); border-radius: 12px; background: #fff; }
+.organizer-panel .organizer-action-group-title { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 0; color: #0f172a; font-size: 16px; font-weight: 600; }
+.organizer-panel .organizer-action-group-title::before { content: ''; width: 8px; height: 8px; flex-shrink: 0; border-radius: 50%; background: #2563eb; }
+.organizer-panel #organizer-execution-title::before { background: #059669; }
+.organizer-panel .organizer-action-count { padding: 2px 7px; border-radius: 6px; background: #f1f5f9; color: #64748b; font-size: 11px; font-weight: 500; line-height: 1.5; }
+.organizer-panel .organizer-action-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 20px; padding: 16px 0; border-top: 0; }
+.organizer-panel .organizer-action-row + .organizer-action-row { border-top: 1px solid #f1f5f9; }
+.organizer-panel .organizer-action-row:last-child { padding-bottom: 0; }
+.organizer-panel .organizer-action-name { color: #0f172a; font-size: 14px; font-weight: 600; line-height: 1.5; overflow-wrap: anywhere; }
+.organizer-panel .organizer-action-description { margin-top: 4px; color: #64748b; font-size: 13px; line-height: 1.6; }
+.organizer-panel .organizer-action-empty { margin-top: 16px; color: #64748b; font-size: 13px; }
+@media (max-width: 639px) {
+    .organizer-panel .organizer-action-row { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    .organizer-panel .organizer-action-row > a { justify-self: start; }
+}
+
+/* Metric titles match their accent; follow-up heading sits outside both cards. */
+.organizer-panel .organizer-metric--blue > div > span:first-child { color: #1e40af; }
+.organizer-panel .organizer-metric--green > div > span:first-child { color: #065f46; }
+.organizer-panel .organizer-metric--purple > div > span:first-child { color: #6b21a8; }
+.organizer-panel .organizer-followups > .organizer-action-heading h2 { font-weight: 700; }
+.organizer-panel .organizer-action-button {
+    display: inline-flex; align-items: center; justify-content: center; justify-self: end;
+    min-height: 36px; padding: 6px 12px; border: 1px solid #2563eb; border-radius: 7px;
+    background: #2563eb; color: #fff; font-size: 12px; font-weight: 600; line-height: 1.5;
+    text-decoration: none; white-space: nowrap;
+}
+.organizer-panel .organizer-action-button:hover { border-color: #1d4ed8; background: #1d4ed8; }
+@media (max-width: 639px) {
+    .organizer-panel .organizer-action-group { padding: 16px; }
+    .organizer-panel .organizer-action-button { min-height: 44px; }
+}
+
+/* Brighter yellow for the pending-review metric, with a readable golden title. */
+.organizer-panel .organizer-metrics > div:last-child > div > span:first-child { color: #a16207; }
+.organizer-panel .organizer-metrics > div:last-child > div > span:last-child { color: #ca8a04; background: #fef9c3; }
+
+/* Reuse the landing-page symbol at the sidebar identity size. */
+.organizer-panel .organizer-brand-mark { flex-shrink: 0; }
+.organizer-panel .organizer-brand-mark svg { width: 36px; height: 36px; color: #2563eb; }
+
+/* Compact event-list context badges and action, without changing status values. */
+.organizer-panel .organizer-event-badges .organizer-list-status--green { background: #ecfdf5; color: #047857; }
+.organizer-panel .organizer-event-badges .organizer-list-status--blue { background: #eff6ff; color: #1d4ed8; }
+.organizer-panel .organizer-event-badges .organizer-list-status--yellow { background: #fefce8; color: #a16207; }
+@media (max-width: 767px) {
+    .organizer-panel .organizer-event-row > .organizer-event-manage { justify-self: start; }
+}
+
+/* Manage is secondary to the solid-blue create action on the event list. */
+.organizer-panel .organizer-event-manage { border-color: #93c5fd; background: #fff; color: #1d4ed8; }
+.organizer-panel .organizer-event-manage:hover { border-color: #60a5fa; background: #eff6ff; color: #1d4ed8; }
+
+/* A stronger title and quieter icon-led metadata separate event information. */
+.organizer-panel .organizer-event-metadata { display: grid; gap: 6px; margin-top: 8px; color: #64748b; font-size: 12px; line-height: 1.5; }
+.organizer-panel .organizer-event-schedule { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.organizer-panel .organizer-event-meta-item { display: flex; align-items: flex-start; gap: 6px; min-width: 0; }
+.organizer-panel .organizer-event-meta-item > svg { width: 15px; height: 15px; margin-top: 1px; flex-shrink: 0; color: #94a3b8; }
+.organizer-panel .organizer-event-meta-item > span { min-width: 0; overflow-wrap: anywhere; }
+
+/* Lightweight name search and moderation filter for the organizer's own events. */
+.organizer-panel .organizer-event-filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
+.organizer-panel .organizer-event-search { flex: 1 1 260px; }
+.organizer-panel .organizer-event-filters label { display: block; margin-bottom: 6px; color: #475569; font-size: 12px; font-weight: 500; }
+.organizer-panel .organizer-event-filters :is(input, select) { width: 100%; min-height: 40px; background-color: #fff; }
+.organizer-panel .organizer-event-filters .organizer-action-button { min-height: 40px; }
+.organizer-panel .organizer-event-filter-reset { display: inline-flex; align-items: center; min-height: 40px; padding: 6px; color: #64748b; font-size: 12px; }
+.organizer-panel .organizer-event-filter-reset:hover { color: #1d4ed8; }
+@media (max-width: 639px) {
+    .organizer-panel .organizer-event-filters > div { flex: 1 1 100%; }
+    .organizer-panel .organizer-event-filters :is(input, select, button, .organizer-event-filter-reset) { min-height: 44px; }
+}
+
+/* Account identity and logout live with the organizer navigation. */
+.organizer-panel .organizer-sidebar nav > .organizer-sidebar-account { margin-top: 0; margin-bottom: 16px; padding: 8px 12px 20px; border-bottom: 1px solid rgb(255 255 255 / .1); }
+.organizer-panel .organizer-sidebar nav > .organizer-sidebar-divider { margin-block: 16px; }
+.organizer-panel .organizer-sidebar-logout { min-height: 44px; color: #fca5a5; background: rgb(239 68 68 / .12); }
+.organizer-panel .organizer-sidebar-logout:hover { color: #fecaca; background: rgb(239 68 68 / .22); }
+.organizer-panel .organizer-sidebar-logout:focus-visible { outline: 2px solid #fca5a5; outline-offset: 2px; }
+
+@media (min-width: 1024px) {
+    .organizer-panel .organizer-main { padding-top: 32px; }
+}
+
+/* Requested red return action on the organizer event detail. */
+.organizer-panel .organizer-detail-back { background: #dc2626; border-color: #dc2626; color: #fff; }
+.organizer-panel .organizer-detail-back:hover { background: #b91c1c; border-color: #b91c1c; }
+.organizer-panel .organizer-detail-back:focus-visible { outline: 2px solid #dc2626; outline-offset: 2px; }
+
+@media (min-width: 1024px) {
+    .organizer-panel .organizer-section-nav { top: 16px; }
+    .organizer-panel .organizer-event-detail :is(section[id], h2[id]) { scroll-margin-top: 100px; }
+}
+
+.organizer-panel .organizer-info-edit { align-self: center; min-height: 36px; padding: 6px 12px; border-radius: 7px; font-size: 13px; color: #1d4ed8; border-color: #3b82f6; background: #fff; }
+.organizer-panel .organizer-info-edit:hover { color: #1e40af; border-color: #2563eb; background: #eff6ff; }
+.organizer-panel .organizer-info-edit:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+
+/* Airier event information with icon-led labels and separate date/time lines. */
+.organizer-panel .organizer-event-info { gap: 24px; }
+.organizer-panel .organizer-event-info > h2 { font-size: 18px; line-height: 1.4; }
+.organizer-panel .organizer-event-info .organizer-event-meta { gap: 24px 32px; }
+.organizer-panel .organizer-event-info dt { display: flex; align-items: flex-start; gap: 7px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; color: #64748b; }
+.organizer-panel .organizer-event-info dt > svg { width: 16px; height: 16px; margin-top: 1px; flex-shrink: 0; color: #64748b; }
+.organizer-panel .organizer-event-info dd { font-size: 14px; line-height: 1.7; color: #1e293b; }
+.organizer-panel .organizer-event-info .organizer-info-description { grid-column: 1 / -1; }
+.organizer-panel .organizer-info-description dd { max-width: 80ch; line-height: 1.8; }
+.organizer-panel .organizer-event-info .organizer-recruitment { padding-top: 24px; }
+.organizer-panel .organizer-recruitment h3 { margin-bottom: 18px; font-size: 14px; line-height: 1.5; color: #0f172a; }
+.organizer-panel .organizer-event-info .organizer-info-time { display: block; margin-top: 3px; font-size: 12px; color: #64748b; }
+.organizer-panel .organizer-info-range { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.organizer-panel .organizer-info-range .organizer-info-range-separator { font-size: 12px; color: #94a3b8; }
+
+.organizer-panel .organizer-info-edit > svg { width: 16px; height: 16px; flex-shrink: 0; }
+.organizer-panel .organizer-cover-preview { width: 100%; object-fit: cover; border: 1px solid var(--organizer-line); border-radius: 12px; }
+.organizer-panel .organizer-cover-controls { display: flex; align-items: flex-start; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 12px; }
+.organizer-panel .organizer-cover-confirm { display: flex; align-items: center; gap: 8px; }
+.organizer-panel .organizer-cover-controls button:disabled { opacity: .6; cursor: wait; }
+.organizer-panel #cover_image { scroll-margin-top: 100px; }
+@media (min-width: 1024px) {
+    .organizer-panel #cover_image { scroll-margin-top: 32px; }
+}
+
+.organizer-panel .organizer-cover-picker { display: flex; flex-direction: column; align-items: flex-end; max-width: 100%; text-align: right; }
+
+/* Two distinct information groups stay inside each position card. */
+.organizer-panel .organizer-position-subcard { min-width: 0; padding: 16px; border: 1px solid #e2e8f0; border-radius: 10px; background: #f8fafc; overflow-wrap: anywhere; }
+.organizer-panel .organizer-position-subtitle { color: #0f172a; font-size: 14px; font-weight: 600; line-height: 1.5; }
+.organizer-panel .organizer-position-description { margin-top: 12px; color: #334155; font-size: 14px; line-height: 1.7; }
+.organizer-panel .organizer-position-subcard p { line-height: 1.7; }
+
+/* Keep both event information groups stacked within the main information card. */
+.organizer-panel .organizer-event-info > .organizer-info-subcard { min-width: 0; padding: 16px; border: 1px solid #e2e8f0; border-radius: 10px; background: #f8fafc; }
+
+.organizer-panel .organizer-position-delete { min-height: 36px; padding: 6px 12px; border-radius: 7px; font-size: 13px; color: #dc2626; border-color: #f87171; background: #fff; }
+.organizer-panel .organizer-position-delete:hover { color: #b91c1c; border-color: #dc2626; background: #fef2f2; }
+.organizer-panel .organizer-position-delete:focus-visible { outline: 2px solid #dc2626; outline-offset: 2px; }
+
+/* Assessment summary separates identity, state, question count and duration. */
+.organizer-panel .organizer-assessment-summary { display: flex; align-items: flex-start; gap: 12px; min-width: 0; }
+.organizer-panel .organizer-assessment-symbol { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px; background: #eff6ff; color: #2563eb; }
+.organizer-panel .organizer-assessment-symbol svg { width: 21px; height: 21px; }
+.organizer-panel .organizer-assessment-title { color: #0f172a; font-size: 15px; font-weight: 600; line-height: 1.5; overflow-wrap: anywhere; }
+.organizer-panel .organizer-assessment-status { display: flex; align-items: flex-start; gap: 6px; margin-top: 5px; font-size: 12px; line-height: 1.5; color: #64748b; }
+.organizer-panel .organizer-assessment-meta { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: 12px; line-height: 1.5; color: #475569; }
+.organizer-panel .organizer-assessment-meta > span { display: inline-flex; align-items: center; gap: 6px; }
+.organizer-panel :is(.organizer-assessment-status, .organizer-assessment-meta) svg { width: 15px; height: 15px; flex-shrink: 0; color: #94a3b8; }
+.organizer-panel .organizer-assessment-status svg { margin-top: 1px; }
+
+.organizer-panel .organizer-assessment-link { color: #1d4ed8; border-color: #3b82f6; }
+.organizer-panel .organizer-assessment-link:hover { color: #1e40af; border-color: #2563eb; }
+
+/* Compact organizer notices float above content without shifting the page. */
+.organizer-panel .organizer-toast-stack { position: fixed; z-index: 40; top: 80px; right: 20px; width: min(380px, calc(100vw - 40px)); display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+.organizer-panel .organizer-toast { display: flex; align-items: flex-start; gap: 12px; padding: 16px; border: 1px solid #dbeafe; border-radius: 14px; background: #fff; box-shadow: 0 8px 28px rgb(15 23 42 / .12); pointer-events: auto; }
+.organizer-panel .organizer-toast-icon { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; flex-shrink: 0; border-radius: 50%; background: #eff6ff; color: #2563eb; }
+.organizer-panel .organizer-toast-icon svg { width: 20px; height: 20px; }
+.organizer-panel .organizer-toast--success { border-color: #d1fae5; }
+.organizer-panel .organizer-toast--success .organizer-toast-icon { background: #ecfdf5; color: #059669; }
+.organizer-panel .organizer-toast--error { border-color: #fecaca; }
+.organizer-panel .organizer-toast--error .organizer-toast-icon { background: #fef2f2; color: #dc2626; }
+.organizer-panel .organizer-toast-title { color: #0f172a; font-size: 13px; font-weight: 600; line-height: 1.5; }
+.organizer-panel .organizer-toast-message { margin-top: 3px; color: #64748b; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+.organizer-panel .organizer-toast-close { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex-shrink: 0; border-radius: 7px; color: #94a3b8; }
+.organizer-panel .organizer-toast-close svg { width: 16px; height: 16px; }
+.organizer-panel .organizer-toast-close:hover { background: #f1f5f9; color: #475569; }
+.organizer-panel .organizer-toast-close:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+@media (min-width: 1024px) {
+    .organizer-panel .organizer-toast-stack { top: 24px; right: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .organizer-panel .organizer-toast { transition: none !important; }
+}
+
+.organizer-panel .organizer-applicant-count { display: flex; align-items: center; gap: 6px; margin-top: 10px; color: #64748b; font-size: 12px; line-height: 1.5; }
+.organizer-panel .organizer-applicant-count svg { width: 15px; height: 15px; flex-shrink: 0; color: #7c3aed; }
+.organizer-panel .organizer-applicant-count strong { color: #6d28d9; font-weight: 600; }

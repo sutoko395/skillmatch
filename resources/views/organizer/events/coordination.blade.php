@@ -21,6 +21,6 @@
             <div><dt class="font-semibold">Nama PIC</dt><dd>{{ $coordination['pic_name'] ?: 'Belum diisi' }}</dd></div>
             <div><dt class="font-semibold">Kontak PIC</dt><dd>{{ $coordination['pic_contact'] ?: 'Belum diisi' }}</dd></div>
         </dl>
-        <p class="mt-3 text-sm text-slate-500">Koordinasi tersimpan sebagai riwayat dan tidak dapat diubah setelah event selesai atau dibatalkan.</p>
+        <p class="mt-3 text-sm text-slate-500">Koordinasi tersimpan sebagai riwayat dan tidak dapat diubah setelah kegiatan selesai atau dibatalkan.</p>
     @endif
 </x-section-card>

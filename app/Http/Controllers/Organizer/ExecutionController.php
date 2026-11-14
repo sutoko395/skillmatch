@@ -16,6 +16,17 @@ use Illuminate\Validation\ValidationException;
 
 class ExecutionController extends Controller
 {
+    public function index(Request $request)
+    {
+        Gate::authorize('create', Event::class);
+
+        $events = Event::where('organizer_id', $request->user()->id)
+            ->withCount(['applications as accepted_applications_count' => fn ($query) => $query->where('status', 'accepted')])
+            ->latest('created_at')->orderByDesc('id')->paginate(12);
+
+        return view('organizer.execution.index', compact('events'));
+    }
+
     public function show(Request $request, Event $event)
     {
         Gate::authorize('update', $event);

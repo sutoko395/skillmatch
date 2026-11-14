@@ -17,6 +17,44 @@ use Illuminate\Validation\ValidationException;
 
 class EventService
 {
+    public function updateCover(Event $event, User $actor, array $input): void
+    {
+        Gate::forUser($actor)->authorize('update', $event);
+        $this->editable($event);
+        $data = Validator::make($input, [
+            'cover_image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+        ], [
+            'cover_image.required' => 'Pilih gambar terlebih dahulu.',
+            'cover_image.image' => 'Pilih berkas gambar yang valid.',
+            'cover_image.mimes' => 'Foto harus berformat JPG, PNG, atau WebP.',
+            'cover_image.max' => 'Ukuran foto maksimal 5 MB.',
+            'cover_image.uploaded' => 'Foto gagal diunggah. Pilih ulang foto dan coba kembali.',
+        ])->validate();
+        $path = $data['cover_image']->store('event-covers', 'public');
+        if (! $path) {
+            throw ValidationException::withMessages(['cover_image' => 'Foto gagal disimpan. Silakan coba kembali.']);
+        }
+        try {
+            DB::transaction(function () use ($event, $actor, $path) {
+                $actor = User::lockForUpdate()->findOrFail($actor->id);
+                $event = Event::lockForUpdate()->findOrFail($event->id);
+                Gate::forUser($actor)->authorize('update', $event);
+                $this->editable($event);
+                $oldPath = $event->cover_image_path;
+                $event->forceFill(['cover_image_path' => $path, 'revision' => $event->revision + 1])->save();
+                app(AuditService::class)->record($actor, 'event.cover_updated', $event, [
+                    'after' => ['revision' => $event->revision],
+                ]);
+                if ($oldPath && $oldPath !== $path) {
+                    DB::afterCommit(fn () => Storage::disk('public')->delete($oldPath));
+                }
+            }, 3);
+        } catch (\Throwable $exception) {
+            Storage::disk('public')->delete($path);
+            throw $exception;
+        }
+    }
+
     public function correctText(Event $event, User $actor, array $input): void
     {
         DB::transaction(function () use ($event, $actor, $input) {

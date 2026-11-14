@@ -46,10 +46,11 @@
                 >{{ old('description', $event->description) }}</textarea>
             </x-form-field>
 
-            <div class="border-t border-slate-100 pt-6">
+            <div class="flex flex-wrap items-center gap-3 border-t border-slate-100 pt-6">
                 <x-button type="submit">
                     Simpan Koreksi
                 </x-button>
+                <a href="{{ route('organizer.events.show', $event) }}#ringkasan" class="organizer-secondary-button organizer-position-delete">Batal</a>
             </div>
         </form>
     </x-section-card>

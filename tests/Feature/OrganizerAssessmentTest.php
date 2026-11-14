@@ -59,7 +59,7 @@ class OrganizerAssessmentTest extends DatabaseTestCase
         $this->assertFalse($assessment->is_published);
         $data['revision'] = $assessment->revision;
         $data['action'] = 'preview';
-        $this->put($url, $data)->assertOk()->assertSee('Konfirmasi Publikasi Assessment')->assertSee('Petugas');
+        $this->put($url, $data)->assertOk()->assertSee('Konfirmasi Publikasi Asesmen')->assertSee('Petugas');
         $this->assertFalse($assessment->fresh()->is_published);
         $data['action'] = 'publish';
         $this->putJson($url, $data)->assertUnprocessable()->assertJsonValidationErrors('confirmed');

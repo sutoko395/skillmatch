@@ -12,6 +12,17 @@ use Illuminate\Support\Facades\Gate;
 
 class ApplicationController extends Controller
 {
+    public function overview(Request $request)
+    {
+        Gate::authorize('create', Event::class);
+
+        $events = Event::where('organizer_id', $request->user()->id)
+            ->withCount(['applications as submitted_applications_count' => fn ($query) => $query->whereNotNull('submitted_at')])
+            ->latest('created_at')->orderByDesc('id')->paginate(12);
+
+        return view('organizer.applications.overview', compact('events'));
+    }
+
     public function index(Request $request, Event $event)
     {
         Gate::authorize('update', $event);

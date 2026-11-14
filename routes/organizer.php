@@ -48,6 +48,7 @@ Route::middleware([
             ->name('activity.index');
 
         Route::resource('events', EventController::class);
+        Route::patch('events/{event}/cover', [EventController::class, 'updateCover'])->name('events.cover.update');
         Route::put('events/{event}/coordination', [EventController::class, 'updateCoordination'])
             ->name('events.coordination.update');
         Route::post('events/{event}/recruitment-repair', [EventController::class, 'repairRecruitment'])
@@ -89,6 +90,9 @@ Route::middleware([
             'events/{event}/applications',
             [ApplicationController::class, 'index']
         )->name('applications.index');
+
+        Route::get('applications', [ApplicationController::class, 'overview'])
+            ->name('applications.overview');
 
         Route::get(
             'applications/{application}',

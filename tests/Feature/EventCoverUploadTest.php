@@ -100,4 +100,45 @@ class EventCoverUploadTest extends DatabaseTestCase
         $this->assertSame($path, $event->fresh()->cover_image_path);
         $this->assertCount(1, Storage::disk('public')->allFiles());
     }
+    public function test_direct_cover_update_changes_only_cover_and_revision(): void
+    {
+        Storage::fake('public');
+        [$owner, $event] = $this->fixture();
+        $before = $event->getAttributes();
+        $this->actingAs($owner)->patch(route('organizer.events.cover.update', $event), [
+            'cover_image' => $this->photo(), 'title' => 'Must not replace title', 'status' => 'approved',
+        ])->assertRedirect(route('organizer.events.show', $event));
+        $after = $event->fresh();
+        Storage::disk('public')->assertExists($after->cover_image_path);
+        foreach (['title', 'description', 'status', 'publication_status', 'starts_at', 'ends_at', 'package_snapshot'] as $field) {
+            $this->assertSame($before[$field], $after->getAttributes()[$field]);
+        }
+        $this->assertSame($event->revision + 1, $after->revision);
+        $this->assertDatabaseHas('audit_logs', ['action' => 'event.cover_updated']);
+        $first = $after->cover_image_path;
+        $this->patch(route('organizer.events.cover.update', $event), ['cover_image' => $this->photo()])->assertRedirect();
+        $this->assertNotSame($first, $event->fresh()->cover_image_path);
+    }
+
+    public function test_direct_cover_update_rejects_invalid_files_other_owners_and_locked_events(): void
+    {
+        Storage::fake('public');
+        [$owner, $event] = $this->fixture();
+        $url = route('organizer.events.cover.update', $event);
+        $this->actingAs($owner)->patchJson($url, [])->assertUnprocessable()->assertJsonValidationErrors('cover_image');
+        foreach ([UploadedFile::fake()->create('bad.svg', 1, 'image/svg+xml'), UploadedFile::fake()->create('big.jpg', 5121, 'image/jpeg')] as $file) {
+            $this->patchJson($url, ['cover_image' => $file])->assertUnprocessable()->assertJsonValidationErrors('cover_image');
+        }
+        $other = User::factory()->create(['role' => 'organizer', 'organizer_status' => 'active']);
+        $this->actingAs($other)->patchJson($url, ['cover_image' => $this->photo()])->assertForbidden();
+        $this->actingAs(User::factory()->create())->patchJson($url, ['cover_image' => $this->photo()])->assertForbidden();
+        $this->actingAs($owner);
+        foreach ([['status' => 'pending'], ['status' => 'approved'], ['status' => 'draft', 'published_at' => now()]] as $state) {
+            $event->forceFill($state)->save();
+            $this->patchJson($url, ['cover_image' => $this->photo()])->assertUnprocessable()->assertJsonValidationErrors('event');
+        }
+        $this->assertNull($event->fresh()->cover_image_path);
+        $this->assertSame([], Storage::disk('public')->allFiles());
+    }
+
 }

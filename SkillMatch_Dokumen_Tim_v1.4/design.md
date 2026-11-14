@@ -1,3 +1,381 @@
+## Toast notifikasi panel EO - 14 November 2026
+
+Pengguna meminta notifikasi lebih modern dan sementara. Layout EO kini memakai
+organizer-flash tersendiri; layout role lain tetap memakai flash existing.
+Toast putih ringkas kanan atas, radius14px/shadow lembut, ikon hijau untuk
+success, biru status/info, merah error; judul13px, pesan12px dan tombol tutup.
+Success/status otomatis hilang5detik dengan transisi; hover/fokus menghentikan
+waktu lalu mengulang saat keluar. Error dan daftar validasi tetap sampai ditutup/
+dikoreksi agar pesan penting terbaca. Timer dibersihkan saat komponen dihancurkan.
+Mobile top80px/width viewport minus40px, desktop top24px/right32px/max380px.
+Koreksi teks memakai pesan Perubahan berhasil disimpan. Tanpa JS pesan tetap
+terlihat. Tidak mengubah backend koreksi atau pesan modul lain.
+
+## Batal pada koreksi teks kegiatan - 14 November 2026
+
+Pengguna meminta Batal di sebelah Simpan Koreksi. Tautan outline merah di kanan
+Simpan Koreksi kembali ke detail kegiatan #ringkasan tanpa submit/perubahan data.
+Baris aksi flex-wrap agar tetap rapi di mobile. Form PATCH/koreksi existing tetap.
+
+## Konsistensi detail kegiatan published - 14 November 2026
+
+Pengguna meminta gaya detail published sama dengan draf: kartu/subkartu, ikon,
+font, navigasi dan penempatan tetap bersama. Seluruh secondary link detail
+(selain aksi merah) memakai gaya Edit outline biru minimum36px/padding6x12px.
+Koreksi judul/deskripsi published di header Informasi kegiatan berlabel Edit
+berpensil, aria-label/title menjelaskan cakupan koreksi. Tautan halaman publik
+berikon external, kelola pelamar berikon users tanpa panah. Posisi read-only tidak
+menyisakan baris aksi kosong. Semua syarat editable/published dan route tetap;
+tidak membuka tambah/edit/hapus posisi, paket atau cover pada published.
+
+## Border Kelola Asesmen biru - 14 November 2026
+
+Permintaan pengguna: garis kotak Kelola Asesmen juga biru. Border kini #3b82f6,
+hover #2563eb, selaras teks biru existing. Ukuran/latar/perilaku tetap.
+
+## Label pembatalan sesuai fase kegiatan - 14 November 2026
+
+Pengguna menyetujui label Batalkan draf untuk status draft yang belum pernah
+diajukan/dipublikasikan, Batalkan kegiatan sesudahnya. Judul form mengikuti
+Pembatalan draf/kegiatan, konfirmasi draf menjelaskan data tetap tersimpan.
+Kalimat teknis tentang dependensi layanan lamaran/asesmen dihapus dari UI.
+Pembatalan berbeda dari hapus draf; route, validasi, akses dan transisi tetap.
+
+## Teks tautan Kelola Asesmen biru - 14 November 2026
+
+Atas permintaan pengguna, teks tombol Kelola Asesmen pada detail menjadi biru
+#1d4ed8, hover #1e40af; gaya sama saat label Lihat Asesmen. Ukuran/border/latar,
+tujuan dan kondisi tombol tetap.
+
+## Label Draf dan ikon pensil asesmen - 14 November 2026
+
+Atas permintaan pengguna, status Draf asesmen pada ringkasan asesmen detail
+menjadi Draf saja. Ikon status belum published diganti pensil agar berbeda
+dari ikon clipboard utama. Published tetap gembok; belum dibuat tetap labelnya.
+Tidak mengubah status tersimpan atau aturan asesmen.
+
+## Ikon dan hierarki ringkasan asesmen posisi - 14 November 2026
+
+Pengguna meminta kartu ringkasan asesmen lebih mudah dibaca. Nama posisi15px
+semibold didampingi ikon clipboard biru dalam kotak38px. Status12px dengan ikon
+file untuk draf/belum dibuat atau gembok untuk published/terkunci. Jumlah soal
+berikon daftar dan durasi berikon jam pada baris metadata12px, gap16px dan bisa
+membungkus. Semua ikon dekoratif; label/jumlah/durasi/kondisi serta tautan
+Kelola/Lihat Asesmen tetap. Jarak status5px dan metadata10px memisahkan hierarki.
+
+## Tombol Kelola Asesmen EO - 14 November 2026
+
+Sesuai tiga screenshot pengguna: Kembali ke kegiatan menjadi tombol merah solid,
+Hapus soal outline/teks merah, Tambah soal berikon plus16px dengan outline/teks
+biru. Gunakan gaya tombol EO existing; pertahankan klik add/remove, batas50,
+busy/disabled, kondisi editable dan tujuan anchor kembali ke asesmen kegiatan.
+
+## Tombol posisi dengan ikon dan outline - 14 November 2026
+
+Pengguna meminta Tambah posisi berikon plus, Edit posisi berikon pensil, teks
+serta border keduanya biru. Keduanya memakai gaya Edit existing minimum36px,
+padding6x12px/font13px dan ikon16px. Hapus posisi menjadi tombol outline merah,
+teks merah, latar putih dan hover merah muda, ukuran setara Edit. Aksi bawah
+sejajar, tautan/DELETE/CSRF/konfirmasi/kondisi editable tetap.
+
+## Subkartu Informasi kegiatan bertumpuk - 14 November 2026
+
+Pengguna meminta pola dua subkartu juga pada Informasi kegiatan, selalu atas/
+bawah. Kelompok deskripsi/lokasi/pelaksanaan menjadi subkartu pertama; Jadwal
+rekrutmen kedua, tetap di kartu utama. Latar slate50, border slate200, radius10,
+padding16px sama seperti subkartu posisi. Ikon/font, Edit dan data tetap.
+
+## Dua subkartu di dalam posisi - 14 November 2026
+
+Pengguna meminta deskripsi dan jadwal dipisah menjadi dua kartu di dalam kartu
+posisi utama (sesuai screenshot posisi). Nama/kuota tetap di atas. Subkartu kiri
+Deskripsi & persyaratan berisi deskripsi, skill/level dan persyaratan tambahan;
+kanan Jadwal posisi berisi mode jadwal dan seluruh slot WIB. Latar slate50,
+border slate200, radius10px, padding16px. Desktop dua kolom, mobile bertumpuk.
+Edit/hapus tetap di bawah dan mengikuti editable existing. Nilai/aturan tetap.
+
+## Rekomendasi dimensi sampul detail EO - 14 November 2026
+
+Keterangan di bawah Ubah/Tambah gambar ditambah rekomendasi 1600 x 900 px
+(16:9), sama seperti form pembuatan. Format/ukuran berkas di baris pertama,
+saran dimensi di baris kedua. Dimensi merupakan rekomendasi, bukan validasi baru.
+
+## Keterangan format di bawah Ubah gambar - 14 November 2026
+
+Permintaan pengguna: keterangan JPG/PNG/WebP maksimal5MB dikelompokkan tepat
+di bawah tombol Ubah/Tambah gambar, rata kanan mengikuti tombol. Simpan/Batal
+terpisah dari kelompok itu. Upload dan validasi tetap.
+
+## Pilih gambar langsung dari detail - 14 November 2026
+
+Pengguna meminta Ubah gambar langsung membuka pemilih file, tombol tidak menimpa
+cover. Form inline detail memakai eventCoverUpload existing, tombol di bawah
+sampul. Pilihan baru menjadi preview; Simpan/Batal muncul setelah ada file valid.
+Simpan memakai POST multipart dengan method PATCH ke events.cover.update,
+Batal mengembalikan preview tersimpan. Status menyimpan/disabled, pesan validasi
+client/server, format JPG/PNG/WebP maks5MB. Tanpa JS ada tautan form edit.
+Aturan editable tetap; published/terkunci tidak mendapat form. Ini menggantikan
+overlay/link Ubah gambar ke form edit yang disetujui sebelumnya.
+
+## Edit dengan pensil dan akses penggantian sampul - 14 November 2026
+
+Pengguna meminta Edit sedikit lebih besar, ikon pensil, dan gambar dapat diganti.
+Tombol kini minimum36px/padding6x12px/font13px, pensil16px, outline/teks biru.
+Pada sampul detail yang editable tersedia Ubah gambar kanan bawah; tanpa sampul
+tersedia Tambah gambar. Tautan menuju form edit existing di #cover_image dengan
+offset mobile/desktop. Form sudah multipart dan memakai event-cover-upload
+(preview, ganti/hapus, validasi JPG/PNG/WebP maks5MB). Aturan editable existing
+tetap, termasuk larangan mengganti sampul setelah publikasi. Tidak mengubah
+alur koreksi judul/deskripsi published.
+
+## Informasi kegiatan EO tanpa bar status - 14 November 2026
+
+Disetujui pengguna: hapus bar Moderasi/Publikasi/Pelaksanaan pada kartu Informasi
+kegiatan. Status di daftar/menu lain dan aturan akses tetap. Metadata kartu
+memakai ikon dokumen, pin, jam, kalender, clipboard dan centang (dekoratif),
+label12px abu slate, isi14px, judul18px, subjudul Jadwal rekrutmen14px. Jarak
+antar informasi24px; deskripsi line-height1.8. Rentang waktu mulai/akhir tetap,
+tanggal dan jam dipisah baris; semua jam WIB. Kondisi belum diisi tetap eksplisit.
+Edit kecil outline biru, catatan admin dan form/bagian lain tetap tersedia.
+
+## Ukuran tombol Edit diringkas - 14 November 2026
+
+Permintaan pengguna: kotak Edit terlalu besar. Tombol Informasi kegiatan kini
+min-height32px, padding4x10px, font12px, radius6px, align-self center agar tidak
+meregang mengikuti baris grid. Warna biru serta tujuan/aturan edit tetap.
+
+## Tombol Edit informasi kegiatan - 14 November 2026
+
+Pengguna meminta tombol Edit konfigurasi kegiatan pada kartu Informasi kegiatan
+berlabel Edit saja, teks biru #1d4ed8, border biru #3b82f6 dan latar putih.
+Hover biru muda, fokus keyboard biru; aksesibilitas memakai label Edit informasi
+kegiatan. Posisi/tujuan/aturan editable tetap; tombol lain tidak berubah.
+
+## Sebaran navigasi detail EO - 14 November 2026
+
+Permintaan pengguna: rata kanan kiri. Tombol navigasi bagian kini flex-grow1
+sehingga mengisi lebar panel sampai kedua sisi; teks tetap terpusat pada tiap
+tombol. Layar sempit tetap horizontal scroll, tanpa memotong label. Anchor dan
+highlight existing tetap.
+
+## Navigasi bagian detail kegiatan EO - 14 November 2026
+
+Pengguna meminta deretan Ringkasan/Posisi & jadwal/Asesmen/Koordinasi peserta/
+Paket & pembayaran/Tindakan diperjelas sebagai navigasi. Kini panel putih
+border tipis radius12 dengan tombol radius8, warna biru muda/teks biru pada
+bagian aktif. Label, urutan dan anchor existing tetap; semua bagian masih
+terlihat. Panel sticky16px desktop/80px mobile, horizontal scroll pada layar
+sempit; fokus keyboard jelas. Anchor punya offset100px desktop/164px mobile.
+Alpine memberi aria-current=location berdasarkan klik, hash dan scroll; klik
+mempertahankan pilihan sesaat agar bagian pendek dekat akhir tidak langsung
+mengalihkan highlight. Tautan anchor tetap berfungsi tanpa JavaScript.
+
+## Tombol Kembali merah - 14 November 2026
+
+Atas permintaan pengguna, Kembali pada detail kegiatan EO memakai latar dan
+border merah #dc2626, teks putih, hover #b91c1c dan fokus merah. Ukuran,
+posisi dan tujuan tautan tetap. Ketentuan warna biru sebelumnya digantikan.
+
+## Ringkas area cover detail EO - 14 November 2026
+
+Pengguna meminta kalimat tepat di atas/bawah gambar dihapus. Deskripsi header
+Persetujuan admin, pembayaran dan publikasi merupakan tahap yang berbeda serta
+lima langkah konfigurasi di bawah cover dihapus pada detail kegiatan. Judul
+kegiatan, Kembali, cover dan navigasi bagian tetap. Ini menggantikan ketentuan
+stepper detail sebelumnya; aturan moderasi/pembayaran/publikasi tetap terpisah.
+
+## Identitas dan logout di sidebar EO - 14 November 2026
+
+Pengguna meminta akun/nama dan role dipindah di atas Ringkasan Aktivitas,
+dengan jarak serta garis pemisah seperti setelah Profil Organisasi. Tombol
+Keluar pindah tepat di bawah Lihat situs utama, latar merah transparan dan
+teks/ikon merah muda yang terbaca pada sidebar navy. Bar akun desktop dihapus,
+konten berjarak atas32px. Mobile menyisakan bar tombol navigasi dan judul agar
+drawer tetap dapat diakses. Nama dinamis dari akun aktif, bukan hardcode cahyo.
+Dropdown lama tidak diperlukan; Profil Organisasi tetap tersedia di sidebar.
+Tidak ada footer di layout existing; bagian yang dimaksud diterapkan pada bar
+akun atas sesuai penjelasan saat pengerjaan. Logout tetap POST dengan CSRF.
+
+## Header daftar dihapus dan tombol tambah diperbesar - 14 November 2026
+
+Pengguna meminta seluruh baris Semua kegiatan beserta badge jumlah dihapus.
+Daftar kini langsung menampilkan baris kegiatan setelah filter. Buat Kegiatan
+memakai font 16 px, padding 12x24 px serta ikon plus dekoratif 20 px di kiri.
+Modal, pencarian/filter dan isi daftar tetap. Ini menggantikan ketentuan judul/
+badge jumlah sebelumnya pada halaman Kegiatan Saya.
+
+## Pencarian dan filter moderasi EO - 14 November 2026
+
+Disetujui pengguna: form GET di atas Semua kegiatan dengan pencarian nama,
+status moderasi (Semua, Draf, Menunggu moderasi, Disetujui, Ditolak), Terapkan,
+dan Reset saat aktif. Desktop satu baris, mobile bertumpuk, label terlihat.
+Jumlah mengikuti hasil; pagination menyimpan filter. Hasil kosong punya pesan
+tersendiri. Filter tidak mencampur publikasi/pelaksanaan.
+
+## Header daftar kegiatan dipersingkat - 14 November 2026
+
+Atas permintaan pengguna, kalimat penjelasan di bawah Semua kegiatan dihapus.
+Judul, badge jumlah, informasi kegiatan, status dan aksi tetap.
+
+## Hierarki informasi dan ikon daftar kegiatan EO - 14 November 2026
+
+Permintaan pengguna: teks daftar kegiatan terasa bertumpuk. Judul kini 17 px
+(desktop)/16 px (mobile), metadata tanggal/jam/lokasi 12 px dengan warna sekunder.
+Tanggal dan jam dipisahkan menjadi dua kelompok berikon kalender/jam pada satu
+baris yang bisa membungkus; lokasi berikon pin di baris berikutnya. Ikon 15 px,
+jarak metadata 6 px, jarak ke judul 8 px. Badge status tetap 11 px dan warna yang
+sudah disetujui; thumbnail, tombol outline dan modal tetap. Waktu tetap WIB.
+
+## Menu Pelaksanaan & Kehadiran EO - 14 November 2026
+
+Pengguna menyetujui menu sidebar tersendiri setelah Kelola Pelamar. Menu membuka
+daftar kegiatan milik EO: judul, jadwal WIB, jumlah peserta accepted, publikasi/
+pelaksanaan dan Kelola pelaksanaan (outline biru kecil). Kegiatan kosong dan
+pagination tersedia. Menu aktif mencakup daftar/detail pelaksanaan. Detail
+pelaksanaan kembali ke daftar ini. Kartu navigasi Pelaksanaan dan kehadiran di
+atas detail event dihapus; konfigurasi dan isi detail lainnya tetap.
+
+## Header dan navigasi atas detail kegiatan - 14 November 2026
+
+Permintaan pengguna: header atas detail selalu Kegiatan Saya; nama kegiatan tetap
+menjadi judul konten/tab browser. Layout EO mendukung section topbar-title opsional,
+dengan fallback judul existing pada halaman lain. Semua kegiatan berubah menjadi
+tombol biru Kembali tanpa panah menuju daftar existing. Hanya tautan Pelamar di
+kartu navigasi atas dihapus karena sudah ada menu Kelola Pelamar. Pelaksanaan dan
+kehadiran di kartu tersebut tetap sementara penempatan barunya dibahas.
+
+## Ukuran badge daftar kegiatan dikembalikan - 14 November 2026
+
+Sesuai permintaan pengguna, badge status Kegiatan Saya kembali ke ukuran dasar
+organizer-status: 11 px, padding 4x8 px, radius 6 px. Override ukuran 10 px dihapus.
+Moderasi hijau, Publikasi biru, Pelaksanaan kuning serta tombol outline tetap.
+
+## Kelola kegiatan memakai outline biru - 14 November 2026
+
+Pengguna menyetujui alternatif: Kelola kegiatan berlatar putih, border biru tipis
+#93C5FD dan teks biru #1D4ED8; hover biru sangat muda. Ukuran kecil tanpa panah
+serta target mobile tetap. Buat Kegiatan tetap biru solid sebagai aksi utama.
+Perubahan hanya daftar Kegiatan Saya; tombol di halaman lain tetap.
+
+## Koreksi warna publikasi pada daftar EO - 14 November 2026
+
+Pengguna mengoreksi warna: Publikasi biru muda/teks biru (#EFF6FF/#1D4ED8),
+Moderasi tetap hijau, Pelaksanaan kuning. Ukuran dan label status tetap. Tombol
+Kelola kegiatan masih biru solid; alternatif outline sedang dibahas, belum diterapkan.
+
+## Badge dan aksi Kegiatan Saya - 14 November 2026
+
+Atas permintaan pengguna, jumlah kegiatan memakai badge kecil yang sama dengan
+jumlah tindakan. Kelola kegiatan memakai tombol biru kecil tanpa panah (12 px,
+36 px desktop, target mobile 44 px), lebih kecil dari Buat Kegiatan existing.
+Badge daftar kegiatan 10 px/padding 3x6 px: konteks Moderasi dan Publikasi hijau,
+Pelaksanaan kuning, dengan teks status/konteks lengkap tetap tampil. Ini warna
+kategori presentasi daftar ini, bukan perubahan arti/status: Draf tidak menjadi
+Disetujui, Belum dipublikasikan tetap berbeda dari Dipublikasikan. Halaman detail
+dan komponen status bersama tetap memakai warna existing.
+
+## Logo sidebar EO mengikuti landing page - 14 November 2026
+
+Sesuai permintaan pengguna, kotak huruf S di sidebar EO diganti simbol biru empat
+kelopak dari public-brand landing page, berukuran 36 px. Komponen public-brand
+mendukung markOnly opsional (default false); landing/auth/footer tetap menampilkan
+simbol dan teks existing. Sidebar memakai simbol saja di samping SKILLMATCH dan
+Panel Organisasi existing. Route/ukuran sidebar tetap, tanpa aset/dependensi baru.
+
+## Hierarki judul kelompok tindak lanjut - 14 November 2026
+
+Permintaan terbaru: Persiapan dan rekrutmen serta Pelaksanaan menjadi 16 px,
+lebih besar dari nama kegiatan (14 px) dan lebih kecil dari Perlu Ditindaklanjuti
+(18 px). Warna tetap slate-900/hitam lembut (#0F172A), bobot 600; titik biru/hijau
+serta badge jumlah tetap. Hanya ukuran judul kelompok yang berubah.
+
+## Kartu tindak lanjut putih dengan penanda titik - 14 November 2026
+
+Pengguna menyetujui arah baru: kedua kartu putih, judul gelap dengan titik biru
+untuk Persiapan dan rekrutmen serta titik hijau untuk Pelaksanaan. Jumlah tindakan
+yang ditampilkan kini di samping judul tiap kartu, menggantikan badge gabungan.
+Blok warna kepala dan garis di bawah judul dihapus; pemisah hanya antarkegiatan.
+Tombol biru kecil, dua kartu, judul luar, warna statistik dan alur tetap. Keadaan
+kosong tiap kartu tetap eksplisit. Keputusan ini menggantikan kepala kuning penuh
+pada catatan sebelumnya.
+
+## Kepala kartu tindak lanjut kuning menyatu - 14 November 2026
+
+Klarifikasi pengguna: warna mengisi seluruh kepala kartu hingga sisi kiri/kanan
+serta atas, mengikuti sudut kartu; kedua judul memakai kuning sangat muda #FFFEF7 dengan
+teks keemasan #A16207. Menggantikan strip judul inset biru/kuning sebelumnya.
+Isi kartu tetap putih. Padding kepala sejajar isi pada desktop/mobile; judul,
+angka statistik, tombol biru, data dan alur tetap.
+
+## Baris judul tindak lanjut berwarna lembut - 14 November 2026
+
+Atas permintaan pengguna, baris Persiapan dan rekrutmen memakai latar biru sangat
+muda #EFF6FF dan teks biru #1D4ED8; Pelaksanaan memakai kuning sangat muda #FEFCE8
+dan teks kuning keemasan #A16207. Aksen hanya pada baris judul di dalam kartu,
+dengan padding 10/12 px dan radius 7 px. Isi kartu putih, tombol serta data tetap.
+
+## Aksen statistik lebih tegas - 14 November 2026
+
+Permintaan terbaru: border Total Kegiatan biru #60A5FA, Kegiatan Aktif hijau
+#34D399, Lamaran Belum Ditinjau kuning cerah #FACC15. Judul lamaran memakai
+kuning keemasan #A16207 agar tetap terbaca pada putih; ikon kuning #CA8A04 dengan
+latar #FEF9C3. Border/ikon ungu dan susunan halaman yang disetujui tetap.
+
+## Statistik dan dua kartu tindak lanjut EO - 14 November 2026
+
+Permintaan terbaru: border Total Pelamar ungu lebih jelas (#C084FC), judul Total
+Kegiatan biru tua, Kegiatan Aktif hijau tua, Total Pelamar ungu tua, selaras judul
+amber pada Lamaran Belum Ditinjau. Angka tetap hitam. Perlu Ditindaklanjuti kini
+judul di luar kartu seperti Notifikasi terbaru; dua kartu putih terpisah dan
+bertumpuk untuk Persiapan dan rekrutmen serta Pelaksanaan. Tiap kartu memiliki
+keadaan kosong. Tombol biru solid, tanpa panah, font 12 px/tinggi 36 px desktop;
+mobile mempertahankan target 44 px. Data, kondisi dan route tujuan tetap.
+
+## Panel Perlu Ditindaklanjuti - 14 November 2026
+
+Pengguna menyetujui usulan daftar baris ringkas. Panel memakai satu judul Perlu
+Ditindaklanjuti, badge jumlah tindakan, kelompok Persiapan dan rekrutmen serta
+Pelaksanaan. Nama kegiatan gelap, keterangan singkat di bawah dan tombol aksi
+kanan; mobile tombol turun di bawah. Identitas organisasi/kontak/status verifikasi
+dan judul Prioritas Anda dihapus dari panel. Kelompok kosong tidak ditampilkan;
+panel kosong menampilkan Belum ada tindak lanjut kegiatan. Tombol mengarah ke
+detail, pelamar atau pelaksanaan existing sesuai tindak lanjut. Warna statistik
+yang telah disetujui tetap. Bukti: [handoff EO](../docs/ORGANIZER_UI_REFINEMENT_HANDOFF.md).
+
+## Warna border statistik EO - 14 November 2026
+
+Sesuai gambar pengguna: border Total Kegiatan biru muda, Kegiatan Aktif hijau
+muda, Total Pelamar ungu muda dengan ikon/latar ikon ungu. Border amber Lamaran
+Belum Ditinjau tetap. Hanya aksen warna; layout, angka dan panel Prioritas Anda
+tetap. Panel Prioritas Anda masih dibahas, belum disetujui desain penggantinya.
+
+## Koreksi Ringkasan dan menu pelamar - 14 November 2026
+
+Keputusan pengguna terbaru menggantikan susunan Ringkasan EO pada bagian di bawah:
+hapus panel Pelamar Terbaru, panel Kegiatan Saya dan tombol Buat Kegiatan dari
+Ringkasan Aktivitas. Urutan menjadi sambutan, empat statistik existing, Prioritas
+Anda/tindak lanjut, lalu notifikasi. Buat Kegiatan tetap tersedia di Kegiatan Saya.
+Sidebar menambah Kelola Pelamar di antara Kegiatan Saya dan Profil Organisasi.
+Menu membuka daftar kegiatan milik EO, jumlah lamaran terkirim dan tautan Lihat
+pelamar ke halaman kandidat per kegiatan existing. Tidak mendesain ulang halaman
+lain dalam koreksi ini. Bukti: [handoff EO](../docs/ORGANIZER_UI_REFINEMENT_HANDOFF.md).
+
+## Panel EO ringkas - 14 November 2026
+
+Pengguna menyetujui perapian tampilan EO dari brainstorming pada branch baru.
+Sidebar 256 px dengan offset header/konten selaras; Ringkasan Aktivitas menempatkan
+tindak lanjut sebelum statistik; Kegiatan Saya menjadi daftar baris dengan
+thumbnail kecil. Detail kegiatan memiliki tautan bagian Ringkasan, Posisi/jadwal,
+Asesmen, Koordinasi, Paket/pembayaran dan Tindakan. Form koordinasi dipindahkan
+setelah konfigurasi posisi/asesmen, tetap terbuka dan dapat disimpan.
+
+Label status moderasi, publikasi dan pelaksanaan memakai bahasa Indonesia dan
+konteks terpisah. Status lamaran memakai komponen application-status existing.
+Kegiatan/draf/asesmen diselaraskan pada label Organizer terkait. Warna navy/biru,
+Inter, data dinamis, route dan alur existing tetap. CSS hanya dalam organizer-panel;
+perubahan ini menggantikan proporsi/layout EO FigCraft sebelumnya dalam lingkup
+persetujuan terbaru. Bukti dan batas: [handoff EO](../docs/ORGANIZER_UI_REFINEMENT_HANDOFF.md).
+
 ## Profil ringkas dan usia — 14 November 2026
 
 Permintaan pengguna: rapikan form dan tambah Usia pada Identitas dan Kontak.

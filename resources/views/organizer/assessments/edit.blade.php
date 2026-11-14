@@ -1,13 +1,13 @@
 @extends('organizer.layouts.sidebar')
-@section('title', 'Kelola Assessment')
+@section('title', 'Kelola Asesmen')
 @section('content')
 <div class="mx-auto max-w-6xl">
-    <x-page-header title="Kelola Assessment" :description="$position->event->title . ' · ' . $position->name" />
-    <a href="{{ route('organizer.events.show', $position->event) }}#assessment" class="mb-6 inline-block text-sm text-indigo-700 underline">Kembali ke event</a>
+    <x-page-header title="Kelola Asesmen" :description="$position->event->title . ' · ' . $position->name" />
+    <a href="{{ route('organizer.events.show', $position->event) }}#assessment" class="organizer-action-button organizer-detail-back mb-6">Kembali ke kegiatan</a>
     <x-section-card>
-        <p class="mb-4 text-sm text-slate-600">{{ $assessment?->is_published ? 'Dipublikasikan · Terkunci' : 'Draft · Belum siap untuk pengajuan event' }}</p>
+        <p class="mb-4 text-sm text-slate-600">{{ $assessment?->is_published ? 'Dipublikasikan · Terkunci' : 'Draf · Belum siap untuk pengajuan kegiatan' }}</p>
         @if(!$editable)
-            <p class="mb-6 rounded-xl bg-amber-50 p-4 text-sm text-amber-900">Assessment dapat dilihat. Soal dan durasi tidak dapat diubah setelah assessment dipublikasikan atau konfigurasi event terkunci.</p>
+            <p class="mb-6 rounded-xl bg-amber-50 p-4 text-sm text-amber-900">Asesmen dapat dilihat. Soal dan durasi tidak dapat diubah setelah asesmen dipublikasikan atau konfigurasi kegiatan terkunci.</p>
         @endif
         @php
             $initialQuestions = old('questions', $questions);
@@ -74,7 +74,7 @@
                         <p class="mt-1 text-slate-600"><span x-text="questions.filter(question => isComplete(question)).length">0</span> lengkap · <span x-text="questions.filter(question => !isComplete(question)).length">{{ count($initialQuestions) }}</span> belum lengkap</p>
                     </div>
                 </div>
-                <p class="text-sm text-slate-600">Durasi 1–120 menit. Maksimal 50 soal, masing-masing memiliki empat opsi dan satu kunci jawaban. Draft boleh belum lengkap.</p>
+                <p class="text-sm text-slate-600">Durasi 1–120 menit. Maksimal 50 soal, masing-masing memiliki empat opsi dan satu kunci jawaban. Draf boleh belum lengkap.</p>
                 <div class="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_15rem]">
                     <aside class="min-w-0 lg:order-2" aria-label="Navigasi soal">
                         <button type="button" @click="listOpen = !listOpen" :aria-expanded="listOpen" aria-controls="assessment-question-list" class="flex w-full items-center justify-between rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 lg:hidden">
@@ -93,7 +93,7 @@
                                 <li class="flex items-center gap-2"><span class="h-3 w-3 rounded border border-slate-300 bg-white" aria-hidden="true"></span>Belum lengkap</li>
                                 <li x-show="Object.keys(errors).some(key => key.startsWith('questions.'))" class="flex items-center gap-2"><span class="h-3 w-3 rounded border border-rose-300 bg-rose-50" aria-hidden="true"></span>Perlu diperiksa</li>
                             </ul>
-                            <p class="mt-3 text-xs text-slate-600">Klik nomor untuk berpindah soal. Simpan draft untuk menyimpan semua perubahan.</p>
+                            <p class="mt-3 text-xs text-slate-600">Klik nomor untuk berpindah soal. Simpan draf untuk menyimpan semua perubahan.</p>
                         </div>
                     </aside>
                     <div class="min-w-0 space-y-4 lg:order-1">
@@ -124,7 +124,7 @@
                                     <span class="mt-1 block text-sm text-rose-700" x-text="(errors['questions.' + i + '.correct'] || []).join(' ')"></span>
                                 </label>
                                 @if($editable)
-                                    <button type="button" @click="removeQuestion(i)" :disabled="busy" class="text-sm font-semibold text-rose-700 underline focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 disabled:opacity-50">Hapus soal</button>
+                                    <button type="button" @click="removeQuestion(i)" :disabled="busy" class="organizer-secondary-button organizer-position-delete disabled:opacity-50">Hapus soal</button>
                                 @endif
                             </fieldset>
                         </template>
@@ -135,7 +135,10 @@
                                 <x-button variant="secondary" type="button" @click="selectQuestion(activeQuestion + 1)" x-bind:disabled="activeQuestion >= questions.length - 1 || busy">Berikutnya</x-button>
                             </div>
                             @if($editable)
-                                <x-button variant="secondary" type="button" x-ref="addQuestion" @click="addQuestion()" x-bind:disabled="questions.length >= 50 || busy">Tambah soal</x-button>
+                                <button type="button" x-ref="addQuestion" @click="addQuestion()" :disabled="questions.length >= 50 || busy" class="organizer-secondary-button organizer-info-edit disabled:opacity-50">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" d="M12 5v14M5 12h14" /></svg>
+                                    <span>Tambah soal</span>
+                                </button>
                             @endif
                         </div>
                     </div>
@@ -145,7 +148,7 @@
             @if($editable)
                 <div class="sticky bottom-3 z-10 flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
                     <x-button variant="secondary" type="submit" name="action" value="draft">Simpan Draft</x-button>
-                    <x-button type="submit" name="action" value="preview">Publikasikan Assessment</x-button>
+                    <x-button type="submit" name="action" value="preview">Publikasikan Asesmen</x-button>
                     <p class="text-xs text-slate-500">Menyimpan seluruh soal dalam assessment.</p>
                 </div>
                 <p x-show="busy" x-cloak role="status" class="text-sm text-slate-600">Memproses assessment…</p>

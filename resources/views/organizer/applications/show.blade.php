@@ -119,7 +119,7 @@
                         @forelse($application->position->schedules as $sched)
                             <p>{{ $sched->starts_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} - {{ $sched->ends_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</p>
                         @empty
-                            <p class="text-xs text-slate-500">Mengikuti rentang event.</p>
+                            <p class="text-xs text-slate-500">Mengikuti rentang kegiatan.</p>
                         @endforelse
                     </div>
                 </div>

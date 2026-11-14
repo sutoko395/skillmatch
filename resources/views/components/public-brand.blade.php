@@ -1,5 +1,6 @@
+@props(['markOnly' => false])
 <span {{ $attributes->class(['eb-brand']) }}>
 <svg aria-hidden="true" viewBox="0 0 58.181 58.181" fill="none" xmlns="http://www.w3.org/2000/svg"><g><g><path transform="matrix(1 0 0 1 15.275 0)" d="M13.815 25.722C3.709 20.909 -3.51 11.765 1.784 4.547C7.078 -2.672 20.072 -0.747 24.403 6.472C28.253 14.172 21.034 21.872 13.815 25.722Z" fill="currentColor"/></g><g><path transform="matrix(1 0 0 1 32.459 15.275)" d="M0 13.815C4.813 3.709 13.956 -3.51 21.175 1.784C28.394 7.078 26.469 20.072 19.25 24.403C11.55 28.253 3.85 21.034 0 13.815Z" fill="currentColor"/></g><g><path transform="matrix(1 0 0 1 17.431 32.459)" d="M11.659 0C21.766 4.813 28.984 13.956 23.691 21.175C18.397 28.394 5.403 26.469 1.072 19.25C-2.778 11.55 4.441 3.85 11.659 0Z" fill="currentColor"/></g><g><path transform="matrix(1 0 0 1 0 17.431)" d="M25.722 11.659C20.909 21.766 11.765 28.984 4.547 23.691C-2.672 18.397 -0.747 5.403 6.472 1.072C14.172 -2.778 21.872 4.441 25.722 11.659Z" fill="currentColor"/></g></g></svg>
 
-<span>SkillMatch</span>
+@unless($markOnly)<span>SkillMatch</span>@endunless
 </span>
