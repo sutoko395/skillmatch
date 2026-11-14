@@ -1,0 +1,26 @@
+/* Panel catalog only; public promotional catalog keeps its own presentation. */
+.ve-catalog .eb-catalog-heading { margin-bottom: 20px; }
+.ve-catalog .eb-catalog-heading .eb-eyebrow { font-size: 10px; line-height: 16px; letter-spacing: .12em; }
+.ve-catalog .eb-catalog-heading h1.eb-display { margin-top: 12px; font-family: Georgia,'Times New Roman',serif; font-size: clamp(30px,3.2vw,44px); line-height: 1.12; font-weight: 700; letter-spacing: -.035em; }
+.ve-catalog .eb-catalog-heading > p:last-child { margin-top: 8px; font-size: 14px; line-height: 22px; }
+.ve-catalog .eb-catalog-filters { padding: 18px 20px; gap: 16px; border-color: #e2e8f0; border-radius: 16px; }
+.ve-catalog .eb-catalog-filters input,
+.ve-catalog .eb-catalog-filters select { min-width: 0; min-height: 44px; font-size: 14px; }
+.ve-catalog .eb-catalog-filters .eb-button { min-height: 44px; padding: 10px 18px; border-radius: 10px; }
+.ve-catalog .eb-catalog-count { margin-block: 20px; }
+.ve-catalog .eb-event-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 20px; align-items: stretch; }
+.ve-catalog .eb-event-card { padding: 16px; border: 1px solid #e2e8f0; border-radius: 16px; background: #fff; }
+.ve-catalog .eb-event-card .aspect-video { border-radius: 10px; }
+.ve-catalog .eb-event-category { margin-top: 14px; gap: 8px; flex-wrap: wrap; }
+.ve-catalog .eb-event-card h3 { margin-top: 10px; font-family: inherit; font-size: 20px; line-height: 28px; letter-spacing: normal; }
+.ve-catalog .eb-event-organizer { margin-top: 8px; overflow-wrap: anywhere; }
+.ve-catalog .eb-event-description { margin-top: 8px; font-size: 13px; line-height: 20px; overflow-wrap: anywhere; }
+.ve-catalog .eb-event-meta { margin-block: 16px; }
+.ve-catalog .eb-event-meta > div + div { margin-top: 8px; }
+.ve-catalog .eb-event-action { min-height: 44px; padding-top: 10px; color: #2563eb; border-color: #e2e8f0; }
+.ve-catalog .eb-event-action > span { font-size: 20px; }
+@media(max-width:1279px) { .ve-catalog .eb-event-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media(max-width:639px) {
+    .ve-catalog .eb-event-grid { grid-template-columns: minmax(0,1fr); }
+    .ve-catalog .eb-catalog-filters { grid-template-columns: minmax(0,1fr); padding: 16px; }
+}

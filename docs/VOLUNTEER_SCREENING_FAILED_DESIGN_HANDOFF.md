@@ -53,3 +53,10 @@ feature tests menggunakan database tes, preview visual memakai fixture.
 Tidak seluruh kombinasi alasan panjang/banyak/dokumen terisi diperiksa visual;
 bukan klaim seluruh UAT atau review tim lulus. Tidak ada dependensi integrasi
 baru. PIC A3/A4 melanjutkan review varian data nyata. Tidak ada commit baru.
+
+## Koreksi kartu status — 14 November 2026
+
+Disetujui pengguna: kartu Status lamaran screening_failed menjadi putih; banner
+dan badge rose dipertahankan. Status lain tetap. Perubahan terarah pada partial
+information; tanpa alur/route/schema baru. Build, view:cache, diff --check lulus.
+Visual browser belum diperiksa ulang. Tanpa commit/push.

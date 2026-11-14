@@ -1,3 +1,50 @@
+## Profil ringkas dan usia — 14 November 2026
+
+Permintaan pengguna: rapikan form dan tambah Usia pada Identitas dan Kontak.
+Usia readonly otomatis dari tanggal lahir, tanpa data usia terpisah. Tiga kolom
+tanggal lahir/usia/gender desktop, bertumpuk mobile. Form/skill lebih padat.
+Bukti: [handoff usia](../docs/VOLUNTEER_PROFILE_AGE_HANDOFF.md).
+
+## Panel penarikan ringkas — 14 November 2026
+
+Disetujui pengguna: satu kartu tanpa lapisan di dalam, judul Tarik lamaran,
+peringatan final rose, alasan opsional lebih pendek dan tombol merah.
+Bukti/pemulihan: [handoff panel](../docs/VOLUNTEER_WITHDRAWAL_REFINE_HANDOFF.md).
+
+## Detail lamaran ringkas — 14 November 2026
+
+Permintaan pengguna: kartu/banner/timeline lebih padat selaras halaman lain.
+CSS scoped seluruh detail; dokumen desktop aksi kanan, mobile bertumpuk.
+Informasi, rincian terbuka dan alur existing dipertahankan.
+Bukti/batas: [handoff detail ringkas](../docs/VOLUNTEER_APPLICATION_DETAIL_COMPACT_HANDOFF.md).
+
+## Riwayat Partisipasi ringkas — 14 November 2026
+
+Pengguna menyetujui kartu/heading lebih padat, badge sesuai teks, deskripsi
+singkat. Sesuai koreksi pengguna, akses detail cukup melalui judul biru. Penjelasan Belum dicatat hanya pada hasil
+terkait. Data dan rincian sesi existing tetap.
+Bukti: [handoff riwayat ringkas](../docs/VOLUNTEER_HISTORY_COMPACT_HANDOFF.md).
+
+## Dashboard ringkas — 14 November 2026
+
+Pengguna menyetujui perapian ukuran/jarak kartu dashboard dengan backup desain
+sebelumnya. Sambutan/statistik lebih padat, status memakai label Indonesia dan
+warna komponen lamaran. Statistik Lamaran Terkirim sesuai query existing.
+Bukti/pemulihan: [handoff dashboard](../docs/VOLUNTEER_DASHBOARD_COMPACT_HANDOFF.md).
+
+## Sidebar Volunteer ringkas — 14 November 2026
+
+Disetujui pengguna: lebar 256 px, padding identitas/menu lebih padat dan offset
+navbar/konten disesuaikan. Warna, teks, ikon dan navigasi dipertahankan.
+Bukti/batas: [handoff sidebar](../docs/VOLUNTEER_SIDEBAR_COMPACT_HANDOFF.md).
+
+## Kepadatan Lamaran Saya — 14 November 2026
+
+Atas permintaan pengguna, kartu lebih ringkas: padding/jarak dan judul dikurangi,
+badge mengikuti teks, tombol lebih sempit dengan target 44 px tetap. Sidebar
+dan warna dipertahankan. Tidak memakai zoom halaman.
+Bukti: [handoff compact](../docs/VOLUNTEER_APPLICATIONS_COMPACT_HANDOFF.md).
+
 ## Panel Admin mengikuti FigCraft — 12 November 2026
 
 Sesuai permintaan lanjutan pengguna, tampilan Admin mengikuti 17 frame pada
@@ -661,3 +708,58 @@ Organizer menambah/mengganti/menghapus foto opsional pada create/edit draft yang
 ## Electric Blue Publik dan Auth — keputusan 6 November 2026
 
 Permintaan pengguna mengizinkan penerapan FigCraft Electric Blue / 06 Publik dan Auth pada landing, katalog, login dan registrasi. Blue #2563EB, Navy #0F172A, Peach #FB923C, Off-white #F8FAFC; judul editorial Georgia dan body Inter. Tampilan operasional tiga role tetap. Data, filter, pagination, upload foto, validasi, satu login/guard web dan seluruh aturan bisnis existing dipertahankan. UAT: periksa kelima tampilan desktop/mobile, menu, pencarian/filter/reset, kartu foto, role registrasi, error dan toggle password. Bukti implementasi dan tes ada pada docs/DEVELOPMENT.md#electric-blue-publik-auth di root repository; belum menyatakan seluruh UAT tim lulus.
+
+## Koreksi kartu status — 14 November 2026
+
+Disetujui pengguna: kartu Status lamaran screening_failed menjadi putih; banner
+dan badge rose dipertahankan. Status lain tetap. Perubahan terarah pada partial
+information; tanpa alur/route/schema baru. Build, view:cache, diff --check lulus.
+Visual browser belum diperiksa ulang. Tanpa commit/push.
+
+## Penyesuaian jarak tahap kedua — 14 November 2026
+
+Pengguna menyetujui uji perapian jarak dengan opsi pemulihan. Salinan CSS sebelum
+tahap ini: storage/app/application-detail-before-spacing-20261114/volunteer-application-compact.css.
+Pemulihan hanya menyalin CSS itu kembali; tidak membatalkan panel penarikan atau
+perapian tahap sebelumnya. Jarak bagian 20 ke 16 px, judul/header lebih rapat,
+antartahap timeline 24 ke 16 px, koordinasi/PIC dipadatkan. Teks utama dan tombol
+44 px tetap. Build, fixture accepted/readonly/cancelled dan diff --check lulus.
+CDP 1440/768/390 tidak overflow; desktop diperiksa visual. Tanpa PHPUnit ulang
+karena hanya CSS jarak. Klik browser akun nyata belum diuji. Tanpa commit/push.
+
+## Aksen tombol hapus — 14 November 2026
+
+Disetujui pengguna: Hapus skill/Hapus interval memakai teks rose, border rose
+lembut, latar putih; hover rose-50 dan fokus keyboard rose. Selector hanya
+.vp-profile button[data-remove], sehingga tombol tambah/simpan tetap. Build
+dan diff --check lulus; visual browser belum diperiksa ulang. Tanpa commit/push.
+
+## Tombol tambah — 14 November 2026
+
+Sesuai pengguna, Tambah skill dan Tambah interval memakai ikon plus aria-hidden,
+outline biru, hover biru muda serta fokus biru. Hook data-add/handler existing
+tetap. Hapus tetap rose, simpan tetap biru solid. Build/view:cache/diff --check
+lulus; interaksi browser belum diuji ulang. Tanpa commit/push.
+
+## Katalog panel lebih ringkas — 14 November 2026
+
+Pengguna menyetujui heading ringkas serta kartu putih utuh berborder untuk setiap
+event. Wrapper ve-catalog dan CSS volunteer-catalog.css scoped, diimpor app.css.
+Heading Jelajahi Event, filter padat, font sans, kartu padding16, jarak20, grid
+3/2/1 kolom. Komponen event-card/route/filter/pagination/data tetap; publik tidak
+diubah. Build/view:cache/diff --check lulus. VolunteerCatalogTest 2 tes/27 assertion
+lulus pada MySQL khusus tes. Fixture kosong/terisi tanpa simpan CDP1440/768/390
+tidak overflow; desktop diperiksa visual. Klik akun nyata belum diuji.
+Tanpa commit/push, perubahan lokal lain dipertahankan.
+
+Koreksi pengguna: heading promosi serif Ada kegiatan. Ada tempat untukmu.
+dipertahankan bersama eyebrow dan deskripsi asli. Ukuran responsif 30–44 px,
+jarak judul12 px; kartu/filter ringkas tetap. Scoped panel saja. Build dan
+view:cache lulus; visual browser ukuran heading baru belum diperiksa ulang.
+
+
+## Detail event panel ringkas - 14 November 2026
+
+Padding kartu 20px/mobile 16px, judul 28px/mobile 26px, jarak 14-20px.
+Tanggal pelaksanaan fleksibel dalam satu blok. Khusus panel Volunteer.
+Bukti: docs/VOLUNTEER_EVENT_DETAIL_DESIGN_HANDOFF.md pada root repository.

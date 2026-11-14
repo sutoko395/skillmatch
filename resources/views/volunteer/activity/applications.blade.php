@@ -33,14 +33,7 @@
                     </p>
                 </div>
 
-                <span class="va-status-pill inline-flex w-fit shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold
-                    {{ $application->status === 'accepted'
-                        ? 'bg-emerald-50 text-emerald-700'
-                        : ($application->status === 'rejected'
-                            ? 'bg-red-50 text-red-700'
-                            : 'bg-amber-50 text-amber-700') }}">
-                    {{ ucfirst(str_replace('_', ' ', $application->status)) }}
-                </span>
+                <div class="va-application-status"><x-application-status :application="$application" /></div>
             </div>
         @empty
             <div class="rounded-xl border border-dashed border-slate-300 p-8 text-center">

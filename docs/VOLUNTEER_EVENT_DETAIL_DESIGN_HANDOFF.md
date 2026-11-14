@@ -33,3 +33,22 @@ Login/klik/melamar browser akun nyata belum diuji. Tidak ada dependensi baru.
 Demo: login Volunteer, Jelajahi Event, Lihat posisi dan persyaratan pada event
 published. Lihat ringkasan, posisi dan tombol. Coba variasi pendaftaran terbuka,
 belum buka/tutup serta email belum terverifikasi pada data tes.
+
+## Detail event lebih ringkas - 14 November 2026
+
+Disetujui pengguna berdasarkan screenshot /volunteer/events/11. Dasar branch
+feature/volunteer-design, HEAD 8c37f57; perubahan lokal sebelumnya dipertahankan.
+Hanya volunteer-event-detail.css: selector .volunteer-applications .ve-detail
+membatasi perubahan pada panel. Judul 28px (mobile 26), padding kartu 20px
+(mobile 16), gap utama 16/20px, bagian posisi 14px. Tanggal pelaksanaan
+mengalir dalam satu blok flex-wrap; tombol kembali minimal 44px.
+Layout dua kolom, konten, kondisi CTA, route dan desain publik tetap berlaku.
+Tidak ada migration/layanan/dependensi baru; PRD/kontrak/setup tidak berubah.
+Build Vite dan git diff --check lulus. Preview fixture tanpa simpan diperiksa
+visual desktop; audit Chrome 1440/768/390 tanpa overflow horizontal. Fixture
+memakai route shell lama sehingga menu aktif preview bukan bukti route nyata.
+Browser akun nyata/POST belum diuji ulang; perubahan hanya CSS.
+Backup CSS sebelum perubahan: storage/app/event-detail-before-compact-20261114/
+volunteer-event-detail.css (diabaikan Git). Tidak commit/push.
+Demo: login Volunteer > Jelajahi Event > Lihat posisi dan persyaratan; periksa
+judul, ringkasan tanggal, persyaratan panjang dan tombol pada desktop/mobile.

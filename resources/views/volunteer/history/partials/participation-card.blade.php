@@ -25,7 +25,9 @@
         </div>
         <div class="vh-result vh-result-{{ $resultTone }}">
             <dt>Hasil partisipasi</dt>
-            <dd>{{ $participation }}</dd>
+            <dd>{{ $participation }}
+                @if($participation === 'Belum dicatat')<span class="mt-2 block text-xs font-normal leading-relaxed text-slate-500">Kehadiran belum dicatat. Status ini berbeda dengan tidak hadir.</span>@endif
+            </dd>
         </div>
     </dl>
     <div class="vh-attendance"><x-attendance-session-summary :attendance="$application->attendance" /></div>

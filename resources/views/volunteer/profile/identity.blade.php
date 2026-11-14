@@ -56,7 +56,20 @@
         @endif
     </x-form-field>
 
-    <div class="grid gap-5 md:grid-cols-2">
+    <div class="grid gap-5 md:grid-cols-3"
+        x-data="{
+            birth: @js(old('birth_date', $volunteerProfile?->birth_date?->format('Y-m-d'))),
+            today: @js(now()->setTimezone('Asia/Jakarta')->format('Y-m-d')),
+            get age() {
+                if (!this.birth || !/^\d{4}-\d{2}-\d{2}$/.test(this.birth) || this.birth > this.today) return '';
+                const [y,m,d] = this.birth.split('-').map(Number);
+                const date = new Date(0); date.setUTCFullYear(y,m-1,d);
+                if (date.getUTCFullYear() !== y || date.getUTCMonth() !== m-1 || date.getUTCDate() !== d) return '';
+                const [ty,tm,td] = this.today.split('-').map(Number);
+                return (ty-y-((tm &lt; m || (tm === m &amp;&amp; td &lt; d)) ? 1 : 0)) + ' tahun';
+            }
+        }"
+        @input="if ($event.target.name === 'birth_date') birth = $event.target.value">
 
         <x-form-field
             name="birth_date"
@@ -66,6 +79,13 @@
             :value="$volunteerProfile?->birth_date?->format('Y-m-d')"
             required
         />
+
+        <div>
+            <label for="profile-age" class="block text-sm font-medium text-slate-600">Usia</label>
+            <input id="profile-age" type="text" readonly :value="age" placeholder="Pilih tanggal lahir" aria-describedby="profile-age-help" class="mt-2 block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-600" />
+            <p id="profile-age-help" class="mt-2 text-xs text-slate-500">Dihitung otomatis dari tanggal lahir.</p>
+            <noscript><p class="mt-1 text-xs text-slate-500">Aktifkan JavaScript untuk melihat usia otomatis.</p></noscript>
+        </div>
 
         <x-form-field
             name="gender"

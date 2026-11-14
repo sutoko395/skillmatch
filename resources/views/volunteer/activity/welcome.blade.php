@@ -1,4 +1,4 @@
-<div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+<div class="va-welcome rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
     <p class="text-sm font-semibold text-indigo-600">
         Aktivitas Volunteer
     </p>

@@ -6,3 +6,28 @@
 .ve-detail .ve-apply button:focus-visible { outline-color: #2563eb; }
 .ve-detail { overflow-wrap: anywhere; }
 @media(max-width:639px) { .ve-detail .ve-apply button { width: 100%; } }
+
+/* Compact event detail in the Volunteer panel. */
+.volunteer-applications .ve-detail > :not([hidden]) ~ :not([hidden]) { margin-top: 16px; }
+.volunteer-applications .ve-detail > a { min-height: 44px; padding: 10px 16px; }
+.volunteer-applications .ve-detail > header h1 { font-size: 28px; line-height: 36px; }
+.volunteer-applications .ve-detail > header > p:last-child { margin-top: 4px; }
+.volunteer-applications .ve-detail > .grid { gap: 20px; }
+.volunteer-applications .ve-detail > .grid > .space-y-6 > :not([hidden]) ~ :not([hidden]) { margin-top: 20px; }
+.volunteer-applications .ve-detail section.bg-white { padding: 20px; }
+.volunteer-applications .ve-detail h2,
+.volunteer-applications .ve-detail h3 { font-size: 18px; line-height: 26px; }
+.volunteer-applications .ve-detail section > p.mt-4 { margin-top: 8px; }
+.volunteer-applications .ve-detail section.space-y-5 > :not([hidden]) ~ :not([hidden]) { margin-top: 14px; }
+.volunteer-applications .ve-detail .pt-5 { padding-top: 14px; }
+.volunteer-applications .ve-detail ul.mt-3 { margin-top: 8px; }
+.volunteer-applications .ve-detail aside dl { margin-top: 14px; }
+.volunteer-applications .ve-detail aside dl > :not([hidden]) ~ :not([hidden]) { margin-top: 14px; }
+.volunteer-applications .ve-detail aside dd { margin-top: 4px; }
+.volunteer-applications .ve-detail aside dd.space-y-1 { display: flex; flex-wrap: wrap; gap: 2px 6px; }
+.volunteer-applications .ve-detail aside dd.space-y-1 > p { margin-top: 0; }
+.volunteer-applications .ve-detail aside dd.bg-blue-50 { padding: 10px 12px; }
+@media(max-width:639px) {
+    .volunteer-applications .ve-detail section.bg-white { padding: 16px; }
+    .volunteer-applications .ve-detail > header h1 { font-size: 26px; line-height: 34px; }
+}

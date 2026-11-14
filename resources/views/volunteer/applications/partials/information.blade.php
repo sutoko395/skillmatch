@@ -1,7 +1,7 @@
 @if ($status === 'accepted' && !$eventCancelled)
     @include('volunteer.applications.partials.attendance')
 @elseif ($terminal)
-    <x-section-card class="order-1 {{ $status === 'rejected' ? '!border-rose-200 !bg-rose-50/70' : '!bg-slate-50' }}">
+    <x-section-card class="order-1 {{ $status === 'rejected' ? '!border-rose-200 !bg-rose-50/70' : ($status === 'screening_failed' ? '!bg-white' : '!bg-slate-50') }}">
         <h2 class="text-lg font-bold text-slate-900">{{ $status === 'rejected' ? 'Hasil seleksi' : 'Status lamaran' }}</h2>
         <div class="mt-3"><x-application-status :application="$application" /></div>
         @if ($application->decision_at)

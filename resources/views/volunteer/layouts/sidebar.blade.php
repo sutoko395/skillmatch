@@ -67,7 +67,7 @@
     <aside
         :inert="!desktop && !mobileSidebarOpen"
         :class="mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-        class="volunteer-sidebar fixed inset-y-0 left-0 z-50 flex h-screen w-72 -translate-x-full flex-col bg-[#9a3412] text-white shadow-xl transition-transform duration-300 ease-in-out lg:translate-x-0"
+        class="volunteer-sidebar fixed inset-y-0 left-0 z-50 flex h-screen w-64 -translate-x-full flex-col bg-[#9a3412] text-white shadow-xl transition-transform duration-300 ease-in-out lg:translate-x-0"
     >
 
         <div class="flex h-16 shrink-0 items-center justify-between border-b border-white/10 px-6">
@@ -119,7 +119,7 @@
 
         </div>
 
-        <div class="border-b border-white/10 px-6 py-5">
+        <div class="border-b border-white/10 px-5 py-4">
 
             <p class="text-[10px] font-medium uppercase tracking-widest text-orange-200/70">
                 Akun Volunteer
@@ -136,14 +136,14 @@
         </div>
 
         <nav
-            class="hierarchy-scroll flex-1 space-y-1.5 overflow-y-auto p-4"
+            class="hierarchy-scroll flex-1 space-y-1 overflow-y-auto p-3"
             aria-label="Navigasi volunteer"
         >
 
             <a
                 href="{{ route('volunteer.activity.index') }}"
                 @if(Request::routeIs('volunteer.activity.*')) aria-current="page" @endif
-                class="flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-200
+                class="flex items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-medium transition-all duration-200
                 {{ Request::routeIs('volunteer.activity.*') ? 'va-current' : '' }}
                 {{ Request::routeIs('volunteer.activity.*')
                     ? 'border-white/5 bg-white/10 text-white shadow-sm'
@@ -171,7 +171,7 @@
             <a
                 href="{{ route('volunteer.applications.index') }}"
                 @if(Request::routeIs('volunteer.applications.*')) aria-current="page" @endif
-                class="flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-200
+                class="flex items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-medium transition-all duration-200
                 {{ Request::routeIs('volunteer.applications.*')
                     ? 'border-white/5 bg-white/10 text-white shadow-sm'
                     : 'border-transparent text-orange-100/70 hover:bg-white/5 hover:text-white' }}"
@@ -199,7 +199,7 @@
             <a
                 href="{{ route('volunteer.history.index') }}"
                 @if(Request::routeIs('volunteer.history.*')) aria-current="page" @endif
-                class="flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-200
+                class="flex items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-medium transition-all duration-200
                 {{ Request::routeIs('volunteer.history.*')
                     ? 'border-white/5 bg-white/10 text-white shadow-sm'
                     : 'border-transparent text-orange-100/70 hover:bg-white/5 hover:text-white' }}"
@@ -213,7 +213,7 @@
             <a
                 href="{{ route('volunteer.profile.edit') }}"
                 @if(Request::routeIs('volunteer.profile.*')) aria-current="page" @endif
-                class="flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-200
+                class="flex items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-medium transition-all duration-200
                 {{ Request::routeIs('volunteer.profile.*') ? 'vp-current' : '' }}
                 {{ Request::routeIs('volunteer.profile.*')
                     ? 'border-white/5 bg-white/10 text-white shadow-sm'
@@ -244,7 +244,7 @@
             <a
                 href="{{ route('volunteer.events.index') }}"
                 @if(Request::routeIs('volunteer.events.*')) aria-current="page" @endif
-                class="flex items-center gap-3 rounded-xl border border-transparent px-4 py-3 text-sm font-medium transition-all duration-150 hover:bg-white/5 hover:text-white {{ Request::routeIs('volunteer.events.*') ? 'bg-blue-600 text-white' : 'text-orange-100/70' }}"
+                class="flex items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-medium transition-all duration-150 hover:bg-white/5 hover:text-white {{ Request::routeIs('volunteer.events.*') ? 'bg-blue-600 text-white' : 'text-orange-100/70' }}"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-5 w-5 shrink-0" aria-hidden="true">
                     <circle cx="10.5" cy="10.5" r="6.5" />
@@ -255,7 +255,7 @@
 
             <a
                 href="{{ url('/') }}"
-                class="flex items-center gap-3 rounded-xl border border-transparent px-4 py-2.5 text-sm font-medium text-orange-100/70 transition-all duration-150 hover:bg-white/5 hover:text-white"
+                class="flex items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-medium text-orange-100/70 transition-all duration-150 hover:bg-white/5 hover:text-white"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -281,9 +281,9 @@
 
     </aside>
 
-    <div class="flex min-h-screen flex-1 flex-col lg:pl-72">
+    <div class="flex min-h-screen flex-1 flex-col lg:pl-64">
 
-        <header class="volunteer-topbar fixed left-0 right-0 top-0 z-30 h-16 border-b border-slate-100 bg-white/80 backdrop-blur-md lg:left-72">
+        <header class="volunteer-topbar fixed left-0 right-0 top-0 z-30 h-16 border-b border-slate-100 bg-white/80 backdrop-blur-md lg:left-64">
 
             <div class="flex h-full items-center justify-between px-4 sm:px-6 lg:justify-end lg:px-8">
 

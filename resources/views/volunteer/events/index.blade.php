@@ -2,7 +2,7 @@
 @section('page-class', 'volunteer-applications')
 @section('title', 'Jelajahi Event')
 @section('content')
-<div class="electric-public min-w-0">
+<div class="ve-catalog electric-public min-w-0">
 <header class="eb-catalog-heading"><p class="eb-eyebrow">TEMUKAN RUANG KONTRIBUSIMU</p><h1 class="eb-display">Ada kegiatan.<br>Ada tempat untukmu.</h1><p>Temukan kegiatan yang sesuai dengan keterampilan, lokasi dan waktu Anda.</p></header>
 <form method="GET" action="{{ route('volunteer.events.index') }}" class="eb-catalog-filters">
     <x-form-field name="search" label="Judul event" :value="request('search')" maxlength="100" />

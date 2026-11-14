@@ -1,20 +1,20 @@
 /* Riwayat Partisipasi.svg: scoped presentation, actual attendance remains authoritative. */
 .volunteer-history { background: #f8fafc; color: #0f172a; }
 .vh-history { max-width: none; }
-.vh-history > header h1 { font-size: 30px; line-height: 36px; font-weight: 700; }
+.vh-history > header h1 { font-size: 28px; line-height: 36px; font-weight: 700; }
 .vh-history > header p { font-size: 14px; line-height: 20px; color: #64748b; }
-.vh-card { padding: 24px; border: 1px solid #e2e8f0; border-radius: 16px; background: #fff; }
+.vh-card { padding: 18px 20px; border: 1px solid #e2e8f0; border-radius: 16px; background: #fff; }
 .vh-card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
-.vh-card h2 { font-size: 20px; line-height: 28px; font-weight: 600; overflow-wrap: anywhere; }
+.vh-card h2 { font-size: 18px; line-height: 24px; font-weight: 600; overflow-wrap: anywhere; }
 .vh-card h2 a { color: #2563eb; border-radius: 4px; }
 .vh-card h2 a:hover { color: #1d4ed8; text-decoration: underline; }
-.vh-position { margin-top: 8px; color: #64748b; font-size: 14px; line-height: 20px; overflow-wrap: anywhere; }
+.vh-position { margin-top: 4px; color: #64748b; font-size: 14px; line-height: 20px; overflow-wrap: anywhere; }
 .vh-status { flex-shrink: 0; max-width: 40%; }
-.vh-status > span { display: block; min-width: 100px; padding: 6px 14px; border-radius: 999px; font-size: 12px; line-height: 18px; overflow-wrap: anywhere; }
-.vh-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 20px; }
-.vh-summary > div { border-radius: 12px; padding: 16px; }
+.vh-status > span { display: block; min-width: 0; padding: 4px 10px; border-radius: 999px; font-size: 12px; line-height: 18px; overflow-wrap: anywhere; }
+.vh-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.vh-summary > div { border-radius: 10px; padding: 12px; }
 .vh-summary dt { color: #64748b; font-size: 12px; line-height: 16px; }
-.vh-summary dd { margin-top: 8px; font-size: 14px; line-height: 20px; font-weight: 600; overflow-wrap: anywhere; }
+.vh-summary dd { margin-top: 4px; font-size: 14px; line-height: 20px; font-weight: 600; overflow-wrap: anywhere; }
 .vh-time, .vh-result-neutral { background: #f8fafc; }
 .vh-result-success { background: #f0fdf4; }
 .vh-result-success dd { color: #15803d; }
@@ -25,7 +25,7 @@
 .vh-history > section.shadow-sm { box-shadow: none; }
 @media (max-width: 639px) {
     .vh-history > header h1 { font-size: 28px; line-height: 36px; }
-    .vh-card { padding: 20px; }
+    .vh-card { padding: 16px; }
     .vh-card-heading { flex-direction: column; gap: 12px; }
     .vh-status { max-width: 100%; }
     .vh-summary { grid-template-columns: minmax(0, 1fr); }

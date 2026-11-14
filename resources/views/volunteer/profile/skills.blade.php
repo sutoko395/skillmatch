@@ -54,7 +54,7 @@
 
         <div>
             <x-secondary-button data-add>
-                Tambah skill
+                <span aria-hidden="true" class="mr-2 text-lg leading-none">+</span> Tambah skill
             </x-secondary-button>
         </div>
 
