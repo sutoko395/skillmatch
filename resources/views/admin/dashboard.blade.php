@@ -18,10 +18,15 @@
         </div>
     </div>
 
+    <div class="flex flex-wrap gap-3" aria-label="Antrean pemeriksaan">
+        <a href="{{ route('admin.organizers.index', ['status' => 'pending']) }}" class="admin-action admin-action-blue">Organisasi menunggu verifikasi <span class="rounded bg-blue-50 px-2 py-0.5">{{ number_format($pendingOrganizers) }}</span></a>
+        <a href="{{ route('admin.event-verification.index') }}" class="admin-action admin-action-blue">Kegiatan menunggu persetujuan <span class="rounded bg-blue-50 px-2 py-0.5">{{ number_format($pendingEvents) }}</span></a>
+    </div>
+
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
 
         <button type="button" data-chart="volunteers"
-            class="stat-card rounded-2xl border border-gray-100 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            class="admin-stat admin-stat--blue stat-card rounded-2xl border border-gray-100 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
             <div class="flex items-center gap-4">
                 <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -29,15 +34,14 @@
                     </svg>
                 </div>
                 <div class="min-w-0">
-                    <p class="text-sm text-gray-500">Total Volunteer</p>
+                    <p class="text-sm text-gray-500">Total Relawan</p>
                     <h3 class="mt-1 text-3xl font-bold text-gray-800">{{ number_format($totalVolunteers) }}</h3>
-                    <p class="mt-1 text-xs text-indigo-600">Lihat tren pendaftaran →</p>
                 </div>
             </div>
         </button>
 
         <button type="button" data-chart="organizers"
-            class="stat-card rounded-2xl border border-gray-100 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            class="admin-stat admin-stat--green stat-card rounded-2xl border border-gray-100 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
             <div class="flex items-center gap-4">
                 <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,13 +51,12 @@
                 <div class="min-w-0">
                     <p class="text-sm text-gray-500">Total Organizer</p>
                     <h3 class="mt-1 text-3xl font-bold text-gray-800">{{ number_format($totalOrganizers) }}</h3>
-                    <p class="mt-1 text-xs text-emerald-600">Lihat tren pendaftaran →</p>
                 </div>
             </div>
         </button>
 
         <button type="button" data-chart="transactions"
-            class="stat-card rounded-2xl border border-gray-100 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            class="admin-stat admin-stat--cyan stat-card rounded-2xl border border-gray-100 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
             <div class="flex items-center gap-4">
                 <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-600">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -63,13 +66,12 @@
                 <div class="min-w-0">
                     <p class="text-sm text-gray-500">Total Transaksi</p>
                     <h3 class="mt-1 text-3xl font-bold text-gray-800">{{ number_format($totalTransactions) }}</h3>
-                    <p class="mt-1 text-xs text-sky-600">Lihat tren transaksi →</p>
                 </div>
             </div>
         </button>
 
         <a href="{{ route('admin.event-verification.index') }}"
-            class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            class="admin-stat admin-stat--amber rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
             <div class="flex items-center gap-4">
                 <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,7 +87,7 @@
         </a>
 
         <a href="{{ route('admin.master-data.skills.index') }}"
-            class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            class="admin-stat admin-stat--blue rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
             <div class="flex items-center gap-4">
                 <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,7 +95,7 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500">Master Skills</p>
+                    <p class="text-sm text-gray-500">Master Keahlian</p>
                     <h3 class="mt-1 text-3xl font-bold text-blue-600">{{ number_format($totalSkills) }}</h3>
                     <p class="mt-1 text-xs text-gray-400">Kelola keterampilan →</p>
                 </div>
@@ -101,7 +103,7 @@
         </a>
 
         <a href="{{ route('admin.master-data.event-categories.index') }}"
-            class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            class="admin-stat admin-stat--violet rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
             <div class="flex items-center gap-4">
                 <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-purple-50 text-purple-600">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,7 +111,7 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500">Kategori Event</p>
+                    <p class="text-sm text-gray-500">Kategori Kegiatan</p>
                     <h3 class="mt-1 text-3xl font-bold text-purple-600">{{ number_format($totalCategories) }}</h3>
                     <p class="mt-1 text-xs text-gray-400">Kelola kategori →</p>
                 </div>
@@ -120,7 +122,7 @@
     <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
             <h2 id="chartTitle" class="text-lg font-bold text-gray-900">
-                Tren Pendaftaran Volunteer
+                Tren Pendaftaran Relawan
             </h2>
 
             <p class="mt-1 text-sm text-gray-500">
@@ -198,45 +200,6 @@
     </div>
 
 
-    <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm md:p-6">
-        <a href="{{ route('admin.orders.index') }}"
-            class="flex items-center justify-between gap-4">
-            <div>
-                <p class="text-sm text-gray-500">Manajemen Transaksi</p>
-                <h3 class="mt-1 font-semibold text-gray-800">
-                    Lihat seluruh pesanan dan detail transaksi
-                </h3>
-                <p class="mt-2 text-sm text-gray-500">
-                    Total {{ number_format($totalTransactions) }} transaksi tercatat.
-                </p>
-            </div>
-            <span class="shrink-0 text-sm font-semibold text-indigo-600">
-                Buka transaksi →
-            </span>
-        </a>
-    </div>
-
-    <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-        <h2 class="text-base font-bold text-gray-900">Aksi Cepat Admin</h2>
-        <div class="mt-4 flex flex-wrap gap-3">
-            <a href="{{ route('admin.volunteers.index') }}"
-                class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700">
-                Kelola Volunteer
-            </a>
-            <a href="{{ route('admin.organizers.index') }}"
-                class="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700">
-                Kelola Organizer
-            </a>
-            <a href="{{ route('admin.master-data.skills.index') }}"
-                class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700">
-                Kelola Master Skills
-            </a>
-            <a href="{{ route('admin.orders.index') }}"
-                class="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-700">
-                Kelola Transaksi
-            </a>
-        </div>
-    </div>
 
 </div>
 
@@ -255,8 +218,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const configs = {
         volunteers: {
-            title: 'Tren Pendaftaran Volunteer',
-            label: 'Volunteer baru',
+            title: 'Tren Pendaftaran Relawan',
+            label: 'Relawan baru',
             color: '#2563eb'
         },
         organizers: {

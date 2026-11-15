@@ -79,6 +79,7 @@ class IntegratedFlowsTest extends DatabaseTestCase
         $this->assertSame('pending', $owner->fresh()->organizer_status);
         $this->assertDatabaseHas('notification_outbox', ['recipient_id' => $admin->id, 'channel' => 'database',
             'dedupe_key' => 'organizer.submitted:'.$owner->id.':'.$owner->fresh()->organizer_revision.':'.$admin->id]);
+        $this->actingAs($admin)->get(route('admin.organizers.index'))->assertOk()->assertSee('Catatan pemeriksaan terakhir')->assertSee('Perbaiki alamat organisasi')->assertDontSee('Waktu keputusan belum tercatat');
         $this->actingAs($admin)->patchJson($url, ['organizer_status' => 'active', 'revision' => 1])->assertUnprocessable();
         $this->patch($url, ['organizer_status' => 'active', 'revision' => $owner->fresh()->organizer_revision])->assertSessionHasNoErrors();
         $this->assertSame('active', $owner->fresh()->organizer_status);

@@ -39,7 +39,7 @@ class FoundationAccessTest extends DatabaseTestCase
         $page = $this->get($destination)->assertOk();
         $this->get('/')->assertOk()
             ->assertSeeText('Punya skill.')
-            ->assertSee($role === 'admin' ? 'Panel Admin' : 'Aktivitas')
+            ->assertSee($role === 'admin' ? 'Panel Admin' : ($role === 'organizer' ? 'Panel Organizer' : 'Panel Volunteer'))
             ->assertSee(route($role === 'admin' ? 'admin.dashboard' : $role.'.activity.index'))
             ->assertSee(route('logout'));
         if ($role === 'admin') {
@@ -49,7 +49,7 @@ class FoundationAccessTest extends DatabaseTestCase
                 ->assertViewHas('totalSkills', Skill::count())
                 ->assertViewHas('totalCategories', Category::count())
                 ->assertViewHas('pendingEvents', Event::where('status', 'pending')->count())
-                ->assertSee('Aksi Cepat Admin')
+                ->assertDontSee('Aksi Cepat Admin')->assertDontSee('Manajemen Transaksi')
                 ->assertViewHas('chartData')->assertViewHas('range', 'year');
         }
     }

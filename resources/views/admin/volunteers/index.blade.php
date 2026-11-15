@@ -1,6 +1,6 @@
 @extends('admin.layouts.sidebar')
 
-@section('title', 'Manajemen Volunteer')
+@section('title', 'Manajemen Relawan')
 
 @section('content')
 
@@ -14,19 +14,19 @@
 
     <div>
         <h1 class="text-2xl font-bold text-slate-800">
-            Manajemen Volunteer
+            Manajemen Relawan
         </h1>
 
         <p class="mt-1 text-sm text-slate-500">
-            Kelola akun Volunteer dalam sistem SkillMatch.
+            Kelola akun Relawan dalam sistem SkillMatch.
         </p>
     </div>
 
     <div class="admin-summary grid grid-cols-1 md:grid-cols-3 gap-4">
 
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+        <div class="admin-stat admin-stat--blue bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
             <p class="text-xs font-semibold text-slate-400">
-                Total Volunteer
+                Total Relawan
             </p>
 
             <p class="mt-2 text-2xl font-bold text-slate-800">
@@ -34,7 +34,7 @@
             </p>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+        <div class="admin-stat admin-stat--green bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
             <p class="text-xs font-semibold text-slate-400">
                 Aktif
             </p>
@@ -44,7 +44,7 @@
             </p>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+        <div class="admin-stat admin-stat--red bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
             <p class="text-xs font-semibold text-slate-400">
                 Nonaktif
             </p>
@@ -67,7 +67,7 @@
             <div class="flex-1 min-w-0">
 
                 <label class="block text-sm font-semibold text-slate-700 mb-2">
-                    Cari Volunteer
+                    Cari Relawan
                 </label>
 
                 <input
@@ -118,26 +118,9 @@
                 Cari
             </button>
 
-            <a
-                href="{{ route('admin.volunteers.index') }}"
-                title="Reset Filter"
-                class="h-11 w-11 flex-shrink-0 flex items-center justify-center rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700 transition"
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    class="w-5 h-5"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.992 0 3.181 3.183a8.25 8.25 0 0013.803-3.7M21.015 4.356v4.992m0 0h-4.992m4.992 0-3.181-3.183a8.25 8.25 0 00-13.803 3.7"
-                    />
-                </svg>
-            </a>
+            @if(request()->filled('search') || request()->filled('status') || (int) request('per_page', 10) !== 10)
+            <a href="{{ route('admin.volunteers.index') }}" class="admin-filter-reset">Reset</a>
+            @endif
 
         </form>
 
@@ -148,12 +131,12 @@
         <div class="px-6 py-5 border-b border-slate-100">
 
             <h2 class="text-lg font-bold text-slate-800">
-                Daftar Volunteer
+                Daftar Relawan
             </h2>
 
             <p class="mt-1 text-sm text-slate-500">
                 Menampilkan {{ $volunteers->firstItem() ?? 0 }}-{{ $volunteers->lastItem() ?? 0 }}
-                dari {{ $volunteers->total() }} Volunteer.
+                dari {{ $volunteers->total() }} Relawan.
             </p>
 
         </div>
@@ -280,7 +263,7 @@
                             <td class="px-6 py-4">
 
                                 <span class="inline-flex px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-600 text-xs font-bold">
-                                    Volunteer
+                                    Relawan
                                 </span>
 
                             </td>
@@ -368,7 +351,7 @@
                                 colspan="6"
                                 class="px-6 py-12 text-center text-slate-500"
                             >
-                                Tidak ada Volunteer yang ditemukan.
+                                Tidak ada Relawan yang ditemukan.
                             </td>
 
                         </tr>
@@ -390,7 +373,7 @@
     <template x-teleport="body">
 
         <div
-            x-show="editVolunteer"
+            x-show="editVolunteer" @keydown.escape.window="editVolunteer = null"
             x-cloak
             class="fixed inset-0 z-[9999] flex h-screen w-screen items-center justify-center p-4"
         >
@@ -413,7 +396,7 @@
                         <div>
 
                             <h2 class="text-lg font-bold text-slate-800">
-                                Ubah Status Volunteer
+                                Ubah Status Relawan
                             </h2>
 
                             <p class="mt-1 text-sm text-slate-500">
@@ -422,7 +405,7 @@
 
                         </div>
 
-                        <button
+                        <button aria-label="Tutup dialog"
                             type="button"
                             @click="editVolunteer = null"
                             class="w-9 h-9 flex items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition"
@@ -495,22 +478,22 @@
                             @method('PATCH')
 
                             <button
-                                type="button"
-                                @click="editVolunteer = null"
-                                class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
-                            >
-                                Batal
-                            </button>
-
-                            <button
                                 type="submit"
-                                class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition"
+                                class="admin-action {{ $volunteer->is_active ? 'admin-action-danger' : 'admin-action-blue' }} px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition"
                             >
                                 @if($volunteer->is_active)
                                     Nonaktifkan
                                 @else
                                     Aktifkan
                                 @endif
+                            </button>
+
+                            <button
+                                type="button"
+                                @click="editVolunteer = null"
+                                class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
+                            >
+                                Batal
                             </button>
 
                         </form>
@@ -528,7 +511,7 @@
     <template x-teleport="body">
 
         <div
-            x-show="deleteVolunteer"
+            x-show="deleteVolunteer" @keydown.escape.window="deleteVolunteer = null"
             x-cloak
             class="fixed inset-0 z-[10000] flex h-screen w-screen items-center justify-center p-4"
         >
@@ -568,7 +551,7 @@
                         </div>
 
                         <h2 class="mt-5 text-lg font-bold text-slate-800">
-                            Hapus Volunteer?
+                            Hapus Relawan?
                         </h2>
 
                         <p class="mt-2 text-sm leading-6 text-slate-500">
@@ -593,18 +576,18 @@
                             @method('DELETE')
 
                             <button
+                                type="submit"
+                                class="admin-action admin-action-danger px-5 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
+                            >
+                                <svg class="admin-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></svg>Hapus
+                            </button>
+
+                            <button
                                 type="button"
                                 @click="deleteVolunteer = null"
                                 class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
                             >
                                 Batal
-                            </button>
-
-                            <button
-                                type="submit"
-                                class="admin-action admin-action-danger px-5 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
-                            >
-                                <svg class="admin-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></svg>Hapus
                             </button>
 
                         </form>

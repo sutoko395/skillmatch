@@ -27,7 +27,7 @@
 
     <div class="admin-summary grid grid-cols-2 lg:grid-cols-4 gap-4">
 
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+        <div class="admin-stat admin-stat--blue bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
             <p class="text-xs font-semibold text-slate-400">
                 Total Organizer
             </p>
@@ -37,9 +37,9 @@
             </p>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+        <div class="admin-stat admin-stat--amber bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
             <p class="text-xs font-semibold text-slate-400">
-                Pending
+                Menunggu verifikasi
             </p>
 
             <p class="mt-2 text-2xl font-bold text-amber-600">
@@ -47,7 +47,7 @@
             </p>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+        <div class="admin-stat admin-stat--green bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
             <p class="text-xs font-semibold text-slate-400">
                 Aktif
             </p>
@@ -57,7 +57,7 @@
             </p>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+        <div class="admin-stat admin-stat--red bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
             <p class="text-xs font-semibold text-slate-400">
                 Nonaktif
             </p>
@@ -112,7 +112,7 @@
                         value="pending"
                         @selected($status === 'pending')
                     >
-                        Pending
+                        Menunggu verifikasi
                     </option>
 
                     <option
@@ -140,26 +140,9 @@
                 Cari
             </button>
 
-            <a
-                href="{{ route('admin.organizers.index') }}"
-                title="Reset Filter"
-                class="h-11 w-11 flex-shrink-0 flex items-center justify-center rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700 transition"
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    class="w-5 h-5"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.992 0 3.181 3.183a8.25 8.25 0 0013.803-3.7M21.015 4.356v4.992m0 0h-4.992m4.992 0-3.181-3.183a8.25 8.25 0 00-13.803 3.7"
-                    />
-                </svg>
-            </a>
+            @if(request()->filled('search') || request()->filled('status') || (int) request('per_page', 10) !== 10)
+            <a href="{{ route('admin.organizers.index') }}" class="admin-filter-reset">Reset</a>
+            @endif
 
         </form>
 
@@ -314,7 +297,7 @@
                                 @if($organizer->organizer_status === 'pending')
 
                                     <span class="inline-flex px-2.5 py-1 rounded-lg bg-amber-50 text-amber-600 text-xs font-bold">
-                                        Pending
+                                        Menunggu verifikasi
                                     </span>
 
                                 @elseif($organizer->organizer_status === 'active')
@@ -399,7 +382,7 @@
     <template x-teleport="body">
 
         <div
-            x-show="viewOrganizer"
+            x-show="viewOrganizer" @keydown.escape.window="viewOrganizer = null"
             x-cloak
             class="fixed inset-0 z-[9999] flex h-screen w-screen items-center justify-center p-4"
         >
@@ -431,7 +414,7 @@
 
                         </div>
 
-                        <button
+                        <button aria-label="Tutup dialog"
                             type="button"
                             @click="viewOrganizer = null"
                             class="w-9 h-9 flex items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition"
@@ -455,6 +438,14 @@
                     </div>
 
                     <div class="p-6 space-y-6">
+                        @if($organizer->organizer_verification_note)
+                            <section class="rounded-xl border border-amber-200 bg-amber-50 p-4" aria-label="Catatan pemeriksaan terakhir">
+                                <h3>Catatan pemeriksaan terakhir</h3>
+                                <p class="mt-2 whitespace-pre-line text-sm text-amber-900">{{ $organizer->organizer_verification_note }}</p>
+                                <p class="mt-2 text-xs text-amber-800">{{ $organizer->last_reviewed_at ? $organizer->last_reviewed_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i').' WIB' : 'Waktu keputusan belum tercatat' }}</p>
+                            </section>
+                        @endif
+
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
@@ -601,7 +592,7 @@
     <template x-teleport="body">
 
         <div
-            x-show="editOrganizer"
+            x-show="editOrganizer" @keydown.escape.window="editOrganizer = null"
             x-cloak
             class="fixed inset-0 z-[9999] flex h-screen w-screen items-center justify-center p-4"
         >
@@ -633,7 +624,7 @@
 
                         </div>
 
-                        <button
+                        <button aria-label="Tutup dialog"
                             type="button"
                             @click="editOrganizer = null"
                             class="w-9 h-9 flex items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition"
@@ -685,7 +676,7 @@
                                 value="pending"
                                 @selected($organizer->organizer_status === 'pending')
                             >
-                                Pending
+                                Menunggu verifikasi
                             </option>
 
                             <option
@@ -707,18 +698,18 @@
                         <div class="mt-6 flex justify-end gap-3">
 
                             <button
+                                type="submit"
+                                class="admin-action admin-action-blue px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition"
+                            >
+                                Simpan
+                            </button>
+
+                            <button
                                 type="button"
                                 @click="editOrganizer = null"
                                 class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
                             >
                                 Batal
-                            </button>
-
-                            <button
-                                type="submit"
-                                class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition"
-                            >
-                                Simpan
                             </button>
 
                         </div>
@@ -736,7 +727,7 @@
     <template x-teleport="body">
 
         <div
-            x-show="deleteOrganizer"
+            x-show="deleteOrganizer" @keydown.escape.window="deleteOrganizer = null"
             x-cloak
             class="fixed inset-0 z-[9999] flex h-screen w-screen items-center justify-center p-4"
         >
@@ -797,18 +788,18 @@
                             @method('DELETE')
 
                             <button
+                                type="submit"
+                                class="admin-action admin-action-danger px-5 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
+                            >
+                                <svg class="admin-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></svg>Hapus
+                            </button>
+
+                            <button
                                 type="button"
                                 @click="deleteOrganizer = null"
                                 class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
                             >
                                 Batal
-                            </button>
-
-                            <button
-                                type="submit"
-                                class="admin-action admin-action-danger px-5 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
-                            >
-                                <svg class="admin-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></svg>Hapus
                             </button>
 
                         </form>
@@ -826,7 +817,7 @@
     <template x-teleport="body">
 
         <div
-            x-show="documentPreview"
+            x-show="documentPreview" @keydown.escape.window="documentPreview = null"
             x-cloak
             class="fixed inset-0 z-[10000] flex h-screen w-screen items-center justify-center p-4"
         >
@@ -852,7 +843,7 @@
                         </p>
                     </div>
 
-                    <button
+                    <button aria-label="Tutup dialog"
                         type="button"
                         @click="documentPreview = null"
                         class="w-9 h-9 flex items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition"

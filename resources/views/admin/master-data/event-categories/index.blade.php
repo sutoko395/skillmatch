@@ -1,6 +1,6 @@
 @extends('admin.layouts.sidebar')
 
-@section('title', 'Kategori Event')
+@section('title', 'Kategori Kegiatan')
 
 @section('content')
 <div
@@ -20,10 +20,10 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-slate-800">
-                Kategori Event
+                Kategori Kegiatan
             </h1>
             <p class="mt-1 text-sm text-slate-500">
-                Kelola kategori event yang tersedia di SkillMatch.
+                Kelola kategori kegiatan yang tersedia di SkillMatch.
             </p>
         </div>
 
@@ -43,7 +43,7 @@
 
         <div class="px-6 py-5 border-b border-slate-100">
             <h2 class="text-lg font-bold text-slate-800">
-                Daftar Kategori Event
+                Daftar Kategori Kegiatan
             </h2>
             <p class="text-sm text-slate-500 mt-1">
                 {{ $categories->count() }} kategori tersedia.
@@ -154,7 +154,7 @@
 
     <template x-teleport="body">
         <div
-            x-show="addModal"
+            x-show="addModal" @keydown.escape.window="addModal = false"
             x-cloak
             x-transition.opacity
             class="fixed inset-0 z-[9999] flex h-screen w-screen items-center justify-center p-4"
@@ -165,7 +165,7 @@
             ></div>
 
             <div
-                x-show="addModal"
+                x-show="addModal" @keydown.escape.window="addModal = false"
                 x-transition
                 class="relative z-10 w-full max-w-lg bg-white rounded-2xl shadow-2xl"
             >
@@ -173,14 +173,14 @@
             <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
                 <div>
                     <h3 class="text-lg font-bold text-slate-800">
-                        Tambah Kategori Event
+                        Tambah Kategori Kegiatan
                     </h3>
                     <p class="text-sm text-slate-500 mt-1">
                         Masukkan informasi kategori baru.
                     </p>
                 </div>
 
-                <button
+                <button aria-label="Tutup dialog"
                     type="button"
                     @click="addModal = false"
                     class="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
@@ -229,18 +229,18 @@
 
                 <div class="flex justify-end gap-3 px-6 py-4 bg-slate-50 border-t border-slate-100 rounded-b-2xl">
                     <button
+                        type="submit"
+                        class="admin-action admin-action-blue px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition"
+                    >
+                        Simpan Kategori
+                    </button>
+
+                    <button
                         type="button"
                         @click="addModal = false"
                         class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
                     >
                         Batal
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition"
-                    >
-                        Simpan Kategori
                     </button>
                 </div>
 
@@ -251,7 +251,7 @@
 
     <template x-teleport="body">
         <div
-            x-show="editModal"
+            x-show="editModal" @keydown.escape.window="editModal = null"
             x-cloak
             x-transition.opacity
             class="fixed inset-0 z-[9999] flex h-screen w-screen items-center justify-center p-4"
@@ -262,7 +262,7 @@
             ></div>
 
             <div
-                x-show="editModal"
+                x-show="editModal" @keydown.escape.window="editModal = null"
                 x-transition
                 class="relative z-10 w-full max-w-lg bg-white rounded-2xl shadow-2xl"
             >
@@ -271,14 +271,14 @@
 
                 <div>
                     <h3 class="text-lg font-bold text-slate-800">
-                        Edit Kategori Event
+                        Edit Kategori Kegiatan
                     </h3>
                     <p class="text-sm text-slate-500 mt-1">
                         Perbarui informasi kategori.
                     </p>
                 </div>
 
-                <button
+                <button aria-label="Tutup dialog"
                     type="button"
                     @click="editModal = false"
                     class="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
@@ -329,18 +329,18 @@
                 <div class="flex justify-end gap-3 px-6 py-4 bg-slate-50 border-t border-slate-100 rounded-b-2xl">
 
                     <button
+                        type="submit"
+                        class="admin-action admin-action-blue px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition"
+                    >
+                        Simpan Perubahan
+                    </button>
+
+                    <button
                         type="button"
                         @click="editModal = false"
                         class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
                     >
                         Batal
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition"
-                    >
-                        Simpan Perubahan
                     </button>
 
                 </div>
@@ -352,7 +352,7 @@
 
     <template x-teleport="body">
         <div
-            x-show="deleteModal"
+            x-show="deleteModal" @keydown.escape.window="deleteModal = null"
             x-cloak
             x-transition.opacity
             class="fixed inset-0 z-[9999] flex h-screen w-screen items-center justify-center p-4"
@@ -363,7 +363,7 @@
             ></div>
 
             <div
-                x-show="deleteModal"
+                x-show="deleteModal" @keydown.escape.window="deleteModal = null"
                 x-transition
                 class="relative z-10 w-full max-w-md bg-white rounded-2xl shadow-2xl"
             >
@@ -396,18 +396,18 @@
                 <div class="flex justify-end gap-3 px-6 py-4 bg-slate-50 border-t border-slate-100 rounded-b-2xl">
 
                     <button
+                        type="submit"
+                        class="px-4 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
+                    >
+                        Ya, Hapus
+                    </button>
+
+                    <button
                         type="button"
                         @click="deleteModal = false"
                         class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
                     >
                         Batal
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="px-4 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
-                    >
-                        Ya, Hapus
                     </button>
 
                 </div>

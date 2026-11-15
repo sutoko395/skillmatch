@@ -17,8 +17,8 @@
 
     @if($user->organizer_verification_note)
         <div class="rounded-xl border border-amber-200 bg-amber-50 p-5">
-            <p class="font-semibold">Catatan Admin</p><p class="mt-2">{{ $user->organizer_verification_note }}</p>
-            <a href="{{ route('organizer.profile.edit') }}" class="mt-3 inline-block font-semibold text-indigo-600">Perbaiki dan ajukan ulang profil</a>
+            <p class="font-semibold">{{ $user->organizer_status === 'pending' ? 'Catatan pemeriksaan sebelumnya' : 'Catatan Admin' }}</p><p class="mt-2">{{ $user->organizer_verification_note }}</p>
+            <a href="{{ route('organizer.profile.edit') }}" class="mt-3 inline-block font-semibold text-indigo-600">{{ $user->organizer_status === 'pending' ? 'Lihat profil organisasi' : 'Perbaiki dan ajukan ulang profil' }}</a>
         </div>
     @endif
     <x-section-card class="p-6 md:p-8">

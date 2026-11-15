@@ -1,6 +1,6 @@
 @extends('admin.layouts.sidebar')
 
-@section('title', 'Master Data Skill')
+@section('title', 'Master Data Keahlian')
 
 @section('content')
 <div
@@ -20,7 +20,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-slate-800">
-                Master Data Skill
+                Master Data Keahlian
             </h1>
             <p class="mt-1 text-sm text-slate-500">
                 Kelola daftar skill yang tersedia untuk volunteer.
@@ -35,7 +35,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
-            Tambah Skill
+            Tambah Keahlian
         </button>
     </div>
 
@@ -43,7 +43,7 @@
 
         <div class="px-6 py-5 border-b border-slate-100">
             <h2 class="text-lg font-bold text-slate-800">
-                Daftar Skill
+                Daftar Keahlian
             </h2>
             <p class="text-sm text-slate-500 mt-1">
                 {{ $skills->count() }} skill tersedia.
@@ -59,7 +59,7 @@
                             No
                         </th>
                         <th class="px-6 py-4 text-left font-semibold text-slate-600">
-                            Nama Skill
+                            Nama Keahlian
                         </th>
                         <th class="px-6 py-4 text-left font-semibold text-slate-600">
                             Kategori
@@ -156,7 +156,7 @@
 
     <template x-teleport="body">
         <div
-            x-show="addModal"
+            x-show="addModal" @keydown.escape.window="addModal = false"
             x-cloak
             x-transition.opacity
             class="fixed inset-0 z-[9999] flex h-screen w-screen items-center justify-center p-4"
@@ -167,22 +167,22 @@
             ></div>
 
             <div
-                x-show="addModal"
+                x-show="addModal" @keydown.escape.window="addModal = false"
                 x-transition
                 class="relative z-10 w-full max-w-lg bg-white rounded-2xl shadow-2xl"
             >
                 <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
                     <div>
                         <h3 class="text-lg font-bold text-slate-800">
-                            Tambah Skill
+                            Tambah Keahlian
                         </h3>
 
                         <p class="text-sm text-slate-500 mt-1">
-                            Tambahkan skill baru ke sistem.
+                            Tambahkan keahlian baru ke sistem.
                         </p>
                     </div>
 
-                    <button
+                    <button aria-label="Tutup dialog"
                         type="button"
                         @click="addModal = false"
                         class="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
@@ -199,7 +199,7 @@
                     <div class="p-6 space-y-5">
                         <div>
                             <label class="block text-sm font-semibold text-slate-700">
-                                Nama Skill
+                                Nama Keahlian
                             </label>
 
                             <input
@@ -227,18 +227,18 @@
 
                     <div class="flex justify-end gap-3 px-6 py-4 bg-slate-50 border-t border-slate-100 rounded-b-2xl">
                         <button
+                            type="submit"
+                            class="admin-action admin-action-blue px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition"
+                        >
+                            Simpan Keahlian
+                        </button>
+
+                        <button
                             type="button"
                             @click="addModal = false"
                             class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
                         >
                             Batal
-                        </button>
-
-                        <button
-                            type="submit"
-                            class="px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition"
-                        >
-                            Simpan Skill
                         </button>
                     </div>
                 </form>
@@ -248,7 +248,7 @@
 
     <template x-teleport="body">
         <div
-            x-show="editModal"
+            x-show="editModal" @keydown.escape.window="editModal = null"
             x-cloak
             x-transition.opacity
             class="fixed inset-0 z-[9999] flex h-screen w-screen items-center justify-center p-4"
@@ -260,7 +260,7 @@
             ></div>
 
             <div
-                x-show="editModal"
+                x-show="editModal" @keydown.escape.window="editModal = null"
                 x-transition
                 class="relative z-10 w-full max-w-lg bg-white rounded-2xl shadow-2xl"
             >
@@ -268,7 +268,7 @@
                 <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
                     <div>
                         <h3 class="text-lg font-bold text-slate-800">
-                            Edit Skill
+                            Edit Keahlian
                         </h3>
 
                         <p class="text-sm text-slate-500 mt-1">
@@ -276,7 +276,7 @@
                         </p>
                     </div>
 
-                    <button
+                    <button aria-label="Tutup dialog"
                         type="button"
                         @click="editModal = false"
                         class="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
@@ -294,7 +294,7 @@
                     <div class="p-6 space-y-5">
                         <div>
                             <label class="block text-sm font-semibold text-slate-700">
-                                Nama Skill
+                                Nama Keahlian
                             </label>
 
                             <input
@@ -322,18 +322,18 @@
 
                     <div class="flex justify-end gap-3 px-6 py-4 bg-slate-50 border-t border-slate-100 rounded-b-2xl">
                         <button
+                            type="submit"
+                            class="admin-action admin-action-blue px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition"
+                        >
+                            Simpan Perubahan
+                        </button>
+
+                        <button
                             type="button"
                             @click="editModal = false"
                             class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
                         >
                             Batal
-                        </button>
-
-                        <button
-                            type="submit"
-                            class="px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition"
-                        >
-                            Simpan Perubahan
                         </button>
                     </div>
                 </form>
@@ -344,7 +344,7 @@
 
     <template x-teleport="body">
         <div
-            x-show="deleteModal"
+            x-show="deleteModal" @keydown.escape.window="deleteModal = null"
             x-cloak
             x-transition.opacity
             class="fixed inset-0 z-[9999] flex h-screen w-screen items-center justify-center p-4"
@@ -356,7 +356,7 @@
             ></div>
 
             <div
-                x-show="deleteModal"
+                x-show="deleteModal" @keydown.escape.window="deleteModal = null"
                 x-transition
                 class="relative z-10 w-full max-w-md bg-white rounded-2xl shadow-2xl"
             >
@@ -370,11 +370,11 @@
                     </div>
 
                     <h3 class="mt-4 text-lg font-bold text-slate-800">
-                        Hapus Skill?
+                        Hapus Keahlian?
                     </h3>
 
                     <p class="mt-2 text-sm text-slate-500">
-                        Skill
+                        Keahlian
                         <span class="font-semibold text-slate-700" x-text="selectedSkill"></span>
                         akan dihapus dari sistem.
                     </p>
@@ -388,18 +388,18 @@
                     <div class="flex justify-end gap-3 px-6 py-4 bg-slate-50 border-t border-slate-100 rounded-b-2xl">
 
                         <button
+                            type="submit"
+                            class="px-4 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
+                        >
+                            Ya, Hapus
+                        </button>
+
+                        <button
                             type="button"
                             @click="deleteModal = false"
                             class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
                         >
                             Batal
-                        </button>
-
-                        <button
-                            type="submit"
-                            class="px-4 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
-                        >
-                            Ya, Hapus
                         </button>
 
                     </div>
