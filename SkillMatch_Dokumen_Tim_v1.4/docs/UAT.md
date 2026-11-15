@@ -1,3 +1,444 @@
+## Hierarki font screening dan kecocokan - 15 November 2026
+
+Periksa Hasil screening/Kecocokan kandidat pada detail EO: judul, skor, labeltabel
+dan keterangan punya hierarki berbeda tanpa memperbesar kartu/padding. Tabel
+rinci tetap lengkap, wrapping lokal aman pada390/768/1440.
+
+## Penutupan seleksi di Kelola Pelamar - 15 November 2026
+
+Kelola Pelamar -> Lihat pelamar: Tutup seleksi tertunda ada di bawah daftar jika
+masih pending, meski filter kandidat kosong. Submit menyimpan alasan/konfirmasi
+dan kembali ke daftar, pending ditolak menurut aturan existing. Pelaksanaan tidak
+memiliki form penutupan; pemberitahuan dan Ke Kelola Pelamar muncul hanya ketika
+seleksi/assessment masih pending. Tidak ada aksi baru pada terminal. Endpoint
+completion tetap menolak pending bila diminta langsung.
+
+## Hierarki font kartu peserta - 15 November 2026
+
+Kartu peserta memiliki hierarki font yang jelas tanpa membesarkan card: nama
+lebih tegas daripada posisi/progres, tanggal/jam kecil, status dan tombolringkas.
+Verifikasi keterbacaan dan tidak overflow di390/768/1440; posisi aksi tetap.
+
+## Regresi token persiapan absensi otomatis - 15 November 2026
+
+Halaman EO harus memiliki meta csrf-token sesi valid. Pending bootstrap mengirim
+POST dengan X-CSRF-TOKEN; jangan mengandalkan mock DOM saja. Token hilang tidak
+boleh melempar null/content ke UI atau mengirim request tanpa CSRF; tampil pesan
+muat ulang. Error jaringan memakai pesan ramah, tidak retryloop. Validasi server
+tetap ditampilkan dan endpoint tetap memakai CSRF/otorisasi existing.
+
+## Persiapan sesi otomatis untuk absensi belum dicatat - 15 November 2026
+
+- Accepted lama tanpa parent/unrecorded: buka detail -> sesi langsung siap tanpa
+  checkbox Siapkan. Status tetap Belum dicatat; user menandai hadir sendiri.
+- Buka ulang/dua request sama tidak menggandakan sesi atau audit; GET sendiri
+  tidak menulis data. Pending ditangani sebelum filter hari supaya tetap terlihat.
+- Catatan unrecorded lama tetap di arsip; legacy present/absent tidak direset.
+- Foreign owner/role/ids eventlain/nonaccepted/terminal ditolak; invalid snapshot
+  rollback dan tampil error tanpa retryloop. Coba lagi hanya atas tindakan user.
+- JS mengirim POST CSRF sekali, reload mempertahankan URL; tanpa JS fallback POST.
+  Penerimaan baru existing tetap menyiapkan sesi dalam transaksi acceptance.
+
+## Rapatkan aksi dan buang ruang bawah sesi - 15 November 2026
+
+Pada desktop Catatan mendekat ke tanggal dan Edit ke badge; tidak ada ruang kosong
+berlebih di bawah aksi tertutup. Buka/tutup editor dan Batal tetap berfungsi tanpa
+overlap/overflow pada390/768/1440.
+
+## Kartu lebih padat dan Batal koreksi - 15 November 2026
+
+Kartu/header/sesi/editor lebih pendek; Catatan dan Edit rapat ke baris atas. Ubah
+status sementara lalu Batal di kanan Simpan: form tertutup, nilai kembali ke status
+tersimpan tanpa request. Batal catatan existing tetap membuang draftnya sendiri.
+
+## Posisi waktu pencatatan dan aksi sesi - 15 November 2026
+
+Sesi yang sudah hadir: Dicatat ada di kanan, Edit absensi di bawah badge Sudah
+hadir, Catatan di bawah tanggal. Periksa desktop/tablet/mobile; klik catatan,
+batal dan koreksi tetap berfungsi; final tetap tanpa edit.
+
+## Edit absensi ringkas di bawah status - 15 November 2026
+
+Edit absensi tampil kecil tanpa kotak tepat di bawah status, baik desktop maupun
+mobile. Klik tetap membuka koreksi, tidak bertumpuk dengan tombol Tandai hadir
+atau editor catatan; final tidak memiliki aksi edit.
+
+## Kartu ringkas, Batal catatan dan Edit absensi - 15 November 2026
+
+Periksa kartu peserta tertutup lebih pendek. Buka Catatan, ubah teks lalu Batal:
+editor tutup dan draft dibuang, buka lagi menampilkan nilai tersimpan; tidak ada
+submit/perubahan DB. Batal berada di kanan Simpan. Edit absensi (pensil, outline
+biru) menggantikan titik tiga dan membuka form koreksi existing. Completed tetap
+readonly. Periksa desktop/mobile tanpa overflow.
+
+## Penyelarasan visual dengan mockup check-in - 15 November 2026
+
+Bandingkan kartu peserta terhadap mockup yang disetujui: avatar bulat, progres
+dengan pemisah, toggle kanan; tanggal/jam/status/aksi sejajar desktop dan Catatan
+tepat di bawah tanggal. Klik Catatan membuka editor fullwidth, simpan terpisah
+serta readonly final tetap. Menu titik tiga membuka koreksi kehadiran. Search
+fullwidth dapat disubmit Enter; Filter peserta menyimpan semua opsi dan rekap.
+Periksa tampilan390/768/1440 dan nama panjang tanpa overflow. Tidak menuntut isi
+fixture/data/mockup menjadi data nyata pada aplikasi.
+
+## Check-in peserta dan catatan terpisah - 15 November 2026
+
+- Cari peserta -> Lihat sesi -> Tandai hadir: tersimpan langsung, progress dan
+  status berubah; catatan sebelumnya dipertahankan. Tutup sesi merapikan kartu.
+- Satu/lebih sesi, termasuk sesi berbeda tanggal, menampilkan jam/tanggal benar;
+  sebelum mulai tidak ada tombol tulis. Belum dipilih tetap Belum dicatat.
+- Tambah catatan membuka editor opsional dan Simpan catatan. Simpan saat unrecorded
+  tidak menandai hadir, mengubah lifecycle atau waktu pencatatan absensi. Catatan
+  setelah hadir tidak mengubah status/waktu hadir; dapat dihapus. Relawan dapat
+  membacanya di detail lamaran; riwayat terminal memakai komponen existing.
+- Ubah kehadiran tetap dapat mencatat Tidak hadir/koreksi sebelum final. Dua halaman
+  stale tidak boleh menimpa perubahan. completed/cancelled menolak mutasi catatan.
+- Owner/role lain ditolak; POST/PATCH tetap CSRF/revision. Periksa buka-tutup, editor
+  tersembunyi, loading dan wrapping di desktop/mobile. Filter/legacy tetap tersedia.
+
+## Rekap sesi inline - 15 November 2026
+
+Di bawah Kehadiran peserta tampil tiga hitungan sesi inline berwarna, tanpa
+kartu dan buka-tutup. Nilai sesuai sessionSummary, tetap terbaca pada ponsel.
+
+## Hapus kartu rekap peserta - 15 November 2026
+
+Detail Pelaksanaan tidak menampilkan empat kartu rekap peserta; Rekap sesi,
+filter peserta, kartu sesi, form absensi dan tindakan tetap dapat digunakan.
+
+## UAT detail Pelaksanaan EO - 15 November 2026
+
+- Kembali merah kiri atas menuju daftar Pelaksanaan. Jadwal WIB/status, empat
+  hitungan peserta serta rekap sesi (buka/tutup) tetap sesuai data nyata.
+- Filter nama/posisi/status/tanggal, Reset dan pagination tetap berfungsi.
+- Peserta/sesi tampil sebagai kartu responsif dengan ikon; simpan absensi tetap
+  POST/PATCH, CSRF dan revision. Catatan readonly serta arsip legacy tetap terbaca.
+- Sebelum sesi mulai ada pesan belum dibuka; completed/cancelled tidak memiliki
+  form simpan. Completed menampilkan Absensi sudah final tanpa pesan per sesi
+  yang berulang. Jadwal lintas tanggal tetap menampilkan tanggal akhir.
+- Tutup seleksi dan completion mempertahankan alasan/konfirmasi/zero peserta dan
+  aturan backend. Copy lebih ringkas; tidak ada paragraf rekap/petunjuk tabel lama.
+
+## UAT penghapusan keterangan detail pelamar - 15 November 2026
+
+Detail EO tidak menampilkan tiga footer penjelasan screening/matching/assessment
+atau tautan Pelaksanaan dan kehadiran. Kartu Keputusan seleksi kosong tidak ada;
+form seleksi/alasan/penjelasan batas waktu yang relevan tetap tampil sesuai state.
+Komponen yang dipakai volunteer mempertahankan keterangan/link default existing.
+
+## UAT navigasi dan tampilan pelamar EO - 15 November 2026
+
+- Kelola Pelamar -> Lihat Pelamar -> Kembali merah kiri atas menuju Kelola Pelamar.
+  Tinjau lamaran -> Kembali merah menuju daftar pelamar event yang sama.
+- Tab Semua Pelamar/Siap Ditinjau/Pelaksanaan di daftar tidak ada; status kandidat,
+  filter posisi, ready link existing, pagination/urutan skor tetap berfungsi.
+- Daftar menampilkan nama/kota/posisi/status/skor/waktu WIB/dokumen dan Tinjau
+  outline biru; kosong dan filter tanpa hasil memiliki penjelasan yang sesuai.
+- Detail mempertahankan snapshot profil, screening, matching, assessment, jadwal,
+  dokumen privat serta form seleksi/alasan/CSRF sesuai state dan hak akses.
+- Periksa desktop/mobile: ikon/ukuran font, wrapping, drawer dan tabel scroll lokal.
+  Organizer lain/role lain tetap tidak dapat membaca atau memutuskan lamaran.
+
+## UAT tampilan Profil Organisasi EO - 15 November 2026
+
+- Profil existing menampilkan nama/status, deskripsi, alamat, kota, website,
+  penanggung jawab, telepon/email dan dokumen dalam kelompok terpisah dengan ikon.
+- Edit Profil biru outline membuka dialog existing; Batal/tutup/Escape menutupnya.
+  Simpan tetap POST/CSRF, validasi, upload privat dan konfirmasi verifikasi ulang.
+- Website kosong dan dokumen kosong menampilkan keterangan. Catatan revisi admin,
+  profil baru/pending/inactive serta error form tetap dapat diakses sesuai policy.
+- Periksa desktop/ponsel: label kecil, nama lebih tegas, teks panjang membungkus,
+  dialog dapat di-scroll dan kartu tidak menyebabkan horizontal overflow.
+
+## UAT penyelarasan daftar EO - 15 November 2026
+
+- Halaman pilih/ubah paket: Kembali merah kiri atas menuju detail kegiatan milik
+  organizer; pemilihan paket/pembayaran tetap berjalan sesuai aturan existing.
+- Kelola Pelamar: badge Publikasi/Pelaksanaan tidak tampil; metadata/count/aksi ada.
+- Pelaksanaan: badge Publikasi/Jadwal tidak tampil; kelompok tetap ada. Cari nama
+  dan pilih Semua/Hari ini/Berlangsung/Riwayat; Terapkan/Reset mengikuti gaya
+  Kelola Pelamar. Pagination mempertahankan filter, hasil kosong spesifik.
+- Filter tidak menampilkan event owner lain, draft, atau event besok. Pencarian
+  wildcard dianggap literal; input phase tak dikenal/array/search >255 ditolak.
+- Periksa desktop/ponsel tanpa overflow dan tanpa perubahan aturan absensi.
+
+## Batas akhir absensi saat Selesai - 15 November 2026
+
+Catat/koreksi kehadiran setelah sesi dimulai selama nonterminal; selesai acara
+saja tidak mengunci. Selesaikan kegiatan baru setelah semua sesi berakhir dan
+final serta seleksi/assessment tidak tertunda. Checkbox completion menerangkan
+absensi menjadi final. Setelah completed: form simpan/alasan koreksi hilang,
+status/jadwal/catatan riwayat tetap terbaca, banner Absensi sudah final terlihat.
+PATCH sesi, PATCH parent satu sesi/legacy, dan POST prepare lama ditolak walaupun
+payload valid/beralasan atau identik. Status/note/revision/recorded_at/rekap/
+riwayat/audit/outbox tidak berubah. Cancelled tetap terkunci, owner/role/pre-start/
+revision tetap dibatasi. Simpan vs complete berbagi lock Event. Tidak ada H+1.
+
+## Hub EO berdasarkan publikasi dan hari WIB - 15 November 2026
+
+1. Kegiatan Saya tetap memuat draf/pending/approved/published. Kelola Pelamar
+   tidak memuat draf/approved yang belum pernah published; query owner lain tidak
+   membocorkan data. Count hanya lamaran submitted.
+2. Cari nama, kombinasikan open/closed/history dan pindah halaman. Filter tetap,
+   Reset kembali ke semua pernah published; wildcard %, _ dan ! menjadi teks.
+   Open pada opens_at persis, bukan deadline persis; closed sejak deadline.
+   Jadwal opens_at masa depan dan tenggat belum lengkap masih melalui Semua.
+3. Selesai, dibatalkan atau suspended/unpublished setelah published tetap ada
+   di Riwayat pelamar dan hasil seleksi masih terbaca. Tanpa published_at tidak
+   boleh masuk hanya karena status approved.
+4. Bekukan sebelum00.00 WIB dan sesudahnya untuk acara hari berikut pukul12.
+   Sebelum00 belum tampil pelaksanaan; tepat00 tampil Hari ini; jam12 menjadi
+   Berlangsung. Acara besok00 WIB belum tampil hari ini. Multi-hari yang belum
+   berakhir tetap Berlangsung. Bandingkan batasUTC17.00 dengan00.00 WIB.
+5. Terminal pernah published tetap Riwayat meski dibatalkan sebelum tanggal
+   acara. Lewat ends_at tanpa completion diberi Menunggu penyelesaian dan tidak
+   otomatis mengubah lifecycle. Urutan aktif sebelum riwayat, pagination12.
+6. Absensi/sesi/completion langsung melalui endpoint tetap tunduk aturan lama;
+   daftar hari ini tidak membuka pencatatan sebelum waktu. Role/owner/akun
+   pending/inactive tetap dibatasi. Cek390/768/1440px serta empty/filter-empty.
+
+## Notifikasi sementara EO - 14 November 2026
+
+Simpan koreksi: toast centang hijau bertuliskan Perubahan berhasil disimpan
+muncul kanan atas tanpa mendorong konten, hilang sekitar5detik, dapat ditutup ?.
+Periksa390/768/1440px, pesan panjang membungkus, keyboard/fokus dan reduced motion.
+Hover/fokus menunda hilang. Error dan daftar validasi tidak otomatis menghilang;
+role lain tetap memakai tampilan notifikasi existing. Toast tidak menutup modal/
+drawer (z-index di bawah keduanya). Tanpa JS pesan tetap terlihat.
+
+## Keseragaman detail draf dan published EO - 14 November 2026
+
+Bandingkan kartu Informasi kegiatan, subkartu posisi/jadwal, ringkasan asesmen,
+nav dan warna tombol draf/published di390/768/1440px. Published menampilkan Edit
+pensil di header informasi dengan label aksesibel khusus judul/deskripsi,
+menuju form koreksi teks existing. Tombol Lihat Asesmen/halaman publik/pelamar
+outline biru; aksi pembatalan tetap merah. Posisi published tanpa baris aksi
+kosong dan tidak mendapat tambah/edit/hapus. Upload cover/paket/jadwal tetap
+terkunci, request langsung tetap ditolak. Koreksi teks dan koordinasi mengikuti
+aturan existing, tidak ada perubahan status/data melalui perubahan desain ini.
+
+## Label pembatalan draf EO - 14 November 2026
+
+Draf belum diajukan: judul Pembatalan draf, tombol Batalkan draf dan konfirmasi
+data tetap tersimpan. Kegiatan pernah diajukan/published: Pembatalan kegiatan,
+Batalkan kegiatan dan konfirmasi lamaran terkait. Tidak ada kalimat teknis
+ketergantungan layanan. Selesai/dibatalkan tidak menampilkan form seperti
+existing. Tidak ada perubahan route/validasi/transisi atau aturan hapus draf.
+
+## Ikon ringkasan asesmen - 14 November 2026
+
+Periksa nama posisi, ikon clipboard, status dengan file/gembok, jumlah soal
+berikon daftar dan durasi berikon jam. Draf/belum dibuat/published memakai data
+actual; jumlah/durasi hanya tampil bila assessment ada, durasi null berlabel
+Belum diatur. Mobile metadata dapat membungkus tanpa overflow. Kelola/Lihat
+Asesmen tetap menuju posisi yang benar dan mengikuti editable existing.
+
+## Subkartu posisi EO - 14 November 2026
+
+Periksa setiap posisi memiliki dua subkartu di dalam kartu utama: deskripsi/
+skill/persyaratan serta jadwal. Nama/kuota di atas, aksi di bawah. Desktop dua
+kolom, mobile bertumpuk tanpa overflow; deskripsi panjang membungkus dan baris
+baru tetap. Mode mengikuti kegiatan/khusus, seluruh slot WIB dan persyaratan
+wajib/preferensi/dokumen tetap lengkap. Edit/hapus tetap sesuai status/hak akses.
+
+## Pemilih file langsung pada sampul EO - 14 November 2026
+
+Klik Ubah/Tambah gambar di bawah cover: pemilih file terbuka tanpa pindah halaman.
+File valid menjadi preview; Simpan menyimpan sampul saja, Batal mengembalikan
+preview awal tanpa mengubah database. Uji batal dialog, file invalid/lebih5MB,
+error upload, menyimpan/disabled, owner lain dan status terkunci. Judul/jadwal/
+status/paket tetap setelah upload. Published tidak mendapat form dan request
+langsung ditolak. Mobile kontrol tidak menimpa gambar. Ini menggantikan UAT
+sebelumnya yang mengharapkan tombol menuju input di form edit.
+
+## Tombol Edit dan Ubah gambar EO - 14 November 2026
+
+Periksa Edit outline biru sedikit lebih besar dengan pensil. Pada detail editable,
+Ubah gambar pada sampul atau Tambah gambar jika kosong menuju input foto di form
+edit. Pilih gambar baru, periksa preview, simpan dan periksa sampul berubah.
+Coba hapus, file invalid/lebih5MB, owner lain dan published: aturan upload/
+editable existing tetap. Cek mobile overlay tidak terpotong. Published tetap
+hanya koreksi teks dan koordinasi sesuai aturan, tanpa tombol ganti gambar.
+
+## Keterbacaan kartu Informasi kegiatan EO - 14 November 2026
+
+Periksa bar tiga status tidak tampil pada kartu Ringkasan detail; status daftar
+masih tersedia. Ikon pada enam label metadata, judul/label/isi berbeda ukuran,
+tanggal di atas jam WIB, rentang mulai-sampai-akhir lengkap termasuk lintas hari.
+Periksa deskripsi/lokasi panjang, jadwal kosong, nilai tanggal/jam sama seperti
+data existing, 390/768/1440px tanpa overflow. Edit tetap mengikuti hak/status,
+catatan admin dan seluruh bagian/form existing masih tersedia.
+
+## Navigasi bagian detail EO - 14 November 2026
+
+Pada detail draf/pending/published, periksa enam tautan anchor mengarah ke bagian
+yang benar, highlight biru mengikuti klik dan scroll, serta bagian tidak tertutup
+panel sticky. Mobile dapat menggeser deretan tombol; dokumen tidak melebar.
+Periksa fokus keyboard, hash URL, drawer dan Kembali merah. Semua konten/form
+masih tersedia tanpa memilih tab; tanpa JS tautan anchor tetap bekerja.
+
+## Penempatan akun dan Keluar EO - 14 November 2026
+
+Periksa nama/inisial akun aktif dan Organizer di atas Ringkasan Aktivitas,
+terpisah garis/jarak seperti pemisah setelah Profil Organisasi. Keluar berada
+setelah Lihat situs utama dengan highlight merah. Bar akun desktop hilang,
+mobile tetap menyediakan buka/tutup drawer, Escape dan backdrop. Profil tetap
+dapat dibuka melalui menu. Keluar harus POST dengan CSRF, mengakhiri sesi dan
+kembali ke login; GET tidak boleh mengeluarkan akun. Cek nama panjang dan
+scroll sidebar pada layar pendek. Layout role lain tetap.
+
+## Header dan tombol daftar EO - 14 November 2026
+
+Pada Kegiatan Saya, baris Semua kegiatan dan jumlah tidak ditampilkan lagi.
+Tombol Buat Kegiatan lebih besar dan memiliki ikon plus; klik tetap membuka
+modal existing. Periksa desktop/mobile dan filter; ketentuan pemeriksaan badge
+jumlah hasil pada catatan sebelumnya tidak berlaku untuk tampilan ini.
+
+## Pencarian dan filter moderasi EO - 14 November 2026
+
+Cari sebagian nama, gabungkan dengan setiap status moderasi, pindah halaman,
+lalu Reset. Hanya kegiatan pemilik muncul; jumlah dan pagination mengikuti
+filter. Hasil kosong berbeda dari belum ada kegiatan. %, _ dan ! menjadi teks
+literal. Periksa label, fokus keyboard, 390/768/1440 px dan modal Buat Kegiatan.
+
+## Ikon dan hierarki metadata Kegiatan Saya - 14 November 2026
+
+Periksa judul lebih menonjol dari tanggal/jam/lokasi, ikon kalender/jam/pin,
+serta tanggal/jam WIB yang sama dengan data existing. Tanggal/jam bisa membungkus,
+lokasi panjang tidak overflow, jadwal kosong berlabel, ikon dekoratif aria-hidden
+serta label pembaca layar tersedia. Badge/thumbnail/aksi/modal tetap. Periksa
+390/768/1440 px, termasuk judul/lokasi panjang.
+
+## Menu mandiri pelaksanaan EO - 14 November 2026
+
+Periksa sidebar Pelaksanaan & Kehadiran setelah Kelola Pelamar. Daftar hanya
+kegiatan aktor, jumlah hanya accepted, jadwal WIB, status aktual, kosong dan
+pagination. Kelola pelaksanaan menuju endpoint existing; Kembali ke daftar
+pelaksanaan mengarah hub baru. Detail event tanpa kartu navigasi pelaksanaan.
+Uji guest/non-EO/pending/nonaktif dan request pemilik asing; pastikan aturan
+pencatatan/sesi/completion existing tetap. Periksa 390/768/1440 dan drawer.
+
+## Navigasi atas detail kegiatan - 14 November 2026
+
+Periksa topbar Kegiatan Saya pada detail; judul konten/tab tetap nama kegiatan.
+Kembali berupa tombol biru tanpa panah dan menuju daftar. Kartu navigasi atas
+hanya menyisakan Pelaksanaan dan kehadiran. Menu Kelola Pelamar dan endpoint
+existing tetap tersedia; halaman EO lain tetap memakai judul topbar masing-masing.
+
+## Pemulihan ukuran badge status - 14 November 2026
+
+Periksa badge status daftar kegiatan kembali 11 px/padding 4x8 px/radius 6 px.
+Warna hijau/biru/kuning dan label tetap, membungkus tanpa overflow pada mobile.
+
+## Tombol kelola sekunder - 14 November 2026
+
+Periksa Kelola kegiatan putih/border biru tipis/teks biru, hover biru muda, lebih
+kecil dari Buat Kegiatan biru solid. Tautan detail, fokus keyboard dan target
+mobile tetap. Badge moderasi hijau, publikasi biru, pelaksanaan kuning.
+
+## Koreksi badge publikasi EO - 14 November 2026
+
+Periksa daftar Kegiatan Saya: moderasi hijau, publikasi biru dan pelaksanaan
+kuning, teks status tetap lengkap. Tombol Kelola belum berubah pada koreksi ini.
+
+## Badge dan tombol daftar kegiatan - 14 November 2026
+
+Periksa jumlah kegiatan sebagai badge kecil, Kelola kegiatan biru lebih kecil
+dari Buat Kegiatan dan tanpa panah. Tiga badge kecil tetap terbaca: Moderasi/
+Publikasi hijau, Pelaksanaan kuning, label status tidak berubah. Periksa draf,
+published, rejected/cancelled, kosong, pagination, modal buat dan 390/768/1440.
+Pastikan tautan kelola tetap menuju detail event yang benar; konteks/status tidak
+hilang hanya demi ukuran. Halaman role lain dan detail event tetap.
+
+## Logo EO sama dengan landing - 14 November 2026
+
+Periksa sidebar desktop/drawer mobile memakai simbol empat kelopak biru seperti
+landing page menggantikan S. Teks SKILLMATCH/Panel Organisasi dan link Ringkasan
+existing tetap. Periksa landing/footer/auth masih menampilkan simbol beserta teks.
+
+## Ukuran judul kelompok tindak lanjut - 14 November 2026
+
+Periksa judul kelompok 16 px, nama kegiatan 14 px, judul utama 18 px. Judul tetap
+hitam lembut; badge kecil dan titik warna tetap. Periksa pembungkusan di mobile.
+
+## Kartu putih dan titik penanda tindak lanjut - 14 November 2026
+
+Periksa kepala kartu putih dengan titik biru/hijau dekoratif dan judul gelap.
+Jumlah tindakan berada di samping judul masing-masing kartu (sesuai collection,
+bukan total database); badge gabungan tidak tampil. Tidak ada garis bawah judul
+atau baris pertama; garis hanya di antara kegiatan. Periksa kosong dan terisi,
+judul membungkus, tombol/fokus dan desktop/mobile. Statistik serta route tetap.
+
+## Kepala kedua kartu kuning penuh - 14 November 2026
+
+Periksa Persiapan dan rekrutmen serta Pelaksanaan: kepala kartu kuning sangat muda dari
+tepi kiri ke kanan dan menempel bagian atas, sudut mengikuti kartu, teks keemasan.
+Tidak ada jarak putih di sekitar kepala kartu. Isi putih dan tombol biru tetap.
+Periksa desktop/mobile, judul membungkus, isi terisi/kosong dan fokus keyboard.
+
+## Baris judul persiapan/pelaksanaan - 14 November 2026
+
+Periksa baris judul Persiapan dan rekrutmen biru sangat muda/teks biru dan
+Pelaksanaan kuning sangat muda/teks keemasan. Isi kartu tetap putih; judul panjang
+membungkus dan tampilan terisi/kosong tetap terbaca pada desktop/mobile.
+
+## Aksen statistik lebih jelas - 14 November 2026
+
+Periksa border biru/hijau lebih tegas, kuning lebih cerah dan judul Lamaran
+Belum Ditinjau kuning keemasan, ikon selaras. Angka hitam, layout serta ungu tetap.
+
+## Dua kartu tindak lanjut dan aksen statistik - 14 November 2026
+
+Periksa judul statistik biru/hijau/ungu dan border ungu lebih jelas. Perlu
+Ditindaklanjuti berada di luar dua kartu putih terpisah; kartu persiapan/rekrutmen
+dan pelaksanaan tetap muncul dengan keadaan kosong masing-masing. Tombol biru
+lebih kecil tanpa panah, target mobile 44 px, tautan tujuan tetap. Periksa kondisi
+terisi/kosong/pending/revisi/approved pada 390/768/1440 px dan fokus keyboard.
+
+## Panel tindak lanjut baris ringkas - 14 November 2026
+
+Periksa satu judul Perlu Ditindaklanjuti dan jumlah tindakan yang ditampilkan,
+kelompok persiapan/rekrutmen serta pelaksanaan, nama kegiatan terpisah dari
+keterangan, dan tombol kanan desktop/bawah mobile. Uji draf, pending moderasi,
+revisi, approved belum publikasi, seleksi lewat tenggat dan pelaksanaan. Aksi
+menuju detail/pelamar/pelaksanaan milik EO; tidak ada aksi mutasi langsung.
+Periksa kosong satu/kedua kelompok, judul panjang, 390/768/1440 px. Identitas
+organisasi tidak lagi ditampilkan di panel ini. Query/angka/status backend tetap.
+
+## Warna statistik EO - 14 November 2026
+
+Periksa border Total Kegiatan biru, Kegiatan Aktif hijau, Total Pelamar ungu
+beserta ikon ungu, serta Lamaran Belum Ditinjau amber. Latar kartu tetap putih,
+angka dan susunan sama. Prioritas Anda belum diubah pada permintaan warna ini.
+
+## Koreksi Ringkasan dan Kelola Pelamar - 14 November 2026
+
+Periksa Ringkasan EO: Pelamar Terbaru, panel Kegiatan Saya dan tombol Buat Kegiatan
+tidak tampil; statistik mendahului Prioritas Anda, notifikasi tetap ada. Sidebar
+Kegiatan Saya tetap ada dan menu Kelola Pelamar menuju kegiatan milik EO saja.
+Periksa jumlah lamaran mengecualikan draf, keadaan tanpa kegiatan, pagination dan
+tautan kandidat existing. Parameter organizer_id asing tidak boleh memperluas
+hasil; endpoint kandidat kegiatan asing tetap 403. Guest, non-EO, akun nonaktif
+dan organisasi pending mengikuti pembatas existing. Periksa tampilan 390/768/1440.
+Bukti aktual: [handoff EO](../../docs/ORGANIZER_UI_REFINEMENT_HANDOFF.md).
+
+## Panel EO ringkas - 14 November 2026
+
+Periksa Ringkasan Aktivitas, Kegiatan Saya, detail kegiatan dan halaman pendukung
+pada 390/768/1440 px. Sidebar 256 px, header/konten sejajar, drawer dapat dibuka,
+ditutup dan ditutup dengan Escape. Tindak lanjut tampil sebelum angka statistik,
+termasuk keadaan kosong. Daftar kegiatan memakai thumbnail kecil; judul panjang,
+lokasi, status, pagination dan aksi tetap terbaca tanpa overflow.
+
+Moderasi/publikasi/pelaksanaan tetap tiga konteks berbeda dengan label Indonesia;
+disetujui tidak berarti dipublikasikan. Semua tautan bagian detail menuju konten
+existing yang tetap terbuka. Form koordinasi di bawah asesmen menyimpan melalui
+endpoint existing. Periksa modal Buat Kegiatan, unggah cover, form posisi dan
+asesmen, pengajuan/publikasi, paket/order, pelamar/kehadiran dan profil pending.
+Akses langsung lintas role/pemilik harus tetap ditolak. Periksa pula role lain
+karena stylesheet aplikasi dibangun bersama. Hasil nyata dan bagian belum diuji
+tercantum pada [handoff EO](../../docs/ORGANIZER_UI_REFINEMENT_HANDOFF.md).
+
 ## Usia otomatis dan profil ringkas — 14 November 2026
 
 Ubah tanggal lahir: usia ikut berubah sesuai hari WIB. Periksa ulang tahun,
@@ -339,7 +780,7 @@ browser submit end-to-end, p95 dan review tim masih belum diuji.
 
 Tambahan kasus A3: tepat decision_deadline menolak keputusan baru, replay keputusan
 final tidak mengubah alasan/audit; accepted withdrawal hanya Organizer sebelum awal;
-stale revision attendance ditolak; koreksi completed beralasan mengubah riwayat sumber;
+stale revision attendance ditolak; koreksi completed tetap ditolak walau beralasan; riwayat sumber tidak berubah;
 file purged tidak aktif sesudah restore, missing kembali ready hanya checksum sama;
 orphan rollback tidak dibersihkan sebelum masa aman 24 jam; dokumen organisasi tidak
 terkena retensi lamaran. Cleanup publik harus opt-in sesudah kebijakan disetujui.
@@ -439,7 +880,7 @@ Siapkan fixture pada kontrak integrasi. Bukti tiap kasus: tanggal, environment/D
 | UAT-25 | Admin mengubah harga paket setelah order dibuat | Snapshot nominal/manfaat order lama tetap; admin tidak bebas edit paid; entitlement lama konsisten. | A2 | Belum diuji |
 | UAT-26 | Sandbox checkout dan status server nyata | Minimal satu transaksi sandbox terverifikasi; log referensi aman; mock terpisah dari bukti E2E. | A2 | Belum diuji |
 | UAT-27 | Attendance oleh Volunteer/Organizer lain; peserta belum diterima | Ditolak server; hanya accepted milik event dapat dicatat; unrecorded tidak absent. | A3 | Belum diuji |
-| UAT-28 | Completion terlalu dini/ada pending, koreksi setelah selesai | Diblokir bila prasyarat belum terpenuhi; present berhasil, absent bukan berhasil; koreksi butuh alasan/audit. | A3 | Belum diuji |
+| UAT-28 | Completion terlalu dini/ada pending, kunci setelah selesai | Diblokir bila prasyarat belum terpenuhi; present berhasil, absent bukan berhasil; koreksi setelah selesai ditolak. | A3 | Belum diuji |
 | UAT-29 | Aktivitas akun A meminta data akun B | Hanya data akun aktif; tidak ada grafik/dashboard pengguna; route lama redirect aman. | A4/A1 | Belum diuji |
 | UAT-30 | Retry notifikasi dan filter dashboard | Satu notifikasi per transisi/penerima; indikator periode memakai timestamp benar; gagal query bukan 0. | A4/A1 | Belum diuji |
 | UAT-31 | Event cancelled ketika ada assessment/lamaran/payment | Lamaran/attempt aktif ditutup; callback terlambat tidak publish; riwayat menampilkan dibatalkan. | A2/A3/A4 | Belum diuji |
@@ -538,3 +979,25 @@ Permintaan pengguna mengizinkan penerapan FigCraft Electric Blue / 06 Publik dan
 Detail event panel (14 November): periksa 1440/768/390, tanggal panjang
 dan kartu posisi ringkas tanpa overflow; kondisi CTA existing tetap.
 Preview fixture lulus audit lebar; browser akun nyata belum diuji ulang.
+
+
+### Penyempurnaan EO 15 November 2026: lima perbaikan
+- Basis feature/organizer-ui-refinement @367a7de; mempertahankan perubahan lokal dan ukuran kartu.
+- Penutupan seleksi dinonaktifkan sebelum tenggat pendaftaran, dengan waktu tersedia WIB.
+- Penyelesaian menampilkan jadwal, seleksi/asesmen, dan jumlah peserta yang sesi/absensinya belum final; tombol terkunci sampai siap. Konfirmasi nol hanya untuk nol peserta. Validasi server tetap berlaku.
+- Fase tampilan mengikuti waktu melalui Event::executionPhase(), tanpa menulis status atau menyelesaikan otomatis.
+- Pencarian peserta 350 ms, hasil HTML server diperbarui tanpa mengganti input/filter; permintaan lama dibatalkan, paginasi mempertahankan pencarian. Tanpa JS tetap GET/Enter. Pencarian nama memakai LIKE literal.
+- Istilah antarmuka EO: kegiatan, asesmen, penyaringan, pelamar, skor kecocokan/keahlian. Identifier integrasi dan default komponen role lain tetap.
+- Tidak ada migration, dependensi, atau route baru. Pemeriksaan visual browser terbaru belum dilakukan.
+
+
+## Usia yang disarankan per posisi ? keputusan pengguna 15 November 2026
+Posisi memiliki suggested_min_age dan suggested_max_age nullable unsigned tiny integer (0?255 sebagai batas penyimpanan), masing-masing opsional. Jika keduanya diisi, maksimum harus >= minimum. Kosong berarti tidak ada saran usia pada sisi tersebut; posisi existing tetap null. EO mengatur saat konfigurasi posisi mengikuti otorisasi dan kunci publikasi existing. Form serta detail posisi EO/relawan menampilkan usia pada tanggal mulai kegiatan sebagai informasi, bukan syarat wajib. Relawan di luar rentang tetap dapat melamar; screening, assessment, matching 50/30/20 dan snapshot evaluasi tidak memakai kolom ini. Profil relawan tetap menyimpan birth_date, tidak menambah kolom umur profil.
+Migration tambahan: database/migrations/2026_11_15_160000_add_suggested_age_to_event_positions.php. Tidak ada route baru. UI berbagi components/position-suggested-age.blade.php. A2 pemilik kolom dan konfigurasi; A3/A4 tidak perlu menambahkan pembatasan umur.
+UAT: kosong/satu sisi/rentang valid tersimpan dan tampil, rentang terbalik/negatif/non-integer ditolak, kosongkan kedua nilai menghapus saran, pemilik lain ditolak, posisi published tetap terkunci, snapshot evaluasi identik setelah hanya usia diubah.
+
+
+## Usia pelamar pada detail EO ? 15 November 2026
+ApplicationService::submit menambah profile.birth_date (YYYY-MM-DD nullable) ke snapshot lamaran baru. Ini data pribadi untuk owner terotorisasi, bukan bagian audit/notifikasi atau rumus evaluasi. Detail lamaran EO menghitung tahun penuh pada tanggal starts_at dalam WIB dan menampilkan usia bersama saran usia posisi. Tidak ada eliminasi otomatis atau perubahan bobot/score.
+Lamaran lama tanpa key birth_date memakai tanggal lahir profil saat ini dan menampilkan sumbernya secara eksplisit; snapshot lama tidak ditulis ulang. Snapshot dengan tanggal kosong/tidak valid atau tanggal lahir setelah tanggal kegiatan menampilkan Belum tersedia. Tidak ada migration atau route baru untuk usia pelamar.
+UAT: ulang tahun tepat hari kegiatan, sehari sesudahnya, starts_at UTC yang masuk tanggal WIB berikutnya, data lama/missing/invalid, perubahan profil setelah submit tidak mengubah usia dari snapshot, owner lain ditolak. Alur terintegrasi diuji dari fixture pembuatan event/posisi, asesmen terbit, ajukan moderasi, admin approve/publikasi paket gratis, submit lamaran di luar saran usia, penyaringan/pencocokan/asesmen, accepted, absensi sesi, completed, riwayat dan final lock. Pada DatabaseTransactions, afterCommit tertunda sampai rollback; evaluasi nyata dipanggil eksplisit dalam tes, bukan bukti worker/queue produksi.

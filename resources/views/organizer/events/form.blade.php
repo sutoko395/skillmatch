@@ -1,17 +1,17 @@
 @extends('organizer.layouts.sidebar')
 
-@section('title', $event->exists ? 'Edit Event' : 'Buat Event')
+@section('title', $event->exists ? 'Edit Kegiatan' : 'Buat Kegiatan')
 
 @section('content')
 <div class="w-full max-w-7xl mx-auto space-y-6">
 
     <div>
         <h1 class="text-2xl font-bold text-slate-800">
-            {{ $event->exists ? 'Edit Event' : 'Buat Event' }}
+            {{ $event->exists ? 'Edit Kegiatan' : 'Buat Kegiatan' }}
         </h1>
 
         <p class="mt-1 text-sm text-slate-500">
-            Tanggal dan jam diisi dalam WIB. Lengkapi informasi event sebelum melanjutkan konfigurasi.
+            Tanggal dan jam diisi dalam WIB. Lengkapi informasi kegiatan sebelum melanjutkan konfigurasi.
         </p>
     </div>
 
@@ -31,7 +31,7 @@
             @endif
 
             <x-event-package-selector :packages="$packages" :selected="$event->package_snapshot['id'] ?? null" />
-            <h2 class="text-lg font-semibold text-slate-800">2. Informasi dan jadwal event</h2>
+            <h2 class="text-lg font-semibold text-slate-800">2. Informasi dan jadwal kegiatan</h2>
 
             <x-form-field
                 name="title"

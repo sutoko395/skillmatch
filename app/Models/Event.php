@@ -125,4 +125,16 @@ class Event extends Model
     {
         return $this->hasMany(Application::class);
     }
+    /** Presentation only: completion remains an explicit organizer action. */
+    public function executionPhase(): string
+    {
+        if (in_array($this->lifecycle_status, ['completed', 'cancelled'], true)) {
+            return $this->lifecycle_status;
+        }
+        if ($this->ends_at && now()->gte($this->ends_at)) {
+            return 'awaiting_completion';
+        }
+        return $this->starts_at && now()->gte($this->starts_at) ? 'ongoing' : 'upcoming';
+    }
+
 }

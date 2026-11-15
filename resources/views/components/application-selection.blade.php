@@ -1,9 +1,11 @@
-@props(['application'])
+@props(['application', 'showExecutionLink' => true])
 <x-section-card>
     <h2 class="mb-3 text-lg font-semibold text-slate-900">Keputusan seleksi</h2>
     @if($application->decision_reason)<p class="mb-3 whitespace-pre-line text-sm text-slate-700">Alasan: {{ $application->decision_reason }}</p>@endif
     @if(auth()->user()->role === 'organizer')
+        @if($showExecutionLink)
         <a href="{{ route('organizer.execution.show', $application->event) }}" class="font-semibold text-indigo-600">Pelaksanaan dan kehadiran</a>
+        @endif
         @if($application->status === 'under_review' && $application->event->lifecycle_status === 'upcoming' && now()->lt($application->event->starts_at) && (!$application->event->decision_deadline || now()->lt($application->event->decision_deadline)))
             <form method="POST" action="{{ route('organizer.applications.accept', $application) }}" class="mt-4" x-data="{busy:false}" @submit="if (busy) { $event.preventDefault(); } else { $nextTick(() => busy = true); }" @pageshow.window="busy=false">
                 @csrf

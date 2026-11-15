@@ -30,13 +30,20 @@ class EventController extends Controller
         return view('organizer.events.text', compact('event'));
     }
 
+    public function updateCover(Request $request, Event $event, EventService $service)
+    {
+        $service->updateCover($event, $request->user(), $request->all());
+
+        return redirect()->route('organizer.events.show', $event)->with('success', 'Gambar kegiatan berhasil diperbarui.');
+    }
+
     public function correctText(Request $r, Event $event, EventService $service)
     {
         $service->correctText($event, $r->user(), $r->all());
 
         return redirect()
             ->route('organizer.events.show', $event)
-            ->with('success', 'Koreksi teks tersimpan; aturan posisi, jadwal dan paket tetap.');
+            ->with('success', 'Perubahan berhasil disimpan.');
     }
 
     public function destroy(Request $r, Event $event, EventService $service)
@@ -50,10 +57,26 @@ class EventController extends Controller
 
     public function index(Request $r)
     {
+        $filters = $r->validate([
+            'search' => ['nullable', 'string', 'max:255'],
+            'status' => ['nullable', 'in:draft,pending,approved,rejected'],
+        ]);
+        $search = trim($filters['search'] ?? '');
+        $status = $filters['status'] ?? '';
+        $events = Event::where('organizer_id', $r->user()->id)
+            ->when($search !== '', function ($query) use ($search) {
+                $literal = str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $search);
+                $query->whereRaw("title LIKE ? ESCAPE '!'", ['%'.$literal.'%']);
+            })
+            ->when($status !== '', fn ($query) => $query->where('status', $status))
+            ->latest()
+            ->paginate(12)
+            ->appends(['search' => $search, 'status' => $status]);
+
         return view('organizer.events.index', [
-            'events' => Event::where('organizer_id', $r->user()->id)
-                ->latest()
-                ->paginate(12),
+            'events' => $events,
+            'search' => $search,
+            'status' => $status,
             'cities' => City::where('is_active', true)->orderBy('name')->get(),
             'packages' => $this->formPackages(),
             'categories' => Category::where('is_active', true)

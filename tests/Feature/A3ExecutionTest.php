@@ -133,7 +133,7 @@ class A3ExecutionTest extends DatabaseTestCase
         }
     }
 
-    public function test_attendance_completion_history_and_reasoned_correction(): void
+    public function test_attendance_completion_history_and_final_lock(): void
     {
         $a = $this->reviewApplication();
         app(SelectionService::class)->accept($a, $a->event->organizer);
@@ -150,8 +150,16 @@ class A3ExecutionTest extends DatabaseTestCase
         $this->assertTrue($event->fresh()->completed_at->equalTo($completed));
         $this->actingAs($a->volunteer)->get(route('volunteer.history.index'))->assertOk()->assertSee('Partisipasi berhasil');
         $this->actingAs($event->organizer)->patchJson(route('organizer.attendances.update', $a->attendance), ['status' => 'absent', 'revision' => 1])->assertUnprocessable();
-        $this->patch(route('organizer.attendances.update', $a->attendance), ['status' => 'absent', 'revision' => 1, 'reason' => 'Koreksi daftar kehadiran lapangan.'])->assertRedirect();
-        $this->actingAs($a->volunteer)->get(route('volunteer.history.index'))->assertOk()->assertSee('Tidak hadir')->assertDontSee('Partisipasi berhasil');
+        $auditCount = AuditLog::count();
+        $outboxCount = NotificationOutbox::count();
+        $this->patchJson(route('organizer.attendances.update', $a->attendance), ['status' => 'absent', 'revision' => 1, 'reason' => 'Koreksi daftar kehadiran lapangan.'])->assertUnprocessable();
+        $this->patchJson(route('organizer.attendances.update', $a->attendance), ['status' => 'present', 'revision' => 1])->assertUnprocessable();
+        $this->assertSame('present', $a->attendance->fresh()->status);
+        $this->assertSame($auditCount, AuditLog::count());
+        $this->assertSame($outboxCount, NotificationOutbox::count());
+        $this->get(route('organizer.execution.show', $event))->assertOk()->assertSee('Absensi sudah final')
+            ->assertDontSee('Simpan kehadiran')->assertDontSee('Alasan koreksi');
+        $this->actingAs($a->volunteer)->get(route('volunteer.history.index'))->assertOk()->assertSee('Partisipasi berhasil');
         $this->assertSame('completed', $event->fresh()->lifecycle_status);
         $this->travelBack();
     }

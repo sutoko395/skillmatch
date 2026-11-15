@@ -179,7 +179,7 @@ class A3ApplicationTest extends DatabaseTestCase
         $this->actingAs($volunteer)
             ->get("/events/{$event->id}")
             ->assertOk()
-            ->assertSee('Pilih posisi dan mulai lamaran');
+            ->assertSee('Pilih Posisi & Mulai Lamaran', false);
 
         // Store draft via POST endpoint
         $response = $this->post("/volunteer/positions/{$position->id}/applications");
@@ -381,5 +381,56 @@ class A3ApplicationTest extends DatabaseTestCase
         $this->actingAs($volunteer2);
         $this->get("/volunteer/applications/{$draft1->id}")->assertForbidden();
         $this->post("/volunteer/applications/{$draft1->id}/submit")->assertForbidden();
+    }
+
+    public function test_organizer_journey_from_moderation_to_final_attendance_with_informational_age(): void
+    {
+        [$owner, $event, $position] = $this->fixture();
+        $position->requirements()->delete();
+        $position->forceFill(['suggested_min_age' => 40, 'suggested_max_age' => 60])->save();
+        app(\App\Services\OrganizerAssessmentService::class)->save($position, $owner, [
+            'revision' => 0, 'duration_minutes' => 30, 'questions' => [
+                ['text' => 'Pertanyaan satu', 'options' => ['A' => 'Satu', 'B' => 'Dua', 'C' => 'Tiga', 'D' => 'Empat'], 'correct' => 'A'],
+                ['text' => 'Pertanyaan dua', 'options' => ['A' => 'Satu', 'B' => 'Dua', 'C' => 'Tiga', 'D' => 'Empat'], 'correct' => 'B'],
+            ],
+        ], true);
+        app(\App\Services\EventService::class)->submit($event, $owner);
+        $this->assertSame('pending', $event->fresh()->status);
+        $this->actingAs(User::factory()->create(['role' => 'admin']))
+            ->patch("/admin/event-verification/{$event->id}/approve")->assertRedirect()->assertSessionHasNoErrors();
+        $this->assertSame('published', $event->fresh()->publication_status);
+        $volunteer = $this->createCompleteVolunteer($event->cityRecord, $position->positionSkills->first()->skill);
+        $service = app(ApplicationService::class);
+        $application = $service->storeDraft($volunteer, $position);
+        $this->actingAs($volunteer)->post("/volunteer/applications/{$application->id}/submit")->assertRedirect()->assertSessionHasNoErrors();
+        $this->assertSame('2000-01-01', $application->fresh()->snapshot_json['profile']['birth_date']);
+        // Outer test transaction deliberately defers afterCommit; invoke the actual evaluators explicitly.
+        app(\App\Services\ScreeningService::class)->evaluate($application->fresh());
+        app(\App\Services\MatchingEvaluationService::class)->evaluate($application->fresh());
+        $this->assertSame('assessment_pending', $application->fresh()->status);
+        $this->assertTrue($application->fresh()->screeningResult->passed);
+        $score = $application->fresh()->matchResult->total_score;
+        $attempt = app(\App\Services\AssessmentService::class)->start($application->fresh(), $volunteer);
+        app(\App\Services\AssessmentService::class)->save($attempt, $volunteer, ['revision' => 0, 'answers' => []], true);
+        $this->assertSame('under_review', $application->fresh()->status);
+        $volunteer->volunteerProfile()->update(['birth_date' => '1990-01-01']);
+        $this->actingAs($owner)->get(route('organizer.applications.show', $application))->assertOk()
+            ->assertSee('Usia saat kegiatan')->assertSee('Usia yang disarankan:')
+            ->assertViewHas('ageAtEvent', (int) \Carbon\CarbonImmutable::parse('2000-01-01', 'Asia/Jakarta')->diffInYears($event->starts_at->setTimezone('Asia/Jakarta')->startOfDay()))
+            ->assertViewHas('ageFromCurrentProfile', false);
+        app(\App\Services\SelectionService::class)->accept($application->fresh(), $owner);
+        $this->assertSame('accepted', $application->fresh()->status);
+        $this->assertEquals($score, $application->fresh()->matchResult->total_score);
+        $this->travelTo($event->ends_at->addMinute());
+        $this->postJson(route('organizer.attendance-sessions.initialize', $event), ['applications' => [$application->id]])->assertOk();
+        foreach ($application->fresh()->attendance->sessions as $session) {
+            $this->patch(route('organizer.attendance-sessions.update', $session), ['revision' => $session->revision, 'status' => 'present'])->assertRedirect()->assertSessionHasNoErrors();
+        }
+        $this->post(route('organizer.events.complete', $event), ['confirmed' => 1])->assertRedirect()->assertSessionHasNoErrors();
+        $this->assertSame('completed', $event->fresh()->lifecycle_status);
+        $this->actingAs($volunteer)->get(route('volunteer.history.index'))->assertOk()->assertSee('Partisipasi berhasil');
+        $session = $application->fresh()->attendance->sessions->first();
+        $this->actingAs($owner)->patchJson(route('organizer.attendance-sessions.update', $session), ['revision' => $session->revision, 'status' => 'absent'])->assertUnprocessable();
+        $this->travelBack();
     }
 }

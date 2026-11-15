@@ -3,6 +3,7 @@
         <h3 class="min-w-0 break-words text-xl font-bold text-slate-900">{{ $position->name }}</h3>
         <span class="shrink-0 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">Kuota: {{ $position->quota }}</span>
     </header>
+    <x-position-suggested-age :position="$position" :for-volunteer="true" />
     @if($position->description)<p class="whitespace-pre-line break-words text-sm leading-relaxed text-slate-600">{{ $position->description }}</p>@endif
     <div class="border-t border-slate-100 pt-5">
         <h4 class="text-sm font-semibold text-slate-900">Skill yang dibutuhkan</h4>

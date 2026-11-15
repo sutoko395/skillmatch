@@ -511,3 +511,6 @@ existing dipertahankan. Tidak memerlukan migration/dependensi baru untuk redesig
 Jalankan `npm run build` atau server `npm run dev` yang biasa; bila public/hot ada,
 Laravel memakai server Vite aktif. Tinjau `/`, `/events`, `/login`, dan `/register`.
 Lingkup, bukti tes/browser dan batas: [handoff](docs/DEVELOPMENT.md#electric-blue-publik-auth).
+
+### Informasi usia posisi
+Jalankan `php artisan migrate` setelah menarik perubahan usia posisi (migration 2026_11_15_160000). Dua kolom opsional ditambahkan tanpa mengubah data posisi existing. Isi melalui konfigurasi posisi EO; saran usia tampil di detail posisi dan tidak membatasi lamaran atau skor.

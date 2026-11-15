@@ -343,7 +343,7 @@ class A3ApplicationDocumentsTest extends DatabaseTestCase
         $indexResponse->assertOk();
         $indexResponse->assertSee($volunteer1->name);
         $indexResponse->assertSee('Menunggu assessment');
-        $indexResponse->assertSee('Match Score');
+        $indexResponse->assertSee('Skor kecocokan');
         // Draft applicant should not be listed
         $indexResponse->assertDontSee($volunteer2->name);
 
@@ -351,9 +351,9 @@ class A3ApplicationDocumentsTest extends DatabaseTestCase
         $showResponse = $this->get("/organizer/applications/{$app1->id}");
         $showResponse->assertOk();
         $showResponse->assertSee($volunteer1->name);
-        $showResponse->assertSee('Lolos screening');
+        $showResponse->assertSee('Lolos penyaringan');
         $showResponse->assertSee('cv1.pdf');
-        $showResponse->assertSee('Unduh Dokumen');
+        $showResponse->assertSee('Unduh dokumen');
 
         // Other organizer cannot view
         $otherOrganizer = User::factory()->create(['role' => 'organizer', 'is_active' => true, 'organizer_status' => 'active', 'email_verified_at' => now()]);

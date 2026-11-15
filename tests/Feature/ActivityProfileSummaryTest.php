@@ -30,10 +30,14 @@ class ActivityProfileSummaryTest extends DatabaseTestCase
         $other = User::factory()->create(['role' => 'organizer', 'organizer_status' => 'active']);
         $other->organizerProfile()->create(['organization_name' => 'Organisasi rahasia lain']);
         $this->actingAs($user)->get('/organizer/aktivitas?user_id='.$other->id)
-            ->assertOk()->assertViewIs('organizer.dashboard')
-            ->assertSee('Organisasi sendiri')->assertSee('Kontak sendiri')
-            ->assertDontSee('Organisasi rahasia lain')->assertSee('Terverifikasi')
-            ->assertSee('Tindak lanjut kegiatan')
+            ->assertOk()->assertViewIs('organizer.dashboard')->assertDontSee('@yield(', false)
+            ->assertViewHas('profile', fn ($profile) => $profile->organization_name === 'Organisasi sendiri' && $profile->contact_person === 'Kontak sendiri')
+            ->assertDontSee('Organisasi rahasia lain')
+            ->assertSee('Perlu Ditindaklanjuti')
+            ->assertSeeInOrder(['Total Kegiatan', 'Perlu Ditindaklanjuti'])
+            ->assertDontSee('Pelamar Terbaru')->assertDontSee('Ringkasan kegiatan terbaru.')
+            ->assertDontSee('Buat Kegiatan')
+            ->assertSee(route('organizer.applications.overview'))
             ->assertDontSee('Total Event')->assertDontSee('Total Pendaftar')
             ->assertDontSee('href="#"', false)->assertDontSee('Buat Event');
         $this->get('/organizer/dashboard')->assertRedirect('/organizer/aktivitas');

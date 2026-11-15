@@ -1,3 +1,14 @@
+## Perubahan aturan final absensi - keputusan pengguna 15 November 2026
+
+Absensi completed sekarang terkunci: tidak ada koreksi dengan alasan, baik per
+sesi maupun catatan legacy. Service menolak request setelah lock sebelum no-op/
+write/audit/notifikasi; prepare terminal ditolak. Form koreksi disembunyikan,
+catatan/status riwayat tetap dapat dibaca. Prasyarat completion tidak dilonggarkan.
+Tidak ada migration atau penghapusan koreksi/histori yang sudah tersimpan.
+Bagian di bawah adalah catatan implementasi/pengujian pada saat ditulis; izin
+koreksi setelah completion yang disebut di sana telah digantikan keputusan ini.
+Bukti terbaru: docs/ORGANIZER_UI_REFINEMENT_HANDOFF.md bagian penguncian absensi.
+
 # Serah-terima A3 — seleksi dan pelaksanaan, 28 Oktober 2026
 
 ## Kehadiran per sesi/hari - keputusan pengguna 3 November 2026

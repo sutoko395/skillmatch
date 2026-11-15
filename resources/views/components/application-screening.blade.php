@@ -2,20 +2,20 @@
 @if ($application->status !== 'draft')
     @php($result = $application->screeningResult)
     <section class="rounded-xl border border-slate-200 bg-white p-5" aria-label="Hasil screening">
-        <h2 class="text-lg font-bold text-slate-900">Hasil screening</h2>
+        <h2 class="text-lg font-bold text-slate-900">{{ $showEvaluationInfo ? 'Hasil screening' : 'Hasil penyaringan' }}</h2>
         @if (!$result)
             <p class="mt-3 text-sm text-slate-600">
-                {{ $application->status === 'submitted' ? 'Lamaran menunggu evaluasi. Hasil screening belum tersedia.' : 'Hasil screening belum tersedia untuk lamaran ini.' }}
+                {{ $application->status === 'submitted' ? ($showEvaluationInfo ? 'Lamaran menunggu evaluasi. Hasil screening belum tersedia.' : 'Lamaran menunggu evaluasi. Hasil penyaringan belum tersedia.') : ($showEvaluationInfo ? 'Hasil screening belum tersedia untuk lamaran ini.' : 'Hasil penyaringan belum tersedia untuk lamaran ini.') }}
             </p>
         @else
             <div class="mt-3 rounded-lg p-4 text-sm {{ $result->passed ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800' }}">
-                <p class="font-semibold">{{ $result->passed ? 'Lolos screening — syarat wajib terpenuhi.' : 'Gagal screening — belum memenuhi syarat wajib.' }}</p>
+                <p class="font-semibold">{{ $result->passed ? ($showEvaluationInfo ? 'Lolos screening — syarat wajib terpenuhi.' : 'Lolos penyaringan — syarat wajib terpenuhi.') : ($showEvaluationInfo ? 'Gagal screening — belum memenuhi syarat wajib.' : 'Gagal penyaringan — belum memenuhi syarat wajib.') }}</p>
                 @if (!$result->passed)
                     <p class="mt-1">{{ $detailed ? 'Pelamar belum memenuhi syarat untuk melanjutkan proses.' : 'Lamaranmu belum bisa dilanjutkan ke tahap selanjutnya.' }}</p>
                 @elseif ($application->status === 'submitted')
-                    <p class="mt-1">{{ $detailed ? 'Pelamar menunggu proses pencocokan sebelum assessment.' : 'Lamaranmu menunggu proses pencocokan sebelum assessment.' }}</p>
+                    <p class="mt-1">{{ $detailed ? ($showEvaluationInfo ? 'Pelamar menunggu proses pencocokan sebelum assessment.' : 'Pelamar menunggu proses pencocokan sebelum asesmen.') : ($showEvaluationInfo ? 'Lamaranmu menunggu proses pencocokan sebelum assessment.' : 'Lamaranmu menunggu proses pencocokan sebelum asesmen.') }}</p>
                 @elseif ($application->status === 'assessment_pending')
-                    <p class="mt-1">{{ $detailed ? 'Pencocokan selesai. Pelamar menunggu assessment.' : 'Pencocokan selesai. Lamaranmu siap lanjut ke assessment.' }}</p>
+                    <p class="mt-1">{{ $detailed ? ($showEvaluationInfo ? 'Pencocokan selesai. Pelamar menunggu assessment.' : 'Pencocokan selesai. Pelamar menunggu asesmen.') : ($showEvaluationInfo ? 'Pencocokan selesai. Lamaranmu siap lanjut ke assessment.' : 'Pencocokan selesai. Lamaranmu siap lanjut ke asesmen.') }}</p>
                 @endif
             </div>
             @if ($detailed)

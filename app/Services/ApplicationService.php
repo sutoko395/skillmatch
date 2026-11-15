@@ -126,6 +126,7 @@ class ApplicationService
                 'city_id' => $volunteer->volunteerProfile?->city_id,
                 'city_name' => $volunteer->volunteerProfile?->cityRecord?->name,
                 'phone' => $volunteer->volunteerProfile?->phone,
+                'birth_date' => $volunteer->volunteerProfile?->birth_date?->format('Y-m-d'),
                 'bio' => $volunteer->volunteerProfile?->bio,
                 'skills' => $volunteer->volunteerSkills->map(fn ($vs) => [
                     'id' => $vs->skill_id,

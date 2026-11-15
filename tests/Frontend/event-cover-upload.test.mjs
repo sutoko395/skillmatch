@@ -27,3 +27,21 @@ test('oversized image is rejected before making a preview', () => {
     assert.match(state.error, /5 MB/);
     assert.equal(state.removed, true);
 });
+
+test('cancel restores the saved cover and releases an unsaved image', () => {
+    const state = eventCoverUpload('/saved-cover');
+    const original = URL.revokeObjectURL;
+    const released = [];
+    URL.revokeObjectURL = value => released.push(value);
+    try {
+        state.objectUrl = 'blob:unsaved';
+        state.preview = 'blob:unsaved';
+        state.$refs = { file: { value: 'new.png' } };
+        state.cancel();
+        assert.equal(state.preview, '/saved-cover');
+        assert.equal(state.objectUrl, null);
+        assert.equal(state.$refs.file.value, '');
+        assert.equal(state.removed, false);
+        assert.deepEqual(released, ['blob:unsaved']);
+    } finally { URL.revokeObjectURL = original; }
+});

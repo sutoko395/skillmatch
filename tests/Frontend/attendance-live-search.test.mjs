@@ -1,0 +1,34 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+const source = await readFile(new URL('../../resources/js/attendance-live-search.js', import.meta.url), 'utf8');
+const { initializeAttendanceSearch } = await import('data:text/javascript;base64,' + Buffer.from(source).toString('base64'));
+
+test('typing is debounced, preserves filters, and ignores an older response', async () => {
+    const listeners = {}, requests = [], replacements = [];
+    const input = { addEventListener: (name, fn) => listeners[name] = fn };
+    const form = { action: 'http://localhost/execution', querySelector: () => input, after() {} };
+    const results = { setAttribute() {}, removeAttribute() {}, replaceWith: value => replacements.push(value) };
+    const root = { querySelector: selector => selector === 'form' ? form : results, addEventListener() {} };
+    globalThis.document = { createElement: () => ({ setAttribute() {} }) };
+    globalThis.window = { addEventListener() {} };
+    globalThis.location = { href: form.action, origin: 'http://localhost', pathname: '/execution' };
+    globalThis.history = { replaceState() {} };
+    globalThis.FormData = class { *[Symbol.iterator]() { yield ['search', 'Nadia']; yield ['position_id', '7']; } };
+    globalThis.DOMParser = class { parseFromString(text) { return { querySelector: () => text }; } };
+    globalThis.fetch = (url, options) => new Promise(resolve => requests.push({url, options, resolve}));
+    initializeAttendanceSearch(root);
+    listeners.input(); listeners.input(); listeners.input();
+    await new Promise(resolve => setTimeout(resolve, 400));
+    assert.equal(requests.length, 1);
+    assert.equal(requests[0].url.searchParams.get('position_id'), '7');
+    listeners.input();
+    assert.equal(requests[0].options.signal.aborted, true);
+    requests[0].resolve({ok: true, text: async () => 'old'});
+    await new Promise(resolve => setTimeout(resolve, 400));
+    assert.deepEqual(replacements, []);
+    assert.equal(requests.length, 2);
+    requests[1].resolve({ok: true, text: async () => 'new'});
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.deepEqual(replacements, ['new']);
+});

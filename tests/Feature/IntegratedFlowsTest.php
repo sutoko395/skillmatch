@@ -182,7 +182,7 @@ class IntegratedFlowsTest extends DatabaseTestCase
         $activity = app(ActivityReadService::class)->forOrganizer($owner);
         $this->assertSame(1, $activity['pendingApplications']);
         $this->assertSame(0, app(ActivityReadService::class)->forOrganizer(User::factory()->create(['role' => 'organizer']))['pendingApplications']);
-        $this->actingAs($owner)->get(route('organizer.activity.index'))->assertOk()->assertSee('Kandidat siap diputuskan');
+        $this->actingAs($owner)->get(route('organizer.activity.index'))->assertOk()->assertSee('Pelamar siap diputuskan');
         $this->actingAs($application->volunteer)->get(route('volunteer.activity.index'))->assertOk()
             ->assertViewHas('applicationCount', 1)->assertSee('Langkah berikutnya')->assertSee('Notifikasi terbaru');
     }
