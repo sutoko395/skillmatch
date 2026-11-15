@@ -53,7 +53,7 @@ class PositionScheduleModeTest extends DatabaseTestCase
         [$owner, $event] = $this->setupEvent();
         $url = "/organizer/events/{$event->id}/positions";
         $this->actingAs($owner)->get($url.'/create')->assertOk()
-            ->assertSee('Jadwal event')->assertSee('Ikuti jadwal event')->assertSee('Atur jadwal tugas khusus')
+            ->assertSee('Jadwal kegiatan')->assertSee('Ikuti jadwal kegiatan')->assertSee('Atur jadwal tugas khusus')
             ->assertSee('type="time"', false);
         $input = $this->positionInput();
         // Forged schedules are ignored in automatic mode.
@@ -131,7 +131,7 @@ class PositionScheduleModeTest extends DatabaseTestCase
         [$owner, $event] = $this->setupEvent();
         $event->forceFill(['ends_at' => $event->ends_at->copy()->addDay()])->save();
         $this->actingAs($owner)->get("/organizer/events/{$event->id}/positions/create")->assertOk()
-            ->assertSee('Pilih tanggal dan jam tugas dalam rentang event.')
+            ->assertSee('Pilih tanggal dan jam tugas dalam rentang kegiatan.')
             ->assertSee('type="datetime-local"', false);
     }
 }

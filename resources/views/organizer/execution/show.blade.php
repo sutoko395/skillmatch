@@ -1,51 +1,102 @@
 @extends('organizer.layouts.sidebar')
-@section('title', 'Pelaksanaan - '.$event->title)
+@section('title', 'Pelaksanaan & Kehadiran')
 @section('content')
-<div class="mx-auto max-w-7xl space-y-6">
-    <x-page-header :title="'Pelaksanaan: '.$event->title" description="Kehadiran dicatat Organizer per sesi/hari tugas. Waktu pencatatan bukan jam kedatangan." />
-    <a class="font-semibold text-indigo-600" href="{{ route('organizer.execution.index') }}">Kembali ke daftar pelaksanaan</a>
-    <x-section-card>
-        <dl class="mb-5 grid grid-cols-2 gap-4 md:grid-cols-4">@foreach(['accepted' => 'Peserta diterima', 'present' => 'Hadir', 'absent' => 'Tidak hadir', 'unrecorded' => 'Belum dicatat'] as $key => $label)<div class="rounded-xl bg-slate-50 p-4"><dt class="text-sm text-slate-600">{{ $label }}</dt><dd class="text-2xl font-semibold">{{ $summary->$key }}</dd></div>@endforeach</dl>
-        <p class="mb-3 text-sm text-slate-600">Angka di atas adalah rekap peserta: Hadir berarti seluruh sesi hadir; Tidak hadir berarti ada sesi tidak hadir setelah semua sesi final. Catatan lama tetap ditandai per kegiatan.</p>
-        <p class="mb-5 rounded-xl bg-indigo-50 p-4 text-sm text-indigo-900">Rekap seluruh sesi event: {{ $sessionSummary->total }} catatan sesi, {{ $sessionSummary->present }} Hadir, {{ $sessionSummary->absent }} Tidak hadir, {{ $sessionSummary->unrecorded }} Belum dicatat. Satu sesi dihitung untuk setiap peserta yang bertugas.</p>
-        <p class="mb-4">Status kegiatan: <x-organizer-status :status="$event->lifecycle_status" />. Jadwal: {{ $event->starts_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}–{{ $event->ends_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB.</p>
-        <form method="GET" class="mb-5 flex flex-wrap gap-4">
-            <label>Cari nama<input class="block rounded-lg border-slate-300" name="search" value="{{ request('search') }}" maxlength="100"></label>
-            <label>Posisi<select class="block rounded-lg border-slate-300" name="position_id"><option value="">Semua posisi</option>@foreach($event->positions as $position)<option value="{{ $position->id }}" @selected(request('position_id') == $position->id)>{{ $position->name }}</option>@endforeach</select></label>
-            <label>Kehadiran<select class="block rounded-lg border-slate-300" name="status"><option value="">Semua status</option>@foreach(['unrecorded' => 'Belum dicatat', 'present' => 'Hadir', 'absent' => 'Tidak hadir'] as $key => $label)<option value="{{ $key }}" @selected(request('status') === $key)>{{ $label }}</option>@endforeach</select></label>
-            <label>Hari tugas (WIB)<input type="date" name="session_date" value="{{ request('session_date') }}" class="block rounded-lg border-slate-300"></label>
-            <x-primary-button>Terapkan</x-primary-button>
+<div class="organizer-execution-detail mx-auto max-w-7xl space-y-6" x-data="attendanceSessionSetup(@js(['url' => route('organizer.attendance-sessions.initialize', $event), 'applications' => $pendingSessionApplications]))">
+    <div><a href="{{ route('organizer.execution.index') }}" class="organizer-action-button organizer-detail-back">Kembali</a></div>
+    <div>
+        <h1 class="text-2xl font-bold text-slate-800">Pelaksanaan &amp; Kehadiran</h1>
+        <div class="organizer-execution-heading">
+            <h2>{{ $event->title }}</h2>
+            <x-organizer-status :status="$event->executionPhase()" />
+        </div>
+        <p class="organizer-candidate-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 11h18"/></svg><span>{{ $event->starts_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} &ndash; {{ $event->ends_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</span></p>
+    </div>
+    @if($event->lifecycle_status === 'completed')
+        <p class="organizer-execution-notice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg><span>Absensi sudah final dan tidak dapat diubah.</span></p>
+    @endif
+    <div x-show="error" x-cloak role="alert" class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <p x-text="error"></p>
+        <button type="button" @click="prepare()" :disabled="busy" class="mt-2 font-semibold underline">Coba lagi</button>
+    </div>
+    @if($pendingSessionApplications)
+        <noscript><form method="POST" action="{{ route('organizer.attendance-sessions.initialize', $event) }}">@csrf
+            @foreach($pendingSessionApplications as $id)<input type="hidden" name="applications[]" value="{{ $id }}">@endforeach
+            <button type="submit" class="organizer-action-button">Tampilkan sesi peserta</button>
+        </form></noscript>
+    @endif
+    <section aria-labelledby="attendance-participants-heading" data-live-attendance>
+        <h2 id="attendance-participants-heading" class="sr-only">Kehadiran peserta</h2>
+        <form method="GET" action="{{ route('organizer.execution.show', $event) }}" class="organizer-event-filters organizer-attendance-filters">
+            <div class="organizer-checkin-search">
+                <label for="attendance-search" class="sr-only">Cari peserta</label>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path stroke-linecap="round" d="m16 16 5 5"/></svg>
+                <input id="attendance-search" type="search" name="search" value="{{ request('search') }}" maxlength="100" placeholder="Cari nama peserta...">
+                <button type="submit" class="sr-only">Cari peserta</button>
+            </div>
+            <details class="organizer-checkin-filters" @if(request()->filled('position_id') || request()->filled('status') || request()->filled('session_date')) open @endif>
+                <summary>Filter peserta</summary>
+                <div class="organizer-event-filters mt-4">
+            <div><label for="attendance-position">Posisi</label><select id="attendance-position" name="position_id"><option value="">Semua posisi</option>@foreach($event->positions as $position)<option value="{{ $position->id }}" @selected(request('position_id') == $position->id)>{{ $position->name }}</option>@endforeach</select></div>
+            <div><label for="attendance-status">Kehadiran</label><select id="attendance-status" name="status"><option value="">Semua status</option>@foreach(['unrecorded' => 'Belum dicatat', 'present' => 'Hadir', 'absent' => 'Tidak hadir'] as $key => $label)<option value="{{ $key }}" @selected(request('status') === $key)>{{ $label }}</option>@endforeach</select></div>
+            <div><label for="attendance-date">Hari tugas (WIB)</label><input id="attendance-date" type="date" name="session_date" value="{{ request('session_date') }}"></div>
+            <button type="submit" class="organizer-action-button">Terapkan</button>
+            @if(request()->filled('search') || request()->filled('position_id') || request()->filled('status') || request()->filled('session_date'))<a href="{{ route('organizer.execution.show', $event) }}" class="organizer-event-filter-reset">Reset</a>@endif
+                </div>
+        <dl class="organizer-session-recap" aria-label="Rekap kehadiran per sesi">
+            @foreach(['present' => 'Hadir', 'absent' => 'Tidak hadir', 'unrecorded' => 'Belum dicatat'] as $key => $label)
+                <div><dt><span class="organizer-session-recap-dot organizer-session-recap-dot--{{ $key }}" aria-hidden="true"></span>{{ $label }}</dt><dd>{{ $sessionSummary->$key }}</dd></div>
+            @endforeach
+        </dl>
+            </details>
         </form>
-        <p class="mb-2 text-sm text-slate-600">Pada layar kecil, geser tabel untuk melihat catatan dan aksi.</p>
-        <div class="overflow-x-auto focus:outline-indigo-500" tabindex="0" role="region" aria-label="Tabel kehadiran peserta">
-            <table class="w-full text-left text-sm"><thead><tr><th class="p-3">Nama / Posisi</th><th class="p-3">Status / Waktu pencatatan</th><th class="p-3">Catatan dan aksi</th></tr></thead><tbody>
+        <div data-attendance-results><div class="space-y-4">
             @forelse($applications as $application)
                 @php($attendance = $application->attendance)
-                <tr class="border-t border-slate-200">
-                    <td class="p-3 align-top">{{ $application->volunteer->name }}<br>{{ $application->position->name }}</td>
-                    <td class="p-3 align-top">{{ ['unrecorded' => 'Belum dicatat', 'present' => 'Hadir', 'absent' => 'Tidak hadir'][$attendance?->status ?? 'unrecorded'] }}<br>{{ $attendance?->recorded_at ? 'Pembaruan terakhir: '.$attendance->recorded_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i').' WIB' : 'Belum ada waktu pencatatan' }}</td>
-                    <td class="min-w-64 p-3">
+                <article class="organizer-attendance-participant" x-data="{ expanded: {{ $errors->any() || (int) session('attendance_application_id') === $application->id ? 'true' : 'false' }} }">
+                    <header class="organizer-attendance-participant-header">
+                        <div class="organizer-candidate-identity">
+                            <span class="organizer-candidate-avatar" aria-hidden="true">{{ mb_strtoupper(mb_substr($application->volunteer->name, 0, 1)) }}</span>
+                            <div class="min-w-0">
+                                <h3 class="organizer-candidate-name">{{ $application->volunteer->name }}</h3>
+                                <p class="organizer-checkin-position">{{ $application->position->name }}</p>
+                            </div>
+                        </div>
+                        <div class="organizer-attendance-participant-progress">
+                            @if($attendance?->uses_sessions)
+                                <span>{{ $attendance->sessions->where('status', 'present')->count() }} dari {{ $attendance->sessions->count() }} sesi hadir</span>
+                            @else
+                                <span>{{ ['unrecorded' => 'Belum dicatat', 'present' => 'Hadir', 'absent' => 'Tidak hadir'][$attendance?->status ?? 'unrecorded'] }}</span>
+                            @endif
+                        </div>
+                        <button type="button" class="organizer-secondary-button organizer-info-edit" @click="expanded = !expanded" :aria-expanded="expanded.toString()" aria-controls="participant-sessions-{{ $application->id }}">
+                            <span x-text="expanded ? 'Tutup sesi' : 'Lihat sesi'">Lihat sesi</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" :class="{ 'rotate-180': expanded }"><path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></svg>
+                        </button>
+                    </header>
+                    <div id="participant-sessions-{{ $application->id }}" class="organizer-attendance-participant-body" x-show="expanded" x-cloak>
                         @if($attendance?->uses_sessions)
                             @include('organizer.execution.session-forms', ['attendance' => $attendance, 'application' => $application])
+                        @elseif(!in_array($event->lifecycle_status, ['completed', 'cancelled']) && (!$attendance || $attendance->status === 'unrecorded'))
+                            <p class="text-sm text-slate-500" role="status">Memuat sesi peserta...</p>
                         @elseif($attendance && $event->lifecycle_status !== 'cancelled')
-                        <p class="mb-3 text-sm font-semibold text-amber-800">Catatan lama per kegiatan; belum merupakan bukti kehadiran setiap sesi.</p>
+                        <p class="mb-3 text-sm font-semibold text-amber-800">Catatan lama per kegiatan</p>
+                        @if($event->lifecycle_status === 'completed' && $attendance->note)<p class="mb-3 whitespace-pre-line text-sm text-slate-600">Catatan: {{ $attendance->note }}</p>@endif
                         @if(!in_array($event->lifecycle_status, ['completed', 'cancelled']))
                             <form method="POST" action="{{ route('organizer.attendances.prepare-sessions', $attendance) }}" class="mb-5 space-y-3 rounded-xl border border-indigo-200 p-4">
                                 @csrf
                                 <input type="hidden" name="revision" value="{{ $attendance->revision }}">
-                                <p class="text-sm">Siapkan sesi dari jadwal tugas saat lamaran dikirim. Kehadiran setiap sesi dimulai Belum dicatat; catatan lama yang sudah terisi tetap diarsipkan.</p>
+                                <p class="text-sm">Sesi baru berstatus Belum dicatat. Catatan lama tetap diarsipkan.</p>
                                 @if($attendance->status !== 'unrecorded')<label class="block">Alasan pengalihan<textarea name="reason" required minlength="5" maxlength="1000" class="block w-full rounded-lg border-slate-300"></textarea></label>@endif
                                 <label class="block text-sm"><input type="checkbox" name="confirmed" value="1" required> Saya akan mencatat setiap sesi sesuai kehadiran sebenarnya.</label>
                                 <x-primary-button>Siapkan absensi per sesi</x-primary-button>
                             </form>
                         @endif
-                        @if($attendance->status !== 'unrecorded')
+                        @if($attendance->status !== 'unrecorded' && $event->lifecycle_status !== 'completed')
                         <form method="POST" action="{{ route('organizer.attendances.update', $attendance) }}" class="space-y-3" x-data="{busy:false}" @submit="if (busy) { $event.preventDefault(); } else { $nextTick(() => busy = true); }" @pageshow.window="busy=false">
                             @csrf @method('PATCH')
                             <input type="hidden" name="revision" value="{{ $attendance->revision }}">
                             <label class="block">Kehadiran<select name="status" class="ml-2 rounded-lg border-slate-300" required><option value="">Pilih</option><option value="present" @selected($attendance->status === 'present')>Hadir</option><option value="absent" @selected($attendance->status === 'absent')>Tidak hadir</option></select></label>
                             <label class="block">Catatan<textarea name="note" maxlength="1000" class="block w-full rounded-lg border-slate-300">{{ $attendance->note }}</textarea></label>
-                            @if($event->lifecycle_status === 'completed')<label class="block">Alasan koreksi<textarea name="reason" required minlength="5" maxlength="1000" class="block w-full rounded-lg border-slate-300"></textarea></label>@endif
                             <x-primary-button x-bind:disabled="busy">Simpan kehadiran</x-primary-button>
                         </form>
                         @endif
@@ -56,32 +107,34 @@
                                 <x-primary-button>Siapkan absensi per sesi</x-primary-button>
                             </form>
                         @else <p>Kehadiran tidak dapat diubah.</p> @endif
-                    </td>
-                </tr>
-            @empty <tr><td colspan="3" class="p-6 text-slate-600">Tidak ada peserta diterima yang sesuai filter.</td></tr> @endforelse
-            </tbody></table>
+                    </div>
+                </article>
+            @empty
+                <div class="organizer-attendance-participant p-6"><x-empty-state title="Belum ada peserta" description="Tidak ada peserta diterima yang sesuai filter." /></div>
+            @endforelse
         </div>
-        <div class="mt-4">{{ $applications->links() }}</div>
-    </x-section-card>
+        <p class="mt-5 text-sm text-slate-500">Menampilkan {{ $applications->count() }} peserta.</p>
+        @if($applications->hasPages())<div class="mt-4">{{ $applications->links() }}</div>@endif
+        </div>
+    </section>
     @if(!in_array($event->lifecycle_status, ['cancelled', 'completed']))
     <x-section-card>
-        <h2 class="mb-3 text-lg font-semibold">Tutup seleksi tertunda</h2>
-        <p class="mb-3 text-sm text-slate-600">Lamaran yang masih menunggu evaluasi, assessment, atau tinjauan akan ditolak dengan alasan ini. Keputusan final tetap disimpan.</p>
-        <form method="POST" action="{{ route('organizer.events.close-selection', $event) }}" class="organizer-execution-close space-y-3">
-            @csrf
-            <label class="block">Alasan penutupan<textarea name="reason" required minlength="5" maxlength="1000" class="block w-full rounded-lg border-slate-300">{{ old('reason') }}</textarea></label>
-            <label class="block"><input type="checkbox" name="confirmed" value="1" required> Saya mengonfirmasi penutupan seluruh lamaran tertunda.</label>
-            <x-primary-button>Tutup seleksi tertunda</x-primary-button>
-        </form>
-    </x-section-card>
-    <x-section-card>
         <h2 class="mb-3 text-lg font-semibold">Selesaikan kegiatan</h2>
-        <p class="mb-3 text-sm text-slate-600">Hanya setelah akhir jadwal, seluruh seleksi final, dan semua sesi/hari tugas peserta sudah selesai serta dicatat Hadir/Tidak hadir. Catatan lama per kegiatan tetap terbaca sebagai catatan lama.</p>
+        <p class="mb-3 text-sm text-slate-600">Selesaikan setelah seluruh sesi berakhir, absensi tercatat, dan seleksi final.</p>
+        @if($hasPendingSelection)
+            <div class="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
+                <p class="text-sm text-amber-800">Masih ada lamaran atau asesmen tertunda. Selesaikan seleksi di Kelola Pelamar terlebih dahulu.</p>
+                <a href="{{ route('organizer.applications.index', $event) }}#tutup-seleksi" class="organizer-secondary-button organizer-info-edit mt-3">Ke Kelola Pelamar</a>
+            </div>
+        @endif
+        @if($completionIssues)
+            <ul class="mb-3 list-disc pl-5 text-sm text-amber-800">@foreach($completionIssues as $issue)<li>{{ $issue }}</li>@endforeach</ul>
+        @elseif(!$hasPendingSelection)<p class="mb-3 text-sm text-emerald-700">Semua syarat terpenuhi. Kegiatan siap diselesaikan.</p>@endif
         <form method="POST" action="{{ route('organizer.events.complete', $event) }}" class="space-y-3">
             @csrf
-            <label class="block"><input type="checkbox" name="confirmed" value="1" required> Saya mengonfirmasi rekap kegiatan.</label>
-            <label class="block"><input type="checkbox" name="confirm_zero" value="1"> Jika tidak ada peserta diterima, saya mengonfirmasi jumlah nol.</label>
-            <x-primary-button>Selesaikan kegiatan</x-primary-button>
+            <label class="block"><input type="checkbox" name="confirmed" value="1" required> Saya sudah memeriksa rekap kegiatan. Setelah selesai, absensi dikunci dan tidak dapat diubah.</label>
+            @if($acceptedCount === 0)<label class="block"><input required type="checkbox" name="confirm_zero" value="1"> Jika tidak ada peserta diterima, saya mengonfirmasi jumlah nol.</label>@endif
+            <x-primary-button :disabled="$hasPendingSelection || count($completionIssues) > 0">Selesaikan kegiatan</x-primary-button>
         </form>
     </x-section-card>
     @endif

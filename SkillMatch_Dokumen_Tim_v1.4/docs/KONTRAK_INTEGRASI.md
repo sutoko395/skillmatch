@@ -1,3 +1,89 @@
+## Persiapan sesi otomatis untuk absensi belum dicatat - 15 November 2026
+
+A3 menambah POST /organizer/events/{event}/attendance-sessions/initialize, nama
+organizer.attendance-sessions.initialize -> ExecutionController::initializeSessions
+-> AttendanceSessionService::initializeUnrecorded. Auth/account.active/role EO/
+organizer.active dan EventPolicy update existing. Payload applications array
+1..100, integer id distinct>=1; semuanya harus accepted/milik event tersebut.
+JSON {prepared: count}; HTML redirect back untuk fallback tanpa JS.
+
+GET detail hanya membaca pending IDs (max100, ascending), tidak menulis DB.
+Alpine attendanceSessionSetup melakukan satu POST CSRF same-origin lalu reload
+URL/query yang sama. Jika lebih100 pending, batch berikutnya pada reload. Error
+menghentikan retry otomatis, menampilkan pesan dan Coba lagi. Transaction lock
+Event -> Applications berurutid -> Attendance; terminal ditolak, existing sesi dan
+legacy present/absent dilewati. Missing parent dibuat unrecorded; prepareLocked
+existing memisahkan snapshot interval perhariWIB dan mengaudit sessions_prepared.
+Note/recordmetadata lama pada unrecorded diarsipkan sebelum reset; tidak menimpa
+arsip existing yang konflik. Pengulangan tidak menggandakan sesi/audit. Tidak ada
+migration/status/notification baru; confirmed/reason existing tidak dilonggarkan
+untuk konversi legacy yang sudah diisi.
+
+## Check-in peserta dan catatan terpisah - 15 November 2026
+
+Tambahan A3 PATCH /organizer/attendance-sessions/{session}/note dengan nama
+organizer.attendance-sessions.note -> ExecutionController::updateSessionNote ->
+AttendanceSessionService::updateNote. Middleware auth/account.active/role organizer/
+organizer.active, AttendancePolicy existing; payload revision integer>=0 wajib,
+note nullable string max1000. Lock Event -> Application -> Attendance -> Session;
+hanya accepted, uses_sessions, pernah published, setelah awal event/sesi, bukan
+completed/cancelled. No-op note identik tidak menambah revisi/audit; revisi stale
+untuk perubahan ditolak422. Update note + revision sesi dan revision parent saja,
+tidak mengubah status, recorded_at/by atau lifecycle. Audit attendance.session_note_updated
+berisi revision tanpa isi catatan. Tidak mengirim notifikasi baru; catatan terbaca
+melalui view volunteer existing. Status/note current pada tombol hadir dikirim ke
+endpoint record existing agar note tidak terhapus. Record/notes redirect back
+menyimpan attendance_application_id flash untuk membuka kembali peserta terkait.
+Tidak ada schema/migration/status baru; state kehadiran tetap unrecorded/present/absent.
+
+## Filter daftar Pelaksanaan EO - 15 November 2026
+
+GET organizer.execution.index menerima search nullable string max255, trim dan
+substring literal (%, _ dan ! di-escape), serta phase nullable enum presentasi
+today/ongoing/history. Kondisi phase sama dengan kelompok existing dan diterapkan
+sebelum paginate12; pagination mempertahankan kedua parameter. Batas owner,
+pernah published dan tanggal lokal tetap berlaku untuk semua filter. Nilai enum
+ini bukan lifecycle/status baru. Request tidak mengubah data. Route/schema dan
+aturan record/completion tidak berubah.
+
+## Penguncian absensi completed - 15 November 2026
+
+Persetujuan pengguna menutup koreksi setelah kegiatan selesai. Service
+EventExecutionService::record dan AttendanceSessionService::recordLocked menolak
+completed/cancelled di bawah lock Event/Application/Attendance sebelum no-op,
+revision, update, audit dan notifikasi. Payload reason tidak membuka akses.
+Endpoint tetap; kegagalan memakai ValidationException422 existing. Jalur prepare
+juga menolak terminal sebelum return sesi existing. Completion memakai lock Event
+yang sama sehingga keputusan final tidak dipisah dari pemeriksaan saat record.
+Tidak ada schema/status baru; correction_reason dan histori tetap disimpan untuk
+kompatibilitas, bukan izin koreksi completed. Route/read riwayat tetap, mutation
+seleksi/sesi/completion lainnya tetap. Aturan awal waktu dan prasyarat completion
+existing tidak dilonggarkan. Ketentuan lama koreksi completed kini digantikan.
+
+## Visibilitas hub EO dan filter rekrutmen - 15 November 2026
+
+Keputusan pengguna: ApplicationController::overview A3 tetap GET
+organizer.applications.overview, query owner dari aktor + published_at NOT NULL.
+Filter GET search nullable string max255 (trim/substring literal) dan recruitment
+nullable enum presentasi open/closed/history. open: publication_status published,
+lifecycle bukan completed/cancelled, registration_opens_at <= UTCnow < deadline.
+closed: nonterminal published dan deadline <= UTCnow. history: pernah published
+dan lifecycle terminal atau publication_status != published. Semua termasuk
+pendaftaran belum dibuka/tenggat belum lengkap. Pagination12 menyimpan kedua
+parameter; count tetap submitted_at IS NOT NULL, tidak mengikutsertakan lamaran
+draf. Query owner tidak dapat diganti parameter request.
+
+ExecutionController::index A3 tetap GET organizer.execution.index, owner + pernah
+published + (starts_at < esok00.00 WIB dalam UTC OR lifecycle terminal). Aktif
+mendahului riwayat pada pagination12, groups hanya isi halaman. Kelompok today:
+sebelum jam starts_at pada tanggal lokal hari ini; ongoing: jadwal sudah mulai
+dan belum berakhir; history: completed/cancelled, akhir jadwal <= now atau
+publication_status != published. Terminal mendahului logika waktu. Count accepted
+existing tetap. Kelompok bersifat turunan, bukan write lifecycle_status.
+Tidak ada migration/route/status tersimpan baru, dan endpoint detail/seleksi/
+absensi/sesi/completion tidak dilonggarkan. Kegiatan belum mulai hari ini terlihat
+untuk persiapan, bukan izin mencatat kehadiran sebelum aturan waktunya terpenuhi.
+
 ## Update sampul langsung dari detail EO - 14 November 2026
 
 PATCH /organizer/events/{event}/cover, organizer.events.cover.update, A2 melalui
@@ -245,7 +331,7 @@ Histori pembayaran/lamaran/attendance memakai referensi yang tidak dihapus beran
 
 Alur: draft → pending → approved atau rejected → draft (revisi) → pending. Approved tidak sama dengan published. Publish memerlukan organizer terverifikasi/akun aktif, event approved, konfigurasi valid, entitlement sesuai dan jadwal belum berakhir. Free entitlement diaktifkan sekali setelah approved. Paid entitlement diaktifkan setelah pembayaran valid. Katalog mengecek dimensi dan akses pemilik, bukan status approved saja.
 
-Upcoming → ongoing oleh Organizer pada/sesudah starts_at; dapat dipicu sebagai bagian layanan pencatatan pertama, dengan audit. Ongoing → completed sesudah ends_at dan syarat completion lulus. Upcoming/ongoing → cancelled membutuhkan alasan; published berubah unpublished, proses seleksi/assessment dihentikan. Completed/cancelled terminal; tidak dibuka lagi di MVP. Koreksi attendance completed tidak membuka lifecycle.
+Upcoming → ongoing oleh Organizer pada/sesudah starts_at; dapat dipicu sebagai bagian layanan pencatatan pertama, dengan audit. Ongoing → completed sesudah ends_at dan syarat completion lulus. Upcoming/ongoing → cancelled membutuhkan alasan; published berubah unpublished, proses seleksi/assessment dihentikan. Completed/cancelled terminal; tidak dibuka lagi di MVP. Koreksi attendance completed dilarang, termasuk request dengan alasan; lifecycle tetap terminal.
 
 ### Lamaran
 
@@ -476,3 +562,15 @@ App\Rules\PhoneNumber digunakan VolunteerProfileRequest, OrganizerProfileControl
 ## Foto sampul event — keputusan 5 November 2026
 
 Organizer menambah/mengganti/menghapus foto opsional pada create/edit draft yang masih editable. JPG/PNG/WebP maksimal 5 MB, rekomendasi 1600 × 900; kartu konsisten 16:9 dengan fallback ilustrasi. Kolom nullable events.cover_image_path; input cover_image dan remove_cover_image, path ditentukan server. GET /events/{event}/cover (events.cover) mengikuti visibility event atau pemilik/admin aktif. Tidak mengubah moderasi/publikasi/paket/pembayaran maupun dokumen privat. Detail implementasi, UAT dan bukti tes tersedia pada docs/DEVELOPMENT.md#foto-sampul-event di root repository.
+
+
+## Usia yang disarankan per posisi ? keputusan pengguna 15 November 2026
+Posisi memiliki suggested_min_age dan suggested_max_age nullable unsigned tiny integer (0?255 sebagai batas penyimpanan), masing-masing opsional. Jika keduanya diisi, maksimum harus >= minimum. Kosong berarti tidak ada saran usia pada sisi tersebut; posisi existing tetap null. EO mengatur saat konfigurasi posisi mengikuti otorisasi dan kunci publikasi existing. Form serta detail posisi EO/relawan menampilkan usia pada tanggal mulai kegiatan sebagai informasi, bukan syarat wajib. Relawan di luar rentang tetap dapat melamar; screening, assessment, matching 50/30/20 dan snapshot evaluasi tidak memakai kolom ini. Profil relawan tetap menyimpan birth_date, tidak menambah kolom umur profil.
+Migration tambahan: database/migrations/2026_11_15_160000_add_suggested_age_to_event_positions.php. Tidak ada route baru. UI berbagi components/position-suggested-age.blade.php. A2 pemilik kolom dan konfigurasi; A3/A4 tidak perlu menambahkan pembatasan umur.
+UAT: kosong/satu sisi/rentang valid tersimpan dan tampil, rentang terbalik/negatif/non-integer ditolak, kosongkan kedua nilai menghapus saran, pemilik lain ditolak, posisi published tetap terkunci, snapshot evaluasi identik setelah hanya usia diubah.
+
+
+## Usia pelamar pada detail EO ? 15 November 2026
+ApplicationService::submit menambah profile.birth_date (YYYY-MM-DD nullable) ke snapshot lamaran baru. Ini data pribadi untuk owner terotorisasi, bukan bagian audit/notifikasi atau rumus evaluasi. Detail lamaran EO menghitung tahun penuh pada tanggal starts_at dalam WIB dan menampilkan usia bersama saran usia posisi. Tidak ada eliminasi otomatis atau perubahan bobot/score.
+Lamaran lama tanpa key birth_date memakai tanggal lahir profil saat ini dan menampilkan sumbernya secara eksplisit; snapshot lama tidak ditulis ulang. Snapshot dengan tanggal kosong/tidak valid atau tanggal lahir setelah tanggal kegiatan menampilkan Belum tersedia. Tidak ada migration atau route baru untuk usia pelamar.
+UAT: ulang tahun tepat hari kegiatan, sehari sesudahnya, starts_at UTC yang masuk tanggal WIB berikutnya, data lama/missing/invalid, perubahan profil setelah submit tidak mengubah usia dari snapshot, owner lain ditolak. Alur terintegrasi diuji dari fixture pembuatan event/posisi, asesmen terbit, ajukan moderasi, admin approve/publikasi paket gratis, submit lamaran di luar saran usia, penyaringan/pencocokan/asesmen, accepted, absensi sesi, completed, riwayat dan final lock. Pada DatabaseTransactions, afterCommit tertunda sampai rollback; evaluasi nyata dipanggil eksplisit dalam tes, bukan bukti worker/queue produksi.

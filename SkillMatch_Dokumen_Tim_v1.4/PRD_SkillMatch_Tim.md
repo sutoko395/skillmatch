@@ -1,3 +1,53 @@
+## Persiapan sesi otomatis untuk absensi belum dicatat - 15 November 2026
+
+Peserta accepted pada event nonterminal yang absensinya masih kosong/unrecorded
+mendapat sesi dari snapshot secara otomatis saat detail pelaksanaan dibuka,
+tanpa checkbox/langkah Siapkan absensi. Tidak menandai Hadir otomatis. Kehadiran
+legacy present/absent tidak dikonversi otomatis; arsip/konfirmasi existing tetap
+untuk melindungi bukti lama. Snapshot tidak valid dilaporkan, tidak ditebak.
+
+## Check-in peserta dan catatan terpisah - 15 November 2026
+
+Alur meja absensi EO: cari peserta, buka/tutup rincian sesi, Tandai hadir langsung
+menyimpan sesi yang telah dimulai. Satu maupun banyak sesi memakai pola sama.
+Tidak hadir/koreksi tetap melalui Ubah kehadiran. Catatan opsional memiliki simpan
+terpisah, bisa ditulis tanpa mengubah status hadir/absent/unrecorded. Catatan sesi
+terlihat oleh relawan pada detail lamaran dan, setelah terminal, riwayat existing.
+Penguncian completed/cancelled, accepted, waktu sesi dan pemeriksaan revision tetap.
+
+## Absensi final saat kegiatan selesai - keputusan pengguna 15 November 2026
+
+Batas akhir pencatatan absensi adalah saat kegiatan ditandai Selesai, bukan
+H+1 atau tenggat kalender tambahan. Sebelum selesai, pencatatan/koreksi tetap
+hanya oleh organizer pemilik setelah awal kegiatan dan sesi tugas. Seluruh
+prasyarat completion tetap (akhir acara/sesi terlewati, seluruh kehadiran final,
+seleksi/assessment tidak tertunda, konfirmasi termasuk nol peserta).
+Setelah completed, kehadiran per sesi maupun legacy per kegiatan tidak dapat
+diubah, termasuk dengan alasan koreksi atau request identik. Kegiatan cancelled
+tetap terkunci. Riwayat/data/audit koreksi lama tidak dihapus. Ini menggantikan
+izin koreksi completed beralasan pada ketentuan sebelumnya.
+
+## Pemisahan daftar kerja organizer - keputusan pengguna 15 November 2026
+
+Kegiatan Saya tetap memuat semua kegiatan milik organizer. Kelola Pelamar hanya
+memuat yang pernah dipublikasikan (published_at terisi), termasuk riwayat yang
+kemudian selesai, dibatalkan atau publikasinya dihentikan. Hasil seleksi tetap
+bisa dibuka. Pencarian nama dan filter Semua/Rekrutmen terbuka/Rekrutmen ditutup/
+Riwayat tersedia. Terbuka mengikuti registration_opens_at <= sekarang < deadline,
+masih published dan bukan terminal; ditutup mengikuti deadline <= sekarang pada
+kegiatan nonterminal yang masih published. Jadwal pendaftaran di masa depan
+atau data tenggat lama belum lengkap tetap terlihat melalui Semua.
+
+Pelaksanaan & Kehadiran memuat kegiatan pernah published mulai tanggal lokal
+starts_at pukul00.00 WIB, tanpa menunggu jam mulai. Kegiatan selesai/dibatalkan
+yang pernah published tetap tersedia sebagai Riwayat, termasuk pembatalan dini.
+Kelompok Hari ini untuk jadwal hari ini yang belum masuk jam mulai, Berlangsung
+untuk interval waktu mulai hingga sebelum akhir, Riwayat untuk terminal, akhir
+jadwal terlewati atau publikasi dihentikan. Kegiatan lewat jadwal tetapi belum
+completed diberi Menunggu penyelesaian. Kelompok/label jadwal merupakan presentasi,
+tidak mengubah lifecycle otomatis, aturan pencatatan sesi/absensi/completion atau
+otorisasi endpoint detail/mutasi. Batas waktu dihitung WIB lalu dikonversi UTC.
+
 # PRD SkillMatch Volunteer — acuan tim empat anggota
 
 ## Kehadiran per sesi/hari - keputusan pengguna 3 November 2026
@@ -55,7 +105,7 @@ event dan batas keputusan EO bila tersedia; reject beralasan, kuota posisi berbe
 dari counter paket, konflik memakai snapshot interval [start,end). Withdrawal accepted
 hanya Organizer sebelum awal dengan alasan; pending hanya Volunteer atau penutupan
 seleksi beralasan oleh Organizer. Completion/riwayat tetap derived dari sumber.
-Koreksi attendance completed memerlukan alasan dan revision untuk mencegah overwrite.
+Absensi pada kegiatan completed terkunci; koreksi tetap ditolak meskipun disertai alasan atau revision (keputusan 15 November 2026).
 
 Retensi 7/90 hari tetap baseline demo yang bisa dikonfigurasi, bukan keputusan kebijakan
 publik. Cleanup di luar local/testing memerlukan aktivasi eksplisit setelah kebijakan
@@ -263,10 +313,10 @@ Nilai = jawaban benar / jumlah soal × 100; kosong salah. Nilai assessment terpi
 - Volunteer dapat menarik lamaran sebelum accepted; setelah accepted, pengunduran diri ditangani Organizer sebelum kegiatan dimulai dengan alasan dan status withdrawn. Catat audit; jangan menghapus lamaran.
 - Seleksi menerima under_review saja dan harus dilakukan sebelum starts_at event. Transaksi tulis memeriksa ulang kuota, entitlement, akun, lifecycle, dan bentrok dengan jadwal peserta accepted di event lain yang tidak cancelled. Transaksi MySQL/InnoDB dan urutan row lock pada baseline tools wajib diuji.
 - Attendance: unrecorded, present, absent. Unrecorded tidak disamakan dengan absent. Satu rekap per lamaran accepted dengan rincian sesi/hari dari snapshot, dibuat saat acceptance.
-- Organizer mencatat setiap sesi sejak awal sesi tugas; koreksi completed wajib alasan. Timestamp pencatatan bukan jam kedatangan. Tidak ada check-in/out mandiri, QR atau GPS.
+- Organizer mencatat setiap sesi sejak awal sesi tugas; setelah completed absensi terkunci dan tidak dapat dikoreksi. Timestamp pencatatan bukan jam kedatangan. Tidak ada check-in/out mandiri, QR atau GPS.
 - Event baru dapat completed setelah akhir jadwal, tidak ada assessment/lamaran seleksi yang menggantung, dan seluruh sesi/hari tugas peserta accepted sudah berakhir dan tercatat final. Jika tidak ada peserta, completion diizinkan dengan konfirmasi jumlah nol.
 - Lamaran nonfinal dapat ditutup Organizer sebelum completion melalui layanan penutupan dengan alasan, status rejected (termasuk assessment belum selesai); jangan mengubah yang sudah withdrawn/rejected/screening_failed. Ini jalur penutupan terkontrol, bukan seleksi penerimaan bypass.
-- Koreksi attendance setelah completed hanya oleh Organizer pemilik dengan alasan dan audit; riwayat membaca status terbaru. Histori tidak disalin ke tabel kedua.
+- Koreksi attendance setelah completed tidak diizinkan; riwayat membaca kehadiran final yang telah dikunci. Histori tidak disalin ke tabel kedua.
 - Completed + accepted + seluruh sesi present = partisipasi berhasil. Campuran present/absent tampil sebagai Partisipasi tidak lengkap; seluruh absent sebagai Tidak hadir. Cancelled ditandai dibatalkan.
 
 ## 8. Admin dan Ringkasan Aktivitas
@@ -355,3 +405,15 @@ Organizer menambah/mengganti/menghapus foto opsional pada create/edit draft yang
 ## Electric Blue Publik dan Auth — keputusan 6 November 2026
 
 Permintaan pengguna mengizinkan penerapan FigCraft Electric Blue / 06 Publik dan Auth pada landing, katalog, login dan registrasi. Blue #2563EB, Navy #0F172A, Peach #FB923C, Off-white #F8FAFC; judul editorial Georgia dan body Inter. Tampilan operasional tiga role tetap. Data, filter, pagination, upload foto, validasi, satu login/guard web dan seluruh aturan bisnis existing dipertahankan. UAT: periksa kelima tampilan desktop/mobile, menu, pencarian/filter/reset, kartu foto, role registrasi, error dan toggle password. Bukti implementasi dan tes ada pada docs/DEVELOPMENT.md#electric-blue-publik-auth di root repository; belum menyatakan seluruh UAT tim lulus.
+
+
+## Usia yang disarankan per posisi ? keputusan pengguna 15 November 2026
+Posisi memiliki suggested_min_age dan suggested_max_age nullable unsigned tiny integer (0?255 sebagai batas penyimpanan), masing-masing opsional. Jika keduanya diisi, maksimum harus >= minimum. Kosong berarti tidak ada saran usia pada sisi tersebut; posisi existing tetap null. EO mengatur saat konfigurasi posisi mengikuti otorisasi dan kunci publikasi existing. Form serta detail posisi EO/relawan menampilkan usia pada tanggal mulai kegiatan sebagai informasi, bukan syarat wajib. Relawan di luar rentang tetap dapat melamar; screening, assessment, matching 50/30/20 dan snapshot evaluasi tidak memakai kolom ini. Profil relawan tetap menyimpan birth_date, tidak menambah kolom umur profil.
+Migration tambahan: database/migrations/2026_11_15_160000_add_suggested_age_to_event_positions.php. Tidak ada route baru. UI berbagi components/position-suggested-age.blade.php. A2 pemilik kolom dan konfigurasi; A3/A4 tidak perlu menambahkan pembatasan umur.
+UAT: kosong/satu sisi/rentang valid tersimpan dan tampil, rentang terbalik/negatif/non-integer ditolak, kosongkan kedua nilai menghapus saran, pemilik lain ditolak, posisi published tetap terkunci, snapshot evaluasi identik setelah hanya usia diubah.
+
+
+## Usia pelamar pada detail EO ? 15 November 2026
+ApplicationService::submit menambah profile.birth_date (YYYY-MM-DD nullable) ke snapshot lamaran baru. Ini data pribadi untuk owner terotorisasi, bukan bagian audit/notifikasi atau rumus evaluasi. Detail lamaran EO menghitung tahun penuh pada tanggal starts_at dalam WIB dan menampilkan usia bersama saran usia posisi. Tidak ada eliminasi otomatis atau perubahan bobot/score.
+Lamaran lama tanpa key birth_date memakai tanggal lahir profil saat ini dan menampilkan sumbernya secara eksplisit; snapshot lama tidak ditulis ulang. Snapshot dengan tanggal kosong/tidak valid atau tanggal lahir setelah tanggal kegiatan menampilkan Belum tersedia. Tidak ada migration atau route baru untuk usia pelamar.
+UAT: ulang tahun tepat hari kegiatan, sehari sesudahnya, starts_at UTC yang masuk tanggal WIB berikutnya, data lama/missing/invalid, perubahan profil setelah submit tidak mengubah usia dari snapshot, owner lain ditolak. Alur terintegrasi diuji dari fixture pembuatan event/posisi, asesmen terbit, ajukan moderasi, admin approve/publikasi paket gratis, submit lamaran di luar saran usia, penyaringan/pencocokan/asesmen, accepted, absensi sesi, completed, riwayat dan final lock. Pada DatabaseTransactions, afterCommit tertunda sampai rollback; evaluasi nyata dipanggil eksplisit dalam tes, bukan bukti worker/queue produksi.

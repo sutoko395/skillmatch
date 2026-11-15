@@ -1,3 +1,212 @@
+## Hierarki font screening dan kecocokan - 15 November 2026
+
+Dua kartu evaluasi detail pelamar EO memakai judul16px/600, isi12px, header tabel
+11px/600, label baris12px/500 dan keterangan screening11px. Skor26px/600 dengan
+pembagi13px serta Match Score11px. Hanya tipografi dalam wrapper review EO; padding,
+grid, lebar kartu dan komponen role lain tidak diubah.
+
+## Penutupan seleksi di Kelola Pelamar - 15 November 2026
+
+Tutup seleksi tertunda dipindah dari detail Pelaksanaan ke daftar pelamar kegiatan
+di Kelola Pelamar (#tutup-seleksi), tampil bila ada pending dan eventnonterminal.
+Form alasan/konfirmasi/tombol merah existing dipertahankan. Pelaksanaan hanya
+menampilkan Selesaikan kegiatan; jika ada pending seleksi/assessment, tampil
+pemberitahuan ringkas dan Ke Kelola Pelamar ke anchor form. Tanpa pending,
+pemberitahuan hilang. Countpending tidak mengikuti filter/pagination kandidat.
+
+## Hierarki font kartu peserta - 15 November 2026
+
+Font kartu peserta dibuat lebih ringan tanpa memperbesar dimensi/padding: nama16px,
+posisi12px, progres13px, tanggal/jam13px, status/tombol/Catatan12px, Edit11px.
+Bobot status500 dan ikonpendukung14-16px. Nama tetap paling menonjol; grid, ukuran
+klik tombol, posisi Catatan/Edit/Dicatat dan seluruh fungsi dipertahankan.
+
+## Persiapan sesi otomatis untuk absensi belum dicatat - 15 November 2026
+
+Detail pelaksanaan tidak menampilkan checkbox dan tombol persiapan untuk accepted
+dengan parent absensi kosong/unrecorded. Saat perlu bootstrap tampil Memuat sesi
+peserta... sebentar, POST otomatis CSRF, reload ke kartu sesi normal. Tidak ada
+ubah state lewat GET. Kegagalan tampil pesan/Coba lagi, bukan reload tanpa batas.
+Tanpa JS tersedia Tampilkan sesi peserta tanpa checkbox. Legacy present/absent
+mempertahankan konversi eksplisit existing; terminal tetap readonly. Sesi baru
+tetap Belum dicatat dan menggunakan Lihat sesi/Tandai hadir/Catatan existing.
+
+## Rapatkan aksi dan buang ruang bawah sesi - 15 November 2026
+
+Baris aksi sesi kini tanpa rowgap desktop; kolom kanan mencakup dua baris agar
+tombol tinggi tidak mendorong Catatan/Edit ke bawah. Padding sesi8px atas/6px
+bawah, Edit tanpa padding vertikal. Mobile rowgap2px. Editor/form tetap.
+
+## Kartu lebih padat dan Batal koreksi - 15 November 2026
+
+Jarak baris sesi diperkecil menjadi2px desktop, padding sesi12px dan header10px;
+avatar40px/nama17px. Catatan dan Edit lebih dekat ke tanggal/status. Editor padding
+12px, jarak field8px/select36px/textarea60px. Form koreksi memiliki Batal outline
+merah kanan Simpan; membuang pilihan sementara dan menutup tanpa submit.
+
+## Posisi waktu pencatatan dan aksi sesi - 15 November 2026
+
+Dicatat dipindahkan dari bawah status ke kolom kanan sesi. Edit absensi tetap
+sejajar kiri tepat di bawah badge status, Catatan tepat di bawah tanggal. Tata
+letak tablet menjaga kolom kanan; mobile menaruh waktu Dicatat rata kanan.
+
+## Edit absensi ringkas di bawah status - 15 November 2026
+
+Edit absensi dipindahkan ke bawah status kehadiran, menjadi tautan kecil12px
+berikon pensil13px berwarna slate tanpa kotak. Hover biru/underline. Tata letak
+mobile menjaga posisi edit di bawah status dan tombol Tandai hadir terpisah.
+Form koreksi dan Catatan di bawah tanggal tetap. Menggantikan tombol boxed.
+
+## Kartu ringkas, Batal catatan dan Edit absensi - 15 November 2026
+
+Header kartu peserta dipendekkan: padding desktop14x20px, avatar48px (sebelumnya
+64px), mobile44px. Di kanan Simpan catatan ada Batal outline merah: typebutton,
+menutup editor dan mengembalikan nilai catatan tersimpan tanpa request. Saat busy
+kedua tombol disabled. Menu titik tiga diganti Edit absensi outline biru dengan
+ikon pensil, tetap membuka form koreksi existing. Posisi Catatan di bawah tanggal
+serta aturan backend tetap. Menggantikan pilihan menu titik tiga sebelumnya.
+
+## Penyelarasan visual dengan mockup check-in - 15 November 2026
+
+Permintaan terbaru pengguna menjadikan gambar mockup sebelumnya sebagai acuan
+susunan detail check-in. Header kartu memakai avatar bulat64px, nama19px/posisi15px
+polos, progres16px dengan garis pemisah dan toggle kanan. Desktop sesi empat kolom:
+tanggal (d M Y Indonesia), jam dengan pemisah vertikal, status/waktu dicatat dan
+Tandai hadir. Catatan berikon dokumen tepat di bawah tanggal, bukan satu baris tools
+di bawah seluruh sesi. Editor dibuka fullwidth di bawah baris melalui Alpine;
+label terlihat Catatan, aria-label menjelaskan tambah/edit/lihat. Koreksi tetap
+tersedia melalui menu titik tiga. Mobile ditumpuk dengan Catatan tetap di bawah
+tanggal. Pencarian nama fullwidth dengan ikon; filter dan rekap tetap dalam Filter
+peserta, terbuka otomatis ketika filter aktif. Jumlah peserta pada halaman tampil
+di bawah kartu. Backend/izin/aturan waktu/final dan simpan catatan terpisah tetap.
+
+## Check-in peserta dan catatan terpisah - 15 November 2026
+
+Pengguna menyetujui mockup alur meja absensi dan penjelasan Tambah catatan.
+Kartu peserta default tertutup, berisi nama/posisi, x dari y sesi hadir dan Lihat
+sesi outline biru; tombol berubah Tutup sesi saat terbuka. Berlaku untuk satu atau
+banyak sesi. Baris sesi ringkas tanggal/jam/status/waktu dicatat + Tandai hadir
+biru jika sesi dibuka dan belum present. Sudah hadir memakai badge hijau.
++ Tambah catatan membuka textarea opsional + Simpan catatan; jika terisi berubah
+Lihat/Edit catatan. Ada keterangan singkat Catatan ini dapat dilihat relawan.
+Ubah kehadiran menyimpan kontrol Hadir/Tidak hadir dalam disclosure terpisah.
+Catatan terminal readonly tetap dapat dibuka. Filter/pagination/legacy/completion
+existing tetap. Sukses membuka kembali kartu terkait; error membuka kartu dan
+mempertahankan draft catatan pada sesi asal. Loading tombol mencegah klik ganda.
+
+## Rekap sesi inline - 15 November 2026
+
+Rekap sesi detail Pelaksanaan menjadi dl inline di bawah Kehadiran peserta:
+Hadir hijau, Tidak hadir merah, Belum dicatat kuning dengan titik berwarna dan
+angka tebal12px. Tanpa kartu/buka-tutup/teks jumlah catatan; wrap di mobile.
+Hitungan tetap seluruh sesi event, bukan peserta atau hasil filter.
+
+## Hapus kartu rekap peserta - 15 November 2026
+
+Pengguna meminta menghapus empat kartu rekap peserta (Peserta diterima/Hadir/
+Tidak hadir/Belum dicatat) di detail Pelaksanaan. Blok tersebut beserta CSS dan
+partial ikon khusus yang tidak dipakai dihapus. Rekap sesi, filter, kartu peserta
+dan form absensi/tindakan tetap tersedia. Menggantikan desain empat kartu di bawah.
+
+## Detail Pelaksanaan dan Kehadiran EO - 15 November 2026
+
+Pengguna menyetujui perapian detail pelaksanaan mengikuti halaman EO sebelumnya
+dan penghapusan penjelasan yang tidak diperlukan. Kembali merah kiri atas,
+header24px dengan nama kegiatan17px/status ringkas dan jadwal berikon12px WIB.
+Rekap peserta empat kartu putih berbatas biru/hijau/merah/kuning dan angka28px.
+Rekap seluruh sesi dipindah ke details Rekap sesi, data hitungan tetap tersedia.
+Filter nama/posisi/status/hari tugas mengikuti gaya filter EO dengan Reset.
+
+Tabel lebar diganti kartu peserta: inisial/nama16px, posisi/timestamp12px, status,
+subcard sesi berikon tanggal/jam, select kehadiran dan catatan opsional. Simpan
+kehadiran sesi outline biru36px. Dua kolom sesi pada desktop, satu pada mobile.
+Tindakan tutup seleksi dan completion menjadi dua kartu berdampingan desktop,
+bertumpuk mobile. Copy rekap panjang, pengantar tentang waktu pencatatan dan
+petunjuk geser tabel dihapus; copy konversi/penutupan/completion diringkas.
+Peringatan final/cancelled, sesi belum mulai, alasan konversi, arsip legacy,
+konfirmasi penutupan/penguncian absensi dan zero peserta tetap tersedia. Pesan
+final cukup sekali di atas, catatan sesi readonly tetap. Tidak mengubah backend.
+
+## Penyederhanaan keterangan detail pelamar - 15 November 2026
+
+Pengguna meminta menghapus empat bagian pada screenshot. Detail pelamar EO tidak
+lagi menampilkan tautan Pelaksanaan dan kehadiran pada kartu keputusan; kartu
+kosong tanpa alasan/form/pesan seleksi tidak dirender. Form terima/tolak/undur,
+alasan keputusan dan pesan batas seleksi tetap tersedia bila relevan. Footer
+waktu evaluasi screening, keterangan snapshot matching dan paragraf pemisahan
+nilai assessment pada detail EO dihapus. Skor/rincian/waktu kirim tetap ada.
+Props default komponen bersama tetap true agar tampilan role lain tetap berlaku.
+
+## Daftar dan detail pelamar EO - 15 November 2026
+
+Persetujuan pengguna: dari Lihat Pelamar, Kembali menuju hub Kelola Pelamar;
+detail lamaran kembali ke daftar kandidat event. Keduanya Kembali merah kiri
+atas tanpa panah mengikuti detail kegiatan. Navigasi Semua Pelamar/Siap Ditinjau/
+Pelaksanaan pada daftar dihapus. Status kandidat Siap Ditinjau tetap informasi
+seleksi; query ready existing tetap didukung untuk tautan notifikasi/aktivitas.
+
+Daftar memakai row putih: inisial kandidat, nama16px, lokasi/posisi berikon12px,
+status ringkas, Match Score18px, waktu kirim WIB dan jumlah dokumen12px; Tinjau
+lamaran outline biru tanpa panah. Filter posisi memakai gaya form EO dengan
+Terapkan/Reset, count nyata dan empty state membedakan hasil filter. Detail
+memakai nama20px, status/tanggal ringkas, screening/matching berdampingan desktop,
+assessment terpisah, subcard profil/posisi berikon dan dokumen beraksi outline
+biru. Keputusan seleksi diletakkan setelah informasi; Terima biru, Tolak/undur
+outline merah. Tabel rinci tetap tersedia dengan scroll lokal pada mobile.
+Komponen screening/matching/selection bersama dan perilaku role lain tidak diubah;
+flash sukses memakai toast layout EO existing tanpa duplikat blok inline.
+
+## Profil Organisasi EO - 15 November 2026
+
+Pengguna menyetujui perapian Profil Organisasi mengikuti halaman EO sebelumnya.
+Tombol Edit Profil memakai outline biru, teks biru dan ikon pensil36px. Informasi
+dibagi tiga kartu putih: identitas/status, kontak penanggung jawab, dan dokumen
+verifikasi. Identitas menampilkan simbol gedung biru, nama20px, status12px; tentang
+organisasi berada dalam subcard slate. Label12px dan isi14px dengan ikon lokasi,
+kota, website, penanggung jawab, telepon dan email. Detail ditata tiga kolom pada
+desktop dan satu kolom mobile; teks panjang dapat membungkus. Lihat KTP outline
+biru dengan ikon mata. Dialog edit mempertahankan form/konfirmasi verifikasi ulang,
+memakai gaya EO, Batal outline merah serta area scroll terbatas tinggi viewport.
+Catatan admin, seluruh data, empty state, upload dan preview privat dipertahankan.
+Halaman pendaftaran profil baru dan pending existing tetap tersedia.
+
+## Penyelarasan daftar EO dan Ubah Paket - 15 November 2026
+
+Tombol Kembali merah berada di kiri atas halaman pilih/ubah paket, sebelum judul,
+memakai komponen gaya dan tujuan detail kegiatan existing. Daftar Kelola Pelamar
+menghapus badge Publikasi/Pelaksanaan; daftar Pelaksanaan menghapus badge
+Publikasi/Jadwal. Metadata tanggal/jam/lokasi serta jumlah peserta tetap.
+Pelaksanaan memakai form filter bersama seperti Kelola Pelamar: pencarian nama,
+Tahap pelaksanaan (Semua/Hari ini/Berlangsung/Riwayat), Terapkan, Reset dan empty
+state khusus hasil filter. Tidak mengubah aturan visibilitas atau absensi.
+
+## Absensi terkunci setelah kegiatan Selesai - 15 November 2026
+
+Pengguna menyetujui pencatatan absensi berhenti saat kegiatan ditandai Selesai.
+Pada detail pelaksanaan completed tampil pesan Absensi sudah final dan tidak
+dapat diubah; form simpan sesi/legacy dan alasan koreksi tidak dirender. Riwayat
+status/waktu/catatan tetap terlihat. Checkbox completion yang sudah ada kini
+menjelaskan absensi dikunci setelah selesai. Kegiatan cancelled tetap terkunci.
+Tidak mendesain ulang halaman/tabel/filter atau menambah alur persetujuan baru.
+
+## Kelola Pelamar dan pelaksanaan mengikuti tahap kerja - 15 November 2026
+
+Persetujuan pengguna: Kelola Pelamar hanya kegiatan pernah published, gaya row
+seperti Kegiatan Saya dengan thumbnail, ikon tanggal/jam/lokasi, count lamaran,
+tombol outline biru tanpa panah. Badge publikasi/pelaksanaan dihapus sesuai
+permintaan terbaru pengguna.
+Form pencarian nama + Status rekrutmen (Semua/Terbuka/Ditutup/Riwayat), Terapkan,
+Reset serta hasil kosong terpisah. Terbuka memakai waktu pendaftaran, ditutup
+ketika deadline lewat; belum dibuka tetap melalui Semua. Riwayat tetap tersedia
+untuk kegiatan selesai/dibatalkan/publikasi dihentikan.
+
+Pelaksanaan & Kehadiran tampil sejak00.00 WIB pada tanggal acara, dikelompokkan
+Hari ini/Berlangsung/Riwayat dalam kartu row dengan gaya sama. Badge Publikasi/Jadwal dihapus; kelompok tampilan tetap terlihat. Lewat jam
+akhir tetapi belum completed diberi Menunggu penyelesaian. Kelompok tidak
+mengubah state. Header menjelaskan jam muncul dan aturan kehadiran. Empty state
+menjelaskan kegiatan published akan muncul pada hari pelaksanaan. Status draft
+hanya berada di Kegiatan Saya; bukan hub pelamar/pelaksanaan.
+
 ## Toast notifikasi panel EO - 14 November 2026
 
 Pengguna meminta notifikasi lebih modern dan sementara. Layout EO kini memakai
@@ -1141,3 +1350,25 @@ view:cache lulus; visual browser ukuran heading baru belum diperiksa ulang.
 Padding kartu 20px/mobile 16px, judul 28px/mobile 26px, jarak 14-20px.
 Tanggal pelaksanaan fleksibel dalam satu blok. Khusus panel Volunteer.
 Bukti: docs/VOLUNTEER_EVENT_DETAIL_DESIGN_HANDOFF.md pada root repository.
+
+
+### Penyempurnaan EO 15 November 2026: lima perbaikan
+- Basis feature/organizer-ui-refinement @367a7de; mempertahankan perubahan lokal dan ukuran kartu.
+- Penutupan seleksi dinonaktifkan sebelum tenggat pendaftaran, dengan waktu tersedia WIB.
+- Penyelesaian menampilkan jadwal, seleksi/asesmen, dan jumlah peserta yang sesi/absensinya belum final; tombol terkunci sampai siap. Konfirmasi nol hanya untuk nol peserta. Validasi server tetap berlaku.
+- Fase tampilan mengikuti waktu melalui Event::executionPhase(), tanpa menulis status atau menyelesaikan otomatis.
+- Pencarian peserta 350 ms, hasil HTML server diperbarui tanpa mengganti input/filter; permintaan lama dibatalkan, paginasi mempertahankan pencarian. Tanpa JS tetap GET/Enter. Pencarian nama memakai LIKE literal.
+- Istilah antarmuka EO: kegiatan, asesmen, penyaringan, pelamar, skor kecocokan/keahlian. Identifier integrasi dan default komponen role lain tetap.
+- Tidak ada migration, dependensi, atau route baru. Pemeriksaan visual browser terbaru belum dilakukan.
+
+
+## Usia yang disarankan per posisi ? keputusan pengguna 15 November 2026
+Posisi memiliki suggested_min_age dan suggested_max_age nullable unsigned tiny integer (0?255 sebagai batas penyimpanan), masing-masing opsional. Jika keduanya diisi, maksimum harus >= minimum. Kosong berarti tidak ada saran usia pada sisi tersebut; posisi existing tetap null. EO mengatur saat konfigurasi posisi mengikuti otorisasi dan kunci publikasi existing. Form serta detail posisi EO/relawan menampilkan usia pada tanggal mulai kegiatan sebagai informasi, bukan syarat wajib. Relawan di luar rentang tetap dapat melamar; screening, assessment, matching 50/30/20 dan snapshot evaluasi tidak memakai kolom ini. Profil relawan tetap menyimpan birth_date, tidak menambah kolom umur profil.
+Migration tambahan: database/migrations/2026_11_15_160000_add_suggested_age_to_event_positions.php. Tidak ada route baru. UI berbagi components/position-suggested-age.blade.php. A2 pemilik kolom dan konfigurasi; A3/A4 tidak perlu menambahkan pembatasan umur.
+UAT: kosong/satu sisi/rentang valid tersimpan dan tampil, rentang terbalik/negatif/non-integer ditolak, kosongkan kedua nilai menghapus saran, pemilik lain ditolak, posisi published tetap terkunci, snapshot evaluasi identik setelah hanya usia diubah.
+
+
+## Usia pelamar pada detail EO ? 15 November 2026
+ApplicationService::submit menambah profile.birth_date (YYYY-MM-DD nullable) ke snapshot lamaran baru. Ini data pribadi untuk owner terotorisasi, bukan bagian audit/notifikasi atau rumus evaluasi. Detail lamaran EO menghitung tahun penuh pada tanggal starts_at dalam WIB dan menampilkan usia bersama saran usia posisi. Tidak ada eliminasi otomatis atau perubahan bobot/score.
+Lamaran lama tanpa key birth_date memakai tanggal lahir profil saat ini dan menampilkan sumbernya secara eksplisit; snapshot lama tidak ditulis ulang. Snapshot dengan tanggal kosong/tidak valid atau tanggal lahir setelah tanggal kegiatan menampilkan Belum tersedia. Tidak ada migration atau route baru untuk usia pelamar.
+UAT: ulang tahun tepat hari kegiatan, sehari sesudahnya, starts_at UTC yang masuk tanggal WIB berikutnya, data lama/missing/invalid, perubahan profil setelah submit tidak mengubah usia dari snapshot, owner lain ditolak. Alur terintegrasi diuji dari fixture pembuatan event/posisi, asesmen terbit, ajukan moderasi, admin approve/publikasi paket gratis, submit lamaran di luar saran usia, penyaringan/pencocokan/asesmen, accepted, absensi sesi, completed, riwayat dan final lock. Pada DatabaseTransactions, afterCommit tertunda sampai rollback; evaluasi nyata dipanggil eksplisit dalam tes, bukan bukti worker/queue produksi.

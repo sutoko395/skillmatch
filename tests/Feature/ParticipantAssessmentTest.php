@@ -57,7 +57,7 @@ class ParticipantAssessmentTest extends DatabaseTestCase
         $this->assertSame(1, AuditLog::where('action', 'assessment.finalized')->where('subject_id', $attempt->id)->count());
         $this->get(route('volunteer.applications.show', $application))->assertOk()->assertSee('Menunggu hasil seleksi')->assertDontSee('Mulai assessment');
         $this->actingAs($application->event->organizer)->get(route('organizer.applications.show', $application))
-            ->assertOk()->assertSee('50,00/100')->assertSee('Nilai assessment terpisah');
+            ->assertOk()->assertSee('50,00/100')->assertDontSee('Nilai assessment terpisah');
     }
 
     public function test_option_from_other_question_is_rejected_atomically(): void

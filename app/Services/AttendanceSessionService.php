@@ -74,11 +74,11 @@ class AttendanceSessionService
             $application = Application::whereKey($attendance->application_id)->lockForUpdate()->firstOrFail();
             $attendance = Attendance::whereKey($attendance->id)->lockForUpdate()->firstOrFail();
             Gate::forUser($actor->fresh())->authorize('update', $attendance);
-            if ($attendance->uses_sessions) {
-                return $attendance;
-            }
             if ($application->status !== 'accepted' || in_array($event->lifecycle_status, ['completed', 'cancelled'], true)) {
                 $this->fail('Persiapan sesi hanya untuk peserta diterima pada kegiatan yang belum selesai atau dibatalkan.');
+            }
+            if ($attendance->uses_sessions) {
+                return $attendance;
             }
             if ((int) $attendance->revision !== (int) $data['revision']) {
                 $this->fail('Kehadiran telah berubah. Muat ulang sebelum menyiapkan sesi.');
@@ -90,6 +90,41 @@ class AttendanceSessionService
             }
 
             return $this->prepareLocked($attendance, $application, $actor);
+        }, 3);
+    }
+
+    public function initializeUnrecorded(Event $event, User $actor, array $applicationIds): int
+    {
+        return DB::transaction(function () use ($event, $actor, $applicationIds) {
+            $event = Event::whereKey($event->id)->lockForUpdate()->firstOrFail();
+            Gate::forUser($actor->fresh())->authorize('update', $event);
+            if (in_array($event->lifecycle_status, ['completed', 'cancelled'], true)) {
+                $this->fail('Absensi terkunci karena kegiatan sudah selesai atau dibatalkan.');
+            }
+            $applications = $event->applications()->whereIn('id', $applicationIds)->orderBy('id')->lockForUpdate()->get();
+            if ($applications->count() !== count($applicationIds) || $applications->contains(fn ($application) => $application->status !== 'accepted')) {
+                $this->fail('Peserta tidak tersedia untuk kegiatan ini.');
+            }
+            $prepared = 0;
+            foreach ($applications as $application) {
+                $attendance = Attendance::where('application_id', $application->id)->lockForUpdate()->first();
+                if ($attendance && ($attendance->uses_sessions || $attendance->status !== 'unrecorded')) {
+                    continue;
+                }
+                $attendance ??= Attendance::create(['application_id' => $application->id, 'status' => 'unrecorded']);
+                if ($attendance->note || $attendance->recorded_at || $attendance->recorded_by) {
+                    if ($attendance->legacy_record) {
+                        $this->fail('Catatan lama peserta perlu ditinjau sebelum menyiapkan sesi.');
+                    }
+                    $attendance->legacy_record = [...$attendance->only(['status', 'recorded_by', 'recorded_at', 'note', 'correction_reason', 'revision']),
+                        'converted_by' => $actor->id, 'converted_at' => now()->toIso8601String(),
+                        'conversion_reason' => 'Penyiapan sesi otomatis untuk absensi belum dicatat.'];
+                }
+                $this->prepareLocked($attendance, $application, $actor);
+                $prepared++;
+            }
+
+            return $prepared;
         }, 3);
     }
 
@@ -146,6 +181,41 @@ class AttendanceSessionService
         }, 3);
     }
 
+    public function updateNote(AttendanceSession $session, User $actor, array $input): AttendanceSession
+    {
+        $data = Validator::make($input, ['note' => 'nullable|string|max:1000',
+            'revision' => 'required|integer|min:0'])->validate();
+
+        return DB::transaction(function () use ($session, $actor, $data) {
+            $parent = $session->attendance;
+            $event = Event::whereKey($parent->application->event_id)->lockForUpdate()->firstOrFail();
+            $application = Application::whereKey($parent->application_id)->lockForUpdate()->firstOrFail();
+            $parent = Attendance::whereKey($parent->id)->lockForUpdate()->firstOrFail();
+            Gate::forUser($actor->fresh())->authorize('update', $parent);
+            $session = AttendanceSession::whereKey($session->id)->where('attendance_id', $parent->id)->lockForUpdate()->firstOrFail();
+            if (! $parent->uses_sessions || in_array($event->lifecycle_status, ['completed', 'cancelled'], true)) {
+                $this->fail('Absensi terkunci karena kegiatan sudah selesai atau dibatalkan.');
+            }
+            if ($application->status !== 'accepted' || ! $event->published_at
+                || ! $event->starts_at || now()->lt($event->starts_at) || now()->lt($session->starts_at)) {
+                $this->fail('Catatan hanya dapat disimpan untuk peserta diterima setelah sesi tugas dimulai.');
+            }
+            $note = $data['note'] ?? null;
+            if ($session->note === $note) {
+                return $session;
+            }
+            if ($session->revision !== (int) $data['revision']) {
+                $this->fail('Kehadiran sesi telah berubah. Muat ulang sebelum menyimpan.');
+            }
+            $session->forceFill(['note' => $note, 'revision' => $session->revision + 1])->save();
+            $parent->increment('revision');
+            app(AuditService::class)->record($actor, 'attendance.session_note_updated', $session,
+                ['after' => ['revision' => $session->revision]], 'organizer_recorded');
+
+            return $session;
+        }, 3);
+    }
+
     public function validate(array $input): array
     {
         return Validator::make($input, ['status' => 'required|in:present,absent', 'note' => 'nullable|string|max:1000',
@@ -157,7 +227,10 @@ class AttendanceSessionService
         if (DB::transactionLevel() < 1 || ! $parent->uses_sessions || $session->attendance_id !== $parent->id) {
             throw new \LogicException('Session record requires parent locks.');
         }
-        if ($application->status !== 'accepted' || $event->lifecycle_status === 'cancelled' || ! $event->published_at
+        if (in_array($event->lifecycle_status, ['completed', 'cancelled'], true)) {
+            $this->fail('Absensi terkunci karena kegiatan sudah selesai atau dibatalkan.');
+        }
+        if ($application->status !== 'accepted' || ! $event->published_at
             || ! $event->starts_at || now()->lt($event->starts_at) || now()->lt($session->starts_at)) {
             $this->fail('Kehadiran hanya dapat dicatat untuk peserta diterima setelah sesi tugas dimulai.');
         }
@@ -167,9 +240,7 @@ class AttendanceSessionService
         if ($session->revision !== (int) $data['revision']) {
             $this->fail('Kehadiran sesi telah berubah. Muat ulang sebelum menyimpan.');
         }
-        if ($event->lifecycle_status === 'completed') {
-            app(SelectionService::class)->reason($data['reason'] ?? '');
-        } elseif ($event->lifecycle_status === 'upcoming') {
+        if ($event->lifecycle_status === 'upcoming') {
             $event->forceFill(['lifecycle_status' => 'ongoing', 'revision' => $event->revision + 1])->save();
             app(AuditService::class)->record($actor, 'event.begun', $event, ['after' => ['lifecycle_status' => 'ongoing']]);
         }
@@ -183,7 +254,7 @@ class AttendanceSessionService
             'revision' => $parent->revision + 1])->save();
         app(AuditService::class)->record($actor, 'attendance.session_recorded', $session,
             ['before' => ['status' => $before], 'after' => ['status' => $session->status, 'revision' => $session->revision]],
-            $event->lifecycle_status === 'completed' ? 'post_completion_correction' : 'organizer_recorded');
+            'organizer_recorded');
         app(A2Dependencies::class)->notify('attendance.session_recorded:'.$session->id.':'.$session->revision.':'.$application->volunteer_id,
             $application->volunteer, ['type' => 'attendance.session_recorded', 'application_id' => $application->id]);
 

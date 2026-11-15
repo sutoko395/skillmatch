@@ -5,7 +5,7 @@
         'rejected' => 'Ditolak', 'unpublished' => 'Belum dipublikasikan',
         'published' => 'Dipublikasikan', 'suspended' => 'Publikasi ditangguhkan',
         'upcoming' => 'Belum dimulai', 'ongoing' => 'Berlangsung',
-        'completed' => 'Selesai', 'cancelled' => 'Dibatalkan',
+        'awaiting_completion' => 'Menunggu penyelesaian', 'completed' => 'Selesai', 'cancelled' => 'Dibatalkan',
         'paid' => 'Lunas', 'expired' => 'Kedaluwarsa', 'failed' => 'Gagal',
     ];
     $tone = match ($status) {

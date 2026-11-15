@@ -214,11 +214,12 @@
                     <div class="organizer-position-grid">
                         <div class="organizer-position-subcard">
                             <h4 class="organizer-position-subtitle">Deskripsi &amp; persyaratan</h4>
+                            <x-position-suggested-age :position="$position" class="mb-2" />
                             @if($position->description)
                                 <p class="organizer-position-description whitespace-pre-line">{{ $position->description }}</p>
                             @endif
                             <div class="mt-4">
-                                <h5 class="mb-2 text-xs font-medium text-slate-500">Skill dan level minimum</h5>
+                                <h5 class="mb-2 text-xs font-medium text-slate-500">Keahlian dan level minimum</h5>
                                 <p class="text-sm">
                                     {{ $position->positionSkills
                                         ->map(fn ($s) => $s->skill->name . ' (' . $s->minimum_level . ')')

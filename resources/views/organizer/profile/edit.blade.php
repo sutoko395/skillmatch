@@ -165,172 +165,73 @@
 
     @else
 
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex flex-wrap items-center justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-slate-800">
-                    Profil Organisasi
-                </h1>
-
-                <p class="mt-1 text-sm text-slate-500">
-                    Informasi organisasi dan data penanggung jawab.
-                </p>
+                <h1 class="text-2xl font-bold text-slate-800">Profil Organisasi</h1>
+                <p class="mt-1 text-sm text-slate-500">Informasi organisasi dan data penanggung jawab.</p>
             </div>
-
-            <button
-                type="button"
-                @click="editProfile = true"
-                class="organizer-secondary-button"
-            >
-                Edit Profil
+            <button type="button" @click="editProfile = true" class="organizer-secondary-button organizer-info-edit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5M4 20l4-1L21 6a2.8 2.8 0 0 0-4-4L4 15l-1 6Z"/></svg> Edit Profil
             </button>
         </div>
 
-        <div class="rounded-xl border border-slate-100 bg-white px-5 py-4 shadow-sm">
-            <div class="flex flex-wrap items-center gap-2">
-                <span class="text-sm font-semibold text-slate-700">
-                    Status organisasi:
-                </span>
-
-                <x-status-badge :status="$user->organizer_status">
-                    {{ [
-                        'pending' => 'Menunggu verifikasi',
-                        'active' => 'Terverifikasi',
-                        'inactive' => 'Perlu revisi organisasi',
-                    ][$user->organizer_status] }}
-                </x-status-badge>
+        <section class="organizer-profile-card" aria-labelledby="organization-heading">
+            <div class="organizer-profile-identity">
+                <span class="organizer-profile-symbol"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h3a1 1 0 0 1 1 1v11M8 7h4M8 11h4M8 15h4M2 21h20M9 21v-3h2v3"/></svg></span>
+                <div class="min-w-0 flex-1">
+                    <p class="organizer-profile-eyebrow">Nama organisasi</p>
+                    <h2 id="organization-heading" class="organizer-profile-name">{{ $profile->organization_name }}</h2>
+                </div>
+                <div class="organizer-profile-verification">
+                    <span class="sr-only">Status organisasi: </span>
+                    <x-status-badge :status="$user->organizer_status">
+                        {{ ['pending' => 'Menunggu verifikasi', 'active' => 'Terverifikasi', 'inactive' => 'Perlu revisi organisasi'][$user->organizer_status] }}
+                    </x-status-badge>
+                </div>
             </div>
-        </div>
-
-        <x-section-card class="p-6 md:p-7">
-            <div class="space-y-6">
-
-                <div>
-                    <p class="text-sm text-slate-500">
-                        Nama organisasi
-                    </p>
-
-                    <p class="mt-1 break-words text-xl font-bold text-slate-800">
-                        {{ $profile->organization_name }}
-                    </p>
-                </div>
-
-                <div class="grid gap-6 md:grid-cols-2">
-                    <div>
-                        <p class="text-sm text-slate-500">
-                            Penanggung jawab
-                        </p>
-
-                        <p class="mt-1 break-words font-semibold text-slate-800">
-                            {{ $profile->contact_person }}
-                        </p>
-                    </div>
-
-                    <div>
-                        <p class="text-sm text-slate-500">
-                            Nomor telepon
-                        </p>
-
-                        <p class="mt-1 break-words font-semibold text-slate-800">
-                            {{ $profile->phone }}
-                        </p>
-                    </div>
-
-                    <div>
-                        <p class="text-sm text-slate-500">
-                            Email
-                        </p>
-
-                        <p class="mt-1 break-words font-semibold text-slate-800">
-                            {{ $user->email }}
-                        </p>
-                    </div>
-
-                    <div>
-                        <p class="text-sm text-slate-500">
-                            Kota
-                        </p>
-
-                        <p class="mt-1 break-words font-semibold text-slate-800">
-                            {{ $profile->city }}
-                        </p>
-                    </div>
-                </div>
-
-                <div>
-                    <p class="text-sm text-slate-500">
-                        Alamat
-                    </p>
-
-                    <p class="mt-1 whitespace-pre-line break-words font-semibold text-slate-800">
-                        {{ $profile->address }}
-                    </p>
-                </div>
-
-                <div>
-                    <p class="text-sm text-slate-500">
-                        Website
-                    </p>
-
-                    @if ($profile->website)
-                        <a
-                            href="{{ $profile->website }}"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="mt-1 inline-block break-all font-semibold text-indigo-700 hover:underline"
-                        >
-                            {{ $profile->website }}
-                        </a>
-                    @else
-                        <p class="mt-1 font-semibold text-slate-800">
-                            Belum diisi
-                        </p>
-                    @endif
-                </div>
-
-                <div>
-                    <p class="text-sm text-slate-500">
-                        Deskripsi organisasi
-                    </p>
-
-                    <p class="mt-1 whitespace-pre-line break-words text-sm leading-6 text-slate-700">
-                        {{ $profile->description }}
-                    </p>
-                </div>
-
-                <div class="border-t border-slate-100 pt-5">
-                    <p class="text-sm text-slate-500">
-                        Dokumen identitas
-                    </p>
-
-                    @forelse ($documents as $document)
-                        <div class="mt-3 flex flex-wrap items-center justify-between gap-4 rounded-xl bg-slate-50 px-4 py-3">
-                            <div>
-                                <p class="text-sm font-semibold text-slate-800">
-                                    {{ $document->document_name }}
-                                </p>
-
-                                <p class="mt-1 text-xs text-slate-500">
-                                    {{ strtoupper($document->document_type) }}
-                                </p>
-                            </div>
-
-                            <button
-                                type="button"
-                                @click="viewKtp = true"
-                                class="inline-flex items-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
-                            >
-                                Lihat KTP
-                            </button>
-                        </div>
-                    @empty
-                        <p class="mt-1 text-sm text-slate-500">
-                            Dokumen belum tersedia.
-                        </p>
-                    @endforelse
-                </div>
-
+            <div class="organizer-profile-inner">
+                <h3>Tentang organisasi</h3>
+                <p class="organizer-profile-description">{{ $profile->description }}</p>
             </div>
-        </x-section-card>
+            <dl class="organizer-profile-details">
+                <div class="organizer-profile-field"><span class="organizer-profile-field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><dt>Alamat lengkap</dt><dd>{{ $profile->address }}</dd></div></div>
+                <div class="organizer-profile-field"><span class="organizer-profile-field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h3a1 1 0 0 1 1 1v11M8 7h4M8 11h4M8 15h4M2 21h20M9 21v-3h2v3"/></svg></span><div><dt>Kota</dt><dd>{{ $profile->city }}</dd></div></div>
+                <div class="organizer-profile-field"><span class="organizer-profile-field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a18 18 0 0 1 0 18 18 18 0 0 1 0-18Z"/></svg></span><div><dt>Website</dt><dd>@if ($profile->website)
+                    <a href="{{ $profile->website }}" target="_blank" rel="noopener noreferrer">{{ $profile->website }}</a>
+                    @else <span class="text-slate-500">Belum diisi</span> @endif</dd></div></div>
+            </dl>
+        </section>
+
+        <section class="organizer-profile-card" aria-labelledby="organization-contact-heading">
+            <h2 id="organization-contact-heading" class="organizer-profile-section-title">Kontak penanggung jawab</h2>
+            <dl class="organizer-profile-details organizer-profile-contacts">
+                <div class="organizer-profile-field"><span class="organizer-profile-field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg></span><div><dt>Penanggung jawab</dt><dd>{{ $profile->contact_person }}</dd></div></div>
+                <div class="organizer-profile-field"><span class="organizer-profile-field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 1.9Z"/></svg></span><div><dt>Nomor telepon</dt><dd>{{ $profile->phone }}</dd></div></div>
+                <div class="organizer-profile-field"><span class="organizer-profile-field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg></span><div><dt>Email akun</dt><dd>{{ $user->email }}</dd></div></div>
+            </dl>
+        </section>
+
+        <section class="organizer-profile-card" aria-labelledby="organization-documents-heading">
+            <h2 id="organization-documents-heading" class="organizer-profile-section-title">Dokumen verifikasi</h2>
+            <p class="organizer-profile-section-note">Dokumen identitas untuk verifikasi organisasi.</p>
+            @forelse ($documents as $document)
+                <div class="organizer-profile-document">
+                    <span class="organizer-profile-field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z M14 2v6h6M8 13h8M8 17h5"/></svg></span>
+                    <div class="min-w-0 flex-1">
+                        <p class="organizer-profile-document-name">{{ $document->document_name }}</p>
+                        <p class="organizer-profile-document-type">{{ strtoupper($document->document_type) }}</p>
+                    </div>
+                    <button type="button" @click="viewKtp = true" class="organizer-secondary-button organizer-info-edit">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg> Lihat KTP
+                    </button>
+                </div>
+            @empty
+                <div class="organizer-profile-document">
+                    <span class="organizer-profile-field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z M14 2v6h6M8 13h8M8 17h5"/></svg></span>
+                    <p class="text-sm text-slate-500">Dokumen belum tersedia.</p>
+                </div>
+            @endforelse
+        </section>
 
         <template x-teleport="body">
             <div
@@ -338,15 +239,17 @@
                 x-cloak
                 x-transition.opacity
                 class="fixed inset-0 z-[99999] bg-slate-900/50 backdrop-blur-sm"
+                @keydown.escape.window="editProfile = false"
             >
                 <div
-                    class="flex min-h-screen items-center justify-center overflow-y-auto p-4"
+                    class="flex h-dvh items-center justify-center overflow-y-auto p-4"
                     @click.self="editProfile = false"
                 >
                     <div
                         x-show="editProfile"
                         x-transition
-                        class="w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-2xl"
+                        class="organizer-panel organizer-profile-dialog w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-2xl"
+                        role="dialog" aria-modal="true" aria-label="Edit Profil Organisasi"
                         @click.stop
                     >
 
@@ -387,13 +290,13 @@
                             method="POST"
                             action="{{ route('organizer.profile.update') }}"
                             enctype="multipart/form-data"
-                            class="max-h-[80vh] overflow-y-auto"
+                            class="max-h-[70dvh] overflow-y-auto"
                         >
                             @csrf
                             @if($user->organizer_status === 'active')
                                 <label class="m-6 flex gap-3 rounded-xl bg-amber-50 p-4 text-sm text-amber-900">
                                     <input type="checkbox" name="confirm_reverification" value="1" @checked(old('confirm_reverification'))>
-                                    Saya memahami perubahan nama organisasi, alamat, kota atau KTP akan meminta persetujuan ulang Admin. Event sementara tidak tampil publik dan pengelolaannya tertunda sampai disetujui kembali. Perubahan kontak biasa tetap dapat disimpan tanpa persetujuan ulang.
+                                    Saya memahami perubahan nama organisasi, alamat, kota atau KTP akan meminta persetujuan ulang Admin. Kegiatan sementara tidak tampil publik dan pengelolaannya tertunda sampai disetujui kembali. Perubahan kontak biasa tetap dapat disimpan tanpa persetujuan ulang.
                                 </label>
                                 @error('confirm_reverification')<p class="px-6 text-sm text-red-600">{{ $message }}</p>@enderror
                             @endif
@@ -490,7 +393,7 @@
                                 <button
                                     type="button"
                                     @click="editProfile = false"
-                                    class="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                                    class="organizer-secondary-button organizer-position-delete"
                                 >
                                     Batal
                                 </button>

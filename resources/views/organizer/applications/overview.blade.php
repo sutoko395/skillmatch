@@ -6,6 +6,25 @@
         <h1 class="text-2xl font-bold text-slate-800">Kelola Pelamar</h1>
         <p class="mt-1 text-sm text-slate-500">Pilih kegiatan untuk melihat dan meninjau pelamarnya.</p>
     </div>
+    <form method="GET" action="{{ route('organizer.applications.overview') }}" class="organizer-event-filters" role="search" aria-label="Cari dan filter kegiatan rekrutmen">
+        <div class="organizer-event-search">
+            <label for="applicant-event-search">Cari kegiatan</label>
+            <input id="applicant-event-search" type="search" name="search" value="{{ $search }}" maxlength="255" placeholder="Cari nama kegiatan...">
+        </div>
+        <div>
+            <label for="applicant-recruitment">Status rekrutmen</label>
+            <select id="applicant-recruitment" name="recruitment">
+                <option value="">Semua</option>
+                @foreach(['open' => 'Rekrutmen terbuka', 'closed' => 'Rekrutmen ditutup', 'history' => 'Riwayat'] as $value => $label)
+                    <option value="{{ $value }}" @selected($recruitment === $value)>{{ $label }}</option>
+                @endforeach
+            </select>
+        </div>
+        <button type="submit" class="organizer-action-button">Terapkan</button>
+        @if($search !== '' || $recruitment !== '')
+            <a href="{{ route('organizer.applications.overview') }}" class="organizer-event-filter-reset">Reset</a>
+        @endif
+    </form>
     <section class="organizer-event-list" aria-label="Kegiatan untuk pengelolaan pelamar">
         @forelse($events as $event)
             <article class="organizer-event-row">
@@ -34,16 +53,16 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2m14-14a4 4 0 0 1 0 8m6 6v-2a4 4 0 0 0-3-3.87M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z" /></svg>
                         <span><strong>{{ number_format($event->submitted_applications_count) }}</strong> lamaran terkirim</span>
                     </p>
-                    <div class="organizer-event-badges mt-3 flex flex-wrap gap-2">
-                        <x-organizer-status :status="$event->publication_status" context="Publikasi" class="organizer-list-status--blue" />
-                        <x-organizer-status :status="$event->lifecycle_status" context="Pelaksanaan" class="organizer-list-status--yellow" />
-                    </div>
                 </div>
                 <a href="{{ route('organizer.applications.index', $event) }}" class="organizer-action-button organizer-event-manage" aria-label="Lihat pelamar {{ $event->title }}">Lihat pelamar</a>
             </article>
         @empty
             <div class="p-6">
-                <x-empty-state title="Belum ada kegiatan" description="Kegiatan Anda akan tampil di sini untuk pengelolaan pelamar." />
+                @if($search !== '' || $recruitment !== '')
+                    <x-empty-state title="Kegiatan tidak ditemukan" description="Coba kata kunci atau status rekrutmen lain." />
+                @else
+                    <x-empty-state title="Belum ada kegiatan" description="Kegiatan yang sudah dipublikasikan akan tampil di sini untuk pengelolaan pelamar." />
+                @endif
             </div>
         @endforelse
     </section>

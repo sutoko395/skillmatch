@@ -1,3 +1,513 @@
+## Hierarki font screening dan kecocokan - 15 November 2026
+
+Branch feature/organizer-ui-refinement dasar367a7de. User meminta hierarki font
+kartu screening/matching tanpa mengubah ukuran card. Hanya CSS scoped wrapper
+review EO berubah: judul16, isi12, header11, keteranganscreening11, skor26/pembagi13/
+label11. Padding/grid/lebar/komponen bersama/rolelain serta perubahan lokal tetap.
+Build/diff lulus. FixtureQA empat baris screening sintetis dirender HTTP200 dengan
+rollback; browser4keadaan390/768/1440 lulus12kombinasi, overflow/Alpine/drawer.
+Screenshot desktop ditinjau. Tidak menambah tes untukfont; backend tidakdiubah.
+Design/UAT diperbarui, dokumen bisnis/kontrak/setup masih berlaku. Tidak commit.
+
+# Pindah penutupan seleksi ke Kelola Pelamar - 15 November 2026
+
+Branch feature/organizer-ui-refinement dasar367a7de. Pengguna menyetujui pemindahan
+Tutup seleksi tertunda dari Pelaksanaan ke daftar pelamar. Seluruh perubahan lokal
+sebelumnya dipertahankan. Form POST route existing/alasan/CSRF/confirmed dipindah
+utuh ke applications/index #tutup-seleksi, hanya pending>0/eventnonterminal.
+ApplicationController menghitung pending seluruh event memakai SelectionService::PENDING,
+tidak dipengaruhi filter/pagination. ExecutionController hasPendingSelection sama
+dengan guardcompletion (pendingstatus atau attemptin_progress); viewcompletion
+menampilkan pemberitahuan/link Kelola Pelamar, bukan formreject. Dua-kolomtindakan
+pelaksanaan dihapus pembungkusnya karena hanya completion tersisa. Service/route/
+audit/notifikasi/guarddeadline/idempotence/owner existing tetap, no migration.
+
+25 tes/203 assertions OrganizerApplicantOverviewTest+A3ExecutionTest+
+OrganizerExecutionOverviewTest lulus MySQL khusustes rollback. Regresi memeriksa
+lokasiform, count lintasfilter, tautanpelaksanaan, submitredirect ke daftar, pending
+hilang setelahclose, serta terminal tanpaaksi; serviceflow dan hakaksesexisting
+ikut lulus. Build/view:cache/diff lulus. Render daftar terisi/kosong/filtered dan
+detail kandidat HTTP200 rollback; browser390/768/1440 diperiksa. Pelaksanaan
+editable/completed juga dirender HTTP200; noticepending dicakup HTTP featuretests,
+tidak di-submit melalui browser. Design/UAT/briefA3 diselaraskan; PRD/kontrak/README
+masih berlaku karena aturan bisnis/endpoint/setup tetap. Tidak commit/push/merge.
+
+## Hierarki font kartu peserta - 15 November 2026
+
+Branch feature/organizer-ui-refinement dasar367a7de; user meminta mainkan ukuran
+font tanpa menambah card. Hanya CSS scoped kartu peserta diubah: nama16, posisi12,
+progres13, tanggal/jam13, status/tombol/Catatan12, Edit11; ikon disesuaikan. Tidak
+mengubah padding/grid/dimensi card/tombol atau backend/form. Perubahan lokal lain
+tetap. Build/diff lulus; render editable/completed HTTP200 rollback; browser6
+kombinasi390/768/1440 lulus toggle/note/cancel/edit/final/overflow. Screenshot
+desktop ditinjau. Design/UAT diperbarui, dokumen bisnis/setup masih berlaku.
+Tidak menambah tes unit untuk ukuran font; tidak commit/push/merge.
+
+# Perbaiki token CSRF bootstrap absensi - 15 November 2026
+
+Branch feature/organizer-ui-refinement dasar367a7de. Pengguna melaporkan Cannot
+read properties of null (reading content) pada proses otomatis. Akar masalah:
+JS baru membaca meta csrf-token, sedangkan layout sidebar EO belum menyediakannya.
+Ini kesalahan integrasi pada implementasi bootstrap sebelumnya; unit mock token
+ada dan QA statis hanya peserta sudah siap sehingga tidak menangkapnya.
+
+Layout EO mendapat meta csrf-token dari csrf_token() sesi existing. JS memakai
+optional access/guard; token kosong tidak mengirim request, menampilkan pemulihan
+ramah pengguna. Error jaringan tidak membocorkan exceptionteknis, validation pesan
+server tetap. CSRF tidak dinonaktifkan. Tidak mengubah DB/route/status/perilaku
+absensi, layout role lain atau perubahan lokal. PRD/kontrak/design/brief/setup
+existing tetap berlaku; UAT diberi regresi DOMmeta.
+
+13 tes SessionAttendanceTest/169 assertions lulus (termasuk render aktual meta
+CSRF saat pending),5 tes Node lulus (missingtoken/no unsafePOST, networkmessage,
+oncePOST/CSRF/busy/retry), build/view:cache/diff lulus. Browser390/768/1440 pada
+editable/completed memeriksa kehadiran token DOM tanpa mencetaknilainya serta
+regresiUI. Submit/reload otomatis pada browser loginlive belum diujiend-to-end;
+serverendpoint dan transportJS dicakup tes. Tidak commit/push/merge.
+
+# Langsung tampil sesi untuk legacy belum dicatat - 15 November 2026
+
+Branch feature/organizer-ui-refinement dasar367a7de; pengguna meminta melewati
+layar checkbox/persiapan unrecorded pada screenshot. Existing serviceprepare/
+prepareApplication/prepareLocked dan tes legacy ditinjau. Perubahan lokal lain
+dipertahankan. Nonterminal accepted missing/unrecorded kini otomatis POST CSRF
+batch100 dari Alpine lalu reload, tanpa menulis pada GET. Pending IDs sebelum
+filter, tampil Memuat sesi sebentar, error+retry eksplisit. Tanpa JS fallbackPOST.
+Legacy yang sudah present/absent dan terminal dilindungi, tidak direset otomatis;
+konfirmasi/reason konversi recorded existing tetap. Scope screenshot unrecorded
+terpenuhi; tidak membuat bukti hadir setiap sesi dari status lama per kegiatan.
+
+Tambahan POST organizer.attendance-sessions.initialize / initializeSessions /
+initializeUnrecorded; satu transaksi Event/App berurutid/Attendance, idempotent.
+Hanya accepted ownerevent, archived unrecorded note/meta sebelum prepareLocked;
+existing sesi/recorded dilewati. Invalid snapshot rollback, tidak menebakjadwal.
+No migration/dependensi/status/notification baru. resources/js/attendance-session-setup
+terdaftar pada Alpine existing tunggal. UI/form seleksi/record/note/final tetap.
+
+33 tes/307 assertions SessionAttendanceTest+A3ExecutionTest+OrganizerExecutionOverviewTest
+lulus MySQL khusus skillmatch_testing rollback. Baru: GET readonly, pendingfilter,
+missing/unrecorded init, archive, recordedpreserved, replay/audit, role/owner/id
+mismatch/duplicate/size/nonaccepted, terminal dan invalidsnapshot rollback.3 tes
+Node frontend lulus: sekaliPOST CSRF+busy, reload hanyasukses, failuretanpaloop,
+explicitretry dan nopending tanpa request. Build/view:cache/diff lulus. Browser
+editable/completed390/768/1440 lulus6 kombinasi toggle/cancel/edit/final/overflow.
+HTTP bootstrap endpoint diuji via feature tests; POST otomatis+cookie/reload pada
+browser live belum diuji end-to-end (static fixtures tidak menjalankan bootstrap
+karena sesi sudah disiapkan). Tidak mengklaim semuaUAT/reviewtim lulus.
+
+PRD/kontrak/design/UAT/briefA3/handoff sesi diperbarui; READMEsetup tetap berlaku.
+Demonstrasi: acceptedlegacyunrecorded -> Kelola pelaksanaan -> sesi otomatis ->
+Lihat sesi -> Tandai hadir; ulanghalaman tidak menggandakan sesi. Data kerja tidak
+direset/dimigrasikan lewat CLI. Tidak commit/push/merge.
+
+## Rapatkan aksi dan buang ruang bawah sesi - 15 November 2026
+
+Branch feature/organizer-ui-refinement, dasar367a7de. Pengguna meminta tautan
+lebih rapat dan membuang ruang bawah. Akar layout: kolom tombol kanan menentukan
+tinggi baris pertama grid. Kolom kanan kini span dua baris sehingga tidak mendorong
+Catatan/Edit. Rowgap0 desktop, padding sesi8/6px, Edit padding0; mobile gap2px.
+Hanya CSS scoped berubah; form/backend/perubahan lokal tetap. Build/diff lulus,
+render editable/completed HTTP200 rollback; browser6 kombinasi390/768/1440 lulus.
+Probe desktop mengukur Catatan3px dari tanggal, Edit1.5px dari badge, sisa bawah6px.
+Toggle/editor/Batal/koreksi/final tetap lulus. Design/UAT diperbarui; dokumen bisnis
+dan setup tetap berlaku. Tidak menambah tes unit/commit/push/merge.
+
+## Kartu lebih padat dan Batal koreksi - 15 November 2026
+
+Branch feature/organizer-ui-refinement, dasar367a7de; scope terbaru: rapatkan
+Catatan/Edit, tambah Batal koreksi, pendekkan semua kartu. CSS scoped mengecilkan
+padding header/sesi/form dan rowgap2px (mobile6px). Koreksi Batal typebutton
+memakai status server @js, mengembalikan select dan tutup; disabled saatbusy.
+Note Batal tetap. Route/backend/CSRF/revision/final guards dan perubahan lokal lain
+tetap. Design/UAT diperbarui; PRD/kontrak/brief/README masih berlaku. Build,
+view:cache dan diff lulus. Render editable/completed dua sesi HTTP200 rollback;
+browser390/768/1440 memeriksa6 kombinasi buka-tutup, Batal note/koreksi reset,
+no overflow serta final tanpa mutasi. Tidak menambah tes unit; tidak commit.
+
+## Posisi waktu pencatatan dan aksi sesi - 15 November 2026
+
+Branch feature/organizer-ui-refinement, dasar367a7de. Scope pengguna: Dicatat di
+kanan, Edit tepat di bawah status, Catatan di bawah tanggal. Timestamp dipindah
+ke actions kanan; status/edit/note tetap pada grid existing. Tablet diselaraskan
+agar timestamp kanan tidak mengambil kolom jam. Backend/form/route dan perubahan
+lokal lain dipertahankan. Design/UAT diperbarui; PRD/kontrak/brief/README berlaku.
+Build/view:cache/diff lulus. Fixture dua sesi (satu hadir, satu belum dicatat) serta
+completed HTTP200 rollback; browser390/768/1440 lulus6 kombinasi toggle/editor/
+batal/koreksi/final/overflow. Screenshot desktop ditinjau. Tidak menambah tes
+untuk perubahan layout; tidak commit/push/merge.
+
+## Edit absensi ringkas di bawah status - 15 November 2026
+
+Branch feature/organizer-ui-refinement, dasar367a7de; pengguna meminta penempatan
+dan ukuran edit lebih ringan. Edit absensi kini tautan12px/pensil13px di bawah
+status, tanpa border/backgroundbutton. Grid desktop/tablet/mobile diselaraskan
+agar tidak bertumpuk dengan status, Tandai hadir atau editor. Form/route/backend
+serta perubahan lokal lain dipertahankan. Design/UAT diperbarui, PRD/kontrak/brief/
+README tetap berlaku. Build/view:cache/diff lulus; browser editable/completed di
+390/768/1440 diperiksa. Tidak menambah tes untuk style; tidak commit/push/merge.
+
+## Kartu ringkas, Batal catatan dan Edit absensi - 15 November 2026
+
+Branch feature/organizer-ui-refinement, dasar367a7de; scope disetujui kartu lebih
+pendek, Batal kanan Simpan catatan, pengganti titik tiga. Padding header diperkecil,
+avatar64->48px desktop/44mobile. Batal typebutton menggunakan nilai note server
+yang di-escape melalui @js, reset textarea lalu menutup editor; disabled saatbusy.
+Edit absensi outline biru/pensil menggantikan menu titik tiga. Form/route/service/
+CSRF/revision/final guards tidak berubah; perubahan lokal lain tetap.
+Design/UAT diperbarui; PRD/kontrak/brief/README tetap berlaku (hanya UI). Build dan
+view:cache lulus; browser diperiksa untuk Batal/reset dan koreksi. Tidak menambah
+tes unit untuk perubahan UI ini. Tidak commit/push/merge.
+
+## Penyelarasan visual dengan mockup check-in - 15 November 2026
+
+Branch feature/organizer-ui-refinement, dasar367a7de. Pengguna menolak jarak/susunan
+implementasi awal dan meminta mengikuti gambar mockup buatan sebelumnya, khususnya
+Catatan di bawah tanggal. Gambar lokal asli dilihat sebelum mengedit. Scope hanya
+view show/session-forms, CSS scoped EO serta assertion tanggal pada tes existing.
+Perubahan lokal lain dipertahankan; backend note-only/record tetap.
+
+Header peserta: avatar bulat64px, nama19px, posisi polos15px, progres16px/garis
+pemisah dan toggle kanan. Sesi empat kolom tanggal/jam/status/aksi; Catatan berikon
+tepat di bawah tanggal; editor Alpine fullwidth di bawah row. Menu titik tiga
+mempertahankan koreksi (tanpa label tools panjang). Searchfullwidth berikon,
+filter/rekap dipertahankan dalam details Filter peserta, count halaman di bawah.
+Mobile ditumpuk. Tidak mengganti sidebar/branding atau menghapus legacy, form
+completion, endpoint, CSRF/revision/owner/time/final guard. Tidak ada migration,
+route/layanan baru atau dependensi. PRD/kontrak/brief/README tetap berlaku karena
+aturan bisnis/interface/setup tidak berubah. Design/UAT diselaraskan.
+
+31 tes/269 assertions SessionAttendanceTest+A3ExecutionTest+OrganizerExecutionOverviewTest
+lulus; format tanggal assertion diselaraskan dengan tanggal Indonesia baru.
+Build/view:cache/diff --check lulus. Render editable/completed dua sesi HTTP200
+rollback MySQL test; browser390/768/1440 lulus6 kombinasi, toggle kartu, Catatan
+tertutup/terbuka, bbox membuktikan link di bawah tanggal dan editor >=90% lebar,
+menu koreksi berfungsi, no overflow serta completed tanpa formmutasi. Screenshot
+desktop/mobile ditinjau terhadap referensi. Submit browser tidak diulang (endpoint
+tercakup feature tests). Tidak mengklaim kesamaan pixel untuk semua viewport atau
+seluruh UAT/review tim. Tidak commit/push/merge.
+
+# Kartu sesi buka-tutup, check-in dan catatan - 15 November 2026
+
+Branch feature/organizer-ui-refinement, dasar367a7de. Pengguna menyetujui mockup
+kartu tertutup/terbuka, cari nama -> lihat sesi -> Tandai hadir; + Tambah catatan
+membuka editor tersendiri. Perubahan lokal sebelumnya dipertahankan. Existing
+session-forms/show/service/route/test ditinjau; UI lama selalu menampilkan form
+select/note/save setiap sesi. Kini progress x/y hadir dan toggle, baris sesi
+ringkas, tombol satu klik serta details note dan koreksi terpisah. Satu/many sesi
+sama. Form legacyprepare/conversion/record tetap, seluruhfilter dan completion ada.
+
+A3 menambah PATCH organizer.attendance-sessions.note + updateNote service dengan
+lock Event/Application/Attendance/Session, policy owner, accepted, published_at,
+waktu mulai dan final guards. Note-only mempertahankan status/recorded_at/by dan
+lifecycle; revision sesi/parent naik, no-op identik idempoten. Audit metadata
+revision tanpa note; tidak mengirim notifikasi baru. No migration/dependensi.
+Record existing tetap dan tombol hadir mengirim note current; stale revision
+mencegah overwrite. Redirect membuka kartu terkait; error draftnote mempertahankan
+sesi asal. Catatan terlihat volunteer existing; readonly ketika final. Tidak
+menambah bulk-save/auto-absent atau menandai sesi mendatang sebagai hadir.
+
+Validasi A3ExecutionTest + SessionAttendanceTest + OrganizerExecutionOverviewTest
+lulus31 tes/269 assertions pada MySQL khusus skillmatch_testing rollback. Kasus
+baru note-only unrecorded/present, timestamp/status/lifecycle immutable, no-op,
+revision stale lintas record/note, hapusnote, audit/outbox, aksesrole/owner, waktu,
+validasi dan terminal (termasuk payload identik). Awal tes memperbandingkan instance
+Carbon dengan assertSame; diganti rawattributes. Cek volunteer semula lewat
+riwayat sebelum terminal (kosong sesuai aturan); diganti detail lamaran. Lalu lulus.
+Build/view:cache/diff --check lulus. QA one-session dan two-session, editable dan
+completed HTTP200 rollback; browser390/768/1440 lulus6 kombinasi per fixture,
+buka-tutup, noteeditor tersembunyi/terbuka, directformstatus, separate noteform,
+no overflow/drawer/Alpine dan final tanpa formmutasi. Screenshot desktop/mobile
+one-session ditinjau. Submit nyata via browser tidak diuji; feature tests endpoint
+lulus. Dua koneksi konkurensi nyata tidak diuji ulang; lock+revision digunakan.
+
+PRD/kontrak/design/UAT/briefA3/handoff sesi diselaraskan. README tetap berlaku karena
+setup tidak berubah. Demonstrasi: Kelola pelaksanaan -> cari peserta -> Lihat sesi
+-> Tandai hadir -> Lihat/Edit catatan -> Simpan catatan; periksa detail relawan.
+Tidak commit/push/merge atau mengklaim review tim/seluruh UAT lulus.
+
+## Rekap sesi inline - 15 November 2026
+
+Branch feature/organizer-ui-refinement, dasar367a7de. Pengguna menyetujui usulan
+rekap inline di bawah judul Kehadiran peserta. Details/kartu Rekap sesi dan jumlah
+catatan dihapus, diganti dl inline bertitik hijau/merah/kuning dan angka tebal.
+CSS khusus details yang tidak dipakai dihapus. Hitungan sessionSummary global
+tetap; filter/form/backend dan perubahan lokal lainnya dipertahankan.
+Design/UAT diperbarui; PRD/kontrak/brief/README tetap berlaku. Build/view:cache
+dan diff lulus; render editable/completed HTTP200 dengan rollback. Browser
+390/768/1440 lulus6 kombinasi overflow/Alpine/drawer. Perubahan tampilan ringan
+tidak menambah tes. Tidak commit.
+
+## Hapus kartu rekap peserta - 15 November 2026
+
+Branch feature/organizer-ui-refinement, dasar367a7de; pengguna meminta menghapus
+empat kartu pada screenshot. Blok rekap peserta di show, CSS khusus dan partial
+summary-icon yang baru ditambahkan pada tahap sebelumnya dihapus setelah pencarian
+referensi memastikan tidak dipakai halaman lain. Perubahan lokal lainnya tetap.
+Query summary/controller, Rekap sesi, filter, peserta, absensi dan completion
+tidak diubah. Design/UAT diselaraskan; PRD/kontrak/brief/README tetap berlaku.
+Perubahan hanya tampilan; tidak menambah tes. Build/view:cache/diff diperiksa.
+Tidak commit/push/merge. Pemeriksaan screenshot tidak diulang untuk penghapusan ini.
+
+# Perapian detail Pelaksanaan EO - 15 November 2026
+
+Branch feature/organizer-ui-refinement, dasar HEAD367a7de; perubahan lokal menu,
+profil, pelamar dan lock absensi dipertahankan. Pengguna menyetujui desain detail
+pelaksanaan dan pemangkasan penjelasan. Existing view367a7de/1648250 ditinjau;
+baseline HTML tersimpan lokal. Sebelum: tabel3 kolom, rekap/teks panjang, tautan
+kembali polos. Sesudah: Kembali merah kiri atas; header/jadwal berikon, empat
+kartu rekap peserta, details rekap sesi, filter gaya EO/Reset, kartu peserta dan
+subcard sesi; dua kartu tindakan ringkas. Data/filter/form/akses tetap.
+
+Show/session-forms dan partial summary-icon lokal dipakai ulang; CSS scoped EO.
+Tidak ada controller/service/route/schema/migration/dependensi baru. Seluruh
+POST/PATCH/CSRF/revision, syarat waktu/owner/accepted, legacyprepare reason dan
+confirmed, arsip/notefinal, completion confirmed/confirm_zero tetap. Penjelasan
+panjang rekap/pengantar waktu/petunjuk tabel dihapus, copy konversi/seleksi/final
+lebih singkat; risiko penutupan/absensi final dan sesi belum dibuka tetap jelas.
+Design/UAT diperbarui; PRD/kontrak/briefA3/README tetap berlaku karena aturan
+bisnis, interface, setup dan kepemilikan tidak berubah.
+
+Validasi A3ExecutionTest + SessionAttendanceTest + OrganizerExecutionOverviewTest
+lulus29 tes/232 assertions pada MySQL skillmatch_testing dengan rollback. Build
+Vite, view:cache dan diff --check lulus. QA accept -> event selesai secara jadwal
+-> render absensi editable -> record -> complete -> render readonly melalui
+service existing dengan fixture rollback. Kedua keadaan HTTP200; browser
+390/768/1440 lulus6 kombinasi, overflow/Alpine/drawer dan completed tanpa mutation
+form. Screenshot editable desktop/mobile ditinjau; submit melalui browser tidak
+diulang, endpoint dicakup tes existing. Tidak mengklaim seluruh UAT/review tim.
+Helper QA awal gagal otorisasi karena fixture owner sudah diubah inactive untuk
+QA profil; urutan diperbaiki sebelum mutasi fixture profil, lalu lulus.
+Demonstrasi: Pelaksanaan -> Kelola pelaksanaan -> buka Rekap sesi/filter peserta
+-> simpan per sesi -> periksa konfirmasi selesai. Tidak commit/push/merge.
+
+# Hapus bagian yang ditunjuk pada detail pelamar - 15 November 2026
+
+Persetujuan pengguna atas empat screenshot: hapus tautan Pelaksanaan dan kehadiran
+beserta kartu keputusan bila kosong, footer screening waktu evaluasi, footer
+matching snapshot dan paragraf pemisahan nilai assessment. Dasar tetap367a7de,
+branch feature/organizer-ui-refinement; seluruh perubahan lokal dipertahankan.
+Form keputusan dan alasan existing tidak dihapus. application-selection menambah
+showExecutionLink defaulttrue, matching showEvaluationInfo defaulttrue; hanya
+pemanggilan detail EO memakai false. Screening memakai prop existing false.
+View EO merender keputusan jika ada alasan, under_review (aksi/pesan deadline),
+atau accepted sebelum mulai (form undur). Role/halaman pemakai lain tidak berubah.
+Tidak ada backend/route/schema/migration baru. PRD/kontrak/brief tetap berlaku
+karena aturan bisnis tidak berubah; design/UAT diperbarui.
+
+21 tes/154 assertions OrganizerApplicantOverviewTest+A3ExecutionTest lulus pada
+MySQL khusus tes dengan rollback; mencakup teks/kartu kosong hilang serta alur
+seleksi existing. npm build/view:cache/diff --check lulus. Perubahan ini belum
+diperiksa ulang melalui screenshot browser; QA visual halaman pada tahap
+sebelumnya tersedia. Tidak ada commit/push/merge.
+
+# Daftar dan detail pelamar mengikuti gaya EO - 15 November 2026
+
+Branch feature/organizer-ui-refinement; dasar HEAD367a7de. Lingkup disetujui:
+Kembali dari daftar ke Kelola Pelamar, Kembali detail bergaya merah kiri atas,
+hapus tab Semua Pelamar/Siap Ditinjau/Pelaksanaan dan rapikan tampilan seperti
+halaman EO sebelumnya. Riwayat view367a7de/6798ed4 ditinjau; baseline HTML
+tersimpan lokal untuk QA. Perubahan lokal profil/menu/absensi dipertahankan.
+
+Daftar index kini row responsif dengan inisial/nama/lokasi/posisi/status, skor,
+waktu WIB, jumlah dokumen dan tombol tinjau outline biru tanpa panah. Semua data
+kolom lama tetap tersedia. Filter posisi memakai Terapkan/Reset gaya EO; count
+paginator nyata. Navigasi tab dihapus, query tab=ready tetap didukung untuk link
+existing (notifikasi/aktivitas), status Siap Ditinjau tidak dihapus. Kembali ke
+organizer.applications.overview. Detail show Kembali ke daftar event yang sama,
+ringkasan nama/status, evaluasi dua kolom desktop, subcard profil/posisi berikon,
+dokumen outline biru, dan keputusan di bawah informasi. Tolak/undur outline
+merah lewat CSS scoped, komponen selection/screening/matching role lain tetap.
+Flash inline duplikat dihapus karena layout sudah merender toast EO existing.
+Tidak ada controller/service/route/schema/migration/dependensi baru.
+
+Validasi akhir OrganizerApplicantOverviewTest + A3ExecutionTest lulus21 tes/150
+assertions: navigasi, tabs hilang, owner boundary, ready filter, urutan skor dan
+transisi seleksi existing. Tambahan tes awal keliru memakai substring route detail
+sehingga cocok dengan route form aplikasi; diperbaiki menjadi exact href.
+Pemeriksaan lebih luas A3ApplicationTest menghasilkan34/35 lulus (207 assertions),
+1 gagal pada test_volunteer_can_create_draft_application_for_published_event yang
+mencari CTA publik lama Pilih posisi dan mulai lamaran. View publik/controller
+lamaran tidak diubah tugas ini; kegagalan di luar halaman yang dirapikan dicatat,
+bukan dianggap lulus atau diatasi dengan menghapus assertion. Perlu pemilik modul
+menyelaraskan tes CTA katalog terhadap implementasi publik yang disepakati.
+
+Build Vite, view:cache dan diff --check lulus. Fixture daftar terisi/kosong/filtered
+serta detail under_review dengan assessment dirender HTTP200 dan rollback pada
+MySQL khusus skillmatch_testing. Browser390/768/1440 lulus12 kombinasi, overflow,
+Alpine dan drawer; screenshot desktop/list/detail serta detail mobile ditinjau.
+Form seleksi dipertahankan dan diuji server; submit/download dokumen sungguhan
+melalui browser belum diuji. Design/UAT diperbarui; PRD/kontrak/briefA3/README
+masih berlaku sebab aturan bisnis, interface, setup dan kepemilikan tetap.
+Demonstrasi: Kelola Pelamar -> Lihat pelamar -> Kembali; buka lagi -> Tinjau
+lamaran -> lihat evaluasi/dokumen/keputusan -> Kembali. Tidak commit/push/merge.
+
+# Profil Organisasi mengikuti gaya EO - 15 November 2026
+
+Branch feature/organizer-ui-refinement, dasar HEAD367a7de. Lingkup disetujui:
+merapikan Profil Organisasi dengan gaya halaman EO sebelumnya dan Edit teks/border
+biru. Existing pada edit.blade.php (riwayat1648250) berupa header/statuscard dan
+satu daftar data panjang; form modal, upload serta preview dokumen dipertahankan.
+Perubahan lokal menu/absensi sebelumnya tidak ditimpa. Baseline HTML disimpan
+lokal untuk QA sebelum mengedit.
+
+Tampilan existing profil kini tiga kartu: identitas/status/tentang/alamat/website,
+kontak penanggung jawab, dan dokumen verifikasi. Nama20px, section17px, isi14px,
+label12px; ikon sesuai dan subcard slate seperti detail kegiatan. Grid tiga kolom
+menjadi satu di mobile; teks panjang membungkus. Edit Profil berikon pensil dan
+Lihat KTP berikon mata memakai outline biru36px existing. Batal modal outline
+merah; dialog EO punya area scroll sesuai viewport serta Escape/tombol tutup.
+Data/status/catatan admin, form create/error, CSRF/payload, konfirmasi verifikasi
+ulang serta preview route dokumen privat tetap tersedia. Tidak ada controller,
+route, model, schema, migration, layanan atau dependensi baru.
+
+Bukti: ProfileTest, OrganizerKtpUploadTest, PhoneValidationTest, IntegratedFlowsTest
+lulus23 tes/291 assertions pada MySQL khusus skillmatch_testing dengan rollback.
+Build Vite dan view:cache lulus. QA profil aktif, revisi dan baru dirender HTTP200,
+rollback fixture; browser390/768/1440 memeriksa9 kombinasi, drawer/Alpine/overflow
+serta dialog Edit pada profil aktif. Screenshot desktop/mobile/dialog ditinjau.
+Form simpan/upload dan hak akses dicakup tes existing; tidak mengklaim submit
+upload dokumen sungguhan melalui browser. Tidak mengklaim seluruh UAT/review tim.
+Design dan UAT diperbarui; PRD/kontrak/brief SF/README tetap berlaku karena aturan
+bisnis, interface, setup dan kepemilikan tidak berubah. Demonstrasi: Profil
+Organisasi -> Edit Profil -> scroll form -> Batal; data existing tetap terlihat.
+Tidak ada commit/push/merge.
+
+# Penyelarasan Ubah Paket dan daftar EO - 15 November 2026
+
+Branch feature/organizer-ui-refinement, dasar HEAD367a7de. Perubahan lokal menu
+serta penguncian absensi sebelumnya dipertahankan. Lingkup disetujui: Kembali
+merah kiri atas halaman pilih/ubah paket ke detail event; hapus badge Publikasi/
+Pelaksanaan di Kelola Pelamar dan Publikasi/Jadwal di daftar Pelaksanaan; tambah
+filter dengan komponen gaya sama seperti Kelola Pelamar. Metadata tanggal/jam/
+lokasi, jumlah peserta, aksi dan kelompok tetap tersedia.
+
+ExecutionController menerima search literal max255 + phase today/ongoing/history,
+memfilter sebelum paginate12 dan mempertahankan query pagination. Kondisi sama
+dengan kelompok existing; batas owner/published/tanggal WIB serta absensi tetap.
+Tidak ada migration, route, schema, dependensi atau CSS bersama baru. Dokumen
+design/kontrak/UAT diperbarui. PRD/brief/README tetap berlaku karena tidak mengubah
+aturan bisnis, kepemilikan modul atau setup. Tidak ada commit/push/merge.
+
+Validasi: OrganizerEventMenuVisibilityTest, OrganizerApplicantOverviewTest,
+OrganizerExecutionOverviewTest dan A2EventTest lulus27 tes/227 assertions pada
+MySQL khusus skillmatch_testing dengan rollback. Kasus filter meliputi tiap
+kelompok, batas pemilik/tanggal/publikasi, pagination, wildcard literal, validasi,
+empty/reset dan tidak mengubah state. npm build, view:cache dan diff --check lulus.
+Fixture7 keadaan dirender HTTP200; browser390/768/1440 memeriksa21 kombinasi
+halaman/viewport, overflow, Alpine dan drawer; seluruh probe lulus, tetapi helper
+berakhir exit1 karena timeout Browser.close setelah pemeriksaan selesai.
+Screenshot desktop Pelaksanaan dan
+Paket ditinjau. Render memakai fixture sintetis, bukan data/demo pengguna; tidak
+menguji pembayaran Sandbox end-to-end atau seluruh UAT. Demonstrasi: buka Ubah
+Paket untuk Kembali; Kelola Pelamar tanpa badge; Pelaksanaan pilih tahap/cari nama,
+Terapkan lalu Reset atau pindah halaman.
+
+# Absensi final ketika kegiatan ditandai Selesai
+
+15 November 2026; feature/organizer-ui-refinement / dasar HEAD367a7de. Perubahan
+menu sebelumnya masih uncommitted dan dipertahankan. Pengguna menyetujui absensi
+berhenti saat Selesai, menggantikan izin koreksi completed dengan alasan.
+Riwayat kode A3 utama f89fd78 dipertahankan selain lingkup penguncian ini.
+
+Selesai: AttendanceSessionService::recordLocked menolak completed/cancelled setelah
+lock sebelum no-op/revision/write; EventExecutionService::record memberi guard
+sama sebelum cabang parent/legacy. reason tidak dapat melewati guard. Prepare
+terminal juga ditolak sebelum return sesi existing. Hapus cabang koreksi completed
+serta audit reason post_completion_correction untuk operasi baru; histori lama
+beserta correction_reason tidak dihapus. Lock Event existing sama dengan complete,
+sehingga guard membaca state yang sudah dikunci, bukan hanya model stale/UI.
+Prasyarat completion, awal event/sesi, peserta accepted, owner/role, revision dan
+aturan cancelled tetap. Tidak ada H+1/migration/route/status/dependensi baru.
+
+UI: banner Absensi sudah final, form simpan/koreksi sesi maupun legacy dihilangkan
+pada completed; status/timestamps/catatan tersimpan tetap bisa dibaca. Checkbox
+completion existing menjelaskan absensi dikunci setelah selesai. Tidak menambah
+alur persetujuan baru atau mendesain ulang halaman. PRD/kontrak/design/UAT/brief
+A3 diselaraskan termasuk mengganti aturan normatif koreksi completed lama.
+Handoff A3/sesi diberi catatan keputusan terbaru tanpa menghapus bukti historis.
+README tetap berlaku karena setup/perintah/dependensi tidak berubah.
+
+Bukti: A3ExecutionTest + SessionAttendanceTest + OrganizerExecutionOverviewTest +
+OrganizerEventMenuVisibilityTest lulus32 tes/270 assertions. Pengujian awal gagal
+pada perbandingan fixture legacy yang belum di-refresh (default DB belum ada pada
+model in-memory); diperbaiki menjadi snapshot fresh DB. Setelah menambahkan
+read-only note, SessionAttendanceTest lulus9 tes/93 assertions. Kasus mencakup
+absensi normal, setelah jadwal lewat sebelum completion, prasyarat sesi final,
+blocked completed dengan/tanpa alasan/payload sama melalui parent/sesi/legacy,
+prepare ditolak, status/note/revision/recorded_at/rekap/history/audit/outbox tetap,
+form simpan hilang, catatan final masih terlihat, owner/role/pre-start/revision/
+cancelled existing. DB MySQL khusus skillmatch_testing dengan transaction rollback,
+bukan DB kerja; tidak ada reset/migrate. Build/view:cache/diff --check lulus.
+
+QA fixture menempuh accept -> record sesi -> complete melalui service existing,
+render detail completed HTTP200 lalu rollback. Browser390/768/1440 lulus, banner
+ada, tidak ada form mutasi di main (form GET filter tetap), tombol simpan tidak
+ada, drawer/overflow tetap. Probe awal sempat menghitung POST logout sidebar;
+dibatasi ke main sesuai lingkup absensi lalu lulus. Screenshot desktop ditinjau.
+Konkurensi record-vs-complete nyata dengan dua koneksi tidak diuji ulang; lock
+Event existing tetap dipakai. Tidak mengklaim seluruh UAT/review tim lulus.
+
+Demo: catat semua sesi setelah mulai, tunggu semua jadwal berakhir, pastikan
+seleksi/asesmen final, centang konfirmasi lalu Selesaikan kegiatan. Setelahnya
+kehadiran/read-only note tetap ada dan semua update ditolak, termasuk request
+lama dengan alasan. Tidak membuka kembali kegiatan/data historis. Tanpa commit,
+push, merge atau deployment. Tidak ada blocker/dependensi baru.
+
+# Visibilitas menu berdasarkan publikasi dan hari pelaksanaan WIB
+
+15 November 2026; branch feature/organizer-ui-refinement, dasar HEAD367a7de
+(Mengubah Tampilan EO). Working tree awal bersih; perubahan UI sebelumnya sudah
+ada pada commit tersebut dan dipertahankan. Pengguna menyetujui pembagian menu
+serta pencarian/filter Kelola Pelamar setelah brainstorming.
+
+Selesai: ApplicationController::overview hanya published_at terisi termasuk
+riwayat. Filter GET search literal/trim max255 + recruitment open/closed/history,
+AND/owner-scoped, validasi, reset, pesan hasil kosong dan pagination12 menyimpan
+parameter. Open mengikuti opens<=now<deadline dan nonterminal published; closed
+sejak deadline pada published nonterminal; history terminal atau publikasi tidak
+aktif. Sebelum masa pendaftaran/tenggat lama belum lengkap tetap lewat Semua.
+Hasil seleksi/lamaran submitted tetap dapat dibuka; count submitted existing.
+Kegiatan Saya tetap seluruh status termasuk draft.
+
+ExecutionController::index hanya pernah published dan starts_at sebelum esok
+00.00 WIB dalam UTC, dengan pengecualian terminal tetap riwayat meski batal dini.
+Aktif mendahului riwayat pada pagination12; groups isi halaman Hari ini sebelum
+jam mulai, Berlangsung dalam interval jadwal, Riwayat terminal/akhir lewat/
+publikasi dihentikan. Jadwal hanya label turunan, tidak update lifecycle.
+Lewat jadwal belum completed mendapat Menunggu penyelesaian. Count accepted
+existing. View memakai thumbnail/metadata ikon/badge/button seperti Kegiatan Saya.
+Filter Kelola Pelamar memakai gaya form yang sama. Semua query pemilik dari aktor.
+
+Tidak ada migration/route/layanan mutasi/status tersimpan baru. Endpoint detail
+existing tetap bisa diakses pemilik lewat URL, daftar ini bukan pembatasan hak
+baru; aturan waktu/peserta/role/owner/session attendance/completion tetap di server.
+Kemunculan pada awal hari tidak mengizinkan absensi sebelum waktunya. PRD,
+kontrak, design, UAT dan brief A2/A3 diselaraskan. README tidak berubah karena
+setup/dependensi/perintah tetap. Tidak ada commit/push/merge/review tim.
+
+Bukti: suite OrganizerEventMenuVisibilityTest + kedua overview + A3ExecutionTest
++ SessionAttendanceTest lulus35 tes/264 assertions sebelum penajaman urutan/
+label; final suite kedua overview + visibility lulus9 tes/77 assertions.
+Kasus: published/nonpublished, riwayatcancelled/suspended/completed, count,
+akses guest/role/pending/inactive/foreign owner, kombinasi search/filter,
+wildcard literal, pagination, validasi, batasUTC16:59:59->17:00:00 (WIB00),
+acara12siang muncul00, multi-hari, hari besok tersembunyi, akhir lewat belum
+completed tetap unchanged. Kehadiran/sesi service regression lulus; tidak ada
+DB kerja/reset/migrate dijalankan, memakai guard MySQL skillmatch_testing serta
+transaction rollback. Build/view:cache/diff --check lulus.
+
+Renderer5 keadaan HTTP200 dengan fixture sintetis dan rollback; Edge15 kombinasi
+populated/empty/filtered pelamar dan populated/empty pelaksanaan x390/768/1440
+lulus (overflow, Alpine, sidebar/mobile drawer). Screenshot pelamar desktop serta
+pelaksanaan desktop/mobile diperiksa. Submit filter live di browser belum diuji,
+HTTP filter/pagination diverifikasi feature test. Tidak mengklaim seluruh UAT
+atau deployment/review tim selesai. Tidak ada blocker/dependensi baru.
+
+Demo: refresh Kelola Pelamar untuk published/history, cari/pilih fase dan
+Terapkan/Reset. Pelaksanaan terlihat mulai tanggal WIB (refresh halaman), label
+Hari ini sebelum jam acara dan Berlangsung saat masuk jam. Buka Kelola pelaksanaan;
+absensi tetap ditolak sebelum aturan waktunya. Riwayat tidak menghapus data.
+
 # Notifikasi toast ringkas dan otomatis hilang
 
 14 November 2026; feature/organizer-ui-refinement / dasar HEAD31d1fcf.
@@ -883,3 +1393,44 @@ Buat Kegiatan. Profil EO pending/revisi tetap dapat diakses pada route existing.
 Tidak membutuhkan migration atau seeder baru. Muat ulang browser jika aset lama
 masih tersimpan. PIC SF/A2/A3/A4 dapat meninjau presentasi modulnya; penerimaan
 visual pengguna dan review/UAT tim belum diklaim selesai.
+
+
+### Penyempurnaan EO 15 November 2026: lima perbaikan
+- Basis feature/organizer-ui-refinement @367a7de; mempertahankan perubahan lokal dan ukuran kartu.
+- Penutupan seleksi dinonaktifkan sebelum tenggat pendaftaran, dengan waktu tersedia WIB.
+- Penyelesaian menampilkan jadwal, seleksi/asesmen, dan jumlah peserta yang sesi/absensinya belum final; tombol terkunci sampai siap. Konfirmasi nol hanya untuk nol peserta. Validasi server tetap berlaku.
+- Fase tampilan mengikuti waktu melalui Event::executionPhase(), tanpa menulis status atau menyelesaikan otomatis.
+- Pencarian peserta 350 ms, hasil HTML server diperbarui tanpa mengganti input/filter; permintaan lama dibatalkan, paginasi mempertahankan pencarian. Tanpa JS tetap GET/Enter. Pencarian nama memakai LIKE literal.
+- Istilah antarmuka EO: kegiatan, asesmen, penyaringan, pelamar, skor kecocokan/keahlian. Identifier integrasi dan default komponen role lain tetap.
+- Tidak ada migration, dependensi, atau route baru. Hasil validasi terbaru tercatat di bawah.
+
+Validasi akhir: 40 tes backend/387 asersi lulus pada MySQL tes terpisah; 6 tes frontend lulus (debounce, balapan respons, CSRF/bootstrap); npm build dan diff --check lulus. Fixture execution dan execution-final HTTP 200, transaksi rollback; browser lulus 6 kombinasi halaman/viewport (390/768/1440), Alpine dan drawer. Pemeriksaan ini memakai fixture statis, bukan sesi HTTP pengguna nyata. Tidak ada perubahan kontrak status/schema/route; PRD dan kontrak bisnis tetap berlaku.
+
+
+## Usia yang disarankan per posisi ? keputusan pengguna 15 November 2026
+Posisi memiliki suggested_min_age dan suggested_max_age nullable unsigned tiny integer (0?255 sebagai batas penyimpanan), masing-masing opsional. Jika keduanya diisi, maksimum harus >= minimum. Kosong berarti tidak ada saran usia pada sisi tersebut; posisi existing tetap null. EO mengatur saat konfigurasi posisi mengikuti otorisasi dan kunci publikasi existing. Form serta detail posisi EO/relawan menampilkan usia pada tanggal mulai kegiatan sebagai informasi, bukan syarat wajib. Relawan di luar rentang tetap dapat melamar; screening, assessment, matching 50/30/20 dan snapshot evaluasi tidak memakai kolom ini. Profil relawan tetap menyimpan birth_date, tidak menambah kolom umur profil.
+Migration tambahan: database/migrations/2026_11_15_160000_add_suggested_age_to_event_positions.php. Tidak ada route baru. UI berbagi components/position-suggested-age.blade.php. A2 pemilik kolom dan konfigurasi; A3/A4 tidak perlu menambahkan pembatasan umur.
+UAT: kosong/satu sisi/rentang valid tersimpan dan tampil, rentang terbalik/negatif/non-integer ditolak, kosongkan kedua nilai menghapus saran, pemilik lain ditolak, posisi published tetap terkunci, snapshot evaluasi identik setelah hanya usia diubah.
+
+Basis feature/organizer-ui-refinement @367a7de. Lingkup disetujui pengguna: informasi usia opsional, tidak memengaruhi kelolosan atau skor. Seluruh perubahan lokal sebelumnya dipertahankan.
+
+Validasi usia posisi: 25 tes (PositionSuggestedAgeTest, A2EventTest, PositionScheduleModeTest), 174 asersi lulus pada MySQL skillmatch_testing terpisah; npm build lulus; diff --check lulus. Migration terarah juga diterapkan pada database lokal tanpa penghapusan data. Tes mencakup simpan/hapus/rentang satu sisi/invalid/owner/published dan snapshot evaluasi identik. Tampilan HTML form dan detail EO diverifikasi lewat tes; review visual browser untuk tambahan usia belum dilakukan.
+
+Keputusan label usia 15 November 2026: sisi relawan hanya menampilkan Usia pendaftar dan rentangnya, tanpa keterangan peserta di luar rentang boleh melamar. Sisi EO mempertahankan label saran usia dan penjelasan. Perubahan presentasi saja; tidak ada pembatasan atau eliminasi otomatis. Komponen position-suggested-age memakai forVolunteer, default false.
+
+
+## Usia pelamar pada detail EO ? 15 November 2026
+ApplicationService::submit menambah profile.birth_date (YYYY-MM-DD nullable) ke snapshot lamaran baru. Ini data pribadi untuk owner terotorisasi, bukan bagian audit/notifikasi atau rumus evaluasi. Detail lamaran EO menghitung tahun penuh pada tanggal starts_at dalam WIB dan menampilkan usia bersama saran usia posisi. Tidak ada eliminasi otomatis atau perubahan bobot/score.
+Lamaran lama tanpa key birth_date memakai tanggal lahir profil saat ini dan menampilkan sumbernya secara eksplisit; snapshot lama tidak ditulis ulang. Snapshot dengan tanggal kosong/tidak valid atau tanggal lahir setelah tanggal kegiatan menampilkan Belum tersedia. Tidak ada migration atau route baru untuk usia pelamar.
+UAT: ulang tahun tepat hari kegiatan, sehari sesudahnya, starts_at UTC yang masuk tanggal WIB berikutnya, data lama/missing/invalid, perubahan profil setelah submit tidak mengubah usia dari snapshot, owner lain ditolak. Alur terintegrasi diuji dari fixture pembuatan event/posisi, asesmen terbit, ajukan moderasi, admin approve/publikasi paket gratis, submit lamaran di luar saran usia, penyaringan/pencocokan/asesmen, accepted, absensi sesi, completed, riwayat dan final lock. Pada DatabaseTransactions, afterCommit tertunda sampai rollback; evaluasi nyata dipanggil eksplisit dalam tes, bukan bukti worker/queue produksi.
+
+Hasil verifikasi usia pelamar/alur EO (feature/organizer-ui-refinement @367a7de):
+- 155 skenario backend diuji. Run regresi terakhir: 154 lulus/155, satu ekspektasi kapitalisasi Unduh Dokumen lama; setelah diselaraskan ke Unduh dokumen, tes tersebut diulang dan lulus (1 tes/12 asersi). Tidak ada kegagalan tersisa pada skenario yang diuji.
+- Tes perjalanan terintegrasi memakai layanan nyata untuk event/posisi, moderasi dan publikasi gratis, lamaran di luar saran usia, penyaringan/pencocokan/asesmen, seleksi, attendance sesi, completion/final lock dan riwayat; snapshot birth_date tetap setelah profil berubah. Tes usia menguji batas ulang tahun/WIB, data historis tidak valid dan akses lintas pemilik.
+- Ekspektasi tes UI lama diselaraskan dengan keputusan pengguna sebelumnya (Skor kecocokan, penyaringan, pelamar, asesmen, CTA yang nyata, penghapusan penjelasan asesmen). Tidak ada perubahan aturan seleksi demi meluluskan tes.
+- 6 tes frontend dan npm build lulus; diff --check lulus. MySQL khusus testing dengan rollback, database kerja tidak dipakai untuk fixture.
+- Satu deadlock awal terjadi ketika render fixture berjalan bersamaan dengan suite pada database tes; diulang secara berurutan tanpa error tersebut.
+- Pengujian pembayaran memakai lingkungan test/mocking yang sudah ada, bukan bukti transaksi Sandbox gateway nyata; worker/afterCommit produksi dan sesi pengguna nyata belum diuji end-to-end.
+- Tidak ada migration atau route baru pada langkah ini. Snapshot profile.birth_date adalah tambahan kontrak A3; A4 tidak menjadikannya syarat atau komponen skor. Tidak ada commit/push/merge.
+
+Visual: 4 halaman fixture (detail pelamar, daftar, kosong, filter kosong) HTTP 200; browser lulus 12 kombinasi 390/768/1440, Alpine/sidebar/drawer dan overflow. Detail pelamar 1440 ditinjau via screenshot; usia dan saran usia berada dalam kartu informasi pelamar. Fixture statis, bukan sesi HTTP produksi.

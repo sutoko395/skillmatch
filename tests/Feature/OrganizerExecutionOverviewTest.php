@@ -18,6 +18,7 @@ class OrganizerExecutionOverviewTest extends DatabaseTestCase
         app(SelectionService::class)->accept($application, $owner);
         $this->secondCandidate($application);
         $foreign = $this->participantApplication();
+        $this->travelTo($application->event->starts_at->setTimezone('Asia/Jakarta')->startOfDay());
 
         $this->actingAs($owner)->get(route('organizer.execution.index', ['organizer_id' => $foreign->event->organizer_id]))
             ->assertOk()->assertDontSee('@yield(', false)->assertSee($application->event->title)->assertDontSee($foreign->event->title)

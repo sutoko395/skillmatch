@@ -1,3 +1,32 @@
+## Persiapan sesi otomatis untuk absensi belum dicatat - 15 November 2026
+
+Unrecorded/missing legacy accepted disiapkan otomatis melalui endpoint initialize
+POST CSRF, bukan mutasi GET. Session service batch max100 mengunci event/apps/
+attendance, menggunakan prepareLocked existing dan melewati present/absent/session
+existing. Metadata lama unrecorded diarsipkan. Konversi recorded tetap memerlukan
+confirmed/reason existing. Guard terminal/accepted/owner tetap; no migration.
+Bukti pengujian terbaru pada ORGANIZER_UI_REFINEMENT_HANDOFF.md.
+
+## Check-in peserta dan catatan terpisah - 15 November 2026
+
+Tambahan endpoint note-only dan UI meja absensi disetujui pengguna. PATCH
+organizer.attendance-sessions.note memakai updateNote dengan lock/owner/revision/
+final guards, mengubah note+revision tanpa status/recorded_at/lifecycle. Audit
+metadata saja tanpa isi catatan; tidak ada notifikasi baru atau migration.
+Tandai hadir/ubah kehadiran tetap memakai record existing dan mempertahankan note.
+Rincian terbaru pada kontrak dan ORGANIZER_UI_REFINEMENT_HANDOFF.md.
+
+## Perubahan aturan final absensi - keputusan pengguna 15 November 2026
+
+Absensi completed sekarang terkunci: tidak ada koreksi dengan alasan, baik per
+sesi maupun catatan legacy. Service menolak request setelah lock sebelum no-op/
+write/audit/notifikasi; prepare terminal ditolak. Form koreksi disembunyikan,
+catatan/status riwayat tetap dapat dibaca. Prasyarat completion tidak dilonggarkan.
+Tidak ada migration atau penghapusan koreksi/histori yang sudah tersimpan.
+Bagian di bawah adalah catatan implementasi/pengujian pada saat ditulis; izin
+koreksi setelah completion yang disebut di sana telah digantikan keputusan ini.
+Bukti terbaru: docs/ORGANIZER_UI_REFINEMENT_HANDOFF.md bagian penguncian absensi.
+
 # Kehadiran per sesi/hari - 3 November 2026
 
 Keputusan pengguna: kehadiran dicatat manual Organizer per sesi/hari, menggantikan

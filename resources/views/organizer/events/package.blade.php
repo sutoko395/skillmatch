@@ -4,6 +4,7 @@
 
 @section('content')
 <div class="organizer-packages w-full max-w-7xl mx-auto space-y-6">
+    <div><a href="{{ route('organizer.events.show', $event) }}" class="organizer-action-button organizer-detail-back">Kembali</a></div>
 
     <div>
         <h1 class="text-2xl font-bold text-slate-800">

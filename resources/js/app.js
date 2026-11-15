@@ -1,6 +1,8 @@
+import { initializeAttendanceSearch } from './attendance-live-search';
 
 
 import Alpine from 'alpinejs';
+import attendanceSessionSetup from './attendance-session-setup';
 import eventCoverUpload from './event-cover-upload';
 import eventPackageForm from './event-package-form';
 import paymentStatus from './payment-status';
@@ -12,6 +14,8 @@ Alpine.data('eventCoverUpload', eventCoverUpload);
 Alpine.data('eventPackageForm', eventPackageForm);
 Alpine.data('paymentStatus', paymentStatus);
 Alpine.data('assessmentAttempt', assessmentAttempt);
+
+Alpine.data('attendanceSessionSetup', attendanceSessionSetup);
 
 Alpine.start();
 
@@ -32,3 +36,5 @@ document.querySelectorAll('[data-saving-form]').forEach(form => form.addEventLis
     form.querySelector('[type=submit]').disabled = true;
     form.querySelector('[data-saving-status]').textContent = 'Menyimpan...';
 }));
+
+document.querySelectorAll('[data-live-attendance]').forEach(initializeAttendanceSearch);

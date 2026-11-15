@@ -1,112 +1,78 @@
 @extends('organizer.layouts.sidebar')
-@section('title', 'Daftar Pelamar - ' . $event->title)
+@section('title', 'Kelola Pelamar')
 @section('content')
-<div class="mx-auto max-w-7xl space-y-6">
-    <nav class="flex flex-wrap gap-4" aria-label="Tab pelamar">
-        <a class="font-semibold text-indigo-600" href="{{ route('organizer.applications.index', $event) }}">Semua Pelamar</a>
-        <a class="font-semibold text-indigo-600" href="{{ route('organizer.applications.index', [$event, 'tab' => 'ready']) }}">Siap Ditinjau</a>
-        <a class="font-semibold text-indigo-600" href="{{ route('organizer.execution.show', $event) }}">Pelaksanaan</a>
-    </nav>
+<div class="organizer-applicant-page mx-auto max-w-7xl space-y-6">
+    <div><a href="{{ route('organizer.applications.overview') }}" class="organizer-action-button organizer-detail-back">Kembali</a></div>
     <div class="flex flex-wrap items-center justify-between gap-4">
-        <x-page-header :title="'Daftar Pelamar: ' . $event->title" description="Kelola dan tinjau lamaran yang masuk untuk setiap posisi kegiatan ini." />
-        <a href="{{ route('organizer.events.show', $event) }}" class="inline-flex items-center text-sm font-semibold text-slate-600 hover:text-slate-900">
-            &larr; Kembali ke Detail Kegiatan
-        </a>
-    </div>
-
-    @if (session('success'))
-        <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
-            {{ session('success') }}
+        <div>
+            <h1 class="text-2xl font-bold text-slate-800">Daftar Pelamar</h1>
+            <p class="mt-2 text-base font-medium text-slate-700">{{ $event->title }}</p>
         </div>
-    @endif
-
-    {{-- Filter Posisi --}}
-    <x-section-card>
-        <form method="GET" action="{{ route('organizer.applications.index', $event) }}" class="flex flex-wrap items-center gap-4">
-            @if(request('tab') === 'ready')<input type="hidden" name="tab" value="ready">@endif
-            <div class="w-full sm:w-64">
-                <label for="position_id" class="block text-xs font-medium text-slate-700">Filter Berdasarkan Posisi</label>
-                <select name="position_id" id="position_id" class="mt-1 block w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" onchange="this.form.submit()">
-                    <option value="">Semua Posisi</option>
-                    @foreach($positions as $pos)
-                        <option value="{{ $pos->id }}" {{ request('position_id') == $pos->id ? 'selected' : '' }}>
-                            {{ $pos->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            @if(request('position_id'))
-                <div class="flex items-end">
-                    <a href="{{ route('organizer.applications.index', $event) }}" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800">
-                        Reset Filter
-                    </a>
+        <span class="organizer-applicant-total">{{ number_format($applications->total()) }} pelamar</span>
+    </div>
+    <form method="GET" action="{{ route('organizer.applications.index', $event) }}" class="organizer-event-filters">
+        @if(request('tab') === 'ready')<input type="hidden" name="tab" value="ready">@endif
+        <div class="organizer-applicant-position-filter">
+            <label for="position_id">Posisi yang dilamar</label>
+            <select name="position_id" id="position_id">
+                <option value="">Semua posisi</option>
+                @foreach($positions as $pos)
+                    <option value="{{ $pos->id }}" @selected(request('position_id') == $pos->id)>{{ $pos->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <button type="submit" class="organizer-action-button">Terapkan</button>
+        @if(request()->filled('position_id') || request()->filled('tab') || request()->filled('status'))
+            <a href="{{ route('organizer.applications.index', $event) }}" class="organizer-event-filter-reset">Reset</a>
+        @endif
+    </form>
+    <section class="organizer-event-list" aria-label="Daftar kandidat">
+        @forelse($applications as $app)
+            <article class="organizer-candidate-row">
+                <div class="organizer-candidate-identity">
+                    <span class="organizer-candidate-avatar" aria-hidden="true">{{ mb_strtoupper(mb_substr($app->volunteer->name, 0, 1)) }}</span>
+                    <div class="min-w-0">
+                        <h2 class="organizer-candidate-name">{{ $app->volunteer->name }}</h2>
+                        <p class="organizer-candidate-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>{{ $app->volunteer->volunteerProfile?->cityRecord?->name ?? 'Kota belum diisi' }}</span></p>
+                        <p class="organizer-candidate-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12a22 22 0 0 0 18 0M12 11v3"/></svg><span>{{ $app->position->name }}</span></p>
+                        <div class="mt-3"><x-application-status :application="$app" /></div>
+                    </div>
                 </div>
+                <div class="organizer-candidate-facts">
+                    <div class="organizer-candidate-score">
+                        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 3v18h17M8 16v-4m5 4V8m5 8V5"/></svg> Skor kecocokan</span>
+                        <strong>{{ $app->matchResult ? number_format($app->matchResult->total_score, 2, ',', '.') : 'Belum tersedia' }}</strong>
+                    </div>
+                    <p class="organizer-candidate-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 11h18"/></svg><span><span class="sr-only">Dikirim: </span>{{ $app->submitted_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') ?? '-' }} WIB</span></p>
+                    <p class="organizer-candidate-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z M14 2v6h6M8 13h8M8 17h5"/></svg><span>{{ $app->documents->count() }} dokumen</span></p>
+                </div>
+                <a href="{{ route('organizer.applications.show', $app) }}" class="organizer-action-button organizer-event-manage" aria-label="Tinjau lamaran {{ $app->volunteer->name }}">Tinjau lamaran</a>
+            </article>
+        @empty
+            <div class="p-6">
+                @if(request()->filled('position_id') || request()->filled('tab') || request()->filled('status'))
+                    <x-empty-state title="Pelamar tidak ditemukan" description="Belum ada pelamar yang sesuai dengan filter ini." />
+                @else
+                    <x-empty-state title="Belum Ada Pelamar" description="Belum ada kandidat yang mengirimkan lamaran untuk kegiatan ini." />
+                @endif
+            </div>
+        @endforelse
+    </section>
+    @if($applications->hasPages()) {{ $applications->links() }} @endif
+    @if($pendingSelectionCount > 0 && !in_array($event->lifecycle_status, ['cancelled', 'completed']))
+    <x-section-card id="tutup-seleksi">
+        <h2 class="mb-3 text-lg font-semibold">Tutup seleksi tertunda</h2>
+        <p class="mb-3 text-sm text-slate-600">Lamaran tertunda akan ditolak dengan alasan yang kamu isi.</p>
+        <form method="POST" action="{{ route('organizer.events.close-selection', $event) }}" class="organizer-execution-close space-y-3">
+            @csrf
+            <label class="block">Alasan penutupan<textarea name="reason" required minlength="5" maxlength="1000" class="block w-full rounded-lg border-slate-300">{{ old('reason') }}</textarea></label>
+            <label class="block"><input type="checkbox" name="confirmed" value="1" required> Saya mengonfirmasi penutupan seluruh lamaran tertunda.</label>
+            @if(!$event->registration_deadline || now()->lt($event->registration_deadline))
+                <p class="text-xs text-slate-500">Tersedia setelah tenggat pendaftaran{{ $event->registration_deadline ? ': '.$event->registration_deadline->setTimezone('Asia/Jakarta')->format('d/m/Y H:i').' WIB' : ' ditentukan' }}.</p>
             @endif
+            <x-primary-button :disabled="!$event->registration_deadline || now()->lt($event->registration_deadline)">Tutup seleksi tertunda</x-primary-button>
         </form>
     </x-section-card>
-
-    <x-section-card>
-        @if($applications->isEmpty())
-            <div class="py-12 text-center">
-                <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                <h3 class="mt-2 text-sm font-semibold text-gray-900">Belum Ada Pelamar</h3>
-                <p class="mt-1 text-sm text-slate-500">Belum ada kandidat yang mengirimkan lamaran untuk kegiatan ini.</p>
-            </div>
-        @else
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
-                    <thead class="bg-slate-50 font-medium text-slate-600">
-                        <tr>
-                            <th class="px-4 py-3">Nama Kandidat</th>
-                            <th class="px-4 py-3">Posisi Dilamar</th>
-                            <th class="px-4 py-3">Status</th>
-                            <th class="px-4 py-3">Match Score</th>
-                            <th class="px-4 py-3">Tanggal Mengirim</th>
-                            <th class="px-4 py-3">Dokumen</th>
-                            <th class="px-4 py-3 text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 bg-white">
-                        @foreach($applications as $app)
-                            <tr class="hover:bg-slate-50">
-                                <td class="px-4 py-3">
-                                    <div class="font-medium text-slate-900">{{ $app->volunteer->name }}</div>
-                                    <div class="text-xs text-slate-500">{{ $app->volunteer->volunteerProfile?->cityRecord?->name ?? 'Kota belum diisi' }}</div>
-                                </td>
-                                <td class="px-4 py-3 text-slate-700">
-                                    {{ $app->position->name }}
-                                </td>
-                                <td class="px-4 py-3">
-                                    <x-application-status :application="$app" />
-                                </td>
-                                <td class="px-4 py-3 font-semibold text-indigo-700">
-                                    {{ $app->matchResult ? number_format($app->matchResult->total_score, 2, ',', '.') : '—' }}
-                                </td>
-                                <td class="px-4 py-3 text-slate-600">
-                                    {{ $app->submitted_at?->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') ?? '-' }} WIB
-                                </td>
-                                <td class="px-4 py-3 text-slate-600">
-                                    <span class="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">
-                                        {{ $app->documents->count() }} file
-                                    </span>
-                                </td>
-                                <td class="px-4 py-3 text-right">
-                                    <a href="{{ route('organizer.applications.show', $app) }}" class="inline-flex items-center rounded-lg bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-100">
-                                        Tinjau Lamaran &rarr;
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="mt-4">
-                {{ $applications->links() }}
-            </div>
-        @endif
-    </x-section-card>
+    @endif
 </div>
 @endsection

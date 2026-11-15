@@ -128,7 +128,7 @@
                                 @endif
                             </fieldset>
                         </template>
-                        <p x-show="questions.length === 0" class="rounded-xl bg-slate-50 p-4 text-sm text-slate-600">Belum ada soal. Tambahkan soal untuk menyusun assessment.</p>
+                        <p x-show="questions.length === 0" class="rounded-xl bg-slate-50 p-4 text-sm text-slate-600">Belum ada soal. Tambahkan soal untuk menyusun asesmen.</p>
                         <div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4">
                             <div x-show="questions.length" class="flex gap-2">
                                 <x-button variant="secondary" type="button" @click="selectQuestion(activeQuestion - 1)" x-bind:disabled="activeQuestion === 0 || busy">Sebelumnya</x-button>
@@ -144,12 +144,12 @@
                     </div>
                 </div>
             </fieldset>
-            <noscript><p role="alert" class="text-sm text-amber-900">Aktifkan JavaScript untuk mengelola dan menampilkan soal assessment.</p></noscript>
+            <noscript><p role="alert" class="text-sm text-amber-900">Aktifkan JavaScript untuk mengelola dan menampilkan soal asesmen.</p></noscript>
             @if($editable)
                 <div class="sticky bottom-3 z-10 flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
                     <x-button variant="secondary" type="submit" name="action" value="draft">Simpan Draft</x-button>
                     <x-button type="submit" name="action" value="preview">Publikasikan Asesmen</x-button>
-                    <p class="text-xs text-slate-500">Menyimpan seluruh soal dalam assessment.</p>
+                    <p class="text-xs text-slate-500">Menyimpan seluruh soal dalam asesmen.</p>
                 </div>
                 <p x-show="busy" x-cloak role="status" class="text-sm text-slate-600">Memproses assessment…</p>
             @endif

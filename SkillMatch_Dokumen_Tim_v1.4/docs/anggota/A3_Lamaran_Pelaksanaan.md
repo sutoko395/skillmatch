@@ -1,3 +1,45 @@
+## Penutupan seleksi di Kelola Pelamar - 15 November 2026
+
+Penutupan seleksi beralasan kini ditampilkan di daftar pelamar event. Detail
+pelaksanaan hanya memberi tautan Ke Kelola Pelamar saat pending. Route close
+existing, serviceguarddeadline/terminal/konfirmasi, alasan, audit dan notifikasi
+tetap; tidak memindahkan kepemilikan A3 atau mengubah aturan completion.
+
+## Persiapan sesi otomatis untuk absensi belum dicatat - 15 November 2026
+
+Unrecorded/missing legacy accepted pada event nonterminal disiapkan otomatis via
+POST CSRF saat detail dibuka; GET tetap readonly. Endpoint initialize dan service
+initializeUnrecorded mengikuti kontrak terbaru; idempoten dengan lock Event/App/
+Attendance. Legacy recorded dan terminal tidak dikonversi otomatis. Sesi baru
+Belum dicatat; snapshot/arsip lama dipertahankan, tanpa migration baru.
+
+## Check-in peserta dan catatan terpisah - 15 November 2026
+
+Keputusan pengguna: kartu peserta dapat dibuka/tutup, check-in satu klik dan
+catatan opsional disimpan terpisah tanpa mengubah kehadiran. Endpoint/layanan
+updateNote milik A3 ditambah mengikuti kontrak terbaru; tanpa migration. Catatan
+terlihat oleh relawan, bukan catatan privat panitia. Statusfinal dan syaratwaktu
+existing tetap. Bukti terkini ada di ORGANIZER_UI_REFINEMENT_HANDOFF.md aplikasi.
+
+## Absensi berhenti saat completed - keputusan pengguna 15 November 2026
+
+Selesai mengunci semua pencatatan/koreksi absensi, termasuk reasoned correction
+legacy maupun sesi. Service memeriksa terminal setelah lock dan sebelum no-op.
+Prepare terminal juga ditolak. Data/histori koreksi lama tetap; tidak ada migration.
+Syarat completion/awal sesi/role/owner/revision tetap. Form koreksi selesai hilang,
+checkbox completion menjelaskan penguncian. PRD/kontrak/UAT terbaru menggantikan
+izin koreksi completed sebelumnya; histori handoff lama tetap catatan saat dibuat.
+
+## Hub kerja EO mengikuti tahap - keputusan pengguna 15 November 2026
+
+Kelola Pelamar hanya kegiatan dengan published_at terisi, termasuk riwayat;
+search dan recruitment=open/closed/history dengan pagination12. Pelaksanaan
+memuat kegiatan pernah published sejak tanggal mulai00.00 WIB, terminal tetap
+riwayat meski dibatalkan dini. Tampilan Hari ini/Berlangsung/Riwayat mengikuti
+jadwal, tanpa mengubah lifecycle atau melonggarkan seleksi/absensi/sesi/completion.
+Endpoint detail dan akses riwayat tetap, count submitted/accepted existing tetap.
+Rincian ada pada PRD/kontrak/UAT pembaruan15 November2026; tidak ada schema baru.
+
 # Brief A3 — lamaran, dokumen, seleksi, pelaksanaan
 
 ## Kehadiran per sesi/hari - keputusan pengguna 3 November 2026
@@ -64,7 +106,7 @@ Kondisi setelah A2: schema/model event, posisi, jadwal, paket, order dan entitle
 | 3 | Daftar/detail lamaran | Volunteer melihat miliknya; Organizer melihat lamaran submitted event sendiri; tab Semua/Siap Ditinjau. |
 | 4 | Seleksi | Tampilkan hasil A4; menerima hanya under_review; kuota/bentrok jadwal dipastikan di transaksi MySQL/InnoDB; alasan reject. |
 | 5 | Pelaksanaan | Accepted otomatis memiliki attendance unrecorded; Organizer mencatat present/absent dan audit. |
-| 6 | Completion/riwayat | Semua attendance final dan seleksi tidak menggantung; selesai sesudah akhir; riwayat derived; koreksi beralasan. |
+| 6 | Completion/riwayat | Semua attendance final dan seleksi tidak menggantung; selesai sesudah akhir; riwayat derived; absensi final terkunci setelah selesai. |
 | 7 | Retensi dan recovery | Cleanup draft/berkas kedaluwarsa, purge ledger, kompensasi simpan gagal, integrasi pembatalan dan penarikan. |
 
 ## Upload yang disepakati
@@ -79,7 +121,7 @@ Gunakan private_documents dan nama acak. Download sebagai attachment dari contro
 - Satu rekap per accepted, dengan rincian sesi/hari dari snapshot; setiap sesi berstatus awal unrecorded.
 - Tabel: nama, posisi, status, waktu pencatatan, catatan, aksi. Waktu pencatatan tidak diberi label jam datang.
 - Filter posisi/status dan pencarian; bulk action boleh untuk peserta yang dipilih dengan konfirmasi jumlah.
-- Completed memerlukan akhir jadwal sudah lewat dan tidak ada unrecorded. Koreksi setelah completion beralasan dan diaudit.
+- Completed memerlukan akhir jadwal sudah lewat dan tidak ada unrecorded. Setelah completion absensi terkunci, tidak ada koreksi meski beralasan.
 - Sesi/hari menjadi unit kehadiran sesuai keputusan terbaru; QR/GPS/performance tetap di luar lingkup.
 
 ## Serah-terima
@@ -129,3 +171,9 @@ Uji submit ulang dan dua proses pada batas lamaran, rollback counter saat dokume
 ## Tambahan A3 - akses koordinasi peserta
 
 Detail lamaran menggunakan EventCoordinationService.forParticipant untuk status accepted aktual milik Volunteer aktif dan event non-cancelled. Data privat tidak berada pada snapshot atau katalog. Penerimaan menampilkan koordinasi terbaru; withdrawn/cancelled kehilangan akses. Jadwal tugas, absensi per sesi dan completion tetap berlaku tanpa syarat isi koordinasi. Tidak ada input arahan, titik kumpul atau waktu kedatangan. Keanggotaan grup dikelola eksternal oleh organizer. Lihat docs/PARTICIPANT_COORDINATION_HANDOFF.md root aplikasi.
+
+
+## Usia pelamar pada detail EO ? 15 November 2026
+ApplicationService::submit menambah profile.birth_date (YYYY-MM-DD nullable) ke snapshot lamaran baru. Ini data pribadi untuk owner terotorisasi, bukan bagian audit/notifikasi atau rumus evaluasi. Detail lamaran EO menghitung tahun penuh pada tanggal starts_at dalam WIB dan menampilkan usia bersama saran usia posisi. Tidak ada eliminasi otomatis atau perubahan bobot/score.
+Lamaran lama tanpa key birth_date memakai tanggal lahir profil saat ini dan menampilkan sumbernya secara eksplisit; snapshot lama tidak ditulis ulang. Snapshot dengan tanggal kosong/tidak valid atau tanggal lahir setelah tanggal kegiatan menampilkan Belum tersedia. Tidak ada migration atau route baru untuk usia pelamar.
+UAT: ulang tahun tepat hari kegiatan, sehari sesudahnya, starts_at UTC yang masuk tanggal WIB berikutnya, data lama/missing/invalid, perubahan profil setelah submit tidak mengubah usia dari snapshot, owner lain ditolak. Alur terintegrasi diuji dari fixture pembuatan event/posisi, asesmen terbit, ajukan moderasi, admin approve/publikasi paket gratis, submit lamaran di luar saran usia, penyaringan/pencocokan/asesmen, accepted, absensi sesi, completed, riwayat dan final lock. Pada DatabaseTransactions, afterCommit tertunda sampai rollback; evaluasi nyata dipanggil eksplisit dalam tes, bukan bukti worker/queue produksi.

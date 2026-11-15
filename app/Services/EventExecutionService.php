@@ -23,6 +23,9 @@ class EventExecutionService
             $application = Application::whereKey($application->id)->lockForUpdate()->firstOrFail();
             $attendance = Attendance::whereKey($attendance->id)->lockForUpdate()->firstOrFail();
             Gate::forUser($actor->fresh())->authorize('update', $attendance);
+            if (in_array($event->lifecycle_status, ['completed', 'cancelled'], true)) {
+                app(SelectionService::class)->fail('Absensi terkunci karena kegiatan sudah selesai atau dibatalkan.');
+            }
             if ($attendance->uses_sessions) {
                 $sessions = $attendance->sessions()->lockForUpdate()->get();
                 if ($sessions->count() !== 1) {
@@ -51,9 +54,7 @@ class EventExecutionService
             if ((int) $attendance->revision !== (int) $data['revision']) {
                 app(SelectionService::class)->fail('Kehadiran telah berubah. Muat ulang sebelum menyimpan.');
             }
-            if ($event->lifecycle_status === 'completed') {
-                app(SelectionService::class)->reason($data['reason'] ?? '');
-            } elseif ($event->lifecycle_status === 'upcoming') {
+            if ($event->lifecycle_status === 'upcoming') {
                 $event->forceFill(['lifecycle_status' => 'ongoing', 'revision' => $event->revision + 1])->save();
                 app(AuditService::class)->record($actor, 'event.begun', $event, ['after' => ['lifecycle_status' => 'ongoing']]);
             }
@@ -62,7 +63,7 @@ class EventExecutionService
                 'correction_reason' => $data['reason'] ?? null, 'recorded_by' => $actor->id, 'recorded_at' => now(), 'revision' => $attendance->revision + 1])->save();
             app(AuditService::class)->record($actor, 'attendance.recorded', $attendance,
                 ['before' => ['status' => $before], 'after' => ['status' => $attendance->status, 'revision' => $attendance->revision]],
-                $event->lifecycle_status === 'completed' ? 'post_completion_correction' : 'organizer_recorded');
+                'organizer_recorded');
             app(A2Dependencies::class)->notify('attendance.recorded:'.$attendance->id.':'.$attendance->revision.':'.$application->volunteer_id,
                 $application->volunteer, ['type' => 'attendance.recorded', 'application_id' => $application->id]);
 

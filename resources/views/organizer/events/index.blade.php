@@ -77,7 +77,7 @@
                     <div class="organizer-event-badges mt-3 flex flex-wrap gap-2">
                         <x-organizer-status :status="$event->status" context="Moderasi" class="organizer-list-status--green" />
                         <x-organizer-status :status="$event->publication_status" context="Publikasi" class="organizer-list-status--blue" />
-                        <x-organizer-status :status="$event->lifecycle_status" context="Pelaksanaan" class="organizer-list-status--yellow" />
+                        <x-organizer-status :status="$event->executionPhase()" context="Pelaksanaan" class="organizer-list-status--yellow" />
                     </div>
                 </div>
                 <a href="{{ route('organizer.events.show', $event) }}" class="organizer-action-button organizer-event-manage" aria-label="Kelola kegiatan {{ $event->title }}">Kelola kegiatan</a>

@@ -178,13 +178,13 @@ class MatchingTest extends DatabaseTestCase
         app(MatchingEvaluationService::class)->evaluate($application);
         $owner = $application->event->organizer;
         $this->actingAs($owner)->get(route('organizer.applications.show', $application))
-            ->assertOk()->assertSee('Kecocokan kandidat')->assertSee('80,00');
+            ->assertOk()->assertSee('Kecocokan pelamar')->assertSee('80,00');
         $this->get(route('organizer.applications.index', $application->event))
-            ->assertOk()->assertSee('Match Score')->assertSee('80,00');
+            ->assertOk()->assertSee('Skor kecocokan')->assertSee('80,00');
 
         $this->actingAs($application->volunteer)->get(route('volunteer.applications.show', $application))
             ->assertOk()->assertSee('Menunggu assessment')
-            ->assertSee('Pencocokan selesai. Lamaranmu siap lanjut ke assessment.')
+            ->assertSee('Pencocokan selesai. Lamaranmu siap lanjut ke asesmen.')
             ->assertDontSee('Kecocokan kandidat')->assertDontSee('Match Score')->assertDontSee('80,00');
         $this->get(route('organizer.applications.show', $application))->assertForbidden();
         $otherOrganizer = User::factory()->create(['role' => 'organizer', 'organizer_status' => 'active']);
