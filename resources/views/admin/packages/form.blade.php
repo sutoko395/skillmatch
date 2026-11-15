@@ -3,7 +3,7 @@
 @section('content')
 <div class="mx-auto max-w-3xl space-y-6">
     <x-page-header :title="$package->exists ? 'Edit Paket' : 'Tambah Paket'" description="Harga dan manfaat pembelian lama tetap mengikuti snapshot." />
-    @include('components.flash')
+
     <x-section-card>
         <form method="POST" action="{{ $package->exists ? route('admin.packages.update', $package) : route('admin.packages.store') }}" class="space-y-5">
             @csrf
@@ -18,7 +18,7 @@
                     <option value="0" @selected((int) old('is_active', $package->is_active ?? true) === 0)>Nonaktif</option>
                 </select>
             </x-form-field>
-            <div class="flex gap-4"><x-button type="submit">Simpan Paket</x-button><a href="{{ route('admin.packages.index') }}" class="py-3 font-semibold text-slate-600">Kembali</a></div>
+            <div class="flex gap-4"><x-button type="submit">Simpan Paket</x-button><a href="{{ route('admin.packages.index') }}" class="admin-action admin-action-back py-3 font-semibold text-slate-600"><svg class="admin-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 5-7 7 7 7M5 12h14"/></svg>Kembali</a></div>
         </form>
     </x-section-card>
 </div>

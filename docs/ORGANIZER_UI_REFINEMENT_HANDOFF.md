@@ -1434,3 +1434,7 @@ Hasil verifikasi usia pelamar/alur EO (feature/organizer-ui-refinement @367a7de)
 - Tidak ada migration atau route baru pada langkah ini. Snapshot profile.birth_date adalah tambahan kontrak A3; A4 tidak menjadikannya syarat atau komponen skor. Tidak ada commit/push/merge.
 
 Visual: 4 halaman fixture (detail pelamar, daftar, kosong, filter kosong) HTTP 200; browser lulus 12 kombinasi 390/768/1440, Alpine/sidebar/drawer dan overflow. Detail pelamar 1440 ditinjau via screenshot; usia dan saran usia berada dalam kartu informasi pelamar. Fixture statis, bukan sesi HTTP produksi.
+
+
+### Navigasi situs utama per role ? 15 November 2026
+Permintaan pengguna: EO/Volunteer mengikuti Admin dengan satu pintu masuk panel. public-navigation dan fallback layouts/navigation menampilkan Panel Organizer atau Panel Volunteer menuju activity.index masing-masing, serta Keluar POST/CSRF. Tautan langsung Aktivitas, Profil, Lamaran Saya, Event Saya dan Verifikasi email di navbar dihapus; menu internal panel dan route/guard/verifikasi email existing tetap. Admin tetap Panel Admin; navigasi umum dan guest tetap. NavigationAssetsTest + VolunteerCatalogTest: 6 tes/87 asersi lulus, build dan diff --check lulus. Pemeriksaan visual khusus navbar terbaru belum dilakukan. Tidak ada perubahan schema, business rule atau setup.

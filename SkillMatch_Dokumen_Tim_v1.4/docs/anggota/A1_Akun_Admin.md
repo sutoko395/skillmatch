@@ -81,3 +81,11 @@ Beranda publik (`home` / `welcome.blade.php`) dipulihkan oleh SF dan menjadi pen
 ## Pelestarian UI auth bersama - 5 Oktober 2026
 
 Sesuai permintaan pengguna, tampilan login/register telah dirapikan pada branch A2 memakai auth-layout dan auth-password-field. Backend/guard/route dan pengecualian verifikasi SF tetap dipakai. A1 menggunakan tampilan ini saat melanjutkan akun/admin; jangan membuat login khusus admin. Registrasi publik masih terbatas Volunteer/Organizer. Halaman reset/verifikasi belum didesain ulang oleh perubahan ini. Bukti tes/browser tersedia di A2_HANDOFF.
+
+
+## Penyelarasan tampilan Admin dengan EO ? 15 November 2026
+Persetujuan pengguna: ubah sisi admin dengan gaya EO untuk ditinjau. Dasar feature/organizer-ui-refinement @4503a04, working tree awal bersih. Existing Admin FigCraft (d984b27) sudah memiliki dashboard, tabel, grafik, modal, filter dan endpoint; semua dipertahankan. Ini penyempurnaan tampilan existing, bukan penggantian modul.
+Sidebar navy 256 px, brand bunga yang sama, akun di atas navigasi, menu utama aktif biru, logout POST/CSRF di bawah situs utama. Submenu akun/master tetap ada. Header desktop dipindahkan ke identitas sidebar; header mobile/drawer dan fokus keyboard tetap.
+Hierarki judul 26/22 px, section 18 px, tabel 13 px/header 11 px, kartu putih border halus, kontrol ringkas. Tindakan edit/tambah/detail outline biru; kembali solid merah dan hapus/tolak/batal outline merah; ikon sesuai. Label View/Delete menjadi Detail/Hapus. Warna status aktif/hijau, pending/amber, gagal/merah diperjelas. Grafik mempertahankan data/controller/click handler dan seri Chart.js.
+Admin-flash terpisah: toast sukses/informasi 5 detik, pause hover/focus, tutup manual; error tetap sampai ditutup dan error validasi tidak hilang otomatis. Ringkasan flash lama per halaman digantikan satu outlet layout; error per-field tetap. CSS hanya .admin-panel; EO/Volunteer dan komponen default bersama tidak diubah.
+Tidak ada migration, perubahan route, controller/service/model/Policy atau aturan bisnis. PRD dan kontrak tetap berlaku; ini perubahan desain/A1 saja. Tidak ada dependency baru. Tidak ada commit/push untuk langkah ini.

@@ -4,7 +4,7 @@
 
 @section('content')
 
-    @include('components.flash')
+
 
     <div class="w-full max-w-7xl mx-auto space-y-6">
 
@@ -23,7 +23,7 @@
                 <div class="flex-1">
                     <x-form-field
                         name="search"
-                        label="Referensi Order"
+                        label="Nomor transaksi"
                         :value="request('search')"
                     />
                 </div>
@@ -83,12 +83,14 @@
                         <tr>
 
                             <th class="px-4 py-4 font-semibold text-slate-600">
-                                Referensi
+                                Nomor transaksi
                             </th>
 
                             <th class="px-4 py-4 font-semibold text-slate-600">
-                                Event
+                                Kegiatan
                             </th>
+
+                            <th class="px-4 py-4 font-semibold text-slate-600">EO / Organisasi</th>
 
                             <th class="px-4 py-4 font-semibold text-slate-600">
                                 Nominal
@@ -118,6 +120,11 @@
 
                                 <td class="px-4 py-4 text-slate-700">
                                     {{ $order->event?->title ?? '-' }}
+                                </td>
+
+                                <td class="px-4 py-4">
+                                    <p class="font-medium text-slate-900">{{ $order->event?->organizer?->organizerProfile?->organization_name ?? $order->event?->organizer?->name ?? 'EO tidak tersedia' }}</p>
+                                    @if($order->event?->organizer?->email)<p class="mt-1 break-all text-xs text-slate-500">{{ $order->event->organizer->email }}</p>@endif
                                 </td>
 
                                 <td class="px-4 py-4 font-semibold text-slate-800">
@@ -164,7 +171,7 @@
 
                             <tr>
                                 <td
-                                    colspan="4"
+                                    colspan="5"
                                     class="px-4 py-12 text-center text-sm text-slate-500"
                                 >
                                     Tidak ada transaksi yang sesuai.

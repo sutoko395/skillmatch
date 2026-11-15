@@ -18,21 +18,11 @@
 
         <a
             href="{{ route('admin.event-verification.index') }}"
-            class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
+            class="admin-action admin-action-back inline-flex items-center justify-center px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
         >
-            Kembali
+            <svg class="admin-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 5-7 7 7 7M5 12h14"/></svg>Kembali
         </a>
     </div>
-
-    @if($errors->any())
-        <div class="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-700">
-            <ul class="list-disc list-inside space-y-1">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
@@ -246,7 +236,7 @@
                     <button
                         type="button"
                         onclick="document.getElementById('reject-modal').classList.remove('hidden')"
-                        class="w-full px-4 py-3 rounded-xl bg-red-50 text-red-600 text-sm font-semibold hover:bg-red-100 transition"
+                        class="admin-action admin-action-danger w-full px-4 py-3 rounded-xl bg-red-50 text-red-600 text-sm font-semibold hover:bg-red-100 transition"
                     >
                         Tolak Event
                     </button>
@@ -320,14 +310,14 @@
                 <button
                     type="button"
                     onclick="document.getElementById('reject-modal').classList.add('hidden')"
-                    class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
+                    class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
                 >
                     Batal
                 </button>
 
                 <button
                     type="submit"
-                    class="px-4 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
+                    class="admin-action admin-action-danger px-4 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
                 >
                     Tolak Event
                 </button>

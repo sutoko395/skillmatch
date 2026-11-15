@@ -16,12 +16,14 @@ class OrderController extends Controller
         Gate::authorize('manage', Package::class);
         $r->validate(['status' => 'nullable|in:pending,paid,failed,expired,cancelled,review_required', 'search' => 'nullable|string|max:100']);
 
-        return view('admin.orders.index', ['orders' => Order::with('event')->when($r->filled('status'), fn ($q) => $q->where('status', $r->string('status')->toString()))->when($r->filled('search'), fn ($q) => $q->where('order_ref', 'like', '%'.$r->string('search')->toString().'%'))->latest()->paginate(20)->withQueryString()]);
+        return view('admin.orders.index', ['orders' => Order::with('event.organizer.organizerProfile')->when($r->filled('status'), fn ($q) => $q->where('status', $r->string('status')->toString()))->when($r->filled('search'), fn ($q) => $q->where('order_ref', 'like', '%'.$r->string('search')->toString().'%'))->latest()->paginate(20)->withQueryString()]);
     }
 
     public function show(Order $order)
     {
         Gate::authorize('view', $order);
+
+        $order->load('event.organizer.organizerProfile');
 
         return view('admin.orders.show', compact('order'));
     }

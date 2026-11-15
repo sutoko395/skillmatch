@@ -15,18 +15,6 @@
         </p>
     </div>
 
-    @if(session('success'))
-        <div class="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-3 text-sm text-emerald-700">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-700">
-            {{ session('error') }}
-        </div>
-    @endif
-
     <div class="admin-summary grid grid-cols-1 md:grid-cols-3 gap-4">
 
         <div class="bg-white rounded-2xl border border-amber-100 shadow-sm p-5">
