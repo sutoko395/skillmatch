@@ -47,7 +47,7 @@
 <body class="admin-panel h-full overflow-x-hidden font-sans bg-bg-light text-txt-light-primary antialiased" x-data="{ mobileSidebarOpen: false, desktop: window.innerWidth >= 1024 }" @resize.window="desktop = window.innerWidth >= 1024" @keydown.escape.window="if (mobileSidebarOpen) { mobileSidebarOpen = false; $refs.menu.focus(); }">
 
     <!-- Overlay Mobile -->
-    <div x-show="mobileSidebarOpen" 
+    <div x-show="mobileSidebarOpen"
          x-cloak
          x-transition:opacity.duration.200ms
          @click="mobileSidebarOpen = false; $refs.menu.focus()"
@@ -144,7 +144,7 @@
                         href="{{ route('admin.volunteers.index') }}"
                         class="block px-4 py-2.5 text-sm transition {{ Request::routeIs('admin.volunteers.*') ? 'text-white font-bold' : 'text-txt-dark-secondary hover:text-white' }}"
                     >
-                        Volunteer
+                        Relawan
                     </a>
 
                 </div>
@@ -227,14 +227,14 @@
                             href="{{ route('admin.master-data.skills.index') }}"
                             class="flex items-center px-3 py-2.5 text-sm transition-all duration-200 {{ Request::routeIs('admin.master-data.skills.*') ? 'text-white font-bold' : 'text-txt-dark-secondary hover:text-white font-medium' }}"
                         >
-                            Skill
+                            Keahlian
                         </a>
 
                         <a
                             href="{{ route('admin.master-data.event-categories.index') }}"
                             class="flex items-center px-3 py-2.5 text-sm transition-all duration-200 {{ Request::routeIs('admin.master-data.event-categories.*') ? 'text-white font-bold' : 'text-txt-dark-secondary hover:text-white font-medium' }}"
                         >
-                            Kategori Event
+                            Kategori Kegiatan
                         </a>
 
                     </div>

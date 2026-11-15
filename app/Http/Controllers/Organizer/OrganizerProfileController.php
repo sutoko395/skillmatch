@@ -162,7 +162,7 @@ class OrganizerProfileController extends Controller
                 }
 
                 if (! $previous || $identityChanged || $locked->organizer_status === 'inactive') {
-                    $locked->forceFill(['organizer_status' => 'pending', 'organizer_verification_note' => null])->save();
+                    $locked->forceFill(['organizer_status' => 'pending'])->save();
                 }
                 $locked->forceFill(['organizer_revision' => $locked->organizer_revision + 1])->save();
                 if ($locked->organizer_status === 'pending') {

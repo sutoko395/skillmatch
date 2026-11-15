@@ -20,10 +20,12 @@ class EventVerificationController extends Controller
 {
     public function index(Request $request): View
     {
+        $request->validate(['search' => 'nullable|string|max:255', 'status' => 'nullable|in:pending,approved,rejected,all']);
         $search = $request->string('search')->trim()->toString();
+        $status = $request->input('status') ?: 'pending';
 
         $events = Event::with(['organizer', 'category'])
-            ->where('status', 'pending')
+            ->whereIn('status', $status === 'all' ? ['pending', 'approved', 'rejected'] : [$status])
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($query) use ($search) {
                     $query->where('title', 'like', "%{$search}%")
@@ -46,15 +48,17 @@ class EventVerificationController extends Controller
             'pendingEvents',
             'approvedEvents',
             'rejectedEvents',
-            'search'
+            'search',
+            'status'
         ));
     }
 
     public function show(Event $event): View
     {
         $event->load([
-            'organizer',
+            'organizer.organizerProfile',
             'category',
+            'cityRecord',
             'positions.positionSkills.skill',
             'positions.requirements',
             'positions.schedules',

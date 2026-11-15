@@ -47,6 +47,15 @@ class OrganizerController extends Controller
             ->paginate($perPage)
             ->withQueryString();
 
+        $reviewDates = \App\Models\AuditLog::where('subject_type', (new User)->getMorphClass())
+            ->where('action', 'organizer.reviewed')->whereIn('subject_id', $organizers->pluck('id'))
+            ->select('subject_id')->selectRaw('MAX(created_at) as last_reviewed_at')->groupBy('subject_id')
+            ->get()->keyBy('subject_id');
+        foreach ($organizers as $organizer) {
+            $date = $reviewDates->get($organizer->id)?->last_reviewed_at;
+            $organizer->setAttribute('last_reviewed_at', $date ? \Carbon\CarbonImmutable::parse($date, 'UTC') : null);
+        }
+
         $totalOrganizers = User::where('role', 'organizer')->count();
 
         $pendingOrganizers = User::where('role', 'organizer')

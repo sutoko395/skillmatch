@@ -1,126 +1,32 @@
 @extends('admin.layouts.sidebar')
 
-@section('title', 'Periksa Event')
+@section('title', 'Periksa Kegiatan')
 
 @section('content')
 <div class="admin-event-review w-full max-w-7xl mx-auto space-y-6">
 
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-bold text-slate-800">
-                Periksa Event
-            </h1>
-
-            <p class="mt-1 text-sm text-slate-500">
-                Periksa informasi event sebelum memberikan keputusan.
-            </p>
-        </div>
-
-        <a
-            href="{{ route('admin.event-verification.index') }}"
-            class="admin-action admin-action-back inline-flex items-center justify-center px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
-        >
-            <svg class="admin-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 5-7 7 7 7M5 12h14"/></svg>Kembali
-        </a>
-    </div>
+    <div><a href="{{ route('admin.event-verification.index') }}" class="admin-action admin-action-back">Kembali</a></div>
+    <x-page-header title="Periksa Kegiatan" description="Tinjau informasi kegiatan dan kelengkapan pengajuan." />
+    <nav class="flex flex-wrap gap-2 lg:hidden" aria-label="Pintasan pemeriksaan">
+        <a href="#verification-decision" class="admin-action admin-action-blue">Keputusan verifikasi</a>
+        @if($event->verification_note || $event->verified_at)<a href="#verification-note" class="admin-action admin-action-blue">Catatan terakhir</a>@endif
+    </nav>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         <div class="lg:col-span-2 space-y-6">
 
-            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-
-                <div class="flex items-start justify-between gap-4">
-                    <div>
-                        <span class="inline-flex px-2.5 py-1 rounded-lg bg-amber-50 text-amber-600 text-xs font-bold">
-                            Menunggu Verifikasi
-                        </span>
-
-                        <h2 class="mt-4 text-xl font-bold text-slate-800">
-                            {{ $event->title }}
-                        </h2>
-
-                        <p class="mt-2 text-sm text-slate-500">
-                            {{ $event->description }}
-                        </p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-6">
-
-                    <div>
-                        <p class="text-xs font-semibold text-slate-400">
-                            Kategori
-                        </p>
-
-                        <p class="mt-1 text-sm font-semibold text-slate-700">
-                            {{ $event->category?->name ?? '-' }}
-                        </p>
-                    </div>
-
-                    <div>
-                        <p class="text-xs font-semibold text-slate-400">
-                            Organizer
-                        </p>
-
-                        <p class="mt-1 text-sm font-semibold text-slate-700">
-                            {{ $event->organizer?->name ?? '-' }}
-                        </p>
-                    </div>
-
-                    <div>
-                        <p class="text-xs font-semibold text-slate-400">
-                            Lokasi
-                        </p>
-
-                        <p class="mt-1 text-sm font-semibold text-slate-700">
-                            {{ $event->location }}
-                        </p>
-                    </div>
-
-                    <div>
-                        <p class="text-xs font-semibold text-slate-400">
-                            Pendaftaran Ditutup
-                        </p>
-
-                        <p class="mt-1 text-sm font-semibold text-slate-700">
-                            {{ $event->registration_deadline?->setTimezone('Asia/Jakarta')->format('d M Y H:i') }} WIB
-                        </p>
-                    </div>
-
-                    <div>
-                        <p class="text-xs font-semibold text-slate-400">
-                            Mulai Event
-                        </p>
-
-                        <p class="mt-1 text-sm font-semibold text-slate-700">
-                            {{ $event->starts_at?->setTimezone('Asia/Jakarta')->format('d M Y H:i') ?? 'Perlu dilengkapi' }} WIB
-                        </p>
-                    </div>
-
-                    <div>
-                        <p class="text-xs font-semibold text-slate-400">
-                            Selesai Event
-                        </p>
-
-                        <p class="mt-1 text-sm font-semibold text-slate-700">
-                            {{ $event->ends_at?->setTimezone('Asia/Jakarta')->format('d M Y H:i') ?? 'Perlu dilengkapi' }} WIB
-                        </p>
-                    </div>
-
-                </div>
-
-            </div>
+            @include('admin.event-verification.summary')
 
             <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
 
                 <div class="px-6 py-5 border-b border-slate-100">
                     <h2 class="text-lg font-bold text-slate-800">
-                        Posisi Volunteer
+                        Posisi relawan
                     </h2>
 
                     <p class="mt-1 text-sm text-slate-500">
-                        Daftar posisi dan kebutuhan volunteer dalam event.
+                        Tugas, jadwal, dan kebutuhan relawan.
                     </p>
                 </div>
 
@@ -137,20 +43,22 @@
                                     </h3>
 
                                     <p class="mt-1 text-sm text-slate-500">
-                                        Kuota {{ $position->quota }} volunteer
+                                        Kuota {{ $position->quota }} relawan
                                     </p>
                                 </div>
 
                                 <span class="inline-flex w-fit px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-600 text-xs font-bold">
-                                    Level mengikuti setiap skill
+                                    Level mengikuti setiap keahlian
                                 </span>
 
                             </div>
 
+                            @if($position->description)<p class="mt-3 whitespace-pre-line text-sm text-slate-600">{{ $position->description }}</p>@endif
+                            <x-position-suggested-age :position="$position" class="mt-2" />
                             @if($position->positionSkills->count())
                                 <div class="mt-4">
                                     <p class="text-xs font-semibold text-slate-400 mb-2">
-                                        Skill Dibutuhkan
+                                        Keahlian yang dibutuhkan
                                     </p>
 
                                     <div class="flex flex-wrap gap-2">
@@ -193,7 +101,7 @@
                         </div>
                     @empty
                         <div class="px-6 py-10 text-center text-slate-500">
-                            Belum ada posisi volunteer.
+                            Belum ada posisi relawan.
                         </div>
                     @endforelse
 
@@ -204,17 +112,19 @@
         </div>
 
         <div class="space-y-6">
+            @include('admin.event-verification.context')
 
-            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+            <div id="verification-decision" style="scroll-margin-top:96px" class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
 
                 <h2 class="text-lg font-bold text-slate-800">
                     Keputusan Verifikasi
                 </h2>
 
                 <p class="mt-1 text-sm text-slate-500">
-                    Pilih tindakan untuk event ini.
+                    Pilih tindakan untuk kegiatan ini.
                 </p>
 
+                @if($event->status === 'pending')
                 <div class="mt-6 space-y-3">
 
                     <form
@@ -226,10 +136,10 @@
 
                         <button
                             type="submit"
-                            onclick="return confirm('Setujui event ini?')"
+                            onclick="return confirm('Setujui kegiatan ini?')"
                             class="w-full px-4 py-3 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition"
                         >
-                            Setujui Event
+                            Setujui Kegiatan
                         </button>
                     </form>
 
@@ -238,10 +148,13 @@
                         onclick="document.getElementById('reject-modal').classList.remove('hidden')"
                         class="admin-action admin-action-danger w-full px-4 py-3 rounded-xl bg-red-50 text-red-600 text-sm font-semibold hover:bg-red-100 transition"
                     >
-                        Tolak Event
+                        Tolak Kegiatan
                     </button>
 
                 </div>
+                @else
+                    <p class="mt-4 rounded-lg bg-slate-50 p-3 text-sm text-slate-600">Keputusan sudah diberikan. Pengajuan harus diajukan ulang sebelum diperiksa kembali.</p>
+                @endif
 
             </div>
 
@@ -253,6 +166,7 @@
 
 <div
     id="reject-modal"
+    x-data @keydown.escape.window="document.getElementById('reject-modal').classList.add('hidden')"
     class="hidden fixed inset-0 z-[9999] flex h-screen w-screen items-center justify-center p-4"
 >
     <div
@@ -266,7 +180,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <h3 class="text-lg font-bold text-slate-800">
-                        Tolak Event
+                        Tolak Kegiatan
                     </h3>
 
                     <p class="mt-1 text-sm text-slate-500">
@@ -308,18 +222,18 @@
             <div class="flex justify-end gap-3 px-6 py-4 bg-slate-50 border-t border-slate-100 rounded-b-2xl">
 
                 <button
+                    type="submit"
+                    class="admin-action admin-action-danger px-4 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
+                >
+                    Tolak Kegiatan
+                </button>
+
+                <button
                     type="button"
                     onclick="document.getElementById('reject-modal').classList.add('hidden')"
                     class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
                 >
                     Batal
-                </button>
-
-                <button
-                    type="submit"
-                    class="admin-action admin-action-danger px-4 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
-                >
-                    Tolak Event
                 </button>
 
             </div>

@@ -17,13 +17,14 @@
 
             <form
                 method="GET"
-                class="flex flex-col gap-4 md:flex-row md:items-end"
+                class="flex flex-col gap-4 lg:flex-row lg:flex-wrap lg:items-end"
             >
 
                 <div class="flex-1">
                     <x-form-field
                         name="search"
-                        label="Nomor transaksi"
+                        label="Cari transaksi"
+                        placeholder="Nomor transaksi, kegiatan, EO atau email"
                         :value="request('search')"
                     />
                 </div>
@@ -55,7 +56,7 @@
                                     value="{{ $statusOption }}"
                                     @selected(request('status') === $statusOption)
                                 >
-                                    {{ ucfirst(str_replace('_', ' ', $statusOption)) }}
+                                    {{ match($statusOption) { 'pending' => 'Menunggu pembayaran', 'paid' => 'Lunas', 'failed' => 'Gagal', 'expired' => 'Kedaluwarsa', 'cancelled' => 'Dibatalkan', 'review_required' => 'Perlu pemeriksaan', default => 'Status belum diketahui' } }}
                                 </option>
 
                             @endforeach
@@ -63,10 +64,18 @@
                     </x-form-field>
                 </div>
 
-                <div>
+                <div class="grid gap-3 sm:grid-cols-2">
+                    <x-form-field name="date_from" type="date" label="Dibuat mulai (WIB)" :value="request('date_from')" />
+                    <x-form-field name="date_to" type="date" label="Sampai (WIB)" :value="request('date_to')" />
+                </div>
+                <div class="flex items-center gap-2">
+
                     <x-button type="submit">
                         Cari
                     </x-button>
+                    @if(request()->filled('search') || request()->filled('status') || request()->filled('date_from') || request()->filled('date_to'))
+                    <a href="{{ route('admin.orders.index') }}" class="admin-filter-reset">Reset</a>
+                    @endif
                 </div>
 
             </form>
@@ -150,7 +159,7 @@
                                         <span
                                             class="inline-flex rounded-lg px-2.5 py-1 text-xs font-bold {{ $statusClasses }}"
                                         >
-                                            {{ ucfirst(str_replace('_', ' ', $order->status)) }}
+                                            {{ match($order->status) { 'pending' => 'Menunggu pembayaran', 'paid' => 'Lunas', 'failed' => 'Gagal', 'expired' => 'Kedaluwarsa', 'cancelled' => 'Dibatalkan', 'review_required' => 'Perlu pemeriksaan', default => 'Status belum diketahui' } }}
                                         </span>
 
                                         @if($order->requires_follow_up)

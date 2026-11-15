@@ -153,3 +153,21 @@
 }
 
 .admin-panel .admin-main .text-slate-400 { color:#64748b; }
+
+/* Statistic cards share EO's white surface and colored outline. */
+.admin-panel .admin-main .admin-stat { --stat-line:#93c5fd; --stat-ink:#2563eb; --stat-soft:#eff6ff; border:1px solid var(--stat-line); background:#fff; box-shadow:none; }
+.admin-panel .admin-main .admin-stat--green { --stat-line:#6ee7b7; --stat-ink:#059669; --stat-soft:#ecfdf5; }
+.admin-panel .admin-main .admin-stat--cyan { --stat-line:#67e8f9; --stat-ink:#0891b2; --stat-soft:#ecfeff; }
+.admin-panel .admin-main .admin-stat--amber { --stat-line:#fcd34d; --stat-ink:#b45309; --stat-soft:#fffbeb; }
+.admin-panel .admin-main .admin-stat--red { --stat-line:#fda4af; --stat-ink:#dc2626; --stat-soft:#fff1f2; }
+.admin-panel .admin-main .admin-stat--violet { --stat-line:#c4b5fd; --stat-ink:#7c3aed; --stat-soft:#f5f3ff; }
+.admin-panel .admin-main .admin-stat:hover { border-color:var(--stat-line); box-shadow:none; transform:none; }
+.admin-panel .admin-main .admin-stat > p:first-child,
+.admin-panel .admin-main .admin-stat p.text-sm { color:var(--stat-ink); }
+.admin-panel .admin-main .admin-stat svg { color:var(--stat-ink); }
+.admin-panel .admin-main .admin-stat :is(.bg-indigo-50,.bg-emerald-50,.bg-sky-50,.bg-amber-50,.bg-blue-50,.bg-purple-50) { background:var(--stat-soft); }
+.admin-panel .admin-main .admin-stat :is(.text-2xl,.text-3xl) { color:#0f172a; }
+
+.admin-panel .admin-main .admin-filter-reset { display:inline-flex; align-items:center; justify-content:center; align-self:flex-end; min-height:40px; padding:6px; color:#64748b; font-size:12px; font-weight:400; border:0; background:transparent; text-decoration:none; }
+.admin-panel .admin-main .admin-filter-reset:hover { color:#1d4ed8; }
+@media(max-width:639px) { .admin-panel .admin-main .admin-filter-reset { min-height:44px; align-self:flex-start; } }

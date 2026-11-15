@@ -23,6 +23,7 @@ class AdminDashboardController extends Controller
         $totalSkills = Skill::count();
         $totalCategories = Category::count();
         $pendingEvents = Event::where('status', 'pending')->count();
+        $pendingOrganizers = User::where('role', 'organizer')->where('organizer_status', 'pending')->count();
 
         $firstDates = collect([
             User::min('created_at'),
@@ -149,6 +150,7 @@ class AdminDashboardController extends Controller
             'totalSkills',
             'totalCategories',
             'pendingEvents',
+            'pendingOrganizers',
             'labels',
             'chartData',
             'range',

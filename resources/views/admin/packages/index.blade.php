@@ -19,6 +19,11 @@
         description="Kelola harga dan manfaat paket. Pembelian lama tetap memakai snapshot semula."
     />
 
+    <div class="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-relaxed text-blue-900">
+        <strong>Status paket hanya mengatur pilihan paket baru.</strong>
+        Paket nonaktif tidak bisa dipilih lagi. Hak dan manfaat dari pembelian sebelumnya tetap berlaku.
+    </div>
+
     <div class="flex justify-end">
         <button
             type="button"
@@ -74,6 +79,7 @@
 
                     Edit Paket
                 </button>
+                @unless($package->is_active)<p class="mt-2 text-xs text-slate-500">Nonaktif untuk pilihan baru. Pembelian lama tetap berlaku.</p>@endunless
             </x-package-card>
 
         @empty
@@ -98,7 +104,7 @@
     <template x-teleport="body">
 
         <div
-            x-show="createPackage"
+            x-show="createPackage" @keydown.escape.window="createPackage = false"
             x-cloak
             class="fixed inset-0 z-[9999] flex min-h-screen items-center justify-center p-4"
         >
@@ -122,7 +128,7 @@
                         </p>
                     </div>
 
-                    <button
+                    <button aria-label="Tutup dialog"
                         type="button"
                         @click="createPackage = false"
                         class="flex h-9 w-9 items-center justify-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
@@ -211,7 +217,7 @@
                         </div>
 
                         <x-form-field
-                            name="is_active"
+                            name="is_active" helper="Nonaktif hanya menutup pilihan paket baru. Pembelian lama tetap berlaku."
                             label="Status"
                         >
                             <select
@@ -234,18 +240,18 @@
                     <div class="flex justify-end gap-3 border-t border-slate-100 bg-slate-50 px-6 py-4">
 
                         <button
+                            type="submit"
+                            class="admin-action admin-action-blue rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                        >
+                            Simpan Paket
+                        </button>
+
+                        <button
                             type="button"
                             @click="createPackage = false"
                             class="admin-action admin-action-danger rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100"
                         >
                             Batal
-                        </button>
-
-                        <button
-                            type="submit"
-                            class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
-                        >
-                            Simpan Paket
                         </button>
 
                     </div>
@@ -261,7 +267,7 @@
     <template x-teleport="body">
 
         <div
-            x-show="editPackage"
+            x-show="editPackage" @keydown.escape.window="editPackage = null"
             x-cloak
             class="fixed inset-0 z-[9999] flex min-h-screen items-center justify-center p-4"
         >
@@ -291,7 +297,7 @@
                             </p>
                         </div>
 
-                        <button
+                        <button aria-label="Tutup dialog"
                             type="button"
                             @click="editPackage = null"
                             class="flex h-9 w-9 items-center justify-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
@@ -381,7 +387,7 @@
                             </div>
 
                             <x-form-field
-                                name="is_active"
+                                name="is_active" helper="Nonaktif hanya menutup pilihan paket baru. Pembelian lama tetap berlaku."
                                 label="Status"
                             >
                                 <select
@@ -410,18 +416,18 @@
                         <div class="flex justify-end gap-3 border-t border-slate-100 bg-slate-50 px-6 py-4">
 
                             <button
+                                type="submit"
+                                class="admin-action admin-action-blue rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                            >
+                                Simpan Perubahan
+                            </button>
+
+                            <button
                                 type="button"
                                 @click="editPackage = null"
                                 class="admin-action admin-action-danger rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100"
                             >
                                 Batal
-                            </button>
-
-                            <button
-                                type="submit"
-                                class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
-                            >
-                                Simpan Perubahan
                             </button>
 
                         </div>
