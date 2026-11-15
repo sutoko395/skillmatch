@@ -12,7 +12,7 @@
     class="w-full max-w-7xl mx-auto space-y-6"
 >
 
-    @include('components.flash')
+
 
     <x-page-header
         title="Paket"
@@ -23,7 +23,7 @@
         <button
             type="button"
             @click="createPackage = true"
-            class="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"
+            class="admin-action admin-action-blue inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -55,7 +55,7 @@
                 <button
                     type="button"
                     @click="editPackage = {{ $package->id }}"
-                    class="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-indigo-200 px-4 py-3 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-50"
+                    class="admin-action admin-action-blue inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-indigo-200 px-4 py-3 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-50"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -236,7 +236,7 @@
                         <button
                             type="button"
                             @click="createPackage = false"
-                            class="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100"
+                            class="admin-action admin-action-danger rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100"
                         >
                             Batal
                         </button>
@@ -412,7 +412,7 @@
                             <button
                                 type="button"
                                 @click="editPackage = null"
-                                class="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100"
+                                class="admin-action admin-action-danger rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100"
                             >
                                 Batal
                             </button>

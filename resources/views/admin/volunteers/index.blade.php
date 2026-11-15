@@ -22,18 +22,6 @@
         </p>
     </div>
 
-    @if(session('success'))
-        <div class="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-3 text-sm text-emerald-700">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if($errors->any())
-        <div class="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-700">
-            {{ $errors->first() }}
-        </div>
-    @endif
-
     <div class="admin-summary grid grid-cols-1 md:grid-cols-3 gap-4">
 
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
@@ -170,6 +158,67 @@
 
         </div>
 
+        <div class="flex justify-end border-b border-slate-100 px-6 py-4">
+<div class="flex items-center gap-2 text-sm text-slate-500">
+
+                <span>
+                    Lihat
+                </span>
+
+                <form
+                    method="GET"
+                    action="{{ route('admin.volunteers.index') }}"
+                >
+
+                    <input
+                        type="hidden"
+                        name="search"
+                        value="{{ $search }}"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="status"
+                        value="{{ $status }}"
+                    >
+
+                    <select
+                        aria-label="Jumlah data per halaman"
+                        name="per_page"
+                        onchange="this.form.submit()"
+                        class="rounded-lg border-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    >
+                        <option
+                            value="10"
+                            @selected($perPage === 10)
+                        >
+                            10
+                        </option>
+
+                        <option
+                            value="50"
+                            @selected($perPage === 50)
+                        >
+                            50
+                        </option>
+
+                        <option
+                            value="100"
+                            @selected($perPage === 100)
+                        >
+                            100
+                        </option>
+                    </select>
+
+                </form>
+
+                <span>
+                    data per halaman
+                </span>
+
+            </div>
+        </div>
+
         <div class="overflow-x-auto">
 
             <table class="w-full text-sm">
@@ -265,7 +314,7 @@
                                     <button
                                         type="button"
                                         @click="editVolunteer = {{ $volunteer->id }}"
-                                        class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 text-xs font-semibold transition"
+                                        class="admin-action admin-action-blue inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 text-xs font-semibold transition"
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -288,7 +337,7 @@
                                     <button
                                         type="button"
                                         @click="deleteVolunteer = {{ $volunteer->id }}"
-                                        class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 text-xs font-semibold transition"
+                                        class="admin-action admin-action-danger inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 text-xs font-semibold transition"
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -303,10 +352,7 @@
                                                 stroke-linejoin="round"
                                                 d="M6 7.5h12M9.75 7.5V5.25A1.25 1.25 0 0111 4h2a1.25 1.25 0 011.25 1.25V7.5m-7.5 0 .75 12A1.5 1.5 0 009 21h6a1.5 1.5 0 001.5-1.5l.75-12M10.5 11.25v6M13.5 11.25v6"
                                             />
-                                        </svg>
-
-                                        Delete
-                                    </button>
+                                        </svg>Hapus</button>
 
                                 </div>
 
@@ -335,75 +381,9 @@
 
         </div>
 
-        <div class="px-6 py-5 border-t border-slate-100 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
-            <div class="flex items-center gap-2 text-sm text-slate-500">
-
-                <span>
-                    Lihat
-                </span>
-
-                <form
-                    method="GET"
-                    action="{{ route('admin.volunteers.index') }}"
-                >
-
-                    <input
-                        type="hidden"
-                        name="search"
-                        value="{{ $search }}"
-                    >
-
-                    <input
-                        type="hidden"
-                        name="status"
-                        value="{{ $status }}"
-                    >
-
-                    <select
-                        name="per_page"
-                        onchange="this.form.submit()"
-                        class="rounded-lg border-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    >
-                        <option
-                            value="10"
-                            @selected($perPage === 10)
-                        >
-                            10
-                        </option>
-
-                        <option
-                            value="50"
-                            @selected($perPage === 50)
-                        >
-                            50
-                        </option>
-
-                        <option
-                            value="100"
-                            @selected($perPage === 100)
-                        >
-                            100
-                        </option>
-                    </select>
-
-                </form>
-
-                <span>
-                    data per halaman
-                </span>
-
-            </div>
-
-            @if($volunteers->hasPages())
-
-                <div>
-                    {{ $volunteers->links() }}
-                </div>
-
-            @endif
-
-        </div>
+        @if($volunteers->hasPages())
+        <div class="border-t border-slate-100 px-6 py-4">{{ $volunteers->links() }}</div>
+        @endif
 
     </div>
 
@@ -517,7 +497,7 @@
                             <button
                                 type="button"
                                 @click="editVolunteer = null"
-                                class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
+                                class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
                             >
                                 Batal
                             </button>
@@ -615,16 +595,16 @@
                             <button
                                 type="button"
                                 @click="deleteVolunteer = null"
-                                class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
+                                class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
                             >
                                 Batal
                             </button>
 
                             <button
                                 type="submit"
-                                class="px-5 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
+                                class="admin-action admin-action-danger px-5 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
                             >
-                                Hapus
+                                <svg class="admin-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></svg>Hapus
                             </button>
 
                         </form>

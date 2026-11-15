@@ -7,12 +7,8 @@
                     @if(auth()->user()->role === 'admin')
                         <a href="{{ route('admin.dashboard') }}">Panel Admin</a>
                     @else
-                        <a href="{{ route(auth()->user()->role.'.activity.index') }}">Aktivitas</a>
-                        <a href="{{ route(auth()->user()->role.'.profile.edit') }}">Profil</a>
+                        <a href="{{ route(auth()->user()->role.'.activity.index') }}">{{ auth()->user()->role === 'organizer' ? 'Panel Organizer' : 'Panel Volunteer' }}</a>
                     @endif
-                    @if(auth()->user()->role === 'volunteer')<a href="{{ route('volunteer.applications.index') }}">Lamaran Saya</a>@endif
-                    @if(auth()->user()->role === 'organizer' && auth()->user()->organizer_status === 'active')<a href="{{ route('organizer.events.index') }}">Event Saya</a>@endif
-                    @unless(auth()->user()->hasVerifiedEmail())<a href="{{ route('verification.notice') }}">Verifikasi email</a>@endunless
                     <form method="POST" action="{{ route('logout') }}">@csrf <x-secondary-button type="submit">Keluar</x-secondary-button></form>
                 @else
                     <a href="{{ route('login') }}">Masuk</a><a href="{{ route('register') }}">Daftar</a>

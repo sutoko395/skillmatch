@@ -372,4 +372,20 @@ class A2PaymentTest extends DatabaseTestCase
         $this->assertNull($order->fresh()->paid_at);
         $this->assertSame(0, $event->entitlement()->count());
     }
+
+    public function test_admin_order_list_identifies_organizer_and_preserves_reference_search(): void
+    {
+        [$owner, $event, $order] = $this->order();
+        $owner->organizerProfile()->create(['organization_name' => 'Organisasi pemilik transaksi']);
+        $admin = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($admin)->get(route('admin.orders.index', ['search' => $order->order_ref]))
+            ->assertOk()->assertSee('Nomor transaksi')->assertSee($order->order_ref)
+            ->assertSee('Organisasi pemilik transaksi')->assertSee($owner->email)
+            ->assertViewHas('orders', fn ($orders) => $orders->total() === 1
+                && $orders->first()->event->organizer->relationLoaded('organizerProfile'));
+        $owner->organizerProfile()->delete();
+        $this->get(route('admin.orders.index', ['search' => $order->order_ref]))->assertOk()->assertSee($owner->name);
+        $this->get(route('admin.orders.index', ['search' => 'no-such-reference']))->assertOk()->assertSee('Tidak ada transaksi yang sesuai.');
+        $this->actingAs($owner)->get(route('admin.orders.index'))->assertForbidden();
+    }
 }

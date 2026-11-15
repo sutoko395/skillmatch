@@ -25,18 +25,6 @@
         </p>
     </div>
 
-    @if(session('success'))
-        <div class="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-3 text-sm text-emerald-700">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if($errors->any())
-        <div class="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-700">
-            {{ $errors->first() }}
-        </div>
-    @endif
-
     <div class="admin-summary grid grid-cols-2 lg:grid-cols-4 gap-4">
 
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
@@ -192,6 +180,69 @@
 
         </div>
 
+        <div class="flex justify-end border-b border-slate-100 px-6 py-4">
+<div class="flex items-center gap-2 text-sm text-slate-500">
+
+                <span>
+                    Lihat
+                </span>
+
+                <form
+                    method="GET"
+                    action="{{ route('admin.organizers.index') }}"
+                >
+
+                    <input
+                        type="hidden"
+                        name="search"
+                        value="{{ $search }}"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="status"
+                        value="{{ $status }}"
+                    >
+
+                    <select
+                        aria-label="Jumlah data per halaman"
+                        name="per_page"
+                        onchange="this.form.submit()"
+                        class="rounded-lg border-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    >
+
+                        <option
+                            value="10"
+                            @selected($perPage === 10)
+                        >
+                            10
+                        </option>
+
+                        <option
+                            value="50"
+                            @selected($perPage === 50)
+                        >
+                            50
+                        </option>
+
+                        <option
+                            value="100"
+                            @selected($perPage === 100)
+                        >
+                            100
+                        </option>
+
+                    </select>
+
+                </form>
+
+                <span>
+                    data per halaman
+                </span>
+
+            </div>
+        </div>
+
         <div class="overflow-x-auto">
 
             <table class="w-full text-sm">
@@ -293,26 +344,24 @@
                                     <button
                                         type="button"
                                         @click="viewOrganizer = {{ $organizer->id }}"
-                                        class="px-3 py-2 rounded-lg bg-slate-50 text-slate-600 hover:bg-slate-100 text-xs font-semibold transition"
+                                        class="admin-action admin-action-blue px-3 py-2 rounded-lg bg-slate-50 text-slate-600 hover:bg-slate-100 text-xs font-semibold transition"
                                     >
-                                        View
+                                        Detail
                                     </button>
 
                                     <button
                                         type="button"
                                         @click="editOrganizer = {{ $organizer->id }}"
-                                        class="px-3 py-2 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 text-xs font-semibold transition"
+                                        class="admin-action admin-action-blue px-3 py-2 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 text-xs font-semibold transition"
                                     >
-                                        Edit
+                                        <svg class="admin-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5M4 20l4-1 13-13a2.8 2.8 0 0 0-4-4L4 15l-1 6Z"/></svg>Edit
                                     </button>
 
                                     <button
                                         type="button"
                                         @click="deleteOrganizer = {{ $organizer->id }}"
-                                        class="px-3 py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 text-xs font-semibold transition"
-                                    >
-                                        Delete
-                                    </button>
+                                        class="admin-action admin-action-danger px-3 py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 text-xs font-semibold transition"
+                                    ><svg class="admin-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></svg>Hapus</button>
 
                                 </div>
 
@@ -341,77 +390,9 @@
 
         </div>
 
-        <div class="px-6 py-5 border-t border-slate-100 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
-            <div class="flex items-center gap-2 text-sm text-slate-500">
-
-                <span>
-                    Lihat
-                </span>
-
-                <form
-                    method="GET"
-                    action="{{ route('admin.organizers.index') }}"
-                >
-
-                    <input
-                        type="hidden"
-                        name="search"
-                        value="{{ $search }}"
-                    >
-
-                    <input
-                        type="hidden"
-                        name="status"
-                        value="{{ $status }}"
-                    >
-
-                    <select
-                        name="per_page"
-                        onchange="this.form.submit()"
-                        class="rounded-lg border-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    >
-
-                        <option
-                            value="10"
-                            @selected($perPage === 10)
-                        >
-                            10
-                        </option>
-
-                        <option
-                            value="50"
-                            @selected($perPage === 50)
-                        >
-                            50
-                        </option>
-
-                        <option
-                            value="100"
-                            @selected($perPage === 100)
-                        >
-                            100
-                        </option>
-
-                    </select>
-
-                </form>
-
-                <span>
-                    data per halaman
-                </span>
-
-            </div>
-
-            @if($organizers->hasPages())
-
-                <div>
-                    {{ $organizers->links() }}
-                </div>
-
-            @endif
-
-        </div>
+        @if($organizers->hasPages())
+        <div class="border-t border-slate-100 px-6 py-4">{{ $organizers->links() }}</div>
+        @endif
 
     </div>
 
@@ -590,7 +571,7 @@
                                                 documentName = @js($document->document_name);
                                                 documentType = '{{ strtolower(pathinfo($document->file_path, PATHINFO_EXTENSION)) }}';
                                             "
-                                            class="shrink-0 inline-flex items-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                                            class="admin-action admin-action-blue shrink-0 inline-flex items-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
                                         >
                                             Lihat Dokumen
                                         </button>
@@ -728,7 +709,7 @@
                             <button
                                 type="button"
                                 @click="editOrganizer = null"
-                                class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
+                                class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
                             >
                                 Batal
                             </button>
@@ -818,16 +799,16 @@
                             <button
                                 type="button"
                                 @click="deleteOrganizer = null"
-                                class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
+                                class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
                             >
                                 Batal
                             </button>
 
                             <button
                                 type="submit"
-                                class="px-5 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
+                                class="admin-action admin-action-danger px-5 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
                             >
-                                Hapus
+                                <svg class="admin-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></svg>Hapus
                             </button>
 
                         </form>
