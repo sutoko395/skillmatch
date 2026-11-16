@@ -35,8 +35,8 @@ class A3ApplicationTest extends DatabaseTestCase
             'birth_date' => '2000-01-01',
             'gender' => 'male',
             'city_id' => $city?->id,
-            'address' => 'Jl. Uji Relawan',
-            'bio' => 'Bio uji relawan',
+            'address' => 'Jl. Uji Volunteer',
+            'bio' => 'Bio uji volunteer',
         ]);
 
         if ($skill) {
@@ -179,7 +179,7 @@ class A3ApplicationTest extends DatabaseTestCase
         $this->actingAs($volunteer)
             ->get("/events/{$event->id}")
             ->assertOk()
-            ->assertSee('Pilih Posisi & Mulai Lamaran', false);
+            ->assertSee('Pilih posisi dan mulai lamaran', false);
 
         // Store draft via POST endpoint
         $response = $this->post("/volunteer/positions/{$position->id}/applications");

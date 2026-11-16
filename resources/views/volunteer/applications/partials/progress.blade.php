@@ -9,23 +9,23 @@
         ],
         [
             'key' => 'screening',
-            'label' => $screening ? ($screening->passed ? 'Screening' : 'Gagal screening') : 'Screening',
+            'label' => $screening ? ($screening->passed ? 'Penyaringan' : 'Gagal penyaringan') : 'Penyaringan',
             'state' => $screening ? ($screening->passed ? 'done' : 'failed') : ($status === 'submitted' && !$terminal ? 'active' : 'waiting'),
-            'description' => $screening ? ($screening->passed ? null : 'Belum memenuhi syarat wajib.') : ($status === 'draft' ? 'Dilakukan setelah lamaran dikirim.' : 'Hasil screening belum tersedia.'),
+            'description' => $screening ? ($screening->passed ? null : 'Belum memenuhi syarat wajib.') : ($status === 'draft' ? 'Dilakukan setelah lamaran dikirim.' : 'Hasil penyaringan belum tersedia.'),
             'date' => $screening?->evaluated_at,
         ],
         [
             'key' => 'assessment',
-            'label' => $attempt?->status === 'cancelled' ? 'Assessment dihentikan' : 'Assessment',
+            'label' => $attempt?->status === 'cancelled' ? 'Asesmen dihentikan' : 'Asesmen',
             'state' => $assessmentFinished ? 'done' : ($status === 'assessment_pending' && !$terminal ? 'active' : 'waiting'),
             'description' => match (true) {
                 $assessmentFinished => $attempt->status === 'expired' ? 'Waktu pengerjaan habis. Jawaban tersimpan sudah dinilai.' : null,
-                $attempt?->status === 'cancelled' => 'Pengerjaan assessment telah dihentikan.',
-                $terminal => in_array($status, ['accepted', 'rejected'], true) ? 'Informasi pengerjaan assessment belum tersedia.' : 'Tahap ini tidak dilanjutkan.',
+                $attempt?->status === 'cancelled' => 'Pengerjaan asesmen telah dihentikan.',
+                $terminal => in_array($status, ['accepted', 'rejected'], true) ? 'Informasi pengerjaan asesmen belum tersedia.' : 'Tahap ini tidak dilanjutkan.',
                 $attempt?->status === 'in_progress' => 'Sedang dikerjakan. Waktu pengerjaan tetap berjalan.',
                 $canOpenAssessment => 'Belum dikerjakan. Selesaikan sebelum tenggat.',
                 $status === 'under_review' => 'Informasi pengerjaan belum tersedia.',
-                default => 'Menunggu tahap assessment.',
+                default => 'Menunggu tahap asesmen.',
             },
             'date' => $assessmentFinished ? $attempt->submitted_at : $attempt?->started_at,
         ],
@@ -87,15 +87,15 @@
 
                     @if ($step['key'] === 'screening' && $status !== 'draft')
                         <details class="mt-3" @if (in_array($status, ['screening_failed', 'submitted', 'under_review', 'rejected', 'accepted', 'withdrawn', 'cancelled'], true) || $eventCancelled) open @endif>
-                            <summary class="w-fit cursor-pointer rounded text-sm font-semibold text-indigo-700 hover:text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">Lihat rincian screening</summary>
+                            <summary class="w-fit cursor-pointer rounded text-sm font-semibold text-indigo-700 hover:text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">Lihat rincian penyaringan</summary>
                             <div class="mt-3"><x-application-screening :application="$application" :show-evaluation-info="false" /></div>
                         </details>
                     @elseif ($step['key'] === 'assessment' && $status !== 'draft')
                         @if ($canOpenAssessment)
-                            <a href="#assessment-summary" class="mt-3 inline-block rounded text-sm font-semibold text-indigo-700 underline underline-offset-4 focus:outline-none focus:ring-2 focus:ring-indigo-500">Lihat informasi assessment &uarr;</a>
+                            <a href="#assessment-summary" class="mt-3 inline-block rounded text-sm font-semibold text-indigo-700 underline underline-offset-4 focus:outline-none focus:ring-2 focus:ring-indigo-500">Lihat informasi asesmen &uarr;</a>
                         @else
                             <details class="mt-3" @if (in_array($status, ['assessment_pending', 'submitted', 'under_review', 'screening_failed', 'rejected', 'accepted', 'withdrawn', 'cancelled'], true) || $eventCancelled) open @endif>
-                                <summary class="w-fit cursor-pointer rounded text-sm font-semibold text-indigo-700 hover:text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">Lihat rincian assessment</summary>
+                                <summary class="w-fit cursor-pointer rounded text-sm font-semibold text-indigo-700 hover:text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">Lihat rincian asesmen</summary>
                                 <div class="mt-3"><x-volunteer-application-assessment :application="$application" :assessment="$assessmentSummary" :deadline="$recruitmentDates['assessment_deadline']" /></div>
                             </details>
                         @endif

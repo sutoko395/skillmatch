@@ -33,7 +33,7 @@
                     </p>
                 </div>
 
-                <div class="va-application-status"><x-application-status :application="$application" /></div>
+                <div class="va-application-status flex flex-col items-start gap-3 sm:items-end"><x-application-status :application="$application" /><a class="volunteer-action volunteer-action--blue" href="{{ route('volunteer.applications.show', $application) }}">Lihat detail</a></div>
             </div>
         @empty
             <div class="rounded-xl border border-dashed border-slate-300 p-8 text-center">

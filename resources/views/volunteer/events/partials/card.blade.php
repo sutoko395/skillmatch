@@ -10,5 +10,5 @@
         <div><dt class="text-slate-500">Waktu kegiatan (WIB)</dt><dd class="mt-1">{{ $event->starts_at->copy()->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}</dd></div>
         <div><dt class="text-slate-500">Posisi tersedia</dt><dd class="mt-1">{{ $event->positions_count }} posisi</dd></div>
     </dl>
-    <a href="{{ route('events.show', $event) }}" class="mt-auto inline-flex justify-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700">Lihat Detail Event</a>
+    <a href="{{ route('events.show', $event) }}" class="volunteer-action volunteer-action--blue mt-auto inline-flex justify-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg> Lihat detail</a>
 </x-section-card>

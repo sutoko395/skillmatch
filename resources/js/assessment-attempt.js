@@ -47,13 +47,13 @@ export default (config) => ({
     },
     save() { return this.send(false); },
     submit() {
-        if (confirm('Kirim assessment? Jawaban tidak dapat diubah setelah dikirim.')) this.send(true);
+        if (confirm('Kirim asesmen? Jawaban tidak dapat diubah setelah dikirim.')) this.send(true);
     },
     send(finalize) {
         this.queue = this.queue.then(async () => {
             if (this.finished) return;
             this.busy = true;
-            this.message = finalize ? 'Mengirim assessment…' : 'Menyimpan jawaban…';
+            this.message = finalize ? 'Mengirim asesmen…' : 'Menyimpan jawaban…';
             try {
                 const response = await fetch(finalize ? config.submitUrl : config.saveUrl, {
                     method: finalize ? 'POST' : 'PUT', credentials: 'same-origin',
@@ -71,7 +71,7 @@ export default (config) => ({
                 this.revision = result.revision;
                 this.offset = Date.parse(result.server_now) - Date.now();
                 this.finished = result.status !== 'in_progress';
-                this.message = this.finished ? 'Pengerjaan assessment telah berakhir.' : 'Jawaban tersimpan.';
+                this.message = this.finished ? 'Pengerjaan asesmen telah berakhir.' : 'Jawaban tersimpan.';
                 if (this.finished) window.location.assign(config.returnUrl);
             } catch {
                 this.message = 'Gagal menyimpan. Jawaban di halaman ini belum tersimpan. Periksa koneksi lalu coba kembali.';

@@ -134,3 +134,12 @@ Uji assessment incomplete menahan submit/publish, versi snapshot tetap setelah e
 ## Tambahan A4 - notifikasi koordinasi peserta
 
 Jenis event.coordination_updated memakai NotificationService database existing; dedupe event/revision/volunteer, payload hanya type/event_id/application_id, tujuan detail lamaran. Kirim hanya kepada accepted pada transaksi pembaruan owner. URL grup dan kontak PIC tidak boleh masuk payload/audit/email. Tidak mengubah assessment/matching atau penerimaan existing. Lihat docs/PARTICIPANT_COORDINATION_HANDOFF.md root aplikasi.
+
+
+## Konsistensi panel Volunteer - 15 November 2026
+Presentasi volunteer disamakan dengan EO/Admin sesuai permintaan pengguna.
+Komponen/partial/alur existing tetap; enum, snapshot, endpoint, otorisasi,
+rumus evaluasi, asesmen dan absensi tidak berubah. Label UI/notifikasi memakai
+Volunteer, Kegiatan, Keahlian, Penyaringan, Asesmen dan Draf. Lihat
+[handoff](../../../docs/VOLUNTEER_EO_STYLE_HANDOFF.md) untuk lingkup, integrasi dan
+bukti pengujian; tidak ada dependensi/migration baru.

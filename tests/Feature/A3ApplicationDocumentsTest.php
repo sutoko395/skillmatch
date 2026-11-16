@@ -42,8 +42,8 @@ class A3ApplicationDocumentsTest extends DatabaseTestCase
             'birth_date' => '2000-01-01',
             'gender' => 'male',
             'city_id' => $city?->id,
-            'address' => 'Jl. Uji Relawan',
-            'bio' => 'Bio uji relawan',
+            'address' => 'Jl. Uji Volunteer',
+            'bio' => 'Bio uji volunteer',
         ]);
 
         if ($skill) {
@@ -342,7 +342,7 @@ class A3ApplicationDocumentsTest extends DatabaseTestCase
         $indexResponse = $this->get("/organizer/events/{$event->id}/applications");
         $indexResponse->assertOk();
         $indexResponse->assertSee($volunteer1->name);
-        $indexResponse->assertSee('Menunggu assessment');
+        $indexResponse->assertSee('Menunggu asesmen');
         $indexResponse->assertSee('Skor kecocokan');
         // Draft applicant should not be listed
         $indexResponse->assertDontSee($volunteer2->name);

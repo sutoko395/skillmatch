@@ -74,7 +74,7 @@
 
                 {{-- Skill Volunteer --}}
                 <div class="pt-2">
-                    <span class="organizer-review-field-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 3 6 6 1-4.5 4.5L18 21l-6-3-6 3 1.5-6.5L3 10l6-1Z"/></svg>Keahlian relawan</span>
+                    <span class="organizer-review-field-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 3 6 6 1-4.5 4.5L18 21l-6-3-6 3 1.5-6.5L3 10l6-1Z"/></svg>Keahlian volunteer</span>
                     <div class="mt-1 flex flex-wrap gap-1.5">
                         @forelse(($candidate['skills'] ?? []) as $vs)
                             <span class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700">

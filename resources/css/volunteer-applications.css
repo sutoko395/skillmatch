@@ -3,29 +3,38 @@
 .vl-applications { max-width: none; }
 .vl-applications > header h1 { font-size: 28px; line-height: 36px; font-weight: 700; }
 .vl-applications > header p { margin-top: 8px; color: #475569; font-size: 14px; line-height: 20px; }
-.vl-card { padding: 18px 20px; background: white; border: 1px solid #e2e8f0; border-radius: 16px; }
+.vl-card { padding: 12px 20px; background: white; border: 1px solid #e2e8f0; border-radius: 16px; }
 .vl-card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
 .vl-card h2 { font-size: 18px; font-weight: 700; line-height: 24px; overflow-wrap: anywhere; }
 .vl-position { margin-top: 4px; color: #475569; font-size: 14px; line-height: 20px; overflow-wrap: anywhere; }
 .vl-status { flex-shrink: 0; max-width: 40%; }
 .vl-status > span { display: inline-flex; min-width: 0; border-radius: 999px; padding: 4px 10px; font-size: 12px; line-height: 18px; overflow-wrap: anywhere; }
-.vl-location { margin-top: 12px; }
+.vl-location { margin-top: 8px; }
 .vl-card dt { color: #64748b; font-size: 12px; line-height: 16px; }
 .vl-card dd { margin-top: 4px; color: #0f172a; font-size: 14px; line-height: 20px; overflow-wrap: anywhere; }
-.vl-card-footer { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; margin-top: 14px; border-top: 1px solid #e2e8f0; padding-top: 12px; }
+.vl-card-footer { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; margin-top: 10px; border-top: 1px solid #e2e8f0; padding-top: 8px; }
 .vl-dates { display: grid; grid-template-columns: repeat(2, minmax(0, 240px)); gap: 24px; }
 .vl-detail { display: inline-flex; align-items: center; justify-content: center; min-width: 120px; min-height: 44px; border-radius: 10px; padding: 10px 16px; background: #2563eb; color: #fff; font-size: 14px; font-weight: 600; line-height: 20px; }
 .vl-detail:hover { background: #1d4ed8; }
 .vl-detail:focus-visible { outline-color: #2563eb; }
 @media (max-width: 639px) {
     .vl-applications > header h1 { font-size: 28px; line-height: 36px; }
-    .vl-card { padding: 16px; }
-    .vl-card-heading { flex-direction: column; gap: 12px; }
+    .vl-card { padding: 12px 16px; }
+    .vl-card-heading { flex-direction: column; gap: 8px; }
     .vl-status { max-width: 100%; }
     .vl-status > span { min-width: 0; }
-    .vl-card-footer { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+    .vl-card-footer { grid-template-columns: minmax(0, 1fr); gap: 12px; }
     .vl-dates { gap: 16px; }
     .vl-detail { width: 100%; }
 }
 
 .vl-applications > .vl-card + .vl-card { margin-top: 16px; }
+
+/* Keep application metadata quieter than the activity title. */
+.volunteer-panel .volunteer-main .vl-card .vl-card-heading h2 { font-size: 16px; line-height: 1.5; font-weight: 600; }
+.volunteer-panel .volunteer-main .vl-card .vl-position { display: flex; align-items: flex-start; gap: 7px; margin-top: 2px; font-size: 12px; line-height: 20px; color: #64748b; }
+.volunteer-panel .volunteer-main .vl-card :is(.vl-position,dt) svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 2px; }
+.volunteer-panel .volunteer-main .vl-card .vl-position svg { color: #2563eb; }
+.volunteer-panel .volunteer-main .vl-card dt { display: flex; align-items: center; gap: 6px; font-size: 11px; line-height: 18px; }
+.volunteer-panel .volunteer-main .vl-card dd { margin-top: 3px; font-size: 12px; line-height: 19px; color: #475569; }
+.volunteer-panel .volunteer-main .vl-card .vl-location dd { padding-left: 21px; }

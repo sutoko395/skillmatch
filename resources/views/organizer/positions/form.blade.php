@@ -106,7 +106,7 @@
                     <x-form-field name="suggested_min_age" label="Usia minimum (tahun)" type="number" min="0" max="255" :value="$position->suggested_min_age" />
                     <x-form-field name="suggested_max_age" label="Usia maksimum (tahun)" type="number" min="0" max="255" :value="$position->suggested_max_age" />
                 </div>
-                <p class="mt-2 text-xs leading-relaxed text-slate-500">Usia pada tanggal mulai kegiatan. Hanya informasi; relawan di luar rentang tetap bisa melamar dan skor kecocokan tidak terpengaruh.</p>
+                <p class="mt-2 text-xs leading-relaxed text-slate-500">Usia pada tanggal mulai kegiatan. Hanya informasi; volunteer di luar rentang tetap bisa melamar dan skor kecocokan tidak terpengaruh.</p>
             </div>
 
             <x-form-field

@@ -14,7 +14,7 @@
                 <p class="mt-2 break-words whitespace-pre-line text-sm leading-relaxed text-slate-700">{{ $application->decision_reason }}</p>
             </div>
         @elseif ($status === 'screening_failed')
-            <p class="mt-3 text-sm text-slate-600">Alasan tersedia pada rincian hasil screening.</p>
+            <p class="mt-3 text-sm text-slate-600">Alasan tersedia pada rincian hasil penyaringan.</p>
         @endif
     </x-section-card>
 @else
@@ -52,7 +52,7 @@
             <div class="flex items-start gap-3">
                 <svg aria-hidden="true" class="mt-0.5 h-9 w-9 shrink-0 rounded-lg bg-indigo-50 p-2 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9" /><path stroke-linecap="round" d="M12 7v5l3 2" /></svg>
                 <div class="min-w-0">
-                    <p class="font-semibold text-slate-700">{{ $showEventTime ? 'Waktu tugas' : 'Waktu event' }}</p>
+                    <p class="font-semibold text-slate-700">{{ $showEventTime ? 'Waktu tugas' : 'Waktu kegiatan' }}</p>
                     <p class="mt-1 break-words text-slate-900">{{ $taskStartsAtWib->format('d/m/Y H:i') }} &ndash; {{ $taskEndsAtWib->format($taskStartsAtWib->isSameDay($taskEndsAtWib) ? 'H:i' : 'd/m/Y H:i') }} WIB</p>
                 </div>
             </div>
@@ -64,7 +64,7 @@
         <div class="flex items-start gap-3">
             <svg aria-hidden="true" class="mt-0.5 h-9 w-9 shrink-0 rounded-lg bg-indigo-50 p-2 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2.5" /></svg>
             <div class="min-w-0">
-                <h3 class="text-sm font-semibold text-slate-700">Lokasi event</h3>
+                <h3 class="text-sm font-semibold text-slate-700">Lokasi kegiatan</h3>
                 <p class="mt-1 break-words text-sm text-slate-900">{{ $application->event->location }} &middot; {{ $application->event->cityRecord?->name }}</p>
             </div>
         </div>
@@ -74,7 +74,7 @@
                 $eventEndsAtWib = $application->event->ends_at->copy()->setTimezone('Asia/Jakarta');
             @endphp
             <details class="vd-event-time mt-3 text-sm" @if(in_array($status, ['draft', 'submitted', 'under_review', 'screening_failed', 'rejected', 'accepted', 'withdrawn', 'cancelled'], true) || $eventCancelled) open @endif>
-                <summary class="w-fit cursor-pointer rounded font-medium text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Waktu event</summary>
+                <summary class="w-fit cursor-pointer rounded font-medium text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Waktu kegiatan</summary>
                 <p class="mt-2 text-slate-600">{{ $eventStartsAtWib->format('d/m/Y H:i') }} &ndash; {{ $eventEndsAtWib->format($eventStartsAtWib->isSameDay($eventEndsAtWib) ? 'H:i' : 'd/m/Y H:i') }} WIB</p>
             </details>
         @endif
@@ -95,7 +95,7 @@
     </dl>
     @if ($application->position->positionSkills->isNotEmpty())
         <div class="mt-4 border-t border-slate-100 pt-4">
-            <h3 class="text-sm font-semibold text-slate-700">Skill yang dibutuhkan</h3>
+            <h3 class="text-sm font-semibold text-slate-700">Keahlian yang dibutuhkan</h3>
             <ul class="mt-3 flex flex-wrap gap-2">
                 @foreach ($application->position->positionSkills as $skill)
                     <li class="max-w-full break-words rounded-lg border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-xs text-indigo-800">{{ $skill->skill->name }} &middot; {{ ucfirst($skill->minimum_level) }} ({{ $skill->is_required ? 'Wajib' : 'Preferensi' }})</li>

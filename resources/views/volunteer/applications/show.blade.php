@@ -12,18 +12,20 @@
     $canOpenAssessment = $status === 'assessment_pending' && $assessmentSummary
         && !in_array($attempt?->status, ['submitted', 'expired', 'cancelled'], true)
         && $recruitmentDates['assessment_deadline'] && now()->lt($recruitmentDates['assessment_deadline'])
+        && ($attempt?->status === 'in_progress' || ($application->event->publication_status === 'published' && $application->event->published_at))
         && $application->event->lifecycle_status === 'upcoming' && now()->lt($application->event->starts_at);
     [$bannerTitle, $bannerText] = match (true) {
-        $eventCancelled || $status === 'cancelled' => ['Kegiatan dibatalkan', 'Proses lamaran ini telah dihentikan karena event dibatalkan.'],
-        $status === 'accepted' => ['Selamat, kamu DITERIMA!', 'Kamu terpilih untuk posisi ' . $application->position->name . '. Periksa jadwal tugasmu di bawah.'],
-        $status === 'rejected' => ['Maaf, kamu BELUM TERPILIH', 'Terima kasih sudah mengikuti proses seleksi untuk posisi ' . $application->position->name . '.'],
-        $status === 'screening_failed' => ['Lamaran belum memenuhi syarat wajib', 'Lamaranmu belum bisa dilanjutkan ke tahap selanjutnya. Lihat alasan pada hasil screening.'],
+        $eventCancelled || $status === 'cancelled' => ['Kegiatan dibatalkan', 'Proses lamaran ini telah dihentikan karena kegiatan dibatalkan.'],
+        $status === 'accepted' => ['Selamat, Anda diterima!', 'Anda terpilih untuk posisi ' . $application->position->name . '. Periksa jadwal tugas Anda di bawah.'],
+        $status === 'rejected' => ['Anda belum terpilih', 'Terima kasih sudah mengikuti proses seleksi untuk posisi ' . $application->position->name . '.'],
+        $status === 'screening_failed' => ['Lamaran belum memenuhi syarat wajib', 'Lamaran Anda belum bisa dilanjutkan ke tahap selanjutnya. Lihat alasan pada hasil penyaringan.'],
         $status === 'withdrawn' => ['Lamaran telah ditarik', 'Proses seleksi lamaran ini telah berakhir.'],
-        $status === 'draft' => ['Lengkapi lamaranmu', 'Periksa profil dan dokumen sebelum mengirimkan lamaran.'],
-        $assessmentFinished || $status === 'under_review' => ['Menunggu hasil seleksi', 'Lamaranmu sedang ditinjau penyelenggara. Hasil seleksi akan ditampilkan pada halaman ini.'],
-        $status === 'submitted' => ['Lamaran sedang diproses', $screening?->passed ? 'Lamaranmu menunggu proses pencocokan sebelum assessment.' : 'Lamaranmu menunggu hasil screening sebelum assessment.'],
-        $status === 'assessment_pending' && $recruitmentDates['assessment_deadline'] && now()->gte($recruitmentDates['assessment_deadline']) => ['Tenggat assessment telah berakhir', 'Assessment tidak dapat dimulai. Periksa informasi tahap seleksi di bawah.'],
-        default => ['Periksa tahap assessment', 'Lihat informasi assessment dan tenggat pengerjaan pada perkembangan lamaran.'],
+        $status === 'draft' => ['Lengkapi lamaran Anda', 'Periksa profil dan dokumen sebelum mengirimkan lamaran.'],
+        $assessmentFinished || $status === 'under_review' => ['Menunggu hasil seleksi', 'Lamaran Anda sedang ditinjau penyelenggara. Hasil seleksi akan ditampilkan pada halaman ini.'],
+        $status === 'assessment_pending' && $application->event->publication_status !== 'published' => ['Asesmen sementara tidak tersedia', 'Periksa kembali halaman ini untuk pembaruan dari penyelenggara.'],
+        $status === 'submitted' => ['Lamaran sedang diproses', $screening?->passed ? 'Lamaran Anda menunggu proses pencocokan sebelum asesmen.' : 'Lamaran Anda menunggu hasil penyaringan sebelum asesmen.'],
+        $status === 'assessment_pending' && $recruitmentDates['assessment_deadline'] && now()->gte($recruitmentDates['assessment_deadline']) => ['Tenggat asesmen telah berakhir', 'Asesmen tidak dapat dimulai. Periksa informasi tahap seleksi di bawah.'],
+        default => ['Periksa tahap asesmen', 'Lihat informasi asesmen dan tenggat pengerjaan pada perkembangan lamaran.'],
     };
     $bannerColor = match (true) {
         $eventCancelled || in_array($status, ['withdrawn', 'cancelled'], true) => 'border-slate-200 bg-slate-100 text-slate-800',
@@ -40,7 +42,7 @@
     @if ($status === 'draft' && !($eligibility['complete'] ?? true))
         <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
             <p class="font-semibold">Profil Anda belum lengkap!</p>
-            <p class="mt-1">Silakan lengkapi data profil dan skill Anda sebelum mengirimkan lamaran.</p>
+            <p class="mt-1">Silakan lengkapi data profil dan keahlian Anda sebelum mengirimkan lamaran.</p>
             <a href="{{ route('volunteer.profile.edit') }}" class="mt-2 inline-block rounded font-semibold underline focus:ring-2 focus:ring-amber-600">Lengkapi Profil &rarr;</a>
         </div>
     @endif

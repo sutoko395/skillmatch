@@ -1,8 +1,8 @@
-<div class="mx-auto max-w-7xl space-y-6">
-    <a href="{{ route('volunteer.activity.index') }}" class="inline-flex rounded-xl border border-blue-200 bg-white px-4 py-3 text-sm font-semibold text-blue-600 hover:bg-blue-50">&larr; Ringkasan Aktivitas</a>
+<div class="vn-notifications mx-auto max-w-7xl space-y-6">
+    <a href="{{ route('volunteer.activity.index') }}" class="volunteer-action volunteer-action--back inline-flex rounded-xl border border-blue-200 bg-white px-4 py-3 text-sm font-semibold text-blue-600 hover:bg-blue-50"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m7 7-7-7 7-7" /></svg> Kembali</a>
     <x-page-header title="Notifikasi" description="Pantau pembaruan kegiatan, lamaran, dan proses akun Anda." />
     <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white" aria-label="Daftar notifikasi">
-        <div class="flex items-center gap-3 border-b border-slate-100 p-5 sm:px-6">
+        <div class="vn-heading flex items-center gap-3 border-b border-slate-100 p-5 sm:px-6">
             <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600" aria-hidden="true">
                 @include('volunteer.notifications.partials.icon')
             </span>

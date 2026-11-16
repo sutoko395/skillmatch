@@ -40,6 +40,17 @@ class VolunteerAssessmentInfoTest extends DatabaseTestCase
         return $application;
     }
 
+    public function test_unpublished_event_does_not_offer_a_new_assessment_start(): void
+    {
+        $application = $this->application();
+        $application->event->update(['publication_status' => 'suspended']);
+
+        $this->actingAs($application->volunteer)->get(route('volunteer.applications.show', $application))
+            ->assertOk()->assertSee('Asesmen sementara tidak tersedia')
+            ->assertDontSee(route('volunteer.assessments.show', $application), false);
+        $this->assertNull($application->fresh()->assessmentAttempt);
+    }
+
     public function test_owner_sees_snapshot_metadata_without_questions_keys_scores_or_mutations(): void
     {
         $application = $this->application();
@@ -50,9 +61,9 @@ class VolunteerAssessmentInfoTest extends DatabaseTestCase
         $before = $application->fresh()->getRawOriginal();
         $auditCount = AuditLog::count();
         $response = $this->actingAs($application->volunteer)->get(route('volunteer.applications.show', $application));
-        $response->assertOk()->assertSeeInOrder(['Informasi assessment', 'Perkembangan lamaran', 'Pengumuman hasil', 'Jadwal tugas', 'Informasi posisi'], false)
+        $response->assertOk()->assertSeeInOrder(['Informasi asesmen', 'Perkembangan lamaran', 'Pengumuman hasil', 'Jadwal tugas', 'Informasi posisi'], false)
             ->assertSee('Hasil seleksi paling lambat:')->assertSee('Hasil dapat diumumkan lebih awal.')
-            ->assertSee('Buka Assessment')
+            ->assertSee('Buka asesmen')
             ->assertSee('1 soal')->assertSee('30 menit')->assertDontSee('90 menit')
             ->assertSee(route('volunteer.assessments.show', $application), false)
             ->assertDontSee('Pertanyaan privat assessment')->assertDontSee('Opsi rahasia')->assertDontSee('is_correct')
@@ -70,11 +81,11 @@ class VolunteerAssessmentInfoTest extends DatabaseTestCase
         $application = $this->application();
         $this->actingAs($application->volunteer);
         foreach ([
-            'submitted' => 'Lamaranmu menunggu proses pencocokan sebelum assessment.',
-            'screening_failed' => 'Assessment tidak tersedia karena lamaranmu belum memenuhi syarat wajib screening.',
-            'under_review' => 'Lamaranmu sedang ditinjau EO.',
-            'accepted' => 'Informasi pengerjaan assessment belum tersedia.',
-            'cancelled' => 'Assessment tidak tersedia karena event telah dibatalkan.',
+            'submitted' => 'Lamaran Anda menunggu proses pencocokan sebelum asesmen.',
+            'screening_failed' => 'Asesmen tidak tersedia karena lamaran Anda belum memenuhi syarat wajib penyaringan.',
+            'under_review' => 'Lamaran Anda sedang ditinjau EO.',
+            'accepted' => 'Informasi pengerjaan asesmen belum tersedia.',
+            'cancelled' => 'Asesmen tidak tersedia karena kegiatan telah dibatalkan.',
         ] as $status => $message) {
             $application->update(['status' => $status]);
             $this->get(route('volunteer.applications.show', $application))->assertOk()->assertSee($message)
@@ -83,10 +94,10 @@ class VolunteerAssessmentInfoTest extends DatabaseTestCase
         $application->update(['status' => 'assessment_pending']);
         $this->travelTo(CarbonImmutable::parse($application->snapshot_json['assessment_deadline']));
         $this->get(route('volunteer.applications.show', $application))->assertOk()
-            ->assertSee('Tenggat assessment telah berakhir.')->assertDontSee('Mulai assessment');
+            ->assertSee('Tenggat asesmen telah berakhir.')->assertDontSee('Mulai asesmen');
         $this->travelBack();
         $application->update(['status' => 'draft']);
-        $this->get(route('volunteer.applications.show', $application))->assertOk()->assertDontSee('Informasi assessment');
+        $this->get(route('volunteer.applications.show', $application))->assertOk()->assertDontSee('Informasi asesmen');
     }
 
     public function test_missing_legacy_dates_and_unpublished_assessment_are_not_invented(): void
@@ -95,8 +106,8 @@ class VolunteerAssessmentInfoTest extends DatabaseTestCase
         $application->update(['snapshot_json' => ['assessment_version' => 1, 'assessment_deadline' => null, 'decision_deadline' => null]]);
         Assessment::where('event_position_id', $application->event_position_id)->update(['is_published' => false]);
         $this->actingAs($application->volunteer)->get(route('volunteer.applications.show', $application))->assertOk()
-            ->assertSee('Jadwal hasil seleksi belum tersedia.')->assertSee('Tenggat assessment belum tersedia.')
-            ->assertDontSee('30 menit')->assertDontSee('1 soal')->assertDontSee('Mulai assessment');
+            ->assertSee('Jadwal hasil seleksi belum tersedia.')->assertSee('Tenggat asesmen belum tersedia.')
+            ->assertDontSee('30 menit')->assertDontSee('1 soal')->assertDontSee('Mulai asesmen');
     }
 
     public function test_other_volunteer_and_other_roles_cannot_read_this_information(): void
@@ -116,18 +127,18 @@ class VolunteerAssessmentInfoTest extends DatabaseTestCase
         foreach (['accepted', 'rejected', 'withdrawn', 'cancelled', 'screening_failed'] as $status) {
             $application->update(['status' => $status, 'decision_at' => now(), 'decision_reason' => '<script>catatan privat</script>']);
             $response = $this->get(route('volunteer.applications.show', $application))->assertOk()
-                ->assertDontSee('Assessment selesai')
+                ->assertDontSee('Asesmen selesai')
                 ->assertSee('&lt;script&gt;catatan privat&lt;/script&gt;', false)
                 ->assertDontSee('<script>catatan privat</script>', false)
                 ->assertDontSee('Pengumuman hasil')
                 ->assertDontSee('Unggah Dokumen Baru')
                 ->assertDontSee(route('volunteer.assessments.show', $application), false);
             if ($status === 'accepted') {
-                $response->assertSee('Selamat, kamu DITERIMA!')
+                $response->assertSee('Selamat, Anda diterima!')
                     ->assertSeeInOrder(['Kehadiran', 'Jadwal tugas', 'Informasi posisi']);
             } else {
                 if ($status === 'rejected') {
-                    $response->assertSee('Maaf, kamu BELUM TERPILIH');
+                    $response->assertSee('Anda belum terpilih');
                 }
                 $response->assertDontSee('Kehadiran')
                     ->assertSeeInOrder([$status === 'rejected' ? 'Hasil seleksi' : 'Status lamaran', 'Jadwal posisi', 'Informasi posisi']);
@@ -144,8 +155,14 @@ class VolunteerAssessmentInfoTest extends DatabaseTestCase
             'expires_at' => now()->addMinutes(25), 'total' => 1, 'revision' => 0]);
         $before = $attempt->fresh()->getRawOriginal();
         $this->actingAs($application->volunteer)->get(route('volunteer.applications.show', $application))
-            ->assertOk()->assertSee('Assessment sedang dikerjakan')->assertSee('Lanjutkan Assessment')
-            ->assertSee(route('volunteer.assessments.show', $application), false)->assertDontSee('Buka Assessment');
+            ->assertOk()->assertSee('Asesmen sedang dikerjakan')->assertSee('Lanjutkan asesmen')
+            ->assertSee(route('volunteer.assessments.show', $application), false)->assertDontSee('Buka asesmen');
+        $this->assertSame($before, $attempt->fresh()->getRawOriginal());
+        // An existing attempt remains accessible under the server's inspect rule.
+        $application->event->update(['publication_status' => 'suspended']);
+        $this->get(route('volunteer.applications.show', $application))
+            ->assertOk()->assertSee('Lanjutkan asesmen')
+            ->assertSee(route('volunteer.assessments.show', $application), false);
         $this->assertSame($before, $attempt->fresh()->getRawOriginal());
     }
 
@@ -159,7 +176,7 @@ class VolunteerAssessmentInfoTest extends DatabaseTestCase
         $application->update(['status' => 'accepted', 'decision_at' => now()]);
 
         $this->actingAs($application->volunteer)->get(route('volunteer.applications.show', $application))
-            ->assertOk()->assertSee('Jawabanmu sudah dikirim.')
-            ->assertDontSee('Assessment selesai')->assertDontSee('Proses seleksi lamaran ini telah berakhir.');
+            ->assertOk()->assertSee('Jawaban Anda sudah dikirim.')
+            ->assertDontSee('Asesmen selesai')->assertDontSee('Proses seleksi lamaran ini telah berakhir.');
     }
 }

@@ -3,19 +3,19 @@
     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
             <h2 class="text-xl font-bold text-slate-900">
-                Mulai Perjalanan Volunteer
+                Kelengkapan profil
             </h2>
 
             <p class="mt-2 text-sm leading-6 text-slate-600">
-                Pastikan seluruh data profil dan skill sudah lengkap sebelum mengikuti kegiatan.
+                Pastikan seluruh data profil dan keahlian sudah lengkap sebelum mengikuti kegiatan.
             </p>
         </div>
 
         <a
             href="{{ route('volunteer.profile.edit') }}"
-            class="inline-flex shrink-0 items-center justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
+            class="volunteer-action volunteer-action--blue inline-flex shrink-0 items-center justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
         >
-            {{ ($eligibility['complete'] ?? false) ? 'Perbarui Profil' : 'Lengkapi Profil' }}
+            {{ ($eligibility['complete'] ?? false) ? 'Edit profil' : 'Lengkapi profil' }}
         </a>
     </div>
 
@@ -31,7 +31,7 @@
                 'address' => 'Alamat',
                 'bio' => 'Bio',
                 'city_id' => 'Kota aktif',
-                'skills' => 'Skill aktif',
+                'skills' => 'Keahlian aktif',
                 'availability_slots' => 'Tanggal dan jam ketersediaan',
             ];
         @endphp

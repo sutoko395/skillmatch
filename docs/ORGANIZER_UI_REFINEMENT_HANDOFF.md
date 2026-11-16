@@ -222,7 +222,7 @@ lulus. Dua koneksi konkurensi nyata tidak diuji ulang; lock+revision digunakan.
 
 PRD/kontrak/design/UAT/briefA3/handoff sesi diselaraskan. README tetap berlaku karena
 setup tidak berubah. Demonstrasi: Kelola pelaksanaan -> cari peserta -> Lihat sesi
--> Tandai hadir -> Lihat/Edit catatan -> Simpan catatan; periksa detail relawan.
+-> Tandai hadir -> Lihat/Edit catatan -> Simpan catatan; periksa detail volunteer.
 Tidak commit/push/merge atau mengklaim review tim/seluruh UAT lulus.
 
 ## Rekap sesi inline - 15 November 2026
@@ -1408,7 +1408,7 @@ Validasi akhir: 40 tes backend/387 asersi lulus pada MySQL tes terpisah; 6 tes f
 
 
 ## Usia yang disarankan per posisi ? keputusan pengguna 15 November 2026
-Posisi memiliki suggested_min_age dan suggested_max_age nullable unsigned tiny integer (0?255 sebagai batas penyimpanan), masing-masing opsional. Jika keduanya diisi, maksimum harus >= minimum. Kosong berarti tidak ada saran usia pada sisi tersebut; posisi existing tetap null. EO mengatur saat konfigurasi posisi mengikuti otorisasi dan kunci publikasi existing. Form serta detail posisi EO/relawan menampilkan usia pada tanggal mulai kegiatan sebagai informasi, bukan syarat wajib. Relawan di luar rentang tetap dapat melamar; screening, assessment, matching 50/30/20 dan snapshot evaluasi tidak memakai kolom ini. Profil relawan tetap menyimpan birth_date, tidak menambah kolom umur profil.
+Posisi memiliki suggested_min_age dan suggested_max_age nullable unsigned tiny integer (0?255 sebagai batas penyimpanan), masing-masing opsional. Jika keduanya diisi, maksimum harus >= minimum. Kosong berarti tidak ada saran usia pada sisi tersebut; posisi existing tetap null. EO mengatur saat konfigurasi posisi mengikuti otorisasi dan kunci publikasi existing. Form serta detail posisi EO/volunteer menampilkan usia pada tanggal mulai kegiatan sebagai informasi, bukan syarat wajib. Volunteer di luar rentang tetap dapat melamar; screening, assessment, matching 50/30/20 dan snapshot evaluasi tidak memakai kolom ini. Profil volunteer tetap menyimpan birth_date, tidak menambah kolom umur profil.
 Migration tambahan: database/migrations/2026_11_15_160000_add_suggested_age_to_event_positions.php. Tidak ada route baru. UI berbagi components/position-suggested-age.blade.php. A2 pemilik kolom dan konfigurasi; A3/A4 tidak perlu menambahkan pembatasan umur.
 UAT: kosong/satu sisi/rentang valid tersimpan dan tampil, rentang terbalik/negatif/non-integer ditolak, kosongkan kedua nilai menghapus saran, pemilik lain ditolak, posisi published tetap terkunci, snapshot evaluasi identik setelah hanya usia diubah.
 
@@ -1416,7 +1416,7 @@ Basis feature/organizer-ui-refinement @367a7de. Lingkup disetujui pengguna: info
 
 Validasi usia posisi: 25 tes (PositionSuggestedAgeTest, A2EventTest, PositionScheduleModeTest), 174 asersi lulus pada MySQL skillmatch_testing terpisah; npm build lulus; diff --check lulus. Migration terarah juga diterapkan pada database lokal tanpa penghapusan data. Tes mencakup simpan/hapus/rentang satu sisi/invalid/owner/published dan snapshot evaluasi identik. Tampilan HTML form dan detail EO diverifikasi lewat tes; review visual browser untuk tambahan usia belum dilakukan.
 
-Keputusan label usia 15 November 2026: sisi relawan hanya menampilkan Usia pendaftar dan rentangnya, tanpa keterangan peserta di luar rentang boleh melamar. Sisi EO mempertahankan label saran usia dan penjelasan. Perubahan presentasi saja; tidak ada pembatasan atau eliminasi otomatis. Komponen position-suggested-age memakai forVolunteer, default false.
+Keputusan label usia 15 November 2026: sisi volunteer hanya menampilkan Usia pendaftar dan rentangnya, tanpa keterangan peserta di luar rentang boleh melamar. Sisi EO mempertahankan label saran usia dan penjelasan. Perubahan presentasi saja; tidak ada pembatasan atau eliminasi otomatis. Komponen position-suggested-age memakai forVolunteer, default false.
 
 
 ## Usia pelamar pada detail EO ? 15 November 2026
