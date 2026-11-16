@@ -60,7 +60,7 @@
                         </span>
 
                         <span class="mt-0.5 block text-xs leading-relaxed text-slate-600">
-                            Siapkan kegiatan dan kebutuhan relawan.
+                            Siapkan kegiatan dan kebutuhan volunteer.
                         </span>
                     </span>
                 </label>

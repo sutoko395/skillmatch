@@ -11,7 +11,7 @@
         </h1>
 
         <p class="mt-1 text-sm text-slate-500">
-            Periksa kegiatan yang diajukan Organizer sebelum dipublikasikan kepada Relawan.
+            Periksa kegiatan yang diajukan Organizer sebelum dipublikasikan kepada Volunteer.
         </p>
     </div>
 

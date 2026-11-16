@@ -1,7 +1,7 @@
 @props(['event', 'detailRoute' => 'events.show'])
 <article class="eb-event-card">
     <a class="eb-event-cover-link" href="{{ route($detailRoute, $event) }}" aria-label="Lihat kegiatan {{ $event->title }}"><x-event-cover :event="$event" /></a>
-    <div class="eb-event-category"><span>{{ $event->category?->name ?? 'Kegiatan relawan' }}</span><span>{{ $event->positions_count }} posisi</span></div>
+    <div class="eb-event-category"><span>{{ $event->category?->name ?? 'Kegiatan volunteer' }}</span><span>{{ $event->positions_count }} posisi</span></div>
     <h3><a href="{{ route($detailRoute, $event) }}">{{ $event->title }}</a></h3>
     <p class="eb-event-organizer">{{ $event->organizer->organizerProfile?->organization_name ?? $event->organizer->name }} · {{ $event->cityRecord?->name ?? $event->city }}</p>
     <p class="eb-event-description">{{ Str::limit($event->description, 140) }}</p>

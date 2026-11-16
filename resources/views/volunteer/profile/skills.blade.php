@@ -2,11 +2,11 @@
 
     <div class="border-b border-slate-100 pb-4">
         <h2 class="text-lg font-bold text-slate-800">
-            Skill dan Level
+            Keahlian dan Level
         </h2>
 
         <p class="mt-1 text-sm text-slate-500">
-            Tambahkan skill yang Anda kuasai beserta level kemampuan.
+            Tambahkan keahlian yang Anda kuasai beserta level kemampuan.
         </p>
     </div>
 
@@ -53,8 +53,8 @@
         </template>
 
         <div>
-            <x-secondary-button data-add>
-                <span aria-hidden="true" class="mr-2 text-lg leading-none">+</span> Tambah skill
+            <x-secondary-button data-add class="volunteer-action volunteer-action--blue">
+               <span aria-hidden="true" class="mr-2 text-lg leading-none">+</span> Tambah keahlian
             </x-secondary-button>
         </div>
 

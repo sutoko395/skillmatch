@@ -1,8 +1,8 @@
 <div class="va-stats grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 
-    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div class="volunteer-stat volunteer-stat--blue rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <p class="text-sm font-medium text-slate-500">
-            Skill Saya
+            Keahlian Saya
         </p>
 
         <p class="mt-2 text-3xl font-bold text-indigo-600">
@@ -10,11 +10,11 @@
         </p>
 
         <p class="mt-1 text-sm text-slate-500">
-            {{ count($eligibility['skills'] ?? []) }} skill aktif pada profil.
+            {{ count($eligibility['skills'] ?? []) }} keahlian aktif pada profil.
         </p>
     </div>
 
-    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div class="volunteer-stat {{ ($eligibility['complete'] ?? false) ? 'volunteer-stat--green' : 'volunteer-stat--amber' }} rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <p class="text-sm font-medium text-slate-500">
             Status Profil
         </p>
@@ -30,7 +30,7 @@
         @endif
     </div>
 
-    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:col-span-2 lg:col-span-1">
+    <div class="volunteer-stat volunteer-stat--cyan rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:col-span-2 lg:col-span-1">
         <div class="flex items-center justify-between">
             <p class="text-sm font-medium text-slate-500">
                 Lamaran Terkirim

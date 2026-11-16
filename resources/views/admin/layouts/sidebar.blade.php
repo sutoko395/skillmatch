@@ -144,7 +144,7 @@
                         href="{{ route('admin.volunteers.index') }}"
                         class="block px-4 py-2.5 text-sm transition {{ Request::routeIs('admin.volunteers.*') ? 'text-white font-bold' : 'text-txt-dark-secondary hover:text-white' }}"
                     >
-                        Relawan
+                        Volunteer
                     </a>
 
                 </div>

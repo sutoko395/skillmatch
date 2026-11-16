@@ -1,5 +1,5 @@
 @extends('volunteer.layouts.sidebar')
-@section('title', 'Kerjakan assessment')
+@section('title', 'Kerjakan asesmen')
 @section('page-class', 'volunteer-assessment-work')
 @section('content')
 <div class="vaa-attempt mx-auto max-w-6xl space-y-6" x-data="assessmentAttempt(@js([
@@ -11,7 +11,7 @@
     'questionIds' => $questions->pluck('id')->values()->all(),
     'answeredIds' => array_keys(array_filter($answers, fn ($answer) => $answer !== null)),
 ]))">
-    <x-page-header title="Assessment" :description="$application->event->title . ' · ' . $application->position->name" />
+    <x-page-header title="Asesmen" :description="$application->event->title . ' · ' . $application->position->name" />
     @include('volunteer.assessments.partials.attempt-status')
     <form x-ref="answers" method="POST" action="{{ route('volunteer.assessments.submit', $attempt) }}" @change="answerChanged()" @submit.prevent="submit()" class="space-y-6">
         @csrf

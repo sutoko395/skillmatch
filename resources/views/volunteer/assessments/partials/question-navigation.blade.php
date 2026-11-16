@@ -1,4 +1,4 @@
-<aside class="vaa-navigation min-w-0 lg:order-2" aria-label="Navigasi soal assessment">
+<aside class="vaa-navigation min-w-0 lg:order-2" aria-label="Navigasi soal asesmen">
     <button type="button" @click="listOpen = !listOpen" :aria-expanded="listOpen" aria-controls="volunteer-question-list" class="flex w-full items-center justify-between rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 lg:hidden">
         <span>Daftar soal ({{ $questions->count() }})</span>
         <span aria-hidden="true" x-text="listOpen ? '−' : '+'">+</span>
@@ -14,6 +14,6 @@
             <li class="flex items-center gap-2"><span class="h-3 w-3 rounded border border-emerald-300 bg-emerald-50" aria-hidden="true"></span>Sudah dijawab</li>
             <li class="flex items-center gap-2"><span class="h-3 w-3 rounded border border-slate-300 bg-white" aria-hidden="true"></span>Belum dijawab</li>
         </ul>
-        <p class="mt-3 text-xs text-slate-600">Kamu bisa kembali ke soal lain sebelum mengirim assessment.</p>
+        <p class="mt-3 text-xs text-slate-600">Anda dapat kembali ke soal lain sebelum mengirim asesmen.</p>
     </div>
 </aside>

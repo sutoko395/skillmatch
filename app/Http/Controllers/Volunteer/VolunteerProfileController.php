@@ -43,6 +43,6 @@ class VolunteerProfileController extends Controller
     {
         $profiles->save($request->user(), $request->validated());
 
-        return redirect()->route('volunteer.profile.edit')->with('success', 'Profil Volunteer berhasil diperbarui.');
+        return redirect()->route('volunteer.profile.edit')->with('success', 'Profil volunteer berhasil diperbarui.');
     }
 }

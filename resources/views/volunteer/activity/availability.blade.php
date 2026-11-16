@@ -13,9 +13,9 @@
 
         <a
             href="{{ route('volunteer.profile.edit') }}"
-            class="text-sm font-semibold text-indigo-600 hover:text-indigo-700"
+            class="volunteer-action volunteer-action--blue text-sm font-semibold text-indigo-600 hover:text-indigo-700"
         >
-            Kelola profil
+            Edit ketersediaan
         </a>
     </div>
 

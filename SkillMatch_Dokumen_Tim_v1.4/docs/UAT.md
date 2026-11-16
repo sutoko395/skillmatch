@@ -89,7 +89,7 @@ fixture/data/mockup menjadi data nyata pada aplikasi.
   sebelum mulai tidak ada tombol tulis. Belum dipilih tetap Belum dicatat.
 - Tambah catatan membuka editor opsional dan Simpan catatan. Simpan saat unrecorded
   tidak menandai hadir, mengubah lifecycle atau waktu pencatatan absensi. Catatan
-  setelah hadir tidak mengubah status/waktu hadir; dapat dihapus. Relawan dapat
+  setelah hadir tidak mengubah status/waktu hadir; dapat dihapus. Volunteer dapat
   membacanya di detail lamaran; riwayat terminal memakai komponen existing.
 - Ubah kehadiran tetap dapat mencatat Tidak hadir/koreksi sebelum final. Dua halaman
   stale tidak boleh menimpa perubahan. completed/cancelled menolak mutasi catatan.
@@ -992,7 +992,7 @@ Preview fixture lulus audit lebar; browser akun nyata belum diuji ulang.
 
 
 ## Usia yang disarankan per posisi ? keputusan pengguna 15 November 2026
-Posisi memiliki suggested_min_age dan suggested_max_age nullable unsigned tiny integer (0?255 sebagai batas penyimpanan), masing-masing opsional. Jika keduanya diisi, maksimum harus >= minimum. Kosong berarti tidak ada saran usia pada sisi tersebut; posisi existing tetap null. EO mengatur saat konfigurasi posisi mengikuti otorisasi dan kunci publikasi existing. Form serta detail posisi EO/relawan menampilkan usia pada tanggal mulai kegiatan sebagai informasi, bukan syarat wajib. Relawan di luar rentang tetap dapat melamar; screening, assessment, matching 50/30/20 dan snapshot evaluasi tidak memakai kolom ini. Profil relawan tetap menyimpan birth_date, tidak menambah kolom umur profil.
+Posisi memiliki suggested_min_age dan suggested_max_age nullable unsigned tiny integer (0?255 sebagai batas penyimpanan), masing-masing opsional. Jika keduanya diisi, maksimum harus >= minimum. Kosong berarti tidak ada saran usia pada sisi tersebut; posisi existing tetap null. EO mengatur saat konfigurasi posisi mengikuti otorisasi dan kunci publikasi existing. Form serta detail posisi EO/volunteer menampilkan usia pada tanggal mulai kegiatan sebagai informasi, bukan syarat wajib. Volunteer di luar rentang tetap dapat melamar; screening, assessment, matching 50/30/20 dan snapshot evaluasi tidak memakai kolom ini. Profil volunteer tetap menyimpan birth_date, tidak menambah kolom umur profil.
 Migration tambahan: database/migrations/2026_11_15_160000_add_suggested_age_to_event_positions.php. Tidak ada route baru. UI berbagi components/position-suggested-age.blade.php. A2 pemilik kolom dan konfigurasi; A3/A4 tidak perlu menambahkan pembatasan umur.
 UAT: kosong/satu sisi/rentang valid tersimpan dan tampil, rentang terbalik/negatif/non-integer ditolak, kosongkan kedua nilai menghapus saran, pemilik lain ditolak, posisi published tetap terkunci, snapshot evaluasi identik setelah hanya usia diubah.
 
@@ -1022,6 +1022,26 @@ Tidak ada migration, status/schema baru atau dependensi. PRD/kontrak diperbarui 
 
 
 ### Konsistensi akhir Admin dan uji alur ? 15 November 2026
-Permintaan pengguna mencakup istilah, modal dan detail verifikasi ponsel. Teks UI admin memakai Kegiatan, Relawan, Keahlian; status transaksi ditampilkan Menunggu pembayaran/Lunas/Gagal/Kedaluwarsa/Dibatalkan/Perlu pemeriksaan. Enum, route, field, Alpine camelCase dan data tetap. Modal menempatkan submit sebelum Batal, tombol simpan outline biru, pembatalan/hapus outline merah, dan tutup Escape; dismiss icon diberi nama aksesibel. Nonaktifkan relawan merah, Aktifkan biru. Pintasan ponsel menuju #verification-decision dan #verification-note memudahkan menemukan keputusan/catatan tanpa mengubah urutan informasi desktop.
+Permintaan pengguna mencakup istilah, modal dan detail verifikasi ponsel. Teks UI admin memakai Kegiatan, Volunteer, Keahlian; status transaksi ditampilkan Menunggu pembayaran/Lunas/Gagal/Kedaluwarsa/Dibatalkan/Perlu pemeriksaan. Enum, route, field, Alpine camelCase dan data tetap. Modal menempatkan submit sebelum Batal, tombol simpan outline biru, pembatalan/hapus outline merah, dan tutup Escape; dismiss icon diberi nama aksesibel. Nonaktifkan volunteer merah, Aktifkan biru. Pintasan ponsel menuju #verification-decision dan #verification-note memudahkan menemukan keputusan/catatan tanpa mengubah urutan informasi desktop.
 84 tes backend/624 asersi lulus: AdminWorkflowRefinement, FoundationAccess, FoundationIntegrity, IntegratedFlows, A2Event, A2Payment, DefaultPackage, OrganizerKtpUpload. Mencakup akses lintas role, verifikasi/revisi/resubmit organisasi, moderasi dan publikasi, validasi paket/snapshot, callback pembayaran terverifikasi/replay/idempotensi, serta filter transaksi. Ini tes otomatis MySQL testing terpisah; gateway pembayaran memakai fixture/mocking existing, bukan transaksi Sandbox nyata. Tidak ada perubahan keputusan bisnis pada langkah konsistensi ini.
 Build dan diff --check lulus. Fixture 13 halaman HTTP 200 dengan rollback; review browser termasuk modal/ponsel dicatat setelah selesai. Tidak ada commit/push; branch feature/admin-ui-refinement.
+
+
+## Konsistensi panel Volunteer - 15 November 2026
+- Login volunteer, buka aktivitas/profil/katalog/lamaran/riwayat/notifikasi dan
+  detail seluruh status. Sidebar navy, menu aktif biru dan logo sama EO/Admin.
+- Judul desktop 26px/mobile 22px, isi lebih kecil; kartu tidak overflow pada
+  390/768/1440px. Kartu statistik berborder sesuai data/status, angka tetap nyata.
+- Kembali merah solid di kiri atas; detail/edit/simpan/tambah outline biru;
+  hapus/batal outline merah. Konfirmasi asesmen: Mulai sekarang lalu Batal.
+- Coba filter katalog dan Reset (hanya saat filter aktif); kembali ke katalog
+  awal. Pilih posisi/lamaran tetap mengikuti gate yang ada.
+- Profil: tambah/hapus keahlian dan interval, validasi dan simpan tetap. Asesmen:
+  konfirmasi, navigasi, autosave, submit/deadline/finalisasi tetap sesuai kontrak.
+- Label memakai Volunteer/Kegiatan/Keahlian/Penyaringan/Asesmen/Draf dan Anda.
+  Periksa toast sukses singkat dan error tetap dapat dibaca/dikoreksi.
+Bukti otomatis/visual dan bagian browser end-to-end yang belum diuji dicatat di
+[handoff](../../docs/VOLUNTEER_EO_STYLE_HANDOFF.md); daftar ini bukan klaim semua UAT lulus.
+
+### Regresi volunteer - 16 November 2026
+Periksa petunjuk langkah pada daftar lamaran sesuai status; asesmen baru pada kegiatan suspended tidak menawarkan tombol mulai; attempt berjalan tetap menawarkan lanjutkan sesuai AssessmentService. Tenggat ditampilkan WIB. Di riwayat/detail kehadiran, buka/tutup Rincian sesi dan periksa status, catatan panitia, arsip, serta waktu pencatatan. Cek 390/768/1440px tanpa scroll horizontal. Browser dengan fixture HTML lama/aset terbaru lulus 30 kombinasi; Blade terbaru dan endpoint regresi belum diuji karena PHP lokal belum memenuhi >=8.4.1. Rincian bukti dan batas pemeriksaan ada di handoff volunteer.

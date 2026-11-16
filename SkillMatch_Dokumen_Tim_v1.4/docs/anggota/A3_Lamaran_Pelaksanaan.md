@@ -18,7 +18,7 @@ Belum dicatat; snapshot/arsip lama dipertahankan, tanpa migration baru.
 Keputusan pengguna: kartu peserta dapat dibuka/tutup, check-in satu klik dan
 catatan opsional disimpan terpisah tanpa mengubah kehadiran. Endpoint/layanan
 updateNote milik A3 ditambah mengikuti kontrak terbaru; tanpa migration. Catatan
-terlihat oleh relawan, bukan catatan privat panitia. Statusfinal dan syaratwaktu
+terlihat oleh volunteer, bukan catatan privat panitia. Statusfinal dan syaratwaktu
 existing tetap. Bukti terkini ada di ORGANIZER_UI_REFINEMENT_HANDOFF.md aplikasi.
 
 ## Absensi berhenti saat completed - keputusan pengguna 15 November 2026
@@ -177,3 +177,12 @@ Detail lamaran menggunakan EventCoordinationService.forParticipant untuk status 
 ApplicationService::submit menambah profile.birth_date (YYYY-MM-DD nullable) ke snapshot lamaran baru. Ini data pribadi untuk owner terotorisasi, bukan bagian audit/notifikasi atau rumus evaluasi. Detail lamaran EO menghitung tahun penuh pada tanggal starts_at dalam WIB dan menampilkan usia bersama saran usia posisi. Tidak ada eliminasi otomatis atau perubahan bobot/score.
 Lamaran lama tanpa key birth_date memakai tanggal lahir profil saat ini dan menampilkan sumbernya secara eksplisit; snapshot lama tidak ditulis ulang. Snapshot dengan tanggal kosong/tidak valid atau tanggal lahir setelah tanggal kegiatan menampilkan Belum tersedia. Tidak ada migration atau route baru untuk usia pelamar.
 UAT: ulang tahun tepat hari kegiatan, sehari sesudahnya, starts_at UTC yang masuk tanggal WIB berikutnya, data lama/missing/invalid, perubahan profil setelah submit tidak mengubah usia dari snapshot, owner lain ditolak. Alur terintegrasi diuji dari fixture pembuatan event/posisi, asesmen terbit, ajukan moderasi, admin approve/publikasi paket gratis, submit lamaran di luar saran usia, penyaringan/pencocokan/asesmen, accepted, absensi sesi, completed, riwayat dan final lock. Pada DatabaseTransactions, afterCommit tertunda sampai rollback; evaluasi nyata dipanggil eksplisit dalam tes, bukan bukti worker/queue produksi.
+
+
+## Konsistensi panel Volunteer - 15 November 2026
+Presentasi volunteer disamakan dengan EO/Admin sesuai permintaan pengguna.
+Komponen/partial/alur existing tetap; enum, snapshot, endpoint, otorisasi,
+rumus evaluasi, asesmen dan absensi tidak berubah. Label UI/notifikasi memakai
+Volunteer, Kegiatan, Keahlian, Penyaringan, Asesmen dan Draf. Lihat
+[handoff](../../../docs/VOLUNTEER_EO_STYLE_HANDOFF.md) untuk lingkup, integrasi dan
+bukti pengujian; tidak ada dependensi/migration baru.

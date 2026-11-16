@@ -30,7 +30,7 @@ class MasterDataSeeder extends Seeder
             ],
             [
                 'name' => 'Kegiatan Sosial & Komunitas',
-                'description' => 'Aksi relawan, bakti sosial, dan pengabdian masyarakat.',
+                'description' => 'Aksi volunteer, bakti sosial, dan pengabdian masyarakat.',
             ],
         ];
 

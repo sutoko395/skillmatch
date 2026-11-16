@@ -45,15 +45,15 @@ class NotificationOutbox extends Model
                 'active' => 'disetujui', 'inactive' => 'perlu revisi', default => 'menunggu pemeriksaan'
             },
             'organizer.submitted' => 'Pengajuan organisasi perlu ditinjau',
-            'event.approved' => 'Event disetujui Admin', 'event.rejected' => 'Event memerlukan revisi',
-            'event.published' => 'Event telah dipublikasikan', 'event.cancelled' => 'Event dibatalkan',
+            'event.approved' => 'Kegiatan disetujui admin', 'event.rejected' => 'Kegiatan memerlukan revisi',
+            'event.published' => 'Kegiatan telah dipublikasikan', 'event.cancelled' => 'Kegiatan dibatalkan',
             'payment.verified' => 'Status pembayaran telah diperiksa',
             'application.submitted' => 'Lamaran baru diterima', 'application.accepted' => 'Lamaran diterima',
             'application.rejected' => 'Lamaran ditolak', 'application.withdrawn' => 'Lamaran ditarik',
-            'application.cancelled' => 'Lamaran dibatalkan', 'application.screened' => 'Hasil screening tersedia',
-            'application.matched' => 'Assessment tersedia', 'application.assessed' => 'Assessment selesai, menunggu peninjauan',
+            'application.cancelled' => 'Lamaran dibatalkan', 'application.screened' => 'Hasil penyaringan tersedia',
+            'application.matched' => 'Asesmen tersedia', 'application.assessed' => 'Asesmen selesai, menunggu peninjauan',
             'attendance.recorded' => 'Kehadiran telah dicatat', 'attendance.session_recorded' => 'Kehadiran sesi tugas telah dicatat', 'event.completed' => 'Kegiatan selesai',
-            'recruitment.repaired' => 'Tenggat assessment event lama telah dilengkapi',
+            'recruitment.repaired' => 'Tenggat asesmen kegiatan lama telah dilengkapi',
             default => 'Pembaruan aktivitas',
         };
     }

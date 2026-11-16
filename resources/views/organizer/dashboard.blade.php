@@ -5,21 +5,17 @@
 @section('content')
 <div class="mx-auto w-full max-w-7xl space-y-6 organizer-dashboard">
 
-    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-            <p class="text-sm font-medium text-indigo-600">
-                Ruang kerja organisasi
-            </p>
-
-            <h1 class="mt-1 text-2xl font-bold tracking-tight text-slate-900">
-                Halo, {{ $user->name }}!
+    <div class="panel-welcome relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+        <div class="absolute -right-4 -top-4 h-32 w-32 rounded-full bg-indigo-500/10 blur-xl" aria-hidden="true"></div>
+        <div class="relative space-y-2">
+            <h1 class="text-xl font-semibold tracking-tight text-slate-900 md:text-2xl">
+                Selamat Datang Kembali,
+                <span class="font-bold text-indigo-600">{{ $user->name }}</span>!
             </h1>
-
-            <p class="mt-2 text-sm text-slate-500">
-                Pantau kegiatan dan perkembangan rekrutmen relawan Anda.
+            <p class="text-xs leading-relaxed text-slate-500 md:text-sm">
+                Pantau kegiatan dan perkembangan rekrutmen volunteer Anda.
             </p>
         </div>
-
     </div>
 
     <div class="organizer-metrics grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">

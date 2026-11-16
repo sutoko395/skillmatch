@@ -9,8 +9,8 @@
 <p class="mb-3 text-sm text-slate-600">Verifikasi email Anda sebelum mulai melamar.</p>
 <a class="text-indigo-700 underline" href="{{ route('events.join', $event) }}">Verifikasi email untuk melamar</a>
 @else
-<form method="POST" action="{{ route('volunteer.applications.store',$position) }}">@csrf<x-button>Pilih Posisi & Mulai Lamaran</x-button></form>
+<form method="POST" action="{{ route('volunteer.applications.store',$position) }}">@csrf<x-button>Pilih posisi dan mulai lamaran</x-button></form>
 @endif
-@else<p>Lamaran hanya untuk akun Volunteer.</p>@endif
+@else<p>Lamaran hanya untuk akun volunteer.</p>@endif
 @endguest
 @endif

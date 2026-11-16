@@ -127,7 +127,7 @@ def main():
         )
         if not links:
             raise RuntimeError(
-                "Link assessment tidak ditemukan. Pastikan posisi relawan sudah tersimpan."
+                "Link assessment tidak ditemukan. Pastikan posisi volunteer sudah tersimpan."
             )
         assessment_link = links[0].get_attribute("href")
         if not assessment_link:
@@ -273,8 +273,8 @@ def main():
         organizer.save_screenshot(str(SCREENSHOTS / "e2e_02_public_event.png"))
 
         # Tandai posisi yang sebelumnya sudah dibuat sebagai bagian alur.
-        add_step(report, "TC-09", "Data posisi relawan sudah tersedia dari tahap sebelumnya")
-        add_step(report, "TC-10", "Posisi relawan tersimpan dari tahap sebelumnya")
+        add_step(report, "TC-09", "Data posisi volunteer sudah tersedia dari tahap sebelumnya")
+        add_step(report, "TC-10", "Posisi volunteer tersimpan dari tahap sebelumnya")
 
         report["public_url"] = public_url
         report["completed_at"] = __import__("datetime").datetime.now().isoformat(timespec="seconds")

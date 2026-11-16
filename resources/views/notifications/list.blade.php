@@ -5,7 +5,7 @@
         <p class="mt-1 text-xs text-slate-500">{{ $notification->created_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</p>
         @php($destination = app(\App\Services\ActivityReadService::class)->notificationDestination($notification, auth()->user()))
         <div class="mt-3 flex flex-wrap gap-4 text-sm">
-            <a href="{{ $destination }}" class="font-semibold text-indigo-600">Lihat detail</a>
+            <a href="{{ $destination }}" class="{{ auth()->user()->role === 'volunteer' ? 'volunteer-action volunteer-action--blue' : '' }} font-semibold text-indigo-600">Lihat detail</a>
             @if(!$notification->read_at)
                 <form method="POST" action="{{ route('notifications.read', $notification) }}">
                     @csrf @method('PATCH')

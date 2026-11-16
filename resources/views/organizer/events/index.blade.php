@@ -87,7 +87,7 @@
                 @if($search !== '' || $status !== '')
                     <x-empty-state title="Kegiatan tidak ditemukan" description="Coba kata kunci atau status moderasi lain." />
                 @else
-                    <x-empty-state title="Belum ada kegiatan" description="Buat kegiatan pertama Anda untuk mulai menyiapkan rekrutmen relawan." />
+                    <x-empty-state title="Belum ada kegiatan" description="Buat kegiatan pertama Anda untuk mulai menyiapkan rekrutmen volunteer." />
                 @endif
             </div>
         @endforelse

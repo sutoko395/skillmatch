@@ -11,11 +11,11 @@
             <div class="mt-3 rounded-lg p-4 text-sm {{ $result->passed ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800' }}">
                 <p class="font-semibold">{{ $result->passed ? ($showEvaluationInfo ? 'Lolos screening — syarat wajib terpenuhi.' : 'Lolos penyaringan — syarat wajib terpenuhi.') : ($showEvaluationInfo ? 'Gagal screening — belum memenuhi syarat wajib.' : 'Gagal penyaringan — belum memenuhi syarat wajib.') }}</p>
                 @if (!$result->passed)
-                    <p class="mt-1">{{ $detailed ? 'Pelamar belum memenuhi syarat untuk melanjutkan proses.' : 'Lamaranmu belum bisa dilanjutkan ke tahap selanjutnya.' }}</p>
+                    <p class="mt-1">{{ $detailed ? 'Pelamar belum memenuhi syarat untuk melanjutkan proses.' : 'Lamaran Anda belum bisa dilanjutkan ke tahap selanjutnya.' }}</p>
                 @elseif ($application->status === 'submitted')
-                    <p class="mt-1">{{ $detailed ? ($showEvaluationInfo ? 'Pelamar menunggu proses pencocokan sebelum assessment.' : 'Pelamar menunggu proses pencocokan sebelum asesmen.') : ($showEvaluationInfo ? 'Lamaranmu menunggu proses pencocokan sebelum assessment.' : 'Lamaranmu menunggu proses pencocokan sebelum asesmen.') }}</p>
+                    <p class="mt-1">{{ $detailed ? ($showEvaluationInfo ? 'Pelamar menunggu proses pencocokan sebelum assessment.' : 'Pelamar menunggu proses pencocokan sebelum asesmen.') : ($showEvaluationInfo ? 'Lamaran Anda menunggu proses pencocokan sebelum assessment.' : 'Lamaran Anda menunggu proses pencocokan sebelum asesmen.') }}</p>
                 @elseif ($application->status === 'assessment_pending')
-                    <p class="mt-1">{{ $detailed ? ($showEvaluationInfo ? 'Pencocokan selesai. Pelamar menunggu assessment.' : 'Pencocokan selesai. Pelamar menunggu asesmen.') : ($showEvaluationInfo ? 'Pencocokan selesai. Lamaranmu siap lanjut ke assessment.' : 'Pencocokan selesai. Lamaranmu siap lanjut ke asesmen.') }}</p>
+                    <p class="mt-1">{{ $detailed ? ($showEvaluationInfo ? 'Pencocokan selesai. Pelamar menunggu assessment.' : 'Pencocokan selesai. Pelamar menunggu asesmen.') : ($showEvaluationInfo ? 'Pencocokan selesai. Lamaran Anda siap lanjut ke assessment.' : 'Pencocokan selesai. Lamaran Anda siap lanjut ke asesmen.') }}</p>
                 @endif
             </div>
             @if ($detailed)

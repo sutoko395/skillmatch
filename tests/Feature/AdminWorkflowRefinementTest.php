@@ -42,13 +42,13 @@ class AdminWorkflowRefinementTest extends DatabaseTestCase
         [$owner, $event] = $this->fixture();
         $admin = User::factory()->create(['role' => 'admin']);
         app(EventService::class)->submit($event, $owner);
-        $this->actingAs($admin)->patch(route('admin.event-verification.reject', $event), ['verification_note' => 'Perjelas rincian jadwal relawan'])->assertRedirect();
+        $this->actingAs($admin)->patch(route('admin.event-verification.reject', $event), ['verification_note' => 'Perjelas rincian jadwal volunteer'])->assertRedirect();
         $decided = $event->fresh()->verified_at;
         $this->get(route('admin.event-verification.index', ['status' => 'rejected']))->assertOk()->assertSee($event->title)
             ->assertViewHas('events', fn ($rows) => $rows->contains('id', $event->id));
         $this->get(route('admin.event-verification.show', $event))->assertOk()->assertSee('Keputusan sudah diberikan.');
         app(EventService::class)->submit($event->fresh(), $owner);
-        $this->get(route('admin.event-verification.show', $event))->assertOk()->assertSee('Perjelas rincian jadwal relawan')
+        $this->get(route('admin.event-verification.show', $event))->assertOk()->assertSee('Perjelas rincian jadwal volunteer')
             ->assertSee($decided->setTimezone('Asia/Jakarta')->format('d/m/Y H:i'))->assertSee('diperiksa kembali')
             ->assertSee('EO / Organisasi')->assertSee('Paket kegiatan')->assertSee('Jadwal kegiatan dan pendaftaran');
         $this->actingAs($owner)->get(route('admin.event-verification.show', $event))->assertForbidden();

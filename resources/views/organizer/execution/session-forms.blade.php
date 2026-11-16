@@ -42,7 +42,7 @@
                                 <input type="hidden" name="_note_session" value="{{ $session->id }}">
                                 <label class="block" for="session-note-{{ $session->id }}">Catatan (opsional)</label>
                                 <textarea x-ref="noteInput" id="session-note-{{ $session->id }}" name="note" maxlength="1000" rows="2" class="block w-full rounded-lg border-slate-300">{{ (int) old('_note_session') === $session->id ? old('note', $session->note) : $session->note }}</textarea>
-                                <p class="text-xs text-slate-500">Catatan ini dapat dilihat relawan.</p>
+                                <p class="text-xs text-slate-500">Catatan ini dapat dilihat volunteer.</p>
                                 <div class="flex flex-wrap items-center gap-3">
                                     <button type="submit" class="organizer-secondary-button organizer-info-edit" x-bind:disabled="busy">Simpan catatan</button>
                                     <button type="button" class="organizer-secondary-button organizer-position-delete" x-bind:disabled="busy" @click="$refs.noteInput.value = @js($session->note ?? ''); open = false">Batal</button>

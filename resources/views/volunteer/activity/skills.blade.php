@@ -1,7 +1,7 @@
 <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
 
     <h2 class="text-lg font-bold text-slate-900">
-        Skill dan Level
+        Keahlian dan Level
     </h2>
 
     <div class="mt-4 space-y-3">
@@ -12,12 +12,12 @@
                 <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0">
                         <p class="break-words text-sm font-semibold text-slate-900">
-                            {{ $row->skill?->name ?? 'Skill tidak tersedia' }}
+                            {{ $row->skill?->name ?? 'Keahlian tidak tersedia' }}
                         </p>
 
                         @if(!$row->skill?->is_active)
                             <p class="mt-1 text-xs font-medium text-amber-700">
-                                Skill sedang nonaktif
+                                Keahlian sedang nonaktif
                             </p>
                         @endif
                     </div>
@@ -32,7 +32,7 @@
 
             <div class="rounded-xl border border-dashed border-slate-300 p-4">
                 <p class="text-sm text-slate-500">
-                    Belum ada skill tersimpan.
+                    Belum ada keahlian tersimpan.
                 </p>
             </div>
 

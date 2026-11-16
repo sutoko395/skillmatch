@@ -1,11 +1,11 @@
 @props(['application'])
 @php
     $label = match ($application->status) {
-        'draft' => 'Draft',
-        'submitted' => $application->screeningResult?->passed ? 'Lolos screening — menunggu pencocokan' : 'Menunggu evaluasi',
-        'screening_failed' => 'Gagal screening',
-        'assessment_pending' => 'Menunggu assessment',
-        'under_review' => 'Siap Ditinjau',
+        'draft' => 'Draf',
+        'submitted' => $application->screeningResult?->passed ? 'Lolos penyaringan — menunggu pencocokan' : 'Menunggu evaluasi',
+        'screening_failed' => 'Gagal penyaringan',
+        'assessment_pending' => 'Menunggu asesmen',
+        'under_review' => 'Siap ditinjau',
         'accepted' => 'Diterima',
         'rejected' => 'Ditolak',
         'withdrawn' => 'Ditarik',

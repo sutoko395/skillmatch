@@ -501,7 +501,7 @@ def run():
                 lambda d: d.current_url != position_url
             )
 
-            passed("TC-10", "Penyimpanan posisi relawan")
+            passed("TC-10", "Penyimpanan posisi volunteer")
             result["status"] = "PASS"
 
             driver.save_screenshot(

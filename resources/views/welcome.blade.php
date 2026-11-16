@@ -1,6 +1,6 @@
 @extends('layouts.public')
-@section('title', 'Relawan, keterampilan, dan kontribusi')
-@section('description', 'Temukan kegiatan relawan berdasarkan keterampilan, waktu, dan lokasi. Mulai kontribusi bersama SkillMatch.')
+@section('title', 'Volunteer, keterampilan, dan kontribusi')
+@section('description', 'Temukan kegiatan volunteer berdasarkan keterampilan, waktu, dan lokasi. Mulai kontribusi bersama SkillMatch.')
 @section('content')
 <section class="eb-hero" aria-labelledby="hero-title">
     <div class="eb-container eb-hero-inner">
@@ -39,17 +39,17 @@
     </div>
 </section>
 <section class="eb-section eb-container" aria-labelledby="role-title">
-    <p class="eb-eyebrow">DUA PERAN, SATU RUANG KOLABORASI</p><h2 id="role-title" class="eb-display">Mulai dari peran Anda.</h2><p class="eb-intro">Volunteer membawa keterampilan. Organizer menyiapkan kegiatan dan kebutuhan relawan yang relevan.</p>
+    <p class="eb-eyebrow">DUA PERAN, SATU RUANG KOLABORASI</p><h2 id="role-title" class="eb-display">Mulai dari peran Anda.</h2><p class="eb-intro">Volunteer membawa keterampilan. Organizer menyiapkan kegiatan dan kebutuhan volunteer yang relevan.</p>
     <div class="eb-role-grid">
         @foreach([
-            ['volunteer', 'UNTUK VOLUNTEER', 'Temukan ruang untuk kontribusi Anda.', [['Buat akun dan lengkapi profil', 'Tambahkan kota, skill, level, dan jadwal ketersediaan Anda.'], ['Jelajahi kebutuhan relawan', 'Baca detail posisi, persyaratan, serta waktu pelaksanaan kegiatan.'], ['Ajukan lamaran dan ikuti seleksi', 'Lengkapi dokumen dan assessment sesuai posisi, lalu pantau perkembangan lamaran Anda.']]],
-            ['organizer', 'UNTUK ORGANIZER', 'Susun tim relawan dengan kebutuhan yang jelas.', [['Lengkapi profil organisasi', 'Daftarkan akun Organizer dan ikuti proses verifikasi organisasi.'], ['Rancang kegiatan dan posisi', 'Organizer aktif dapat menyiapkan event, skill, jadwal, persyaratan, dan paket.'], ['Ajukan ketika seluruh syarat siap', 'Penuhi moderasi, paket aktif, dan assessment yang sah sebelum memublikasikan kegiatan.']]],
+            ['volunteer', 'UNTUK VOLUNTEER', 'Temukan ruang untuk kontribusi Anda.', [['Buat akun dan lengkapi profil', 'Tambahkan kota, skill, level, dan jadwal ketersediaan Anda.'], ['Jelajahi kebutuhan volunteer', 'Baca detail posisi, persyaratan, serta waktu pelaksanaan kegiatan.'], ['Ajukan lamaran dan ikuti seleksi', 'Lengkapi dokumen dan assessment sesuai posisi, lalu pantau perkembangan lamaran Anda.']]],
+            ['organizer', 'UNTUK ORGANIZER', 'Susun tim volunteer dengan kebutuhan yang jelas.', [['Lengkapi profil organisasi', 'Daftarkan akun Organizer dan ikuti proses verifikasi organisasi.'], ['Rancang kegiatan dan posisi', 'Organizer aktif dapat menyiapkan event, skill, jadwal, persyaratan, dan paket.'], ['Ajukan ketika seluruh syarat siap', 'Penuhi moderasi, paket aktif, dan assessment yang sah sebelum memublikasikan kegiatan.']]],
         ] as [$role, $label, $title, $steps])
         <article class="eb-role-card"><p class="eb-eyebrow">{{ $label }}</p><h3>{{ $title }}</h3><ol>@foreach($steps as [$heading, $copy])<li><span>{{ $loop->iteration }}</span><div><h4>{{ $heading }}</h4><p>{{ $copy }}</p></div></li>@endforeach</ol><a class="eb-button" href="{{ auth()->check() ? route('dashboard') : route('register', ['role' => $role]) }}">{{ auth()->check() ? 'Lanjutkan ke akun saya' : 'Mulai sebagai '.ucfirst($role) }} ↗︎</a></article>
         @endforeach
     </div>
 </section>
-<section id="untuk-organizer" class="eb-container eb-section eb-organizer" aria-labelledby="organizer-title"><div><p class="eb-eyebrow">UNTUK ORGANIZER</p><h2 id="organizer-title" class="eb-display">Kegiatan hebat,<br>ketemu tim yang tepat.</h2><p class="eb-intro">Susun kebutuhan relawan, posisi, dan jadwal dalam satu tempat.</p></div><a class="eb-button" href="{{ auth()->check() ? route('dashboard') : route('register', ['role' => 'organizer']) }}">{{ auth()->check() ? 'Buka akun saya' : 'Mulai sebagai Organizer' }} ↗︎</a></section>
+<section id="untuk-organizer" class="eb-container eb-section eb-organizer" aria-labelledby="organizer-title"><div><p class="eb-eyebrow">UNTUK ORGANIZER</p><h2 id="organizer-title" class="eb-display">Kegiatan hebat,<br>ketemu tim yang tepat.</h2><p class="eb-intro">Susun kebutuhan volunteer, posisi, dan jadwal dalam satu tempat.</p></div><a class="eb-button" href="{{ auth()->check() ? route('dashboard') : route('register', ['role' => 'organizer']) }}">{{ auth()->check() ? 'Buka akun saya' : 'Mulai sebagai Organizer' }} ↗︎</a></section>
 <section id="paket" class="eb-container eb-section" aria-labelledby="packages-title"><p class="eb-eyebrow">PILIH KAPASITAS UNTUK KEGIATANMU</p><h2 id="packages-title" class="eb-display">Ruang untuk rencanamu.</h2><p class="eb-intro">Paket aktif mengikuti harga dan kapasitas yang tersedia. Pembayaran menggunakan Midtrans Sandbox.</p><div class="eb-package-grid">
     @forelse($packages as $package)
     <x-package-card :package="$package"><a class="eb-button" href="{{ auth()->check() ? route('dashboard') : route('register', ['role' => 'organizer']) }}">{{ auth()->check() ? 'Buka akun saya' : 'Mulai sebagai Organizer' }} ↗︎</a></x-package-card>

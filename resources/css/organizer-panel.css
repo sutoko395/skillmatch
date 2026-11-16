@@ -1,4 +1,8 @@
 /* FigCraft: Electric Blue / 02 Organizer. Shared components keep their other role styles. */
+.organizer-panel .panel-welcome > .bg-indigo-500\/10 { background:#e9efff; filter:none; pointer-events:none; }
+.organizer-panel .organizer-main .panel-welcome h1 { font-size:26px; line-height:1.3; font-weight:700; }
+.organizer-panel .organizer-main .panel-welcome h1 + p { font-size:13px; line-height:1.7; color:#64748b; }
+@media(max-width:639px) { .organizer-panel .organizer-main .panel-welcome h1 { font-size:22px; } }
 .organizer-panel {
     --organizer-blue: #2563eb;
     --organizer-blue-hover: #1d4ed8;

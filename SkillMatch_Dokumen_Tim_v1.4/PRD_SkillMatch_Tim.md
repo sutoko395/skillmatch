@@ -12,7 +12,7 @@ Alur meja absensi EO: cari peserta, buka/tutup rincian sesi, Tandai hadir langsu
 menyimpan sesi yang telah dimulai. Satu maupun banyak sesi memakai pola sama.
 Tidak hadir/koreksi tetap melalui Ubah kehadiran. Catatan opsional memiliki simpan
 terpisah, bisa ditulis tanpa mengubah status hadir/absent/unrecorded. Catatan sesi
-terlihat oleh relawan pada detail lamaran dan, setelah terminal, riwayat existing.
+terlihat oleh volunteer pada detail lamaran dan, setelah terminal, riwayat existing.
 Penguncian completed/cancelled, accepted, waktu sesi dan pemeriksaan revision tetap.
 
 ## Absensi final saat kegiatan selesai - keputusan pengguna 15 November 2026
@@ -408,7 +408,7 @@ Permintaan pengguna mengizinkan penerapan FigCraft Electric Blue / 06 Publik dan
 
 
 ## Usia yang disarankan per posisi ? keputusan pengguna 15 November 2026
-Posisi memiliki suggested_min_age dan suggested_max_age nullable unsigned tiny integer (0?255 sebagai batas penyimpanan), masing-masing opsional. Jika keduanya diisi, maksimum harus >= minimum. Kosong berarti tidak ada saran usia pada sisi tersebut; posisi existing tetap null. EO mengatur saat konfigurasi posisi mengikuti otorisasi dan kunci publikasi existing. Form serta detail posisi EO/relawan menampilkan usia pada tanggal mulai kegiatan sebagai informasi, bukan syarat wajib. Relawan di luar rentang tetap dapat melamar; screening, assessment, matching 50/30/20 dan snapshot evaluasi tidak memakai kolom ini. Profil relawan tetap menyimpan birth_date, tidak menambah kolom umur profil.
+Posisi memiliki suggested_min_age dan suggested_max_age nullable unsigned tiny integer (0?255 sebagai batas penyimpanan), masing-masing opsional. Jika keduanya diisi, maksimum harus >= minimum. Kosong berarti tidak ada saran usia pada sisi tersebut; posisi existing tetap null. EO mengatur saat konfigurasi posisi mengikuti otorisasi dan kunci publikasi existing. Form serta detail posisi EO/volunteer menampilkan usia pada tanggal mulai kegiatan sebagai informasi, bukan syarat wajib. Volunteer di luar rentang tetap dapat melamar; screening, assessment, matching 50/30/20 dan snapshot evaluasi tidak memakai kolom ini. Profil volunteer tetap menyimpan birth_date, tidak menambah kolom umur profil.
 Migration tambahan: database/migrations/2026_11_15_160000_add_suggested_age_to_event_positions.php. Tidak ada route baru. UI berbagi components/position-suggested-age.blade.php. A2 pemilik kolom dan konfigurasi; A3/A4 tidak perlu menambahkan pembatasan umur.
 UAT: kosong/satu sisi/rentang valid tersimpan dan tampil, rentang terbalik/negatif/non-integer ditolak, kosongkan kedua nilai menghapus saran, pemilik lain ditolak, posisi published tetap terkunci, snapshot evaluasi identik setelah hanya usia diubah.
 

@@ -1,5 +1,5 @@
 <x-section-card class="vd-documents">
-    <div class="-mx-6 -mt-6 rounded-t-2xl border-b border-orange-100 bg-orange-50 px-6 py-4">
+    <div class="-mx-6 -mt-6 rounded-t-2xl border-b border-slate-200 bg-slate-50 px-6 py-4">
         <h2 class="text-lg font-bold text-slate-900">Dokumen lamaran</h2>
     </div>
     @if ($application->status === 'draft')
@@ -25,7 +25,7 @@
                             <form method="POST" action="{{ route('volunteer.documents.destroy', $doc) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dokumen ini?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="rounded font-semibold text-rose-600 hover:text-rose-800 focus:outline-none focus:ring-2 focus:ring-rose-500">Hapus<span class="sr-only"> {{ $doc->original_name }}</span></button>
+                                <button type="submit" class="volunteer-action volunteer-action--danger rounded font-semibold text-rose-600 hover:text-rose-800 focus:outline-none focus:ring-2 focus:ring-rose-500"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M9 6V4h6v2M5 6l1 14h12l1-14M10 10v6m4-6v6" /></svg> Hapus<span class="sr-only"> {{ $doc->original_name }}</span></button>
                             </form>
                         @endif
                     @endif
@@ -38,22 +38,22 @@
     {{-- Form Upload Dokumen (Jika masih Draft) --}}
     @if($application->status === 'draft')
         <div class="mt-6 rounded-xl bg-slate-50 p-4 border border-slate-200">
-            <h4 class="font-semibold text-gray-900">Unggah Dokumen Baru</h4>
+            <h4 class="font-semibold text-gray-900">Unggah dokumen Baru</h4>
             <form method="POST" action="{{ route('volunteer.documents.store', $application) }}" enctype="multipart/form-data" class="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3">
                 @csrf
                 <div>
-                    <label for="application-document-type" class="block text-xs font-medium text-slate-700">Tipe Dokumen</label>
+                    <label for="application-document-type" class="block text-xs font-medium text-slate-700">Jenis dokumen</label>
                     <select id="application-document-type" name="document_type" class="mt-1 block w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
                         <option value="cv">Curriculum Vitae (CV) - PDF</option>
                         <option value="supporting">Dokumen Pendukung - PDF/JPG/PNG</option>
                     </select>
                 </div>
                 <div>
-                    <label for="application-document-file" class="block text-xs font-medium text-slate-700">Pilih File (Maks. 5 MB)</label>
+                    <label for="application-document-file" class="block text-xs font-medium text-slate-700">Pilih berkas (maksimal 5 MB)</label>
                     <input id="application-document-file" type="file" name="file" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:rounded-md file:border-0 file:bg-indigo-50 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100" required />
                 </div>
                 <div class="flex items-end">
-                    <x-button type="submit" class="w-full justify-center">Unggah Dokumen</x-button>
+                    <x-button type="submit" class="w-full justify-center">Unggah dokumen</x-button>
                 </div>
             </form>
         </div>

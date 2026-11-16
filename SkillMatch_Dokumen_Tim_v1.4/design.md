@@ -88,7 +88,7 @@ sesi outline biru; tombol berubah Tutup sesi saat terbuka. Berlaku untuk satu at
 banyak sesi. Baris sesi ringkas tanggal/jam/status/waktu dicatat + Tandai hadir
 biru jika sesi dibuka dan belum present. Sudah hadir memakai badge hijau.
 + Tambah catatan membuka textarea opsional + Simpan catatan; jika terisi berubah
-Lihat/Edit catatan. Ada keterangan singkat Catatan ini dapat dilihat relawan.
+Lihat/Edit catatan. Ada keterangan singkat Catatan ini dapat dilihat volunteer.
 Ubah kehadiran menyimpan kontrol Hadir/Tidak hadir dalam disclosure terpisah.
 Catatan terminal readonly tetap dapat dibuka. Filter/pagination/legacy/completion
 existing tetap. Sukses membuka kembali kartu terkait; error membuka kartu dan
@@ -1238,7 +1238,7 @@ Hapus `body:not(.ready){display:none}` dari layout ZIP. Gunakan x-cloak hanya pa
 
 ## Penyesuaian 5 Oktober 2026 - beranda dan dashboard dasar
 
-Pertahankan hero beranda baseline "Hubungkan Talent Relawan dengan Event Terbaik", identitas indigo, tombol Masuk/Daftar dan footer tim. Gunakan layout/navbar SF agar Inter dan Alpine tetap dimuat sekali. Pengguna yang login melihat CTA menuju tujuan sah sesuai role/status melalui redirect bersama; jangan menyebut halaman pengguna sebagai dashboard analitik. Teks promosi tidak mengklaim engine matching yang belum tersedia sudah berfungsi. Pemberitahuan katalog/matching yang belum tersedia hanya keterangan pendukung, bukan pengganti seluruh beranda.
+Pertahankan hero beranda baseline "Hubungkan Talent Volunteer dengan Event Terbaik", identitas indigo, tombol Masuk/Daftar dan footer tim. Gunakan layout/navbar SF agar Inter dan Alpine tetap dimuat sekali. Pengguna yang login melihat CTA menuju tujuan sah sesuai role/status melalui redirect bersama; jangan menyebut halaman pengguna sebagai dashboard analitik. Teks promosi tidak mengklaim engine matching yang belum tersedia sudah berfungsi. Pemberitahuan katalog/matching yang belum tersedia hanya keterangan pendukung, bukan pengganti seluruh beranda.
 
 A2 mengembangkan beranda ini dan menghubungkan katalog setelah route/data publik memenuhi kontrak. A1 mempertahankan kartu hitungan database dan aksi cepat admin, kemudian menambah analitik periode, tren dan state. Tidak mengembalikan sidebar pengguna, login terpisah, statistik dummy atau tautan kosong dari baseline.
 
@@ -1363,7 +1363,7 @@ Bukti: docs/VOLUNTEER_EVENT_DETAIL_DESIGN_HANDOFF.md pada root repository.
 
 
 ## Usia yang disarankan per posisi ? keputusan pengguna 15 November 2026
-Posisi memiliki suggested_min_age dan suggested_max_age nullable unsigned tiny integer (0?255 sebagai batas penyimpanan), masing-masing opsional. Jika keduanya diisi, maksimum harus >= minimum. Kosong berarti tidak ada saran usia pada sisi tersebut; posisi existing tetap null. EO mengatur saat konfigurasi posisi mengikuti otorisasi dan kunci publikasi existing. Form serta detail posisi EO/relawan menampilkan usia pada tanggal mulai kegiatan sebagai informasi, bukan syarat wajib. Relawan di luar rentang tetap dapat melamar; screening, assessment, matching 50/30/20 dan snapshot evaluasi tidak memakai kolom ini. Profil relawan tetap menyimpan birth_date, tidak menambah kolom umur profil.
+Posisi memiliki suggested_min_age dan suggested_max_age nullable unsigned tiny integer (0?255 sebagai batas penyimpanan), masing-masing opsional. Jika keduanya diisi, maksimum harus >= minimum. Kosong berarti tidak ada saran usia pada sisi tersebut; posisi existing tetap null. EO mengatur saat konfigurasi posisi mengikuti otorisasi dan kunci publikasi existing. Form serta detail posisi EO/volunteer menampilkan usia pada tanggal mulai kegiatan sebagai informasi, bukan syarat wajib. Volunteer di luar rentang tetap dapat melamar; screening, assessment, matching 50/30/20 dan snapshot evaluasi tidak memakai kolom ini. Profil volunteer tetap menyimpan birth_date, tidak menambah kolom umur profil.
 Migration tambahan: database/migrations/2026_11_15_160000_add_suggested_age_to_event_positions.php. Tidak ada route baru. UI berbagi components/position-suggested-age.blade.php. A2 pemilik kolom dan konfigurasi; A3/A4 tidak perlu menambahkan pembatasan umur.
 UAT: kosong/satu sisi/rentang valid tersimpan dan tampil, rentang terbalik/negatif/non-integer ditolak, kosongkan kedua nilai menghapus saran, pemilik lain ditolak, posisi published tetap terkunci, snapshot evaluasi identik setelah hanya usia diubah.
 
@@ -1416,6 +1416,21 @@ Reset filter admin disamakan dengan EO di Organizer, Volunteer, verifikasi kegia
 
 
 ### Konsistensi akhir Admin dan uji alur ? 15 November 2026
-Permintaan pengguna mencakup istilah, modal dan detail verifikasi ponsel. Teks UI admin memakai Kegiatan, Relawan, Keahlian; status transaksi ditampilkan Menunggu pembayaran/Lunas/Gagal/Kedaluwarsa/Dibatalkan/Perlu pemeriksaan. Enum, route, field, Alpine camelCase dan data tetap. Modal menempatkan submit sebelum Batal, tombol simpan outline biru, pembatalan/hapus outline merah, dan tutup Escape; dismiss icon diberi nama aksesibel. Nonaktifkan relawan merah, Aktifkan biru. Pintasan ponsel menuju #verification-decision dan #verification-note memudahkan menemukan keputusan/catatan tanpa mengubah urutan informasi desktop.
+Permintaan pengguna mencakup istilah, modal dan detail verifikasi ponsel. Teks UI admin memakai Kegiatan, Volunteer, Keahlian; status transaksi ditampilkan Menunggu pembayaran/Lunas/Gagal/Kedaluwarsa/Dibatalkan/Perlu pemeriksaan. Enum, route, field, Alpine camelCase dan data tetap. Modal menempatkan submit sebelum Batal, tombol simpan outline biru, pembatalan/hapus outline merah, dan tutup Escape; dismiss icon diberi nama aksesibel. Nonaktifkan volunteer merah, Aktifkan biru. Pintasan ponsel menuju #verification-decision dan #verification-note memudahkan menemukan keputusan/catatan tanpa mengubah urutan informasi desktop.
 84 tes backend/624 asersi lulus: AdminWorkflowRefinement, FoundationAccess, FoundationIntegrity, IntegratedFlows, A2Event, A2Payment, DefaultPackage, OrganizerKtpUpload. Mencakup akses lintas role, verifikasi/revisi/resubmit organisasi, moderasi dan publikasi, validasi paket/snapshot, callback pembayaran terverifikasi/replay/idempotensi, serta filter transaksi. Ini tes otomatis MySQL testing terpisah; gateway pembayaran memakai fixture/mocking existing, bukan transaksi Sandbox nyata. Tidak ada perubahan keputusan bisnis pada langkah konsistensi ini.
 Build dan diff --check lulus. Fixture 13 halaman HTTP 200 dengan rollback; review browser termasuk modal/ponsel dicatat setelah selesai. Tidak ada commit/push; branch feature/admin-ui-refinement.
+
+
+## Panel Volunteer konsisten dengan EO/Admin - 15 November 2026
+Permintaan pengguna menyamakan sidebar navy/logo bersama, warna biru, kartu putih,
+border statistik berwarna, hierarki font 26/22-18-15-13-12px, tombol detail/edit
+outline biru, kembali solid merah dan hapus/batal outline merah. Posisi kembali
+kiri atas, detail pada bagian aksi kartu. Katalog panel memiliki header/filter
+ringkas; halaman publik tetap terpisah. Istilah Volunteer/Kegiatan/Keahlian/
+Penyaringan/Asesmen/Draf dan sapaan Anda digunakan konsisten, termasuk label
+notifikasi dan Panel Volunteer pada navbar. Tidak mengubah aturan bisnis, route,
+status atau snapshot. Detail implementasi, bukti dan batas pengujian:
+[handoff volunteer](../docs/VOLUNTEER_EO_STYLE_HANDOFF.md).
+
+### Penyelarasan panel volunteer (16 November 2026)
+Atas arahan pengguna, seluruh menu volunteer memakai kepadatan EO/admin: judul halaman 26px (22px di ponsel), judul bagian 16px, subjudul 14px, isi 13px, metadata 11-12px, jarak antarkartu 16px, serta tombol outline biru dan kembali merah. Padding kartu dan ringkasan dipadatkan tanpa mengubah aturan bisnis atau area pilihan soal minimal 44px. Detail hasil pemeriksaan ada di docs/VOLUNTEER_EO_STYLE_HANDOFF.md pada root repository.

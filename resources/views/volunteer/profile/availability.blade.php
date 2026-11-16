@@ -10,7 +10,7 @@
         </p>
     </div>
 
-    <div class="rounded-xl border border-orange-100 bg-orange-50 px-4 py-3 text-sm text-orange-800">
+    <div class="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-800">
         Masukkan tanggal dan jam mulai serta akhir.
         Interval yang tumpang tindih tetap disimpan dan durasinya akan digabungkan saat perhitungan.
     </div>
@@ -72,8 +72,8 @@
         </template>
 
         <div>
-            <x-secondary-button data-add>
-                <span aria-hidden="true" class="mr-2 text-lg leading-none">+</span> Tambah interval
+            <x-secondary-button data-add class="volunteer-action volunteer-action--blue">
+               <span aria-hidden="true" class="mr-2 text-lg leading-none">+</span> Tambah interval
             </x-secondary-button>
         </div>
 

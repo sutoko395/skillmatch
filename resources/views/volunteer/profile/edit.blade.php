@@ -7,7 +7,7 @@
 <div class="vp-profile w-full max-w-7xl mx-auto space-y-6">
     <x-page-header
         title="Profil Volunteer"
-        description="Lengkapi identitas, kota, skill dan tanggal ketersediaan Anda."
+        description="Lengkapi identitas, kota, keahlian dan tanggal ketersediaan Anda."
     />
     <form method="POST" action="{{ route('volunteer.profile.update') }}" class="space-y-6" data-saving-form>
         @csrf

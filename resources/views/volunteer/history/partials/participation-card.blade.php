@@ -31,4 +31,5 @@
         </div>
     </dl>
     <div class="vh-attendance"><x-attendance-session-summary :attendance="$application->attendance" /></div>
+    <div class="volunteer-card-actions"><a href="{{ route('volunteer.applications.show', $application) }}" class="volunteer-action volunteer-action--blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg> Lihat detail</a></div>
 </article>

@@ -22,11 +22,11 @@
 
                 <div class="px-6 py-5 border-b border-slate-100">
                     <h2 class="text-lg font-bold text-slate-800">
-                        Posisi relawan
+                        Posisi volunteer
                     </h2>
 
                     <p class="mt-1 text-sm text-slate-500">
-                        Tugas, jadwal, dan kebutuhan relawan.
+                        Tugas, jadwal, dan kebutuhan volunteer.
                     </p>
                 </div>
 
@@ -43,7 +43,7 @@
                                     </h3>
 
                                     <p class="mt-1 text-sm text-slate-500">
-                                        Kuota {{ $position->quota }} relawan
+                                        Kuota {{ $position->quota }} volunteer
                                     </p>
                                 </div>
 
@@ -101,7 +101,7 @@
                         </div>
                     @empty
                         <div class="px-6 py-10 text-center text-slate-500">
-                            Belum ada posisi relawan.
+                            Belum ada posisi volunteer.
                         </div>
                     @endforelse
 

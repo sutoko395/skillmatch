@@ -1,6 +1,6 @@
 @extends('admin.layouts.sidebar')
 
-@section('title', 'Manajemen Relawan')
+@section('title', 'Manajemen Volunteer')
 
 @section('content')
 
@@ -14,11 +14,11 @@
 
     <div>
         <h1 class="text-2xl font-bold text-slate-800">
-            Manajemen Relawan
+            Manajemen Volunteer
         </h1>
 
         <p class="mt-1 text-sm text-slate-500">
-            Kelola akun Relawan dalam sistem SkillMatch.
+            Kelola akun Volunteer dalam sistem SkillMatch.
         </p>
     </div>
 
@@ -26,7 +26,7 @@
 
         <div class="admin-stat admin-stat--blue bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
             <p class="text-xs font-semibold text-slate-400">
-                Total Relawan
+                Total Volunteer
             </p>
 
             <p class="mt-2 text-2xl font-bold text-slate-800">
@@ -67,7 +67,7 @@
             <div class="flex-1 min-w-0">
 
                 <label class="block text-sm font-semibold text-slate-700 mb-2">
-                    Cari Relawan
+                    Cari Volunteer
                 </label>
 
                 <input
@@ -131,12 +131,12 @@
         <div class="px-6 py-5 border-b border-slate-100">
 
             <h2 class="text-lg font-bold text-slate-800">
-                Daftar Relawan
+                Daftar Volunteer
             </h2>
 
             <p class="mt-1 text-sm text-slate-500">
                 Menampilkan {{ $volunteers->firstItem() ?? 0 }}-{{ $volunteers->lastItem() ?? 0 }}
-                dari {{ $volunteers->total() }} Relawan.
+                dari {{ $volunteers->total() }} Volunteer.
             </p>
 
         </div>
@@ -263,7 +263,7 @@
                             <td class="px-6 py-4">
 
                                 <span class="inline-flex px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-600 text-xs font-bold">
-                                    Relawan
+                                    Volunteer
                                 </span>
 
                             </td>
@@ -351,7 +351,7 @@
                                 colspan="6"
                                 class="px-6 py-12 text-center text-slate-500"
                             >
-                                Tidak ada Relawan yang ditemukan.
+                                Tidak ada Volunteer yang ditemukan.
                             </td>
 
                         </tr>
@@ -396,7 +396,7 @@
                         <div>
 
                             <h2 class="text-lg font-bold text-slate-800">
-                                Ubah Status Relawan
+                                Ubah Status Volunteer
                             </h2>
 
                             <p class="mt-1 text-sm text-slate-500">
@@ -551,7 +551,7 @@
                         </div>
 
                         <h2 class="mt-5 text-lg font-bold text-slate-800">
-                            Hapus Relawan?
+                            Hapus Volunteer?
                         </h2>
 
                         <p class="mt-2 text-sm leading-6 text-slate-500">

@@ -34,7 +34,7 @@
                     </svg>
                 </div>
                 <div class="min-w-0">
-                    <p class="text-sm text-gray-500">Total Relawan</p>
+                    <p class="text-sm text-gray-500">Total Volunteer</p>
                     <h3 class="mt-1 text-3xl font-bold text-gray-800">{{ number_format($totalVolunteers) }}</h3>
                 </div>
             </div>
@@ -122,7 +122,7 @@
     <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
             <h2 id="chartTitle" class="text-lg font-bold text-gray-900">
-                Tren Pendaftaran Relawan
+                Tren Pendaftaran Volunteer
             </h2>
 
             <p class="mt-1 text-sm text-gray-500">
@@ -218,8 +218,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const configs = {
         volunteers: {
-            title: 'Tren Pendaftaran Relawan',
-            label: 'Relawan baru',
+            title: 'Tren Pendaftaran Volunteer',
+            label: 'Volunteer baru',
             color: '#2563eb'
         },
         organizers: {
