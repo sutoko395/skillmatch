@@ -114,7 +114,7 @@
                 </div>
                 <div>
                     <dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z" /><circle cx="12" cy="10" r="2.5" /></svg><span>Lokasi</span></dt>
-                    <dd>{{ $event->location }} &middot; {{ $event->city }}</dd>
+                    <dd>{{ $event->location }} &middot; {{ $event->cityRecord?->name ?? $event->city }}@if($event->cityRecord?->province), {{ $event->cityRecord->province->name }}@endif</dd>
                 </div>
                 <div>
                     <dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 2" /></svg><span>Pelaksanaan (WIB)</span></dt>

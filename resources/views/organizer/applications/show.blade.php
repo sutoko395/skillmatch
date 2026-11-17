@@ -58,7 +58,7 @@
                 </div>
                 <div>
                     <span class="organizer-review-field-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>Kota Domisili</span>
-                    <p class="text-sm text-slate-700">{{ $candidate['city_name'] ?? (isset($candidate['city_id']) ? 'Kota #'.$candidate['city_id'] : 'Tidak tercatat dalam snapshot') }}</p>
+                    <p class="text-sm text-slate-700">{{ $candidate['city_name'] ?? (isset($candidate['city_id']) ? 'Kota #'.$candidate['city_id'] : 'Tidak tercatat dalam snapshot') }}@if($candidate['city_province'] ?? null), {{ $candidate['city_province'] }}@endif</p>
                 </div>
                 <div>
                     <span class="organizer-review-field-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z M14 2v6h6M8 13h8M8 17h5"/></svg>Bio Singkat</span>

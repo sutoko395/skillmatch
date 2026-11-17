@@ -7,7 +7,7 @@
     <p class="mt-2 whitespace-pre-line break-words text-sm leading-relaxed text-slate-600">{{ $event->description }}</p>
     <dl class="mt-5 grid gap-4 rounded-xl bg-slate-50 p-4 sm:grid-cols-2">
         <div><dt class="text-xs text-slate-500">Kategori</dt><dd class="mt-1 text-sm font-medium">{{ $event->category?->name ?? 'Belum tersedia' }}</dd></div>
-        <div><dt class="text-xs text-slate-500">Lokasi</dt><dd class="mt-1 text-sm font-medium">{{ $event->location }} &middot; {{ $event->cityRecord?->name ?? $event->city }}</dd></div>
+        <div><dt class="text-xs text-slate-500">Lokasi</dt><dd class="mt-1 text-sm font-medium">{{ $event->location }} &middot; {{ $event->cityRecord?->name ?? $event->city }}@if($event->cityRecord?->province), {{ $event->cityRecord->province->name }}@endif</dd></div>
     </dl>
     <div class="mt-5 border-t border-slate-100 pt-4">
         <h3 class="flex items-center gap-2"><svg class="h-4 w-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 11h18"/></svg>Jadwal kegiatan dan pendaftaran</h3>

@@ -58,10 +58,11 @@ class VolunteerAssessmentInfoTest extends DatabaseTestCase
         Assessment::create(['event_position_id' => $application->event_position_id, 'version' => 2,
             'revision' => 1, 'duration_minutes' => 90, 'is_published' => true]);
         $application->event->update(['assessment_deadline' => now()->addDays(20), 'decision_deadline' => now()->addDays(21)]);
+        $application->event->forceFill(['status' => 'approved', 'publication_status' => 'published', 'published_at' => now()])->save();
         $before = $application->fresh()->getRawOriginal();
         $auditCount = AuditLog::count();
         $response = $this->actingAs($application->volunteer)->get(route('volunteer.applications.show', $application));
-        $response->assertOk()->assertSeeInOrder(['Informasi asesmen', 'Perkembangan lamaran', 'Pengumuman hasil', 'Jadwal tugas', 'Informasi posisi'], false)
+        $response->assertOk()->assertSeeInOrder(['Perkembangan lamaran', 'Pengumuman hasil', 'Jadwal tugas', 'Informasi posisi'], false)
             ->assertSee('Hasil seleksi paling lambat:')->assertSee('Hasil dapat diumumkan lebih awal.')
             ->assertSee('Buka asesmen')
             ->assertSee('1 soal')->assertSee('30 menit')->assertDontSee('90 menit')

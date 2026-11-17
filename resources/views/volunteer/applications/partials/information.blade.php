@@ -65,7 +65,7 @@
             <svg aria-hidden="true" class="mt-0.5 h-9 w-9 shrink-0 rounded-lg bg-indigo-50 p-2 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2.5" /></svg>
             <div class="min-w-0">
                 <h3 class="text-sm font-semibold text-slate-700">Lokasi kegiatan</h3>
-                <p class="mt-1 break-words text-sm text-slate-900">{{ $application->event->location }} &middot; {{ $application->event->cityRecord?->name }}</p>
+                <p class="mt-1 break-words text-sm text-slate-900">{{ $application->event->location }} &middot; {{ $application->event->cityRecord?->name }}@if($application->event->cityRecord?->province), {{ $application->event->cityRecord->province->name }}@endif</p>
             </div>
         </div>
         @if ($showEventTime)

@@ -26,7 +26,9 @@ class PhoneValidationTest extends DatabaseTestCase
     private function organizerData(): array
     {
         return ['organization_name' => 'Phone organization', 'contact_person' => 'PIC Uji',
-            'phone' => '081234567890', 'address' => 'Alamat uji', 'city' => 'Malang', 'description' => 'Organisasi uji'];
+            'phone' => '081234567890', 'address' => 'Alamat uji',
+            'city_id' => City::firstOrCreate(['name' => 'Kota Phone Organizer'], ['is_active' => true])->id,
+            'description' => 'Organisasi uji'];
     }
 
     public function test_invalid_phone_requests_never_create_or_overwrite_volunteer_profiles(): void

@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
         }
         $this->call([
             MasterDataSeeder::class,
+            EastJavaRegionSeeder::class,
             UserSeeder::class,
             DefaultPackageSeeder::class,
         ]);

@@ -137,7 +137,7 @@ class ScreeningRulesTest extends TestCase
             'passed' => false, 'checks_json' => $evaluation['checks'], 'evaluated_at' => now(),
         ]));
         $html = Blade::render('<x-application-screening :application="$application" />', compact('application'));
-        $this->assertStringContainsString('Lamaranmu belum bisa dilanjutkan ke tahap selanjutnya.', $html);
+        $this->assertStringContainsString('Lamaran Anda belum bisa dilanjutkan ke tahap selanjutnya.', $html);
         $this->assertStringNotContainsString('<script>', $html);
         $this->assertStringNotContainsString('<table', $html);
         $eo = Blade::render('<x-application-screening :application="$application" :detailed="true" />', compact('application'));
@@ -167,7 +167,7 @@ class ScreeningRulesTest extends TestCase
         $html = Blade::render('<x-application-screening :application="$application" />', compact('application'));
         $this->assertStringContainsString('Lolos screening', $html);
         $this->assertStringContainsString('menunggu proses pencocokan', $html);
-        $this->assertStringNotContainsString('Mulai assessment', $html);
+        $this->assertStringNotContainsString('Mulai asesmen', $html);
         $application->status = 'draft';
         $this->assertStringNotContainsString('Hasil screening', Blade::render('<x-application-screening :application="$application" />', compact('application')));
     }

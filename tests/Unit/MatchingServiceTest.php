@@ -83,11 +83,11 @@ class MatchingServiceTest extends TestCase
             'passed' => true, 'checks_json' => [], 'evaluated_at' => now(),
         ]));
         $html = Blade::render('<x-application-status :application="$application" /><x-application-screening :application="$application" />', compact('application'));
-        $this->assertStringContainsString('Menunggu assessment', $html);
-        $this->assertStringContainsString('Pencocokan selesai. Lamaranmu siap lanjut ke assessment.', $html);
+        $this->assertStringContainsString('Menunggu asesmen', $html);
+        $this->assertStringContainsString('Pencocokan selesai. Lamaran Anda siap lanjut ke assessment.', $html);
         $this->assertStringNotContainsString('Match Score', $html);
         $this->assertStringNotContainsString('Kecocokan kandidat', $html);
-        $this->assertStringNotContainsString('Mulai assessment', $html);
+        $this->assertStringNotContainsString('Mulai asesmen', $html);
     }
 
     public static function invalidCases(): array

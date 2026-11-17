@@ -85,7 +85,7 @@ class EventCoordinationTest extends DatabaseTestCase
         $this->putJson($route, array_replace($this->input(), ['pic_name' => 'Stale overwrite']))->assertUnprocessable()->assertJsonValidationErrors('revision');
         $this->put($route, ['revision' => 1, 'group_url' => null, 'pic_name' => null, 'pic_contact' => null])->assertRedirect();
         $this->assertSame(2, NotificationOutbox::where('type', 'event.coordination_updated')->where('application_id', $application->id)->count());
-        $this->actingAs($application->volunteer)->get(route('volunteer.applications.show', $application))->assertOk()->assertSee('Organizer belum membagikan tautan grup')->assertDontSee('Gabung grup peserta');
+        $this->actingAs($application->volunteer)->get(route('volunteer.applications.show', $application))->assertOk()->assertSee('Penyelenggara belum membagikan tautan grup')->assertDontSee('Gabung grup peserta');
     }
 
     public function test_unsafe_links_and_terminal_edits_are_rejected_and_empty_coordination_remains_optional(): void
@@ -100,7 +100,7 @@ class EventCoordinationTest extends DatabaseTestCase
         $this->put($route, ['revision' => 0, 'group_url' => '', 'pic_name' => '', 'pic_contact' => ''])->assertRedirect();
         $this->assertDatabaseMissing('event_coordinations', ['event_id' => $event->id]);
         app(SelectionService::class)->accept($application, $event->organizer);
-        $this->actingAs($application->volunteer)->get(route('volunteer.applications.show', $application))->assertOk()->assertSee('Organizer belum membagikan tautan grup');
+        $this->actingAs($application->volunteer)->get(route('volunteer.applications.show', $application))->assertOk()->assertSee('Penyelenggara belum membagikan tautan grup');
         foreach (['completed', 'cancelled'] as $status) {
             $event->forceFill(['lifecycle_status' => $status])->save();
             $this->actingAs($event->organizer)->putJson($route, $this->input())->assertConflict();

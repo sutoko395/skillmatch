@@ -33,7 +33,7 @@
                     <span class="organizer-candidate-avatar" aria-hidden="true">{{ mb_strtoupper(mb_substr($app->volunteer->name, 0, 1)) }}</span>
                     <div class="min-w-0">
                         <h2 class="organizer-candidate-name">{{ $app->volunteer->name }}</h2>
-                        <p class="organizer-candidate-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>{{ $app->volunteer->volunteerProfile?->cityRecord?->name ?? 'Kota belum diisi' }}</span></p>
+                        <p class="organizer-candidate-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>{{ $app->volunteer->volunteerProfile?->cityRecord?->name ?? 'Kota belum diisi' }}@if($app->volunteer->volunteerProfile?->cityRecord?->province), {{ $app->volunteer->volunteerProfile->cityRecord->province->name }}@endif</span></p>
                         <p class="organizer-candidate-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12a22 22 0 0 0 18 0M12 11v3"/></svg><span>{{ $app->position->name }}</span></p>
                         <div class="mt-3"><x-application-status :application="$app" /></div>
                     </div>

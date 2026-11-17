@@ -69,6 +69,7 @@ class EventController extends Controller
                 $query->whereRaw("title LIKE ? ESCAPE '!'", ['%'.$literal.'%']);
             })
             ->when($status !== '', fn ($query) => $query->where('status', $status))
+            ->with('cityRecord.province')
             ->latest()
             ->paginate(12)
             ->appends(['search' => $search, 'status' => $status]);
@@ -77,7 +78,7 @@ class EventController extends Controller
             'events' => $events,
             'search' => $search,
             'status' => $status,
-            'cities' => City::where('is_active', true)->orderBy('name')->get(),
+            'cities' => City::where('is_active', true)->with('province')->orderBy('name')->get(),
             'packages' => $this->formPackages(),
             'categories' => Category::where('is_active', true)
                 ->orderBy('name')
@@ -97,7 +98,7 @@ class EventController extends Controller
         return view('organizer.events.form', [
             'event' => $event,
             'packages' => $this->formPackages($event),
-            'cities' => City::where('is_active', true)->orderBy('name')->get(),
+            'cities' => City::where('is_active', true)->with('province')->orderBy('name')->get(),
             'categories' => Category::where('is_active', true)
                 ->orderBy('name')
                 ->get(),
@@ -154,6 +155,7 @@ class EventController extends Controller
         return view('organizer.events.show', [
             'coordination' => app(EventCoordinationService::class)->forOrganizer($event, auth()->user()),
             'event' => $event->load([
+                'cityRecord.province',
                 'positions.positionSkills.skill',
                 'positions.schedules',
                 'positions.requirements',
