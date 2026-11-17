@@ -183,8 +183,8 @@ class MatchingTest extends DatabaseTestCase
             ->assertOk()->assertSee('Skor kecocokan')->assertSee('80,00');
 
         $this->actingAs($application->volunteer)->get(route('volunteer.applications.show', $application))
-            ->assertOk()->assertSee('Menunggu assessment')
-            ->assertSee('Pencocokan selesai. Lamaranmu siap lanjut ke asesmen.')
+            ->assertOk()->assertSee('Menunggu asesmen')
+            ->assertSee('Pencocokan selesai. Lamaran Anda siap lanjut ke asesmen.')
             ->assertDontSee('Kecocokan kandidat')->assertDontSee('Match Score')->assertDontSee('80,00');
         $this->get(route('organizer.applications.show', $application))->assertForbidden();
         $otherOrganizer = User::factory()->create(['role' => 'organizer', 'organizer_status' => 'active']);

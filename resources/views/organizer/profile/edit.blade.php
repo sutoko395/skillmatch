@@ -88,12 +88,17 @@
                     />
 
                     <div class="grid gap-6 md:grid-cols-2">
-                        <x-form-field
-                            name="city"
-                            label="Kota"
-                            :value="old('city')"
-                            required
-                        />
+                        <x-form-field name="city_id" label="Kota/Kabupaten" required>
+                            <select
+                                id="city_id"
+                                name="city_id"
+                                required
+                                class="mt-2 w-full rounded-xl border-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500"
+                            >
+                                <option value="">Pilih Kota/Kabupaten</option>
+                                <x-city-options :cities="$cities" :selected="$profile?->city_id" />
+                            </select>
+                        </x-form-field>
 
                         <x-form-field
                             name="website"
@@ -195,7 +200,7 @@
             </div>
             <dl class="organizer-profile-details">
                 <div class="organizer-profile-field"><span class="organizer-profile-field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><dt>Alamat lengkap</dt><dd>{{ $profile->address }}</dd></div></div>
-                <div class="organizer-profile-field"><span class="organizer-profile-field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h3a1 1 0 0 1 1 1v11M8 7h4M8 11h4M8 15h4M2 21h20M9 21v-3h2v3"/></svg></span><div><dt>Kota</dt><dd>{{ $profile->city }}</dd></div></div>
+                <div class="organizer-profile-field"><span class="organizer-profile-field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h3a1 1 0 0 1 1 1v11M8 7h4M8 11h4M8 15h4M2 21h20M9 21v-3h2v3"/></svg></span><div><dt>Kota/Kabupaten</dt><dd>{{ $profile->cityRecord?->name ?? $profile->city }}@if($profile->cityRecord?->province), {{ $profile->cityRecord->province->name }}@endif</dd></div></div>
                 <div class="organizer-profile-field"><span class="organizer-profile-field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a18 18 0 0 1 0 18 18 18 0 0 1 0-18Z"/></svg></span><div><dt>Website</dt><dd>@if ($profile->website)
                     <a href="{{ $profile->website }}" target="_blank" rel="noopener noreferrer">{{ $profile->website }}</a>
                     @else <span class="text-slate-500">Belum diisi</span> @endif</dd></div></div>
@@ -329,12 +334,22 @@
                                 />
 
                                 <div class="grid gap-6 md:grid-cols-2">
-                                    <x-form-field
-                                        name="city"
-                                        label="Kota"
-                                        :value="old('city', $profile->city)"
-                                        required
-                                    />
+                                    <x-form-field name="city_id" label="Kota/Kabupaten" required>
+                                        <select
+                                            id="city_id"
+                                            name="city_id"
+                                            required
+                                            class="mt-2 w-full rounded-xl border-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                        >
+                                            <option value="">Pilih Kota/Kabupaten</option>
+                                            <x-city-options :cities="$cities" :selected="$profile->city_id" />
+                                        </select>
+                                        @if($profile->city && !$profile->city_id)
+                                            <p class="mt-2 text-sm text-amber-800">
+                                                Kota lama: {{ $profile->city }}. Pilih kota/kabupaten dari daftar agar profil dapat diverifikasi.
+                                            </p>
+                                        @endif
+                                    </x-form-field>
 
                                     <x-form-field
                                         name="website"

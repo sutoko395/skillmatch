@@ -125,6 +125,7 @@ class ApplicationService
                 'email' => $volunteer->email,
                 'city_id' => $volunteer->volunteerProfile?->city_id,
                 'city_name' => $volunteer->volunteerProfile?->cityRecord?->name,
+                'city_province' => $volunteer->volunteerProfile?->cityRecord?->province?->name,
                 'phone' => $volunteer->volunteerProfile?->phone,
                 'birth_date' => $volunteer->volunteerProfile?->birth_date?->format('Y-m-d'),
                 'bio' => $volunteer->volunteerProfile?->bio,

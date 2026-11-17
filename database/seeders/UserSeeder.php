@@ -43,13 +43,14 @@ class UserSeeder extends Seeder
                 $user->organizerProfile()->create([
                     'organization_name' => 'Organisasi Demo '.$key, 'contact_person' => 'Kontak Demo',
                     'phone' => '0800000000', 'email' => $key.'@example.test', 'address' => 'Alamat demo',
-                    'city' => 'Malang', 'description' => 'Fixture lokal, bukan organisasi nyata.',
+                    'city' => 'Kota Malang', 'city_id' => City::where('name', 'Kota Malang')->firstOrFail()->id,
+                    'description' => 'Fixture lokal, bukan organisasi nyata.',
                 ]);
             }
             if ($role === 'volunteer') {
                 $user->volunteerProfile()->create([
                     'phone' => '0800000000', 'birth_date' => '2000-01-01', 'gender' => 'female',
-                    'city_id' => City::where('name', $key === 'volunteer-b' ? 'Surabaya' : 'Malang')->firstOrFail()->id,
+                    'city_id' => City::where('name', $key === 'volunteer-b' ? 'Kota Surabaya' : 'Kota Malang')->firstOrFail()->id,
                     'address' => 'Alamat demo', 'bio' => 'Fixture volunteer lokal.',
                 ]);
                 foreach (['Graphic Design', 'Video Editing', 'Public Speaking & MC', 'Event Coordinator'] as $i => $skill) {

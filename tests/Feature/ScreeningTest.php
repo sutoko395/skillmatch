@@ -123,7 +123,7 @@ class ScreeningTest extends DatabaseTestCase
         $volunteer = $application->volunteer;
         $volunteer->forceFill(['email_verified_at' => now()])->save();
         $this->actingAs($volunteer)->get(route('volunteer.applications.show', $application))
-            ->assertOk()->assertSee('Lamaranmu belum bisa dilanjutkan ke tahap selanjutnya.');
+            ->assertOk()->assertSee('Lamaran Anda belum bisa dilanjutkan ke tahap selanjutnya.');
         $this->actingAs($application->event->organizer)->get(route('organizer.applications.show', $application))
             ->assertOk()->assertSee('Hasil screening')->assertSee('Tidak terpenuhi');
         $otherVolunteer = User::factory()->create(['role' => 'volunteer']);

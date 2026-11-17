@@ -13,7 +13,7 @@ class HomeController extends Controller
             ->where('registration_opens_at', '<=', now())
             ->where('registration_deadline', '>', now())
             ->whereHas('entitlement', fn ($query) => $query->whereColumn('submitted_applications', '<', 'max_applications'))
-            ->with(['cityRecord', 'category', 'organizer.organizerProfile'])->withCount('positions')
+            ->with(['cityRecord.province', 'category', 'organizer.organizerProfile'])->withCount('positions')
             ->orderBy('starts_at')->orderBy('id')->limit(6)->get();
 
         $packages = Package::where('is_active', true)->orderBy('price')->orderBy('id')->get();

@@ -192,7 +192,7 @@ php artisan serve --host=127.0.0.1 --port=8000
 
 `key:generate` hanya pada instalasi baru; jangan mengganti key instalasi yang sudah dipakai. Untuk pengembangan, jalankan `npm run dev` di terminal kedua. Herd juga dapat melayani proyek; sesuaikan APP_URL dengan domain Herd. Jangan menggunakan `migrate:fresh` pada database kerja.
 
-`db:seed` menjalankan MasterDataSeeder dan UserSeeder, dibatasi lingkungan local/testing. Seeder memakai key nama/email stabil dan tidak mengubah akun/password/profil yang sudah ada. Kategori dan akun adalah fixture lokal; bukan data atau kebijakan produksi. Seeder tidak membuat event/payment/lamaran palsu.
+`db:seed` menjalankan MasterDataSeeder, EastJavaRegionSeeder, dan UserSeeder, dibatasi lingkungan local/testing. Seeder memakai key nama/email stabil dan tidak mengubah akun/password/profil yang sudah ada. Kategori, wilayah, dan akun adalah fixture lokal; bukan data atau kebijakan produksi. Seeder tidak membuat event/payment/lamaran palsu.
 
 ## Akun demo lokal
 
@@ -211,6 +211,36 @@ Semua akun memakai password **`SkillMatch-local-2026!`**, khusus lokal dan dilar
 | volunteer-unverified@example.test | Verifikasi email dahulu |
 
 Availability demo: 1 November 2026 pukul 09.00-12.00 WIB (02.00-05.00 UTC). Kota Malang/Surabaya, empat level skill. Akun admin dibuat secara internal melalui seeder lokal ini; registrasi publik hanya Volunteer/Organizer. Pembuatan admin produksi belum disediakan.
+
+## Akun demo untuk deployment demo/staging
+
+Untuk instance demo yang dibagikan ke pengguna lain, buat akun demo pendek secara eksplisit (tidak dijalankan otomatis oleh `migrate` atau `db:seed`):
+
+```dotenv
+DEMO_ACCOUNTS_ENABLED=true
+DEMO_ORGANIZER_EMAIL=eo@demo.test
+DEMO_VOLUNTEER_EMAIL=vol@demo.test
+DEMO_ACCOUNT_PASSWORD=isi_password_demo
+```
+
+```powershell
+php artisan demo:accounts --force
+```
+
+Command tersebut membuat organizer `active`/terverifikasi beserta profil organisasi, dan volunteer terverifikasi dengan profil, skill, serta availability yang lengkap. Akun langsung bisa login lewat `/login`. Command idempoten: aman diulang tanpa membuat duplikat dan tidak mereset password akun yang sudah ada. Untuk mengganti password demo setelah sesi selesai, ubah `DEMO_ACCOUNT_PASSWORD` lalu jalankan `php artisan demo:accounts --force --reset-password`. Jangan memakai akun ini sebagai akun produksi. Akun hanya bertahan selama database deploy dipertahankan; setelah database baru/reset, jalankan command sekali lagi.
+
+## Wilayah Jawa Timur
+
+Master wilayah kini memiliki provinsi dan 38 kabupaten/kota Jawa Timur (29 kabupaten + 9 kota). Form event, profil Volunteer, profil Organizer, dan filter katalog memakai pilihan `Kota/Kabupaten` yang dikelompokkan per provinsi. Alamat jalan tetap diisi sebagai teks; yang dimasterkan adalah provinsi dan kota/kabupaten. Profil Organizer menyimpan `city_id` dan mempertahankan teks kota lama sebagai fallback; perubahan kota tetap mengikuti aturan verifikasi ulang identitas.
+
+Untuk instalasi existing, setelah backup dan pemeriksaan database:
+
+```powershell
+php artisan migrate
+php artisan db:seed --class=EastJavaRegionSeeder
+```
+
+`db:seed` pada instalasi baru sudah menjalankan `EastJavaRegionSeeder` melalui `DatabaseSeeder`. Seeder idempoten dan mempertahankan ID kota lama: `Malang` menjadi `Kota Malang`, `Surabaya` menjadi `Kota Surabaya`, dan `Sidoarjo` menjadi `Kabupaten Sidoarjo`. Karena cakupan masih Jawa Timur, pengguna di luar Jawa Timur belum dapat memilih domisili/lokasi kegiatan sampai provinsi lain ditambahkan.
 
 ## Email autentikasi
 

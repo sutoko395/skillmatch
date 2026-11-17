@@ -6,9 +6,8 @@
 <header class="eb-catalog-heading"><x-page-header title="Jelajahi Kegiatan" description="Temukan kegiatan sesuai keahlian, lokasi, dan waktu Anda." /></header>
 <form method="GET" action="{{ route('volunteer.events.index') }}" class="eb-catalog-filters">
     <x-form-field name="search" label="Judul kegiatan" :value="request('search')" maxlength="100" />
-    @foreach(['city_id' => ['Kota', $cities], 'category_id' => ['Kategori', $categories]] as $field => $options)
-    <x-form-field :name="$field" :label="$options[0]"><select id="{{ $field }}" name="{{ $field }}" class="mt-2 w-full rounded-lg border-slate-300"><option value="">Semua</option>@foreach($options[1] as $option)<option value="{{ $option->id }}" @selected(request($field) == $option->id)>{{ $option->name }}</option>@endforeach</select></x-form-field>
-    @endforeach
+    <x-form-field name="city_id" label="Kota/Kabupaten"><select id="city_id" name="city_id" class="mt-2 w-full rounded-lg border-slate-300"><option value="">Semua</option><x-city-options :cities="$cities" :selected="request('city_id')" /></select></x-form-field>
+    <x-form-field name="category_id" label="Kategori"><select id="category_id" name="category_id" class="mt-2 w-full rounded-lg border-slate-300"><option value="">Semua</option>@foreach($categories as $category)<option value="{{ $category->id }}" @selected(request('category_id') == $category->id)>{{ $category->name }}</option>@endforeach</select></x-form-field>
     <x-form-field name="date" label="Tanggal (WIB)" type="date" :value="request('date')" />
     <div class="eb-filter-actions"><button class="eb-button" type="submit">Terapkan filter</button>@if(request()->filled('search') || request()->filled('city_id') || request()->filled('category_id') || request()->filled('date'))<a class="volunteer-filter-reset" href="{{ route('volunteer.events.index') }}">Reset</a>@endif</div>
 </form>

@@ -6,7 +6,7 @@
         <p class="mt-2 break-words text-sm text-slate-600">{{ $event->organizer->organizerProfile?->organization_name ?? $event->organizer->name }}</p>
     </div>
     <dl class="space-y-3 text-sm">
-        <div><dt class="text-slate-500">Lokasi</dt><dd class="mt-1 break-words">{{ $event->location }} · {{ $event->cityRecord?->name }}</dd></div>
+        <div><dt class="text-slate-500">Lokasi</dt><dd class="mt-1 break-words">{{ $event->location }} · {{ $event->cityRecord?->name }}@if($event->cityRecord?->province), {{ $event->cityRecord->province->name }}@endif</dd></div>
         <div><dt class="text-slate-500">Waktu kegiatan (WIB)</dt><dd class="mt-1">{{ $event->starts_at->copy()->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}</dd></div>
         <div><dt class="text-slate-500">Posisi tersedia</dt><dd class="mt-1">{{ $event->positions_count }} posisi</dd></div>
     </dl>

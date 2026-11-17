@@ -8,8 +8,8 @@ use App\Models\AssessmentAttempt;
 use App\Models\Event;
 use App\Models\MatchResult;
 use App\Services\SelectionService;
-use Illuminate\Http\Request;
 use Carbon\CarbonImmutable;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class ApplicationController extends Controller
@@ -57,7 +57,7 @@ class ApplicationController extends Controller
         $query = $event->applications()
             ->whereNotNull('submitted_at')
             ->with([
-                'volunteer.volunteerProfile.cityRecord',
+                'volunteer.volunteerProfile.cityRecord.province',
                 'position',
                 'documents',
                 'screeningResult',
@@ -92,11 +92,11 @@ class ApplicationController extends Controller
         Gate::authorize('view', $application);
 
         $application->load([
-            'event.cityRecord',
+            'event.cityRecord.province',
             'position.positionSkills.skill',
             'position.schedules',
             'position.requirements',
-            'volunteer.volunteerProfile.cityRecord',
+            'volunteer.volunteerProfile.cityRecord.province',
             'volunteer.volunteerSkills.skill',
             'volunteer.availabilitySlots',
             'documents',
@@ -106,7 +106,7 @@ class ApplicationController extends Controller
         ]);
 
         $profile = $application->snapshot_json['profile'] ?? [];
-        $ageFromCurrentProfile = !array_key_exists('birth_date', $profile);
+        $ageFromCurrentProfile = ! array_key_exists('birth_date', $profile);
         $birthDate = $ageFromCurrentProfile
             ? $application->volunteer->volunteerProfile?->birth_date?->format('Y-m-d')
             : $profile['birth_date'];

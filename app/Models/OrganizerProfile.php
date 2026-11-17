@@ -18,9 +18,15 @@ class OrganizerProfile extends Model
         'email',
         'address',
         'city',
+        'city_id',
         'description',
         'website',
     ];
+
+    public function cityRecord(): BelongsTo
+    {
+        return $this->belongsTo(City::class, 'city_id');
+    }
 
     public function user(): BelongsTo
     {
