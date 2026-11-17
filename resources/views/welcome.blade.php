@@ -45,16 +45,39 @@
             ['volunteer', 'UNTUK VOLUNTEER', 'Temukan ruang untuk kontribusi Anda.', [['Buat akun dan lengkapi profil', 'Tambahkan kota, skill, level, dan jadwal ketersediaan Anda.'], ['Jelajahi kebutuhan volunteer', 'Baca detail posisi, persyaratan, serta waktu pelaksanaan kegiatan.'], ['Ajukan lamaran dan ikuti seleksi', 'Lengkapi dokumen dan assessment sesuai posisi, lalu pantau perkembangan lamaran Anda.']]],
             ['organizer', 'UNTUK ORGANIZER', 'Susun tim volunteer dengan kebutuhan yang jelas.', [['Lengkapi profil organisasi', 'Daftarkan akun Organizer dan ikuti proses verifikasi organisasi.'], ['Rancang kegiatan dan posisi', 'Organizer aktif dapat menyiapkan event, skill, jadwal, persyaratan, dan paket.'], ['Ajukan ketika seluruh syarat siap', 'Penuhi moderasi, paket aktif, dan assessment yang sah sebelum memublikasikan kegiatan.']]],
         ] as [$role, $label, $title, $steps])
-        <article class="eb-role-card"><p class="eb-eyebrow">{{ $label }}</p><h3>{{ $title }}</h3><ol>@foreach($steps as [$heading, $copy])<li><span>{{ $loop->iteration }}</span><div><h4>{{ $heading }}</h4><p>{{ $copy }}</p></div></li>@endforeach</ol><a class="eb-button" href="{{ auth()->check() ? route('dashboard') : route('register', ['role' => $role]) }}">{{ auth()->check() ? 'Lanjutkan ke akun saya' : 'Mulai sebagai '.ucfirst($role) }} ↗︎</a></article>
+        <article id="untuk-{{ $role }}" class="eb-role-card"><p class="eb-eyebrow">{{ $label }}</p><h3>{{ $title }}</h3><ol>@foreach($steps as [$heading, $copy])<li><span>{{ $loop->iteration }}</span><div><h4>{{ $heading }}</h4><p>{{ $copy }}</p></div></li>@endforeach</ol><a class="eb-button" href="{{ auth()->check() ? route('dashboard') : route('register', ['role' => $role]) }}">{{ auth()->check() ? 'Lanjutkan ke akun saya' : 'Mulai sebagai '.ucfirst($role) }} ↗︎</a></article>
         @endforeach
     </div>
 </section>
-<section id="untuk-organizer" class="eb-container eb-section eb-organizer" aria-labelledby="organizer-title"><div><p class="eb-eyebrow">UNTUK ORGANIZER</p><h2 id="organizer-title" class="eb-display">Kegiatan hebat,<br>ketemu tim yang tepat.</h2><p class="eb-intro">Susun kebutuhan volunteer, posisi, dan jadwal dalam satu tempat.</p></div><a class="eb-button" href="{{ auth()->check() ? route('dashboard') : route('register', ['role' => 'organizer']) }}">{{ auth()->check() ? 'Buka akun saya' : 'Mulai sebagai Organizer' }} ↗︎</a></section>
-<section id="paket" class="eb-container eb-section" aria-labelledby="packages-title"><p class="eb-eyebrow">PILIH KAPASITAS UNTUK KEGIATANMU</p><h2 id="packages-title" class="eb-display">Ruang untuk rencanamu.</h2><p class="eb-intro">Paket aktif mengikuti harga dan kapasitas yang tersedia. Pembayaran menggunakan Midtrans Sandbox.</p><div class="eb-package-grid">
-    @forelse($packages as $package)
-    <x-package-card :package="$package"><a class="eb-button" href="{{ auth()->check() ? route('dashboard') : route('register', ['role' => 'organizer']) }}">{{ auth()->check() ? 'Buka akun saya' : 'Mulai sebagai Organizer' }} ↗︎</a></x-package-card>
-    @empty<p class="eb-empty">Paket kegiatan belum tersedia. Silakan kunjungi kembali nanti.</p>@endforelse
-</div></section>
+
+<section id="paket" class="eb-container eb-section" aria-labelledby="packages-title">
+    <p class="eb-eyebrow">PILIH KAPASITAS UNTUK KEGIATANMU</p>
+    <h2 id="packages-title" class="eb-display">Ruang untuk rencanamu.</h2>
+    <p class="eb-intro">Paket aktif mengikuti harga dan kapasitas yang tersedia. Pembayaran menggunakan Midtrans Sandbox.</p>
+    <div class="eb-package-grid">
+        @forelse($packages as $package)
+            <x-package-card :package="$package" />
+        @empty
+            <p class="eb-empty">Paket kegiatan belum tersedia. Silakan kunjungi kembali nanti.</p>
+        @endforelse
+    </div>
+    @if($packages->isNotEmpty())
+        @php
+            $packageUser = auth()->user();
+            [$packageCtaUrl, $packageCtaLabel] = match (true) {
+                ! $packageUser => [route('register', ['role' => 'organizer']), 'Daftar sebagai Organizer'],
+                $packageUser->role === 'organizer' && $packageUser->organizer_status === 'active' => [route('organizer.events.create'), 'Buat Kegiatan'],
+                $packageUser->role === 'organizer' => [route('organizer.profile.edit'), 'Lengkapi Profil Organizer'],
+                $packageUser->role === 'volunteer' => [route('events.index'), 'Jelajahi Kegiatan'],
+                default => [route('dashboard'), 'Buka Dashboard'],
+            };
+        @endphp
+        <div class="eb-package-cta">
+            <p>Paket dipilih saat membuat kegiatan. Pembayaran dilakukan setelah kegiatan disetujui.</p>
+            <a class="eb-button" href="{{ $packageCtaUrl }}">{{ $packageCtaLabel }} <span aria-hidden="true">↗︎</span></a>
+        </div>
+    @endif
+</section>
 <section class="eb-container eb-section eb-faq" aria-labelledby="faq-title"><h2 id="faq-title" class="eb-display">Sebelum<br>ikut terlibat.</h2><div>
     @foreach([
         ['Apa itu SkillMatch?', 'SkillMatch mempertemukan kebutuhan kegiatan Organizer dengan keterampilan, waktu, dan lokasi Volunteer. Kenali kebutuhan posisi sebelum menentukan kontribusi Anda.'],
@@ -64,5 +87,5 @@
         ['Mengapa event belum muncul di katalog?', 'Event memerlukan moderasi, paket aktif, dan publikasi. Draft serta kegiatan yang belum dipublikasikan tidak ditampilkan kepada publik.'],
     ] as [$question, $answer])<details><summary>{{ $question }}<span aria-hidden="true">+</span></summary><p>{{ $answer }}</p></details>@endforeach
 </div></section>
-<section class="eb-final-cta" aria-labelledby="cta-title"><div class="eb-container"><h2 id="cta-title" class="eb-display">Skillmu bisa jadi<br>awal cerita baik.</h2><a class="eb-button eb-button-navy" href="{{ auth()->check() ? route('dashboard') : route('register') }}">{{ auth()->check() ? 'Buka akun saya' : 'Buat akun SkillMatch' }} ↗︎</a></div></section>
+<section class="eb-final-cta" aria-labelledby="cta-title"><div class="eb-container"><h2 id="cta-title" class="eb-display">Skillmu bisa jadi<br>awal cerita baik.</h2></div></section>
 @endsection

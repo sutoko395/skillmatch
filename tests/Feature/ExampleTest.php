@@ -17,7 +17,7 @@ class ExampleTest extends TestCase
         $response->assertStatus(200)
             ->assertSeeText('Punya skill.')
             ->assertSeeText('Bikin berarti.')
-            ->assertSee('Buat akun SkillMatch')
+            ->assertDontSee('Buat akun SkillMatch')
             ->assertSee('Sebelum')
             ->assertSee('Lihat semua event')
             ->assertSee(route('events.index'))
