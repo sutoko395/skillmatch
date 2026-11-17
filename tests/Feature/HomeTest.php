@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Package;
+use App\Models\User;
 use App\Services\EventPublicationService;
 use Carbon\CarbonImmutable;
 use Tests\DatabaseTestCase;
@@ -22,7 +24,34 @@ class HomeTest extends DatabaseTestCase
         $this->get('/')->assertOk()->assertViewHas('events', fn ($events) => $events->isEmpty())
             ->assertSee('Peluang berikutnya sedang dipersiapkan')->assertSee('UNTUK VOLUNTEER')
             ->assertSee('UNTUK ORGANIZER')->assertSee('Punya skill.')
+            ->assertDontSee('Kegiatan hebat')
+            ->assertDontSee('Buat akun SkillMatch')
+            ->assertSee('id="untuk-organizer"', false)
             ->assertSee(route('events.index'))->assertSee('name="search"', false);
+    }
+
+    public function test_home_package_cta_matches_user_state(): void
+    {
+        Package::create(['name' => 'Paket CTA', 'price' => 0, 'max_positions' => 2,
+            'max_applications' => 30, 'max_registration_days' => 7, 'is_active' => true]);
+
+        $this->get('/')->assertOk()
+            ->assertSee('Daftar sebagai Organizer')
+            ->assertSee(route('register', ['role' => 'organizer']), false)
+            ->assertSee('Paket dipilih saat membuat kegiatan.');
+
+        $active = User::factory()->create(['role' => 'organizer', 'organizer_status' => 'active']);
+        $this->actingAs($active)->get('/')->assertOk()
+            ->assertSee('Buat Kegiatan')
+            ->assertSee(route('organizer.events.create'), false);
+
+        $pending = User::factory()->create(['role' => 'organizer', 'organizer_status' => 'pending']);
+        $this->actingAs($pending)->get('/')->assertOk()
+            ->assertSee('Lengkapi Profil Organizer')
+            ->assertSee(route('organizer.profile.edit'), false);
+
+        $volunteer = User::factory()->create(['role' => 'volunteer']);
+        $this->actingAs($volunteer)->get('/')->assertOk()->assertSee('Jelajahi Kegiatan');
     }
 
     public function test_home_only_lists_public_events_with_registration_capacity(): void
