@@ -63,7 +63,7 @@
                 Simpan kata sandi baru
             </span>
 
-            <span aria-hidden="true">→</span>
+            <x-arrow-icon direction="right" />
         </button>
 
         <p

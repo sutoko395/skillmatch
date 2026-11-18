@@ -58,7 +58,7 @@
                     Kirim tautan reset
                 </span>
 
-                <span aria-hidden="true">→</span>
+                <x-arrow-icon direction="right" />
             </button>
 
             <p

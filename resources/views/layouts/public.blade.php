@@ -9,7 +9,7 @@
     @include('layouts.fonts')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="electric-public font-sans antialiased">
+<body class="electric-public {{ request()->routeIs('home') ? 'electric-landing' : 'electric-interior' }} font-sans antialiased">
     <a href="#main" class="sr-only focus:not-sr-only">Lewati navigasi</a>
     <x-public-navigation />
     <main id="main" @class(['eb-public-main', 'eb-container eb-interior' => !request()->routeIs('home')])>

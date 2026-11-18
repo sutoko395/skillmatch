@@ -8,7 +8,7 @@
     <x-form-field :name="$field" :label="$options[0]"><select id="{{ $field }}" name="{{ $field }}" class="mt-2 w-full rounded-lg border-slate-300"><option value="">Semua</option>@foreach($options[1] as $option)<option value="{{ $option->id }}" @selected(request($field) == $option->id)>{{ $option->name }}</option>@endforeach</select></x-form-field>
     @endforeach
     <x-form-field name="date" label="Tanggal (WIB)" type="date" :value="request('date')" />
-    <div class="eb-filter-actions"><button class="eb-button" type="submit">Cari →</button><a class="eb-text-link" href="{{ route('events.index') }}">Reset</a></div>
+    <div class="eb-filter-actions"><button class="eb-button" type="submit">Cari <x-arrow-icon direction="right" /></button><a class="eb-text-link" href="{{ route('events.index') }}">Reset</a></div>
 </form>
 <p class="eb-catalog-count" role="status">{{ $events->total() }} event sesuai pencarian.</p>
 <div class="eb-event-grid">

@@ -81,7 +81,7 @@
                 <div>
                     <p class="text-sm text-gray-500">Kegiatan Menunggu Verifikasi</p>
                     <h3 class="mt-1 text-3xl font-bold text-amber-600">{{ number_format($pendingEvents) }}</h3>
-                    <p class="mt-1 text-xs text-gray-400">Buka antrean verifikasi →</p>
+                    <p class="mt-1 text-xs text-gray-400">Buka antrean verifikasi <x-arrow-icon direction="right" /></p>
                 </div>
             </div>
         </a>
@@ -97,7 +97,7 @@
                 <div>
                     <p class="text-sm text-gray-500">Master Keahlian</p>
                     <h3 class="mt-1 text-3xl font-bold text-blue-600">{{ number_format($totalSkills) }}</h3>
-                    <p class="mt-1 text-xs text-gray-400">Kelola keterampilan →</p>
+                    <p class="mt-1 text-xs text-gray-400">Kelola keterampilan <x-arrow-icon direction="right" /></p>
                 </div>
             </div>
         </a>
@@ -113,7 +113,7 @@
                 <div>
                     <p class="text-sm text-gray-500">Kategori Kegiatan</p>
                     <h3 class="mt-1 text-3xl font-bold text-purple-600">{{ number_format($totalCategories) }}</h3>
-                    <p class="mt-1 text-xs text-gray-400">Kelola kategori →</p>
+                    <p class="mt-1 text-xs text-gray-400">Kelola kategori <x-arrow-icon direction="right" /></p>
                 </div>
             </div>
         </a>

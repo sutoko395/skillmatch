@@ -1,5 +1,9 @@
 <div class="ve-detail mx-auto max-w-7xl space-y-6">
-    <a href="{{ route($catalogRoute) }}" class="{{ ($volunteerPanel ?? false) ? 'volunteer-action volunteer-action--back' : '' }} inline-flex items-center rounded-xl border border-blue-200 bg-white px-4 py-3 text-sm font-semibold text-blue-600 hover:bg-blue-50">&larr; {{ ($volunteerPanel ?? false) ? 'Kembali' : 'Jelajahi Event' }}</a>
+    @if($volunteerPanel ?? false)
+        <a href="{{ route($catalogRoute) }}" class="volunteer-action volunteer-action--back inline-flex items-center"><x-arrow-icon direction="left" /> Kembali</a>
+    @else
+        <a href="{{ route($catalogRoute) }}" class="eb-back-link"><x-arrow-icon direction="left" /> Kembali ke kegiatan</a>
+    @endif
     <header>
         <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-blue-600">{{ $event->category?->name ?? 'Kegiatan volunteer' }}</p>
         <h1 class="break-words text-3xl font-bold text-slate-900">{{ $event->title }}</h1>
