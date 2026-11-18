@@ -11,7 +11,6 @@
         <a href="#cara-kerja" class="eb-hero-link">Kenali cara kerjanya <x-arrow-icon direction="down" /></a>
         <img class="eb-character eb-character-plant" src="{{ asset('images/electric-blue/volunteer-plant.svg') }}" alt="" width="280" height="518">
         <img class="eb-character eb-character-megaphone" src="{{ asset('images/electric-blue/volunteer-megaphone.svg') }}" alt="" width="393" height="515">
-        <span class="eb-skill-stamp" aria-hidden="true">BAWA<br>SKILLMU!</span>
     </div>
 </section>
 <div class="eb-ribbon" aria-label="Beragam keterampilan untuk berkontribusi">KOMUNIKASI ✳︎ DESAIN ✳︎ DOKUMENTASI ✳︎ LOGISTIK ✳︎ PEDULI</div>
@@ -82,7 +81,6 @@
                 <p class="eb-eyebrow">PILIH KAPASITAS UNTUK KEGIATANMU</p>
                 <h2 id="packages-title" class="eb-display">Ruang untuk<br>rencanamu.</h2>
             </div>
-            <p class="eb-intro">Paket aktif mengikuti harga dan kapasitas yang tersedia. Pembayaran menggunakan Midtrans Sandbox.</p>
         </div>
         <div class="eb-package-grid">
             @forelse($packages as $package)
