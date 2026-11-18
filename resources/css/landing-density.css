@@ -1,0 +1,145 @@
+/* Landing-only density: roughly 80% of the previous type and spacing. */
+.electric-landing.electric-landing .eb-how { background:#fff; color:var(--eb-navy); }
+.electric-landing.electric-landing .eb-how .eb-two-column { display:flex; flex-direction:column; align-items:center; gap:40px; }
+.electric-landing.electric-landing .eb-how-copy { width:100%; max-width:760px; text-align:center; }
+.electric-landing.electric-landing .eb-how .eb-eyebrow { color:var(--eb-blue); }
+.electric-landing.electric-landing .eb-how .eb-display span { color:var(--eb-blue); }
+.electric-landing.electric-landing .eb-how .eb-how-intro { max-width:660px; margin-inline:auto; color:#64748b; }
+.electric-landing.electric-landing .eb-how .eb-how-link { color:var(--eb-blue); }
+.electric-landing.electric-landing .eb-how .eb-steps { width:100%; max-width:980px; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; border:1px solid #d6d3d1; border-radius:24px; background:var(--eb-paper); overflow:hidden; }
+.electric-landing.electric-landing .eb-how .eb-steps li { display:block; border:0; border-right:1px solid #e7e5e4; border-radius:0; background:transparent; padding:24px; }
+.electric-landing.electric-landing .eb-how .eb-steps li:last-child { border-right:0; }
+.electric-landing.electric-landing .eb-how .eb-step-index { display:block; padding:0; margin-bottom:12px; color:var(--eb-blue); }
+.electric-landing.electric-landing .eb-how .eb-steps p { color:#64748b; }
+@media(max-width:639px) {
+    .electric-landing.electric-landing .eb-how .eb-steps { grid-template-columns:minmax(0,1fr); }
+    .electric-landing.electric-landing .eb-how .eb-steps li { border-right:0; border-bottom:1px solid #e7e5e4; }
+    .electric-landing.electric-landing .eb-how .eb-steps li:last-child { border-bottom:0; }
+}
+.electric-landing.electric-landing .eb-packages-band { background:#1c1c22; color:#fff; }
+.electric-landing.electric-landing .eb-packages-heading { display:grid; grid-template-columns:1fr 1fr; align-items:end; gap:48px; }
+.electric-landing.electric-landing .eb-packages-heading .eb-eyebrow { color:var(--eb-peach); }
+.electric-landing.electric-landing .eb-packages-heading .eb-display { font-family:Inter,sans-serif; font-weight:800; font-size:clamp(28px,3vw,42px); line-height:1.12; }
+.electric-landing.electric-landing .eb-packages-heading .eb-intro { margin:0; color:#b9b9c4; font-size:14px; line-height:1.8; }
+.electric-landing.electric-landing .eb-packages-band .eb-package-grid { counter-reset:package; gap:16px; }
+.electric-landing.electric-landing .eb-packages-band .eb-package-grid > article { counter-increment:package; padding:24px; border:1px solid #ffffff26; border-radius:24px; background:#ffffff0d; }
+.electric-landing.electric-landing .eb-packages-band .eb-package-grid > article::before { content:counter(package,decimal-leading-zero); display:block; margin-bottom:32px; color:var(--eb-peach); font-size:11px; font-weight:700; }
+.electric-landing.electric-landing .eb-packages-band :is(h3,.text-3xl) { color:#fff; }
+.electric-landing.electric-landing .eb-packages-band .eb-package-grid :is(ul,.text-sm) { color:#b9b9c4; }
+.electric-landing.electric-landing .eb-packages-band .eb-package-grid .text-3xl { margin-top:20px; }
+.electric-landing.electric-landing .eb-packages-band .eb-package-grid ul { margin-block:20px 24px; }
+.electric-landing.electric-landing .eb-packages-band .eb-empty { border-color:#ffffff26; color:#fff; }
+.electric-landing.electric-landing > .eb-header-dark .eb-navigation { min-height:61px; gap:24px; }
+.electric-landing.electric-landing .eb-brand { font-size:23px; gap:9px; }
+.electric-landing.electric-landing .eb-brand svg { width:35px; height:35px; }
+.electric-landing.electric-landing .eb-menu { gap:22px; font-size:12px; }
+.electric-landing.electric-landing .eb-header .eb-register-cta { background:var(--eb-blue); color:#fff; border-color:var(--eb-blue); min-height:36px; padding:7px 13px; gap:8px; font-weight:700; }
+.electric-landing.electric-landing .eb-header .eb-register-cta:hover { background:#1d4ed8; border-color:#1d4ed8; color:#fff; }
+@media(min-width:768px) {
+    .electric-landing.electric-landing .eb-header .eb-navigation { width:min(100% - 48px,1120px); gap:24px; }
+    .electric-landing.electric-landing .eb-header .eb-menu { flex:1; justify-content:center; gap:18px; }
+    .electric-landing.electric-landing .eb-header .eb-register-mobile { display:none; }
+    .electric-landing.electric-landing .eb-header .eb-register-desktop { display:inline-flex; flex-shrink:0; margin-left:auto; }
+}
+.electric-landing.electric-landing .eb-button { min-height:45px; padding:11px 26px; gap:16px; font-size:12px; }
+.electric-landing.electric-landing .eb-button-small { min-height:40px; padding:9px 19px; }
+.electric-landing.electric-landing .eb-hero-inner { min-height:669px; padding-block:50px 128px; }
+.electric-landing.electric-landing .eb-hero h1 { margin:34px auto 19px; font-size:clamp(51px,7vw,101px); }
+.electric-landing.electric-landing .eb-hero-description { max-width:528px; margin-bottom:32px; font-size:15px; }
+.electric-landing.electric-landing .eb-hero .eb-button { min-width:192px; }
+.electric-landing.electric-landing .eb-character { bottom:24px; }
+.electric-landing.electric-landing .eb-character-plant { height:392px; left:-29px; }
+.electric-landing.electric-landing .eb-character-megaphone { height:376px; right:-53px; }
+.electric-landing.electric-landing .eb-skill-stamp { width:109px; height:109px; bottom:64px; font-size:12px; }
+.electric-landing.electric-landing .eb-ribbon { min-height:70px; padding:16px 19px; font-size:clamp(12px,1.4vw,19px); }
+.electric-landing.electric-landing .eb-eyebrow { font-size:10px; }
+.electric-landing.electric-landing .eb-home-search { padding-top:40px; gap:16px; }
+.electric-landing.electric-landing .eb-search-band { padding-bottom:40px; }
+.electric-landing.electric-landing .eb-home-search input { min-height:51px; padding:13px 19px; font-size:15px; margin-top:14px; }
+.electric-landing.electric-landing .eb-home-search > .eb-button { min-width:192px; }
+.electric-landing.electric-landing .eb-section { padding-block:72px; }
+.electric-landing.electric-landing .eb-section .eb-display { font-size:clamp(29px,3.76vw,53px); margin-top:19px; }
+.electric-landing.electric-landing .eb-section-heading { margin-bottom:48px; gap:22px; }
+.electric-landing.electric-landing .eb-event-grid { gap:45px 26px; }
+.electric-landing.electric-landing .eb-event-card h3 { font-size:26px; margin-top:19px; }
+.electric-landing.electric-landing .eb-event-description { font-size:12px; }
+.electric-landing.electric-landing .eb-event-meta { margin-block:19px; font-size:11px; }
+.electric-landing.electric-landing .eb-catalog-preview > #event-tersedia { padding-bottom:0; }
+.electric-landing.electric-landing .eb-catalog-preview::after { height:72px; }
+.electric-landing.electric-landing .eb-how .eb-two-column { gap:51px; }
+.electric-landing.electric-landing .eb-how .eb-display { font-size:clamp(28px,2.88vw,40px); }
+.electric-landing.electric-landing .eb-how-intro { margin-top:21px; font-size:14px; }
+.electric-landing.electric-landing .eb-how .eb-steps { gap:11px; }
+.electric-landing.electric-landing .eb-how .eb-steps li { padding:19px; gap:18px; border-radius:15px; }
+.electric-landing.electric-landing .eb-how .eb-steps h3 { font-size:14px; }
+.electric-landing.electric-landing .eb-how .eb-steps p { margin-top:10px; font-size:12px; }
+.electric-landing.electric-landing .eb-how-link { margin-top:22px; font-size:12px; }
+.electric-landing.electric-landing .eb-intro { margin-top:19px; font-size:13px; }
+.electric-landing.electric-landing .eb-role-grid,.electric-landing.electric-landing .eb-package-grid { gap:26px; margin-top:38px; }
+.electric-landing.electric-landing .eb-role-card { padding:30px; border-radius:26px; background:#fff; border:1px solid #e2e8f0; }
+.electric-landing.electric-landing .eb-role-card:last-child { padding:30px; border:1px solid var(--eb-blue); }
+.electric-landing.electric-landing .eb-role-card h3 { font-family:Inter,sans-serif; font-size:26px; line-height:1.25; font-weight:800; margin-top:18px; }
+.electric-landing.electric-landing .eb-role-card > .eb-eyebrow { color:#64748b; }
+.electric-landing.electric-landing .eb-role-card li > span { width:18px; height:22px; background:transparent; color:var(--eb-blue); border-radius:0; }
+.electric-landing.electric-landing .eb-role-card li > span svg { width:18px; height:18px; }
+.electric-landing.electric-landing .eb-role-card > .eb-button { justify-content:center; border-color:#d6d3d1; background:#fff; color:var(--eb-navy); }
+.electric-landing.electric-landing .eb-role-card > .eb-button:hover { background:#eff6ff; border-color:var(--eb-blue); color:var(--eb-navy); }
+.electric-landing.electric-landing .eb-role-card--organizer { background:var(--eb-blue); color:#fff; box-shadow:0 16px 36px #2563eb18; }
+.electric-landing.electric-landing .eb-role-card--organizer > .eb-eyebrow { color:#dbeafe; }
+.electric-landing.electric-landing .eb-role-card--organizer li p { color:#eff6ff; }
+.electric-landing.electric-landing .eb-role-card--organizer li > span { color:var(--eb-peach); }
+.electric-landing.electric-landing .eb-role-card--organizer > .eb-button { background:var(--eb-peach); border-color:var(--eb-peach); color:var(--eb-navy); }
+.electric-landing.electric-landing .eb-role-card--organizer > .eb-button:hover { background:#efba35; border-color:#efba35; color:var(--eb-navy); }
+.electric-landing.electric-landing .eb-role-card ol { margin:27px 0 38px; }
+.electric-landing.electric-landing .eb-role-card h4 { font-size:13px; }
+.electric-landing.electric-landing .eb-role-card li { gap:13px; margin-top:19px; }
+.electric-landing.electric-landing .eb-role-card li p { font-size:12px; }
+.electric-landing.electric-landing .eb-package-grid > article { padding:24px; }
+.electric-landing.electric-landing .eb-package-grid h3 { font-size:20px; }
+.electric-landing.electric-landing .eb-package-grid .text-3xl { font-size:25px; }
+.electric-landing.electric-landing .eb-package-grid ul { font-size:12px; }
+.electric-landing.electric-landing .eb-faq { gap:24px; padding-bottom:24px; }
+.electric-landing.electric-landing .eb-faq-intro { width:100%; max-width:400px; justify-self:center; }
+.electric-landing.electric-landing .eb-faq-intro .eb-display { margin-top:16px; text-align:left; }
+.electric-landing.electric-landing .eb-faq summary { min-height:48px; padding-block:10px; font-size:13px; }
+.electric-landing.electric-landing .eb-faq details { margin-bottom:0; padding-inline:0; border-radius:0; }
+.electric-landing.electric-landing .eb-faq details p { font-size:12px; padding-bottom:19px; }
+.electric-landing.electric-landing .eb-final-cta { padding-block:64px; }
+.electric-landing.electric-landing .eb-faq-band + .eb-final-cta { padding-top:24px; }
+.electric-landing.electric-landing .eb-cta-card { padding:45px; gap:45px; border-radius:26px; grid-template-columns:minmax(0,1fr) minmax(190px,208px); }
+.electric-landing.electric-landing .eb-final-cta .eb-display { font-size:clamp(28px,2.96vw,42px); }
+.electric-landing.electric-landing .eb-cta-description { font-size:13px; margin-top:19px; }
+.electric-landing.electric-landing .eb-final-cta .eb-button { min-height:44px; padding:11px 16px; font-size:12px; }
+.electric-landing.electric-landing .eb-footer { padding-block:45px 19px; }
+.electric-landing.electric-landing .eb-footer-row { gap:51px; padding-bottom:32px; }
+.electric-landing.electric-landing .eb-footer .eb-brand { font-size:26px; }
+.electric-landing.electric-landing .eb-footer .eb-brand svg { width:37px; height:37px; }
+@media(max-width:900px) {
+    .electric-landing.electric-landing .eb-cta-card { grid-template-columns:minmax(0,1fr); padding:29px; gap:22px; }
+}
+@media(max-width:767px) {
+    .electric-landing.electric-landing .eb-packages-heading { grid-template-columns:1fr; gap:20px; }
+    .electric-landing.electric-landing .eb-faq-intro { max-width:none; justify-self:start; }
+    .electric-landing.electric-landing > .eb-header-dark .eb-navigation { min-height:56px; }
+    .electric-landing.electric-landing > .eb-header-dark .eb-menu { max-height:calc(100dvh - 56px); }
+    .electric-landing.electric-landing .eb-button,.electric-landing.electric-landing .eb-menu-toggle { min-height:44px; }
+    .electric-landing.electric-landing .eb-hero-inner { min-height:600px; padding-block:36px 240px; }
+    .electric-landing.electric-landing .eb-hero h1 { font-size:clamp(43px,8.8vw,66px); margin-top:22px; }
+    .electric-landing.electric-landing .eb-hero-description { font-size:13px; }
+    .electric-landing.electric-landing .eb-character-plant { height:208px; left:0; }
+    .electric-landing.electric-landing .eb-character-megaphone { height:200px; right:-16px; }
+    .electric-landing.electric-landing .eb-skill-stamp { width:68px; height:68px; font-size:9px; }
+    .electric-landing.electric-landing .eb-section { padding-block:48px; }
+    .electric-landing.electric-landing .eb-event-grid { gap:29px 16px; }
+    .electric-landing.electric-landing .eb-how .eb-two-column { gap:26px; }
+    .electric-landing.electric-landing .eb-catalog-preview::after { height:48px; }
+    .electric-landing.electric-landing .eb-home-search { padding-top:27px; }
+    .electric-landing.electric-landing .eb-search-band { padding-bottom:32px; }
+    .electric-landing.electric-landing .eb-final-cta { padding-block:48px; }
+    .electric-landing.electric-landing .eb-footer { padding-block:32px 16px; }
+}
+@media(max-width:480px) {
+    .electric-landing.electric-landing .eb-role-grid,.electric-landing.electric-landing .eb-package-grid { gap:16px; }
+    .electric-landing.electric-landing .eb-cta-card { padding:24px 20px; }
+    .electric-landing.electric-landing .eb-home-search > .eb-button { min-width:0; }
+}

@@ -18,7 +18,7 @@
             <p class="eb-auth-footnote">SkillMatch / Ruang untuk berkontribusi.</p>
         </aside>
         <main id="auth-main" class="eb-auth-main">
-            <header class="eb-auth-header"><a href="{{ route('home') }}" class="eb-auth-mobile-brand" aria-label="SkillMatch beranda"><x-public-brand /></a><a href="{{ route('home') }}">Kembali ke beranda <span aria-hidden="true">↗︎</span></a></header>
+            <header class="eb-auth-header"><a href="{{ route('home') }}" class="eb-auth-mobile-brand" aria-label="SkillMatch beranda"><x-public-brand /></a><a href="{{ route('home') }}">Kembali ke beranda <x-arrow-icon direction="up-right" /></a></header>
             <div @class(['eb-auth-content', 'eb-auth-register' => $register])>
                 <div class="eb-auth-heading"><p class="eb-eyebrow">{{ $register ? 'MULAI BERSAMA SKILLMATCH' : 'SELAMAT DATANG KEMBALI' }}</p><h2 class="eb-display">{{ $title }}.</h2>@if($intro)<p>{{ $intro }}</p>@endif</div>
                 {{ $slot }}

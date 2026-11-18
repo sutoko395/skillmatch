@@ -1434,3 +1434,51 @@ status atau snapshot. Detail implementasi, bukti dan batas pengujian:
 
 ### Penyelarasan panel volunteer (16 November 2026)
 Atas arahan pengguna, seluruh menu volunteer memakai kepadatan EO/admin: judul halaman 26px (22px di ponsel), judul bagian 16px, subjudul 14px, isi 13px, metadata 11-12px, jarak antarkartu 16px, serta tombol outline biru dan kembali merah. Padding kartu dan ringkasan dipadatkan tanpa mengubah aturan bisnis atau area pilihan soal minimal 44px. Detail hasil pemeriksaan ada di docs/VOLUNTEER_EO_STYLE_HANDOFF.md pada root repository.
+
+### Header landing page - 16 November 2026
+Atas permintaan pengguna, header gelap beranda tetap terlihat saat scroll menggunakan position:sticky/top:0, lapisan di atas konten dan bayangan lembut. Tautan Cara kerja/Untuk Organizer menutup menu ponsel; scroll-margin menjaga judul bagian tidak tertutup header. Menu ponsel dapat discroll jika lebih tinggi dari layar. Halaman publik lain tetap memakai posisi header semula. Branch feature/landing-page-refinement, dasar 8c0f1c3. Build frontend dan diff --check lulus; pemeriksaan browser terbaru belum dilakukan. Tidak mengubah route, data, atau aturan bisnis.
+
+### Kartu ajakan landing page - 16 November 2026
+Sesuai referensi gambar pengguna, CTA akhir menjadi kartu biru membulat dalam container berlatar paper: teks rata kiri (label, judul sans-serif, deskripsi), tombol akun navy dan tombol outline Jelajahi kegiatan di kanan. Palet biru/navy/putih tetap. Tablet/ponsel menumpuk konten dan tombol responsif. Tautan akun tetap mengikuti status login; tautan kedua memakai katalog existing. Header sticky dipadatkan ke 76px desktop/64px ponsel. Build frontend dan diff --check lulus; belum ada pemeriksaan browser untuk kartu CTA terbaru. Tidak ada migration atau perubahan kontrak bisnis.
+
+Pembaruan warna CTA sesuai arahan terbaru: latar oranye #fb923c, judul navy, label biru tua #1e3a8a, deskripsi gelap #1e293b dan tombol sekunder teks/garis navy. Tombol utama navy tetap memakai teks putih untuk kontras. Build dan diff --check lulus.
+
+### Cara kerja landing page - 16 November 2026
+Arahan pengguna terbaru: tetap tiga langkah seperti semula, disusun vertikal di kanan dengan kartu transparan berbingkai putih lembut dan sudut membulat. Pengantar di kiri mengikuti referensi dengan judul sans-serif, deskripsi, dan tautan katalog. Palet navy/putih/oranye dipertahankan; layar kecil menumpuk dua kolom. Build dan diff --check lulus; visual browser terbaru belum diperiksa.
+
+### Palet publik revisi - 16 November 2026
+Mengikuti referensi terbaru pengguna, warna primer publik menjadi ungu kebiruan #7047ff, aksen oranye menjadi hijau muda #c8f45b, dan paper #f7f6f2. Warna hover, label CTA, tombol, tautan dan dua ilustrasi SVG hero ikut diselaraskan. Navy dan teks gelap tetap. Palet panel admin/EO/volunteer serta autentikasi tidak diubah; perubahan dibatasi shell publik. Build frontend dan diff --check lulus, visual browser terbaru belum diperiksa.
+
+Koreksi lingkup putih sesuai klarifikasi pengguna: hanya pita pencarian kegiatan yang memakai latar #fff selebar viewport; isi form tetap mengikuti container. Katalog kegiatan dan area paper di bawah tetap krem #f7f6f2. Form dipisahkan dari container katalog; route/filter tetap. Build dan diff --check lulus.
+
+### Kepadatan landing dan warna kulit - 16 November 2026
+Atas permintaan pengguna, ukuran visual landing diperkecil sekitar 20% melalui CSS terisolasi electric-landing: judul, tombol, ilustrasi, jarak, kartu dan padding. Area tombol ponsel tetap minimal 44px. Tidak memakai zoom/transform skala halaman. Warna wajah dan lengan kedua karakter SVG menjadi warna kulit #e8b28e, sementara pot/aksen hijau tetap. File baru resources/css/landing-density.css diimpor oleh app.css; halaman publik lain/panel tidak terkena aturan kepadatan. Build dan diff --check lulus. Visual browser terbaru belum diperiksa.
+
+FAQ sesuai revisi pengguna terbaru: latar krem, judul gelap di tengah kolom kiri, satu kotak ungu kebiruan membulat di kanan berisi seluruh accordion pertanyaan. Pertanyaan/jawaban putih, ikon + hijau muda, pemisah tipis transparan; tinggi baris tetap ringkas. Build dan diff --check lulus; belum verifikasi visual browser terbaru.
+
+FAQ: ditambahkan label PERTANYAAN UMUM dan deskripsi singkat, judul kembali rata kiri sesuai persetujuan pengguna. Kotak biru hanya untuk kolom pertanyaan. Jarak bawah FAQ dan atas CTA masing-masing 24px (total 48px), menggantikan jarak gabungan 136px desktop. Build dan diff --check lulus; belum diperiksa visual browser terbaru.
+
+Paket landing mengikuti referensi terbaru pengguna: section gelap #1c1c22 selebar halaman, judul sans-serif putih di kiri/deskripsi abu di kanan, tiga kartu transparan membulat dengan nomor hijau muda. Nama/harga/kapasitas tetap memakai data paket aktif dan komponen paket existing; styling dibatasi landing. Grid tetap satu kolom di ponsel. Build dan diff --check lulus; visual browser terbaru belum diperiksa.
+
+Cara kerja direvisi sesuai referensi terbaru: section putih, pengantar rata tengah, baris Cukup mau terlibat berwarna primer, deskripsi abu, tiga langkah berjajar dalam satu panel krem membulat dengan pemisah vertikal. Di ponsel tiga langkah ditumpuk dengan pemisah horizontal. Isi dan tautan katalog dipertahankan. Build dan diff --check lulus, visual browser terbaru belum diperiksa.
+
+Kartu peran mengikuti referensi terbaru: Volunteer putih dengan judul sans-serif gelap, ikon centang primer dan tombol outline; Organizer ungu kebiruan dengan teks putih, centang serta tombol hijau muda. Sudut membulat dan jarak konten konsisten. Isi tiga langkah serta route pendaftaran menurut role tetap, tidak menambahkan harga atau fitur dari referensi. Build dan diff --check lulus; visual browser terbaru belum diperiksa.
+
+Ikon panah diseragamkan atas permintaan pengguna: seluruh karakter panah Unicode/entity pada view menjadi komponen SVG arrow-icon (right/left/down/up-right), mengikuti currentColor, ukuran 16px, dekoratif aria-hidden. Mencakup landing, katalog/detail, navbar publik, autentikasi, serta tautan tersisa di dashboard admin/detail volunteer. Route dan label tetap. Build dan diff --check lulus; render Blade/browser terbaru belum diverifikasi.
+
+### Aksen aprikot - 16 November 2026
+Atas permintaan pengguna, aksen hijau muda publik diganti aprikot #ffb86b untuk mendampingi primer ungu kebiruan #7047ff. Tombol, CTA, ikon, nomor dan ilustrasi memakai token yang sama; hover #f5a451/#ffd4a3. Kulit karakter tetap #e8b28e. Build dan diff --check lulus; belum diperiksa visual browser terbaru.
+
+Palet akhir sesuai permintaan kembali ke warna awal: biru #2563eb, oranye #fb923c, navy tetap #0f172a. Hover/aksen/ilustrasi diselaraskan kembali; kulit karakter alami dan seluruh tata letak terbaru tetap dipertahankan. Area krem dan pita putih tetap sesuai keputusan sebelumnya. Build dan diff --check lulus.
+
+Revisi palet terakhir pengguna: kembali ke ungu kebiruan #7047ff dan hijau muda #c8f45b, termasuk hover, tombol, aksen dan ilustrasi; kulit alami serta tata letak tetap. Build dan diff --check lulus.
+
+Header landing: menu desktop dipusatkan dalam ruang setelah logo, gap 18px dan lebar container maksimal 1120px. Buat akun disorot tombol hijau muda; drawer ponsel tetap. Pot sudah hijau muda; badan/corong/gagang megafon kini hijau muda juga. Kulit karakter tetap alami. Build dan diff --check lulus; visual browser terbaru belum diperiksa.
+
+Katalog/detail publik: header navy ringkas dan sticky disamakan dengan landing. Tombol daftar mobile/desktop memiliki aturan visibility eksplisit agar tidak ganda. Ditambahkan tombol Kembali merah di katalog menuju beranda; detail menuju katalog. File public-refinement.css mengurangi ukuran font/kontrol/kartu/jarak sekitar 20% hanya pada halaman publik interior. Build dan diff --check lulus. Pemeriksaan live browser katalog 390/1440px lulus tanpa overflow: header 57/62px, CTA desktop satu dan mobile tertutup sesuai drawer. Screenshot desktop diperiksa; pengujian pertama sebelum aset Vite selesai dimuat gagal lalu ulang setelah aset siap lulus. Detail dengan data event belum diperiksa visual karena katalog kerja kosong; tidak membuat fixture di database kerja.
+
+Revisi navigasi publik sesuai persetujuan pengguna: katalog tidak lagi memuat tombol kembali; detail event memakai tautan kecil Kembali ke kegiatan dengan ikon panah SVG, teks abu gelap dan tanpa kotak. Tombol kembali dalam panel volunteer tetap mengikuti style panel. Build dan diff --check lulus; visual detail terbaru belum diperiksa.
+
+Palet publik diperhalus sesuai keluhan tampilan HP: biru netral #3566a8 (hover #294f83), hijau sage #c4d8bd (hover #aec8a5), dengan turunan biru pucat untuk teks pendukung dan hover. Ilustrasi diselaraskan, kulit tetap alami. Browser live pada lebar 390/1440px memastikan token baru termuat, tidak ada overflow, header 57/62px, CTA tidak ganda. Screenshot halaman penuh mobile diperiksa. Build dan diff --check lulus; perbedaan kalibrasi layar perangkat fisik tidak diuji.
+
+Arahan palet terbaru: biru publik disamakan dengan panel #2563eb/hover #1d4ed8. Aksen sage diganti aprikot pucat #f6d2aa/hover #edbd86 agar lebih lembut; teks di aksen tetap navy. Ilustrasi dan semua turunan warna ikut diselaraskan; kulit tetap alami. Build dan diff --check lulus.

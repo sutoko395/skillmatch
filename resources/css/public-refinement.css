@@ -1,0 +1,46 @@
+/* One consistent public header, including catalogue and event detail. */
+.electric-public.electric-public .eb-header .eb-navigation { min-height:61px; width:min(100% - 48px,1120px); gap:24px; }
+.electric-public.electric-public .eb-header .eb-brand { font-size:23px; gap:9px; }
+.electric-public.electric-public .eb-header .eb-brand svg { width:35px; height:35px; }
+.electric-public.electric-public .eb-header .eb-menu { gap:18px; font-size:12px; }
+.electric-public.electric-public .eb-header .eb-register-desktop { display:none; }
+.electric-public.electric-public .eb-header .eb-button-small { min-height:36px; padding:7px 13px; gap:8px; font-size:12px; font-weight:700; }
+@media(min-width:768px) {
+    .electric-public.electric-public .eb-header .eb-menu { flex:1; justify-content:center; }
+    .electric-public.electric-public .eb-header .eb-register-mobile { display:none; }
+    .electric-public.electric-public .eb-header .eb-register-desktop { display:inline-flex; flex-shrink:0; margin-left:auto; }
+}
+/* Roughly 20% smaller public catalogue/detail, without scaling other panels. */
+.electric-public.electric-interior .eb-interior { padding-block:32px 64px; font-size:13px; }
+.electric-public.electric-interior .eb-catalog-heading { margin-top:24px; margin-bottom:32px; }
+.electric-public.electric-interior .eb-catalog-heading .eb-display { margin-top:20px; font-size:clamp(36px,4.4vw,61px); }
+.electric-public.electric-interior .eb-catalog-heading > p:last-child { margin-top:18px; font-size:13px; }
+.electric-public.electric-interior .eb-eyebrow { font-size:10px; }
+.electric-public.electric-interior .eb-catalog-filters { gap:16px; padding:20px; }
+.electric-public.electric-interior .eb-catalog-filters label { font-size:12px; }
+.electric-public.electric-interior .eb-catalog-filters :is(input,select) { min-height:40px; font-size:13px; }
+.electric-public.electric-interior .eb-button { min-height:40px; padding:10px 19px; gap:10px; font-size:12px; }
+.electric-public.electric-interior .eb-event-grid { gap:36px 24px; }
+.electric-public.electric-interior .eb-event-card h3 { margin-top:18px; font-size:26px; }
+.electric-public.electric-interior .eb-event-description { font-size:12px; }
+.electric-public.electric-interior .eb-event-meta { margin-block:18px; font-size:11px; }
+.electric-public.electric-interior .eb-event-action { font-size:12px; }
+.electric-public.electric-interior .ve-detail > :not([hidden]) ~ :not([hidden]) { margin-top:18px; }
+.electric-public.electric-interior .ve-detail h1 { font-size:26px; line-height:1.3; }
+.electric-public.electric-interior .ve-detail h2 { font-size:18px; line-height:1.4; }
+.electric-public.electric-interior .ve-detail h3 { font-size:16px; line-height:1.4; }
+.electric-public.electric-interior .ve-detail :is(p,li,dd,.text-sm) { font-size:13px; line-height:1.7; }
+.electric-public.electric-interior .ve-detail :is(dt,.text-xs) { font-size:11px; }
+.electric-public.electric-interior .ve-detail > .grid { gap:20px; }
+.electric-public.electric-interior .ve-detail section.bg-white { padding:20px; }
+.electric-public.electric-public .eb-back-link { display:inline-flex; align-items:center; gap:7px; min-height:36px; padding:4px 0; color:#475569; font-size:12px; font-weight:500; text-decoration:none; }
+.electric-public.electric-public .eb-back-link:hover { color:var(--eb-blue); }
+@media(max-width:767px) {
+    .electric-public.electric-public .eb-header .eb-navigation { min-height:56px; width:calc(100% - 40px); }
+    .electric-public.electric-public .eb-header .eb-menu { max-height:calc(100dvh - 56px); }
+    .electric-public.electric-public .eb-header .eb-button-small { min-height:44px; }
+    .electric-public.electric-interior .eb-catalog-filters { padding:16px; }
+    .electric-public.electric-interior .ve-detail section.bg-white { padding:16px; }
+    .electric-public.electric-interior .eb-button,
+    .electric-public.electric-public .eb-back-link { min-height:44px; }
+}

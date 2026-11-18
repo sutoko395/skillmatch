@@ -43,7 +43,7 @@
         <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
             <p class="font-semibold">Profil Anda belum lengkap!</p>
             <p class="mt-1">Silakan lengkapi data profil dan keahlian Anda sebelum mengirimkan lamaran.</p>
-            <a href="{{ route('volunteer.profile.edit') }}" class="mt-2 inline-block rounded font-semibold underline focus:ring-2 focus:ring-amber-600">Lengkapi Profil &rarr;</a>
+            <a href="{{ route('volunteer.profile.edit') }}" class="mt-2 inline-block rounded font-semibold underline focus:ring-2 focus:ring-amber-600">Lengkapi Profil <x-arrow-icon direction="right" /></a>
         </div>
     @endif
 
