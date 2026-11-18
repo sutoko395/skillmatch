@@ -22,7 +22,7 @@ Route::get(
     ->name('dashboard');
 
 Route::get('/documents/{document}/download', [DocumentDownloadController::class, 'download'])
-    ->middleware(['auth', 'account.active', 'verified', 'throttle:60,1'])
+    ->middleware(['auth', 'account.active', 'throttle:60,1'])
     ->name('documents.download');
 
 require __DIR__.'/admin.php';
