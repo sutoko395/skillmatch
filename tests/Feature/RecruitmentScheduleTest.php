@@ -49,7 +49,7 @@ class RecruitmentScheduleTest extends DatabaseTestCase
         $this->put(route('organizer.events.update', $created), $input)->assertRedirect();
         $this->assertSame($input['assessment_deadline'], $created->fresh()->assessment_deadline->setTimezone('Asia/Jakarta')->format('Y-m-d\TH:i'));
         $this->get(route('organizer.events.show', $created))->assertOk()
-            ->assertSee('Tenggat assessment (WIB)')->assertSee('Batas akhir keputusan EO (WIB)');
+            ->assertSee('Tenggat asesmen (WIB)')->assertSee('Batas keputusan seleksi (WIB)');
     }
 
     public static function invalidCases(): array

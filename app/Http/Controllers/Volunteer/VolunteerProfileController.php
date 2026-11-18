@@ -22,7 +22,7 @@ class VolunteerProfileController extends Controller
 
         Gate::authorize('updateProfile', $user);
         $skills = Skill::where('is_active', true)->orderBy('name')->get();
-        $cities = City::where('is_active', true)->orderBy('name')->get();
+        $cities = City::where('is_active', true)->with('province')->orderBy('name')->get();
         $slots = $user->availabilitySlots()->orderBy('starts_at')->get();
 
         $volunteerProfile = VolunteerProfile::where('user_id', $user->id)->first();

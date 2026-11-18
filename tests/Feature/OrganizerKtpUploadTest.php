@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\City;
 use App\Models\OrganizerDocument;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
@@ -68,7 +69,8 @@ class OrganizerKtpUploadTest extends DatabaseTestCase
     {
         return [
             'organization_name' => 'Organisasi uji upload', 'contact_person' => 'Kontak uji',
-            'phone' => '081234567890', 'address' => 'Alamat uji', 'city' => 'Malang',
+            'phone' => '081234567890', 'address' => 'Alamat uji',
+            'city_id' => City::firstOrCreate(['name' => 'Kota Upload Uji'], ['is_active' => true])->id,
             'description' => 'Organisasi uji penyimpanan',
         ];
     }

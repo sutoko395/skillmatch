@@ -71,7 +71,7 @@
                         </div>
                         <div class="organizer-event-meta-item organizer-event-location">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z" /><circle cx="12" cy="10" r="2.5" /></svg>
-                            <span><span class="sr-only">Lokasi kegiatan: </span>{{ $event->location }}{{ $event->location && $event->city ? ' · ' : '' }}{{ $event->city }}</span>
+                            <span><span class="sr-only">Lokasi kegiatan: </span>{{ $event->location }}{{ $event->location && $event->cityRecord?->name ? ' · ' : '' }}{{ $event->cityRecord?->name ?? $event->city }}@if($event->cityRecord?->province), {{ $event->cityRecord->province->name }}@endif</span>
                         </div>
                     </div>
                     <div class="organizer-event-badges mt-3 flex flex-wrap gap-2">

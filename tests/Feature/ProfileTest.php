@@ -66,11 +66,42 @@ class ProfileTest extends DatabaseTestCase
         $this->post('/volunteer/profile', $data)->assertSessionHasErrors(['city_id', 'skills.0.skill_id']);
     }
 
+    public function test_organizer_city_uses_active_master_and_legacy_text_is_mapped_without_forcing_review(): void
+    {
+        $user = User::factory()->create(['role' => 'organizer', 'organizer_status' => 'active']);
+        $city = City::firstOrCreate(['name' => 'Kota Legacy Organizer'], ['is_active' => true]);
+        $user->organizerProfile()->create([
+            'organization_name' => 'Organisasi Legacy', 'contact_person' => 'Kontak Legacy',
+            'phone' => '081234567890', 'email' => $user->email, 'address' => 'Alamat legacy',
+            'city' => 'Legacy Organizer', 'description' => 'Deskripsi legacy',
+        ]);
+
+        $this->actingAs($user)->get('/organizer/profile')->assertOk()
+            ->assertSee('Kota lama: Legacy Organizer')
+            ->assertSee('Kota/Kabupaten');
+
+        $data = [
+            'organization_name' => 'Organisasi Legacy', 'contact_person' => 'Kontak Legacy',
+            'phone' => '081234567890', 'address' => 'Alamat legacy',
+            'city_id' => $city->id, 'description' => 'Deskripsi legacy',
+        ];
+        $this->post('/organizer/profile', $data)->assertSessionHasNoErrors();
+        $profile = $user->organizerProfile()->first();
+        $this->assertSame($city->id, $profile->city_id);
+        $this->assertSame('Kota Legacy Organizer', $profile->city);
+        $this->assertSame('active', $user->fresh()->organizer_status);
+
+        $other = City::create(['name' => 'Kota Lain Organizer', 'is_active' => true]);
+        $this->post('/organizer/profile', array_replace($data, ['city_id' => $other->id]))
+            ->assertSessionHasErrors('confirm_reverification');
+    }
+
     public function test_organizer_resubmits_revision_and_contact_edit_preserves_approval_without_reupload(): void
     {
         $user = User::factory()->unverified()->create(['role' => 'organizer', 'organizer_status' => 'inactive']);
-        $data = ['organization_name' => 'Demo', 'contact_person' => 'Kontak demo', 'phone' => '0800000000', 'email' => 'contact@example.test', 'address' => 'Alamat demo', 'city' => 'Malang', 'description' => 'Organisasi demo'];
-        $user->organizerProfile()->create($data);
+        $city = City::firstOrCreate(['name' => 'Kota Profil Organizer'], ['is_active' => true]);
+        $data = ['organization_name' => 'Demo', 'contact_person' => 'Kontak demo', 'phone' => '0800000000', 'email' => 'contact@example.test', 'address' => 'Alamat demo', 'city_id' => $city->id, 'description' => 'Organisasi demo'];
+        $user->organizerProfile()->create($data + ['city' => $city->name]);
         $this->actingAs($user)->post('/organizer/profile', $data)->assertSessionHasNoErrors();
         $this->assertSame('pending', $user->fresh()->organizer_status);
         $this->assertTrue($user->fresh()->is_active);

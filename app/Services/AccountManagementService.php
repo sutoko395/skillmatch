@@ -16,9 +16,9 @@ use Illuminate\Support\Facades\Storage;
 
 class AccountManagementService
 {
-    public function delete(User $subject, User $actor): void
+    public function delete(User $subject, User $actor): bool
     {
-        DB::transaction(function () use ($subject, $actor) {
+        return DB::transaction(function () use ($subject, $actor) {
             $subject = User::whereKey($subject->id)->lockForUpdate()->firstOrFail();
             Gate::forUser($actor->fresh())->authorize('delete', $subject);
             Gate::forUser($actor->fresh())->authorize($subject->role === 'organizer' ? 'manageOrganizer' : 'manageVolunteer', $subject);
@@ -31,7 +31,9 @@ class AccountManagementService
                 || Attendance::where('recorded_by', $subject->id)->exists()
                 || AttendanceSession::where('recorded_by', $subject->id)->exists()
                 || NotificationOutbox::where('recipient_id', $subject->id)->exists();
-            abort_if($used, 403, 'Akun memiliki data terkait. Nonaktifkan akun untuk mempertahankan dokumen dan riwayat.');
+            if ($used) {
+                return false;
+            }
             $paths = $subject->organizerDocuments()->pluck('file_path')->filter()->all();
             app(AuditService::class)->record($actor, 'account.deleted', $subject, [], 'unused_account');
             $subject->delete();
@@ -41,6 +43,8 @@ class AccountManagementService
                     Storage::disk('local')->delete($path);
                 }
             });
+
+            return true;
         }, 3);
     }
 }

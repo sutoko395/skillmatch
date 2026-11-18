@@ -137,7 +137,17 @@ class OrganizerController extends Controller
 
         Gate::authorize('manageOrganizer', $user);
 
-        app(AccountManagementService::class)->delete($user, auth()->user());
+        $deleted = app(AccountManagementService::class)->delete(
+            $user,
+            auth()->user()
+        );
+
+        if (! $deleted) {
+            return back()->with(
+                'delete_error',
+                'Organizer ini memiliki data terkait. Silakan nonaktifkan akun untuk mempertahankan dokumen dan riwayat.'
+            );
+        }
 
         return back()->with(
             'success',

@@ -36,7 +36,7 @@ class VolunteerApplicationController extends Controller
     {
         Gate::authorize('viewAny', Application::class);
 
-        $applications = Application::with(['event.cityRecord', 'position', 'screeningResult'])
+        $applications = Application::with(['event.cityRecord.province', 'position', 'screeningResult'])
             ->where('volunteer_id', Auth::id())
             ->latest()
             ->paginate(10);
@@ -53,7 +53,7 @@ class VolunteerApplicationController extends Controller
 
         $application->load([
             'event.organizer.organizerProfile',
-            'event.cityRecord',
+            'event.cityRecord.province',
             'position.positionSkills.skill',
             'position.schedules',
             'position.requirements',

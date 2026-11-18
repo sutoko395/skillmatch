@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use App\Models\City;
 use App\Models\Skill;
 use Illuminate\Database\Seeder;
 
@@ -11,10 +10,6 @@ class MasterDataSeeder extends Seeder
 {
     public function run(): void
     {
-        foreach (['Malang', 'Surabaya'] as $city) {
-            City::firstOrCreate(['name' => $city]);
-        }
-
         $categories = [
             [
                 'name' => 'Konser & Festival Musik',

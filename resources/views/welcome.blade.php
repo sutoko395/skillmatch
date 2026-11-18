@@ -59,7 +59,7 @@
             ['volunteer', 'UNTUK VOLUNTEER', 'Temukan ruang untuk kontribusi Anda.', [['Buat akun dan lengkapi profil', 'Tambahkan kota, skill, level, dan jadwal ketersediaan Anda.'], ['Jelajahi kebutuhan volunteer', 'Baca detail posisi, persyaratan, serta waktu pelaksanaan kegiatan.'], ['Ajukan lamaran dan ikuti seleksi', 'Lengkapi dokumen dan assessment sesuai posisi, lalu pantau perkembangan lamaran Anda.']]],
             ['organizer', 'UNTUK ORGANIZER', 'Susun tim volunteer dengan kebutuhan yang jelas.', [['Lengkapi profil organisasi', 'Daftarkan akun Organizer dan ikuti proses verifikasi organisasi.'], ['Rancang kegiatan dan posisi', 'Organizer aktif dapat menyiapkan event, skill, jadwal, persyaratan, dan paket.'], ['Ajukan ketika seluruh syarat siap', 'Penuhi moderasi, paket aktif, dan assessment yang sah sebelum memublikasikan kegiatan.']]],
         ] as [$role, $label, $title, $steps])
-        <article class="eb-role-card eb-role-card--{{ $role }}">
+        <article id="untuk-{{ $role }}" class="eb-role-card eb-role-card--{{ $role }}">
             <p class="eb-eyebrow">{{ $label }}</p>
             <h3>{{ $title }}</h3>
             <ol>
@@ -75,7 +75,6 @@
         @endforeach
     </div>
 </section>
-<section id="untuk-organizer" class="eb-organizer-band" aria-labelledby="organizer-title"><div class="eb-container eb-section eb-organizer"><div><p class="eb-eyebrow">UNTUK ORGANIZER</p><h2 id="organizer-title" class="eb-display">Kegiatan hebat,<br>ketemu tim yang tepat.</h2><p class="eb-intro">Susun kebutuhan volunteer, posisi, dan jadwal dalam satu tempat.</p></div><a class="eb-button" href="{{ auth()->check() ? route('dashboard') : route('register', ['role' => 'organizer']) }}">{{ auth()->check() ? 'Buka akun saya' : 'Mulai sebagai Organizer' }} <x-arrow-icon direction="up-right" /></a></div></section>
 <section id="paket" class="eb-packages-band" aria-labelledby="packages-title">
     <div class="eb-container eb-section">
         <div class="eb-packages-heading">
@@ -83,13 +82,33 @@
                 <p class="eb-eyebrow">PILIH KAPASITAS UNTUK KEGIATANMU</p>
                 <h2 id="packages-title" class="eb-display">Ruang untuk<br>rencanamu.</h2>
             </div>
-            <p class="eb-intro">Pilih paket sesuai kebutuhan kegiatanmu. Harga dan kapasitas mengikuti paket aktif yang tersedia. Pembayaran menggunakan Midtrans Sandbox.</p>
+            <p class="eb-intro">Paket aktif mengikuti harga dan kapasitas yang tersedia. Pembayaran menggunakan Midtrans Sandbox.</p>
         </div>
-<div class="eb-package-grid">
-    @forelse($packages as $package)
-    <x-package-card :package="$package"><a class="eb-button" href="{{ auth()->check() ? route('dashboard') : route('register', ['role' => 'organizer']) }}">{{ auth()->check() ? 'Buka akun saya' : 'Mulai sebagai Organizer' }} <x-arrow-icon direction="up-right" /></a></x-package-card>
-    @empty<p class="eb-empty">Paket kegiatan belum tersedia. Silakan kunjungi kembali nanti.</p>@endforelse
-</div></div></section>
+        <div class="eb-package-grid">
+            @forelse($packages as $package)
+                <x-package-card :package="$package" />
+            @empty
+                <p class="eb-empty">Paket kegiatan belum tersedia. Silakan kunjungi kembali nanti.</p>
+            @endforelse
+        </div>
+        @if($packages->isNotEmpty())
+            @php
+                $packageUser = auth()->user();
+                [$packageCtaUrl, $packageCtaLabel] = match (true) {
+                    ! $packageUser => [route('register', ['role' => 'organizer']), 'Daftar sebagai Organizer'],
+                    $packageUser->role === 'organizer' && $packageUser->organizer_status === 'active' => [route('organizer.events.create'), 'Buat Kegiatan'],
+                    $packageUser->role === 'organizer' => [route('organizer.profile.edit'), 'Lengkapi Profil Organizer'],
+                    $packageUser->role === 'volunteer' => [route('events.index'), 'Jelajahi Kegiatan'],
+                    default => [route('dashboard'), 'Buka Dashboard'],
+                };
+            @endphp
+            <div class="eb-package-cta">
+                <p>Paket dipilih saat membuat kegiatan. Pembayaran dilakukan setelah kegiatan disetujui.</p>
+                <a class="eb-button" href="{{ $packageCtaUrl }}">{{ $packageCtaLabel }} <span aria-hidden="true">↗︎</span></a>
+            </div>
+        @endif
+    </div>
+</section>
 <section class="eb-faq-band" aria-labelledby="faq-title"><div class="eb-container eb-section eb-faq">
     <div class="eb-faq-intro">
         <p class="eb-eyebrow">PERTANYAAN UMUM</p>
@@ -114,7 +133,6 @@
                 <p class="eb-cta-description">Temukan kegiatan yang sesuai dengan keterampilan, waktu, dan lokasimu. Ambil peran dan mulai kontribusimu bersama SkillMatch.</p>
             </div>
             <div class="eb-cta-actions">
-                <a class="eb-button eb-button-navy" href="{{ auth()->check() ? route('dashboard') : route('register') }}">{{ auth()->check() ? 'Buka akun saya' : 'Buat akun SkillMatch' }} <x-arrow-icon direction="right" /></a>
                 <a class="eb-button eb-cta-secondary" href="{{ route('events.index') }}">Jelajahi kegiatan</a>
             </div>
         </div>

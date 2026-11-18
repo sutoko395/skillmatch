@@ -25,7 +25,7 @@
 
     <x-form-field
         name="city_id"
-        label="Kota domisili"
+        label="Kota/Kabupaten domisili"
         required
     >
         <select
@@ -35,17 +35,10 @@
             class="mt-2 w-full rounded-xl border-slate-200 text-sm transition focus:border-orange-500 focus:ring-orange-500"
         >
             <option value="">
-                Pilih kota aktif
+                Pilih kota/kabupaten aktif
             </option>
 
-            @foreach($cities as $city)
-                <option
-                    value="{{ $city->id }}"
-                    @selected(old('city_id', $volunteerProfile?->city_id) == $city->id)
-                >
-                    {{ $city->name }}
-                </option>
-            @endforeach
+            <x-city-options :cities="$cities" :selected="$volunteerProfile?->city_id" />
         </select>
 
         @if($volunteerProfile?->city && !$volunteerProfile?->city_id)

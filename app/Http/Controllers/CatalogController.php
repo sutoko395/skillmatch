@@ -13,7 +13,7 @@ class CatalogController extends Controller
     public function index(Request $r)
     {
         $v = $r->validate(['search' => 'nullable|string|max:100', 'city_id' => 'nullable|integer', 'category_id' => 'nullable|integer', 'date' => 'nullable|date_format:Y-m-d']);
-        $query = Event::publiclyVisible()->withCount('positions')->with(['cityRecord', 'category', 'organizer.organizerProfile'])->orderBy('starts_at');
+        $query = Event::publiclyVisible()->withCount('positions')->with(['cityRecord.province', 'category', 'organizer.organizerProfile'])->orderBy('starts_at');
         if (! empty($v['search'])) {
             $query->where('title', 'like', '%'.$v['search'].'%');
         }
@@ -27,13 +27,13 @@ class CatalogController extends Controller
             $query->where('starts_at', '<', $date->addDay()->utc())->where('ends_at', '>', $date->utc());
         }
 
-        return view($r->routeIs('volunteer.events.index') ? 'volunteer.events.index' : 'events.index', ['events' => $query->paginate(12)->withQueryString(), 'cities' => City::where('is_active', true)->orderBy('name')->get(), 'categories' => Category::where('is_active', true)->orderBy('name')->get()]);
+        return view($r->routeIs('volunteer.events.index') ? 'volunteer.events.index' : 'events.index', ['events' => $query->paginate(12)->withQueryString(), 'cities' => City::where('is_active', true)->with('province')->orderBy('name')->get(), 'categories' => Category::where('is_active', true)->orderBy('name')->get()]);
     }
 
     public function show(Event $event)
     {
         abort_unless(Event::publiclyVisible()->whereKey($event->id)->exists(), 404);
 
-        return view(request()->routeIs('volunteer.events.show') ? 'volunteer.events.show' : 'events.show', ['event' => $event->load(['positions.positionSkills.skill', 'positions.schedules', 'positions.requirements', 'cityRecord', 'category', 'organizer.organizerProfile', 'entitlement'])]);
+        return view(request()->routeIs('volunteer.events.show') ? 'volunteer.events.show' : 'events.show', ['event' => $event->load(['positions.positionSkills.skill', 'positions.schedules', 'positions.requirements', 'cityRecord.province', 'category', 'organizer.organizerProfile', 'entitlement'])]);
     }
 }

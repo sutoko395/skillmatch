@@ -8,7 +8,7 @@
     </div>
     <dl class="vl-location">
         <dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 10c0 6-8 11-8 11S4 16 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2.5" /></svg>Lokasi kegiatan</dt>
-        <dd>{{ $application->event->location }} @if($application->event->cityRecord?->name) &middot; {{ $application->event->cityRecord->name }} @endif</dd>
+        <dd>{{ $application->event->location }} @if($application->event->cityRecord?->name) &middot; {{ $application->event->cityRecord->name }}@if($application->event->cityRecord->province), {{ $application->event->cityRecord->province->name }}@endif @endif</dd>
     </dl>
     @php
         $nextStep = match (true) {

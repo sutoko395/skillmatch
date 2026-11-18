@@ -114,7 +114,7 @@
                 </div>
                 <div>
                     <dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z" /><circle cx="12" cy="10" r="2.5" /></svg><span>Lokasi</span></dt>
-                    <dd>{{ $event->location }} &middot; {{ $event->city }}</dd>
+                    <dd>{{ $event->location }} &middot; {{ $event->cityRecord?->name ?? $event->city }}@if($event->cityRecord?->province), {{ $event->cityRecord->province->name }}@endif</dd>
                 </div>
                 <div>
                     <dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 2" /></svg><span>Pelaksanaan (WIB)</span></dt>
@@ -457,11 +457,12 @@
             @if (in_array($event->lifecycle_status, ['upcoming', 'ongoing']))
                 @php($isUnsubmittedDraft = $event->status === 'draft' && !$event->submitted_at && !$event->published_at)
                 <form
+                    x-ref="cancelForm"
                     class="organizer-event-cancel mt-6 space-y-3"
                     method="POST"
                     action="{{ route('organizer.events.cancel', $event) }}"
-                    x-data="{ confirmation: @js($isUnsubmittedDraft ? 'Batalkan draf ini? Datanya tetap tersimpan.' : 'Batalkan kegiatan beserta proses lamaran terkait?') }"
-                    @submit="if (!confirm(confirmation)) $event.preventDefault()"
+                    x-data="{ confirmed: false, confirmationOpen: false }"
+                    @submit="if (!confirmed) { $event.preventDefault(); confirmationOpen = true }"
                 >
                     @csrf
 
@@ -477,6 +478,61 @@
                     <x-button variant="danger">
                         {{ $isUnsubmittedDraft ? 'Batalkan draf' : 'Batalkan kegiatan' }}
                     </x-button>
+                    <div
+                        x-show="confirmationOpen"
+                        x-cloak
+                        x-transition.opacity
+                        @keydown.escape.window="confirmationOpen = false"
+                        class="fixed inset-0 z-[99999] flex items-center justify-center p-4"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="cancel-event-title"
+                    >
+                        <div
+                            class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
+                            @click="confirmationOpen = false"
+                        ></div>
+
+                        <div
+                            x-show="confirmationOpen"
+                            x-transition
+                            class="relative z-10 w-full max-w-md rounded-2xl bg-white p-7 shadow-2xl"
+                        >
+                            <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-100 text-red-600">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-7 w-7">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.3 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7 3.86a2 2 0 0 0-3.4 0Z"/>
+                                </svg>
+                            </div>
+
+                            <h2 id="cancel-event-title" class="text-xl font-bold text-slate-900">
+                                Konfirmasi Pembatalan
+                            </h2>
+
+                            <p class="mt-3 text-sm leading-relaxed text-slate-600">
+                                {{ $isUnsubmittedDraft
+                                    ? 'Apakah Anda yakin ingin membatalkan draf kegiatan ini? Data kegiatan akan tetap tersimpan.'
+                                    : 'Apakah Anda yakin ingin membatalkan kegiatan ini beserta seluruh proses lamaran terkait? Tindakan ini tidak dapat dibatalkan kembali.' }}
+                            </p>
+
+                            <div class="mt-7 flex flex-wrap justify-end gap-3">
+                                <button
+                                    type="button"
+                                    @click="confirmationOpen = false"
+                                    class="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+                                >
+                                    Tidak, Kembali
+                                </button>
+
+                                <button
+                                    type="button"
+                                    @click="confirmed = true; $nextTick(() => $refs.cancelForm.requestSubmit())"
+                                    class="rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700"
+                                >
+                                    Ya, Batalkan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </form>
 
             @endif

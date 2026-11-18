@@ -58,7 +58,7 @@ class EventVerificationController extends Controller
         $event->load([
             'organizer.organizerProfile',
             'category',
-            'cityRecord',
+            'cityRecord.province',
             'positions.positionSkills.skill',
             'positions.requirements',
             'positions.schedules',

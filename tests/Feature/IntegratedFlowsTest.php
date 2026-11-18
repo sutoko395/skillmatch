@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\AuditLog;
+use App\Models\City;
 use App\Models\NotificationOutbox;
 use App\Models\User;
 use App\Services\ActivityReadService;
@@ -21,8 +22,11 @@ class IntegratedFlowsTest extends DatabaseTestCase
 
     private function profileData(): array
     {
+        $city = City::firstOrCreate(['name' => 'Kota Integrasi'], ['is_active' => true]);
+
         return ['organization_name' => 'Organisasi Uji', 'contact_person' => 'Kontak Uji',
-            'phone' => '08123456789', 'address' => 'Alamat Uji', 'city' => 'Malang', 'description' => 'Deskripsi Uji'];
+            'phone' => '08123456789', 'address' => 'Alamat Uji', 'city' => $city->name,
+            'city_id' => $city->id, 'description' => 'Deskripsi Uji'];
     }
 
     private function organizer(): User

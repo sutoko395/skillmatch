@@ -1,6 +1,6 @@
 <section class="va-next-steps rounded-2xl border border-slate-200 bg-white p-6" aria-label="Tindakan Volunteer">
     <h2 class="text-lg font-bold text-slate-900">Langkah berikutnya</h2>
-    <p class="mt-2 text-sm text-slate-500">Domisili: {{ $volunteerProfile?->cityRecord?->name ?? $volunteerProfile?->city ?? 'Belum diisi' }}</p>
+    <p class="mt-2 text-sm text-slate-500">Domisili: {{ $volunteerProfile?->cityRecord?->name ?? $volunteerProfile?->city ?? 'Belum diisi' }}@if($volunteerProfile?->cityRecord?->province), {{ $volunteerProfile->cityRecord->province->name }}@endif</p>
     <div class="mt-4 space-y-3">
         @foreach($assessmentApplications as $pending)
             @php($deadline = app(\App\Services\RecruitmentScheduleService::class)->deadlineFor($pending))
