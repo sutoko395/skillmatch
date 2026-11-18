@@ -551,7 +551,7 @@
                                             </p>
 
                                             <p class="mt-1 text-xs uppercase text-slate-500">
-                                                {{ $document->document_type }}
+                                                {{ $document->document_type === 'ktp' ? 'NIB' : strtoupper($document->document_type) }}
                                             </p>
                                         </div>
 
@@ -725,37 +725,37 @@
     </template>
 
     <template x-teleport="body">
-
         <div
-            x-show="deleteOrganizer" @keydown.escape.window="deleteOrganizer = null"
+            x-show="deleteOrganizer"
             x-cloak
-            class="fixed inset-0 z-[9999] flex h-screen w-screen items-center justify-center p-4"
+            @keydown.escape.window="deleteOrganizer = null"
+            class="fixed inset-0 z-[99999] flex min-h-screen items-center justify-center p-4"
         >
-
             <div
-                class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm"
+                class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
                 @click="deleteOrganizer = null"
             ></div>
 
             @foreach($organizers as $organizer)
-
                 <div
                     x-show="deleteOrganizer === {{ $organizer->id }}"
                     x-cloak
-                    class="relative z-10 w-full max-w-md rounded-2xl bg-white shadow-2xl"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 scale-95"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    x-transition:leave="transition ease-in duration-150"
+                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-95"
+                    class="relative z-10 mx-auto w-full max-w-lg rounded-2xl bg-white shadow-2xl"
                 >
-
-                    <div class="p-6">
-
-                        <div class="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
-
+                    <div class="p-7">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-red-600">
                             <svg
-                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-6 w-6"
                                 fill="none"
+                                stroke="currentColor"
                                 viewBox="0 0 24 24"
                                 stroke-width="2"
-                                stroke="currentColor"
-                                class="w-6 h-6"
                             >
                                 <path
                                     stroke-linecap="round"
@@ -763,10 +763,9 @@
                                     d="M12 9v3.75m0 3.75h.007v.008H12V16.5zM10.5 3.75h3L19.5 9v6l-6 5.25h-3L4.5 15V9l6-5.25z"
                                 />
                             </svg>
-
                         </div>
 
-                        <h2 class="mt-5 text-lg font-bold text-slate-800">
+                        <h2 class="mt-5 text-xl font-bold text-slate-800">
                             Hapus Organizer?
                         </h2>
 
@@ -781,37 +780,42 @@
                         <form
                             action="{{ route('admin.organizers.destroy', $organizer) }}"
                             method="POST"
-                            class="mt-6 flex justify-end gap-3"
+                            class="mt-8 flex w-full items-center justify-center gap-3"
                         >
-
                             @csrf
                             @method('DELETE')
 
                             <button
                                 type="submit"
-                                class="admin-action admin-action-danger px-5 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition"
+                                style="background-color: #dc2626 !important; color: #ffffff !important;"
+                                class="!inline-flex h-12 min-w-36 items-center justify-center gap-2 rounded-xl !bg-red-600 px-5 text-sm font-semibold !text-white shadow-sm transition hover:!bg-red-700 active:scale-[0.98]"
                             >
-                                <svg class="admin-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></svg>Hapus
+                                <svg
+                                    class="h-5 w-5"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/>
+                                </svg>
+                                Hapus
                             </button>
 
                             <button
                                 type="button"
                                 @click="deleteOrganizer = null"
-                                class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
+                                class="inline-flex h-12 min-w-36 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 active:scale-[0.98]"
                             >
                                 Batal
                             </button>
-
                         </form>
-
                     </div>
-
                 </div>
-
             @endforeach
-
         </div>
-
     </template>
 
     <template x-teleport="body">
@@ -889,6 +893,47 @@
         </div>
 
     </template>
-
 </div>
+
+@if(session('delete_error'))
+    <div
+        x-data="{ show: true }"
+        x-show="show"
+        x-cloak
+        @keydown.escape.window="show = false"
+        class="fixed inset-0 z-[100000] flex min-h-screen items-center justify-center p-4"
+    >
+        <div
+            class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
+            @click="show = false"
+        ></div>
+
+        <div class="relative z-10 w-full max-w-md rounded-2xl bg-white p-7 shadow-2xl">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v3.75m0 3.75h.007v.008H12V16.5zM10.5 3.75h3L19.5 9v6l-6 5.25h-3L4.5 15V9l6-5.25z"/>
+                </svg>
+            </div>
+
+            <h2 class="mt-5 text-xl font-bold text-slate-800">
+                Organizer Tidak Dapat Dihapus
+            </h2>
+
+            <p class="mt-3 text-sm leading-6 text-slate-500">
+                {{ session('delete_error') }}
+            </p>
+
+            <div class="mt-8 flex justify-center">
+                <button
+                    type="button"
+                    @click="show = false"
+                    class="inline-flex h-12 min-w-36 items-center justify-center rounded-xl bg-indigo-600 px-6 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                >
+                    Mengerti
+                </button>
+            </div>
+        </div>
+    </div>
+@endif
 @endsection

@@ -2,6 +2,7 @@ export default (config) => ({
     revision: config.revision,
     busy: false,
     finished: false,
+    confirmOpen: false,
     message: 'Jawaban terakhir dimuat dari server.',
     timeLeft: '',
     activeQuestion: 0,
@@ -47,7 +48,12 @@ export default (config) => ({
     },
     save() { return this.send(false); },
     submit() {
-        if (confirm('Kirim asesmen? Jawaban tidak dapat diubah setelah dikirim.')) this.send(true);
+        if (this.busy || this.finished) return;
+        this.confirmOpen = true;
+    },
+    confirmSubmit() {
+        this.confirmOpen = false;
+        this.send(true);
     },
     send(finalize) {
         this.queue = this.queue.then(async () => {

@@ -5,7 +5,7 @@
 @section('content')
 <div
     class="w-full max-w-7xl mx-auto space-y-6"
-    x-data="{ editProfile: {{ $errors->any() && $profile ? 'true' : 'false' }}, viewKtp: false }"
+    x-data="{ editProfile: {{ $errors->any() && $profile ? 'true' : 'false' }}, viewNib: false }"
 >
 
     @if($user->organizer_verification_note)
@@ -125,15 +125,15 @@
 
                     <div>
                         <label
-                            for="ktp"
+                            for="nib"
                             class="block text-sm font-semibold text-slate-700"
                         >
-                            KTP / Dokumen Identitas
+                            NIB (Nomor Induk Perusahaan)/ Dokumen Identitas
                         </label>
 
                         <input
-                            id="ktp"
-                            name="ktp"
+                            id="nib"
+                            name="nib"
                             type="file"
                             accept=".jpg,.jpeg,.png,.pdf"
                             required
@@ -141,11 +141,11 @@
                         >
 
                         <p class="mt-2 text-xs text-slate-500">
-                            KTP wajib diupload untuk proses verifikasi.
+                            NIB wajib diupload untuk proses verifikasi.
                             Format JPG, JPEG, PNG, atau PDF. Maksimal 5 MB.
                         </p>
 
-                        @error('ktp')
+                        @error('nib')
                             <p class="mt-2 text-sm text-red-600">
                                 {{ $message }}
                             </p>
@@ -224,10 +224,10 @@
                     <span class="organizer-profile-field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z M14 2v6h6M8 13h8M8 17h5"/></svg></span>
                     <div class="min-w-0 flex-1">
                         <p class="organizer-profile-document-name">{{ $document->document_name }}</p>
-                        <p class="organizer-profile-document-type">{{ strtoupper($document->document_type) }}</p>
+                        <p class="organizer-profile-document-type">{{ $document->document_type === 'ktp' ? 'NIB' : strtoupper($document->document_type) }}</p>
                     </div>
-                    <button type="button" @click="viewKtp = true" class="organizer-secondary-button organizer-info-edit">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg> Lihat KTP
+                    <button type="button" @click="viewNib = true" class="organizer-secondary-button organizer-info-edit">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg> Lihat NIB
                     </button>
                 </div>
             @empty
@@ -301,7 +301,7 @@
                             @if($user->organizer_status === 'active')
                                 <label class="m-6 flex gap-3 rounded-xl bg-amber-50 p-4 text-sm text-amber-900">
                                     <input type="checkbox" name="confirm_reverification" value="1" @checked(old('confirm_reverification'))>
-                                    Saya memahami perubahan nama organisasi, alamat, kota atau KTP akan meminta persetujuan ulang Admin. Kegiatan sementara tidak tampil publik dan pengelolaannya tertunda sampai disetujui kembali. Perubahan kontak biasa tetap dapat disimpan tanpa persetujuan ulang.
+                                    Saya memahami perubahan nama organisasi, alamat, kota atau NIB akan meminta persetujuan ulang Admin. Kegiatan sementara tidak tampil publik dan pengelolaannya tertunda sampai disetujui kembali. Perubahan kontak biasa tetap dapat disimpan tanpa persetujuan ulang.
                                 </label>
                                 @error('confirm_reverification')<p class="px-6 text-sm text-red-600">{{ $message }}</p>@enderror
                             @endif
@@ -376,15 +376,15 @@
 
                                 <div>
                                     <label
-                                        for="ktp"
+                                        for="nib"
                                         class="block text-sm font-semibold text-slate-700"
                                     >
-                                        Ganti KTP / Dokumen Identitas
+                                        Ganti NIB (Nomor Induk Berusaha)/ Dokumen Identitas
                                     </label>
 
                                     <input
-                                        id="ktp"
-                                        name="ktp"
+                                        id="nib"
+                                        name="nib"
                                         type="file"
                                         accept=".jpg,.jpeg,.png,.pdf"
                                         class="mt-2 block w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm"
@@ -395,7 +395,7 @@
                                         Format JPG, JPEG, PNG, atau PDF. Maksimal 5 MB.
                                     </p>
 
-                                    @error('ktp')
+                                    @error('nib')
                                         <p class="mt-2 text-sm text-red-600">
                                             {{ $message }}
                                         </p>
@@ -426,18 +426,19 @@
     @endif
 
     <template x-teleport="body">
-        <div
-            x-show="viewKtp"
-            x-cloak
-            x-transition.opacity
-            class="fixed inset-0 z-[99999] bg-slate-900/70 backdrop-blur-sm"
-        >
+            <div
+                x-show="viewNib"
+                x-cloak
+                x-transition.opacity
+                class="fixed inset-0 z-[99999] bg-slate-900/70 backdrop-blur-sm"
+                @keydown.escape.window="viewNib = false"
+            >
             <div
                 class="flex min-h-screen items-center justify-center p-4"
-                @click.self="viewKtp = false"
+                @click.self="viewNib = false"
             >
                 <div
-                    x-show="viewKtp"
+                    x-show="viewNib"
                     x-transition
                     class="relative flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
                     @click.stop
@@ -446,7 +447,7 @@
                     <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
                         <div>
                             <h2 class="text-lg font-bold text-slate-800">
-                                Dokumen KTP
+                                Dokumen NIB
                             </h2>
 
                             <p class="mt-1 text-sm text-slate-500">
@@ -456,7 +457,7 @@
 
                         <button
                             type="button"
-                            @click="viewKtp = false"
+                            @click="viewNib = false"
                             class="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
                         >
                             <svg
@@ -477,26 +478,26 @@
                     </div>
 
                     @php
-                        $ktpDocument = $documents->firstWhere('document_type', 'ktp');
-                        $ktpExtension = $ktpDocument
-                            ? strtolower(pathinfo($ktpDocument->file_path, PATHINFO_EXTENSION))
+                        $nibDocument = $documents->firstWhere('document_type', 'ktp');
+
+                        $nibExtension = $nibDocument
+                            ? strtolower(pathinfo($nibDocument->file_path, PATHINFO_EXTENSION))
                             : null;
                     @endphp
 
                     <div class="flex-1 overflow-auto bg-slate-100 p-4 md:p-6">
-                        @if ($ktpDocument)
-
-                            @if (in_array($ktpExtension, ['jpg', 'jpeg', 'png']))
+                        @if ($nibDocument)
+                            @if (in_array($nibExtension, ['jpg', 'jpeg', 'png']))
                                 <div class="flex min-h-[60vh] items-center justify-center">
                                     <img
-                                        src="{{ route('organizer.profile.documents.view', $ktpDocument) }}"
-                                        alt="KTP Organizer"
+                                        src="{{ route('organizer.profile.documents.view', $nibDocument) }}"
+                                        alt="NIB Organizer"
                                         class="max-h-[75vh] max-w-full rounded-xl object-contain shadow-lg"
                                     >
                                 </div>
-                            @elseif ($ktpExtension === 'pdf')
+                            @elseif ($nibExtension === 'pdf')
                                 <iframe
-                                    src="{{ route('organizer.profile.documents.view', $ktpDocument) }}"
+                                    src="{{ route('organizer.profile.documents.view', $nibDocument) }}"
                                     class="h-[75vh] w-full rounded-xl border-0 bg-white"
                                 ></iframe>
                             @else
@@ -506,11 +507,10 @@
                                     </p>
                                 </div>
                             @endif
-
                         @else
                             <div class="flex min-h-[60vh] items-center justify-center">
                                 <p class="text-sm text-slate-500">
-                                    Dokumen KTP belum tersedia.
+                                    Dokumen NIB belum tersedia.
                                 </p>
                             </div>
                         @endif

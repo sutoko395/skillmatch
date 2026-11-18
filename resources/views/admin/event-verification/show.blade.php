@@ -126,22 +126,13 @@
 
                 @if($event->status === 'pending')
                 <div class="mt-6 space-y-3">
-
-                    <form
-                        action="{{ route('admin.event-verification.approve', $event) }}"
-                        method="POST"
+                    <button
+                        type="button"
+                        onclick="document.getElementById('approve-modal').classList.remove('hidden')"
+                        class="w-full px-4 py-3 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition"
                     >
-                        @csrf
-                        @method('PATCH')
-
-                        <button
-                            type="submit"
-                            onclick="return confirm('Setujui kegiatan ini?')"
-                            class="w-full px-4 py-3 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition"
-                        >
-                            Setujui Kegiatan
-                        </button>
-                    </form>
+                        Setujui Kegiatan
+                    </button>
 
                     <button
                         type="button"
@@ -234,6 +225,105 @@
                     class="admin-action admin-action-danger px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
                 >
                     Batal
+                </button>
+
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<div
+    id="approve-modal"
+    x-data
+    @keydown.escape.window="document.getElementById('approve-modal').classList.add('hidden')"
+    class="hidden fixed inset-0 z-[9999] flex h-screen w-screen items-center justify-center p-4"
+>
+    <div
+        class="fixed inset-0 h-screen w-screen bg-slate-900/50 backdrop-blur-sm"
+        onclick="document.getElementById('approve-modal').classList.add('hidden')"
+    ></div>
+
+    <div class="relative z-10 w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
+
+        <div class="border-b border-slate-100 px-6 py-5">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800">
+                        Setujui Kegiatan
+                    </h3>
+
+                    <p class="mt-1 text-sm text-slate-500">
+                        Konfirmasi persetujuan pengajuan kegiatan ini.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    onclick="document.getElementById('approve-modal').classList.add('hidden')"
+                    class="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+                    aria-label="Tutup modal"
+                >
+                    ✕
+                </button>
+            </div>
+        </div>
+
+        <div class="p-6">
+            <div class="flex gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                    <svg
+                        class="h-5 w-5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        aria-hidden="true"
+                    >
+                        <path d="m5 12 4 4L19 6"/>
+                    </svg>
+                </div>
+
+                <div>
+                    <p class="text-sm font-semibold text-emerald-900">
+                        Apakah Anda yakin?
+                    </p>
+
+                    <p class="mt-1 text-sm leading-relaxed text-emerald-800">
+                        Kegiatan <strong>{{ $event->title }}</strong> akan disetujui
+                        dan dapat dipublikasikan kepada volunteer sesuai ketentuan sistem.
+                    </p>
+                </div>
+            </div>
+
+            <p class="mt-4 text-xs leading-relaxed text-slate-500">
+                Pastikan seluruh informasi kegiatan, posisi volunteer, jadwal,
+                dan persyaratan telah diperiksa sebelum memberikan persetujuan.
+            </p>
+        </div>
+
+        <form
+            action="{{ route('admin.event-verification.approve', $event) }}"
+            method="POST"
+        >
+            @csrf
+            @method('PATCH')
+
+            <div class="flex flex-col-reverse gap-3 border-t border-slate-100 bg-slate-50 px-6 py-4 sm:flex-row sm:justify-end">
+
+                <button
+                    type="button"
+                    onclick="document.getElementById('approve-modal').classList.add('hidden')"
+                    class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100"
+                >
+                    Batal
+                </button>
+
+                <button
+                    type="submit"
+                    class="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                >
+                    Ya, Setujui Kegiatan
                 </button>
 
             </div>
