@@ -12,12 +12,15 @@
                 @else
                     <a href="{{ route(auth()->user()->role.'.activity.index') }}">{{ auth()->user()->role === 'organizer' ? 'Panel Organizer' : 'Panel Volunteer' }}</a>
                 @endif
-                <form method="POST" action="{{ route('logout') }}">@csrf<button type="submit" class="eb-button eb-button-small">Keluar</button></form>
+                <form method="POST" action="{{ route('logout') }}" class="eb-register-mobile">@csrf<button type="submit" class="eb-button eb-button-small eb-register-cta">Keluar</button></form>
             @else
                 <a href="{{ route('login') }}">Masuk</a>
                 <a href="{{ route('register') }}" class="eb-button eb-button-small eb-register-cta eb-register-mobile">Buat akun <x-arrow-icon direction="up-right" /></a>
             @endauth
         </div>
+        @auth
+            <form method="POST" action="{{ route('logout') }}" class="eb-register-desktop">@csrf<button type="submit" class="eb-button eb-button-small eb-register-cta">Keluar</button></form>
+        @endauth
         @guest
             <a href="{{ route('register') }}" class="eb-button eb-button-small eb-register-cta eb-register-desktop">Buat akun <x-arrow-icon direction="up-right" /></a>
         @endguest
