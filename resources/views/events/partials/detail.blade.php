@@ -1,4 +1,4 @@
-<div class="ve-detail mx-auto max-w-7xl space-y-6">
+<div class="ve-detail mx-auto max-w-7xl space-y-6 {{ ($volunteerPanel ?? false) ? '' : 've-public-detail' }}">
     @if($volunteerPanel ?? false)
         <a href="{{ route($catalogRoute) }}" class="volunteer-action volunteer-action--back inline-flex items-center"><x-arrow-icon direction="left" /> Kembali</a>
     @else
@@ -16,7 +16,7 @@
                 <h2 class="text-lg font-bold text-slate-900">Tentang kegiatan</h2>
                 <p class="mt-4 whitespace-pre-line break-words text-sm leading-relaxed text-slate-600">{{ $event->description }}</p>
             </x-section-card>
-            <section class="space-y-4" aria-labelledby="event-positions-heading">
+            <section id="event-positions" class="scroll-mt-24 space-y-4" aria-labelledby="event-positions-heading">
                 <div class="flex flex-wrap items-center justify-between gap-2">
                     <h2 id="event-positions-heading" class="text-xl font-bold text-slate-900">Posisi volunteer</h2>
                     <span class="text-sm text-slate-500">{{ $event->positions->count() }} posisi</span>

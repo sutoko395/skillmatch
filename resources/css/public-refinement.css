@@ -33,6 +33,23 @@
 .electric-public.electric-interior .ve-detail :is(dt,.text-xs) { font-size:11px; }
 .electric-public.electric-interior .ve-detail > .grid { gap:20px; }
 .electric-public.electric-interior .ve-detail section.bg-white { padding:20px; }
+.ve-public-detail .ve-event-info dl > div + div { margin-top:12px; padding-top:12px; }
+.ve-public-detail .ve-event-info dd { margin-top:4px; }
+.ve-public-detail .ve-position > :not([hidden]) ~ :not([hidden]) { margin-top:16px; }
+.ve-public-detail .ve-position .pt-5 { padding-top:16px; }
+.ve-public-detail .ve-apply-link {
+    display:inline-flex;
+    min-height:44px;
+    align-items:center;
+    gap:8px;
+    border-radius:999px;
+    padding:8px 16px;
+    font-weight:600;
+    text-decoration:none;
+}
+.ve-public-detail .ve-apply-link { background:#2563eb; color:#fff; }
+.ve-public-detail .ve-apply-link:hover { background:#1d4ed8; }
+.ve-public-detail .ve-apply-link:focus-visible { outline:2px solid #2563eb; outline-offset:3px; }
 .electric-public.electric-public .eb-back-link { display:inline-flex; align-items:center; gap:7px; min-height:36px; padding:4px 0; color:#475569; font-size:12px; font-weight:500; text-decoration:none; }
 .electric-public.electric-public .eb-back-link:hover { color:var(--eb-blue); }
 @media(max-width:767px) {

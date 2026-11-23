@@ -45,12 +45,19 @@ class IntegratedFlowsTest extends DatabaseTestCase
         $owner = $this->organizer();
         app(AuditService::class)->record($owner, 'organizer.test', $owner);
         $admin = User::factory()->create(['role' => 'admin']);
-        $this->actingAs($admin)->delete(route('admin.organizers.destroy', $owner))->assertForbidden();
+        $organizers = route('admin.organizers.index');
+        $this->actingAs($admin)->from($organizers)->delete(route('admin.organizers.destroy', $owner))
+            ->assertRedirect($organizers)
+            ->assertSessionHas('delete_error')
+            ->assertSessionMissing('success');
+        $this->get($organizers)->assertOk()
+            ->assertSee('Organizer ini memiliki data terkait.');
         $this->assertNotNull($owner->fresh()->organizerProfile);
         $this->assertSame(1, $owner->organizerDocuments()->count());
         Storage::disk('local')->assertExists('organizers/fixture.pdf');
         $empty = User::factory()->create();
-        $this->delete(route('admin.volunteers.destroy', $empty))->assertRedirect();
+        $this->delete(route('admin.volunteers.destroy', $empty))->assertRedirect()
+            ->assertSessionHas('success', 'Akun Volunteer berhasil dihapus.');
         $this->assertNull($empty->fresh());
         $this->assertDatabaseHas('audit_logs', ['action' => 'account.deleted', 'subject_id' => $empty->id]);
     }
@@ -133,6 +140,69 @@ class IntegratedFlowsTest extends DatabaseTestCase
         $this->assertNotNull($row->fresh()->read_at);
         $this->artisan('a4:send-volunteer-emails')->assertSuccessful();
         $this->assertSame(0, $row->fresh()->attempts);
+    }
+
+    public function test_volunteer_activity_notification_links_to_available_assessment_and_preserves_read_state(): void
+    {
+        $application = $this->participantApplication();
+        $volunteer = $application->volunteer;
+        $row = app(NotificationService::class)->enqueue('demo:matched:'.$application->id, $volunteer, [
+            'type' => 'application.matched',
+            'application_id' => $application->id,
+        ]);
+        $dashboard = route('volunteer.activity.index');
+
+        $this->actingAs($volunteer)->get($dashboard)->assertOk()
+            ->assertSee('Asesmen siap dikerjakan')
+            ->assertSee($application->event->title.' / '.$application->position->name)
+            ->assertSee(route('volunteer.assessments.show', $application))
+            ->assertSee('Belum dibaca');
+        $this->get(route('notifications.index'))->assertOk()
+            ->assertSee('Asesmen siap dikerjakan')->assertSee(route('volunteer.assessments.show', $application));
+        $this->from($dashboard)->patch(route('notifications.read', $row))->assertRedirect(route('notifications.index'));
+
+        $application->forceFill(['status' => 'under_review'])->save();
+        $this->get($dashboard)->assertOk()
+            ->assertSee('Pencocokan selesai')
+            ->assertDontSee('Asesmen siap dikerjakan')
+            ->assertDontSee('Belum dibaca');
+        $this->actingAs(User::factory()->create(['role' => 'volunteer']))->get($dashboard)
+            ->assertOk()->assertDontSee('Pencocokan selesai')->assertSee('Belum ada notifikasi.');
+    }
+
+    public function test_organizer_and_admin_notification_lists_show_role_specific_actions(): void
+    {
+        $application = $this->participantApplication();
+        $organizer = $application->event->organizer;
+        $otherOrganizer = $this->organizer();
+        $admin = User::factory()->create(['role' => 'admin']);
+        $service = app(NotificationService::class);
+        $payload = ['type' => 'application.submitted', 'application_id' => $application->id];
+        $service->enqueue('ui:application:'.$organizer->id, $organizer, $payload);
+        $service->enqueue('ui:application:'.$otherOrganizer->id, $otherOrganizer, $payload);
+        $service->enqueue('ui:organizer:'.$admin->id, $admin, ['type' => 'organizer.submitted']);
+        $index = route('notifications.index');
+
+        $this->actingAs($organizer);
+        foreach ([$index, route('organizer.activity.index')] as $url) {
+            $this->get($url)->assertOk()->assertSee($application->event->title)
+                ->assertSee('Tinjau lamaran')->assertSee(route('organizer.applications.show', $application));
+        }
+        $this->actingAs($otherOrganizer)->get($index)->assertOk()->assertSee('Buka Profil Organisasi')
+            ->assertDontSee($application->event->title)->assertDontSee(route('organizer.applications.show', $application));
+
+        $this->actingAs($admin);
+        foreach ([$index, route('admin.dashboard')] as $url) {
+            $this->get($url)->assertOk()->assertSee('Pengajuan organisasi perlu ditinjau')
+                ->assertSee('Buka antrean verifikasi')->assertSee(route('admin.organizers.index', ['status' => 'pending']));
+        }
+
+        $otherOrganizer->forceFill(['organizer_status' => 'pending'])->save();
+        $service->enqueue('ui:organization-reviewed:'.$otherOrganizer->id, $otherOrganizer, [
+            'type' => 'organizer.reviewed', 'status' => 'inactive',
+        ]);
+        $this->actingAs($otherOrganizer)->get(route('organizer.profile.pending'))->assertOk()
+            ->assertSee('perlu revisi')->assertSee('Buka Profil Organisasi');
     }
 
     public function test_account_delete_rolls_back_when_audit_fails_without_deleting_document(): void

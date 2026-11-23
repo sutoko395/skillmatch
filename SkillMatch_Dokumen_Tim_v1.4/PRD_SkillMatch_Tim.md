@@ -266,7 +266,7 @@ ID FR-01–22 mempertahankan padanan PRD v1.3; FR-23 ditambahkan untuk memperjel
 ### 7.2 Upload tanpa ClamAV
 
 1. Volunteer membuat draft miliknya; server memastikan posisi dan event valid.
-2. Upload melalui form Laravel. CV hanya PDF; lampiran pendukung PDF/JPG/PNG, tiap file maksimal 5 MB, total lima file per lamaran. Dokumen organisasi maksimal lima file/pengajuan dengan format dan ukuran yang sama.
+2. Upload melalui form Laravel. CV hanya PDF; lampiran pendukung PDF/JPG/PNG, tiap file maksimal 5 MB, total lima file per lamaran. Pengajuan pertama Organizer memerlukan satu berkas NIB atau KTP dalam format PDF, JPG, JPEG, atau PNG, maksimal 5 MB.
 3. Server memeriksa ekstensi allowlist dan MIME berdasarkan isi; file kosong, tipe tidak cocok, executable, HTML/SVG/ZIP dan file terlalu besar ditolak. Pemeriksaan format tidak membuktikan file bebas malware.
 4. Nama internal acak; file di disk `private_documents` tanpa public URL/symlink. Metadata menyimpan pemilik, jenis, ukuran, MIME, checksum, lokasi internal dan waktu.
 5. Setelah file dan metadata tersimpan konsisten, status `ready`. Kegagalan simpan menghasilkan pesan gagal, cleanup file sementara, dan tidak menghasilkan ready palsu.
@@ -288,6 +288,11 @@ bukan otomatis gagal screening. Matching bukan rekomendasi event dan tidak membe
 keputusan penerimaan. Pengerjaan assessment peserta tetap tahap berikutnya.
 
 Screening adalah pemeriksaan syarat wajib, bukan keputusan penerimaan. Minimal meliputi profil, dokumen wajib ready, skill wajib dan level minimum, serta cakupan jadwal penuh hanya jika posisi mensyaratkannya. Kota berbeda hanya menggagalkan jika ditandai wajib. Pengalaman dalam teks CV tetap ditinjau manusia.
+
+Posisi baru yang dibuat lewat form Organizer tidak menetapkan ketersediaan penuh
+atau domisili satu kota sebagai syarat wajib. Posisi yang sudah menyimpan syarat
+tersebut dan snapshot lamaran yang sudah ada tetap mengikuti ketentuan yang
+tercatat. Ketersediaan dan lokasi tetap digunakan pada skor kecocokan.
 
 `Match Score = 0,50 × S + 0,30 × A + 0,20 × L`.
 
@@ -324,6 +329,12 @@ Nilai = jawaban benar / jumlah soal × 100; kosong salah. Nilai assessment terpi
 Dashboard hanya di /admin/dashboard. /volunteer/aktivitas dan /organizer/aktivitas menyajikan tugas/daftar operasional tanpa grafik lintas platform. Organizer boleh melihat rekap per event (pendaftar, accepted, hadir).
 
 Analitik Admin: total akun saat ini; akun baru menurut created_at; event dibuat menurut created_at; event aktif published/noncancelled/noncompleted; lamaran submitted menurut submitted_at; jumlah order paid dan nominal snapshot menurut paid_at; aktivasi paket menurut activated_at. Filter 7/30 hari/rentang dalam WIB. Bedakan kartu kondisi saat ini dari indikator periode. Paid dan activated_at hanya dicatat pada perubahan pertama yang sah.
+
+Rekap rekrutmen menampilkan lamaran terkirim menurut waktu pengiriman dan
+hasil seleksi terkininya. Rekap pelaksanaan menampilkan kegiatan aktif,
+sedang berlangsung, menunggu penyelesaian, serta selesai. Rekap kehadiran
+menghitung penerimaan per lamaran untuk kegiatan yang sudah dimulai dan
+tidak dibatalkan, menggunakan status rekap kehadiran peserta.
 
 Antrean tindakan: organisasi pending, event pending, transaksi perlu diperiksa. Tidak ada antrean scan dokumen. UI kegagalan query tidak menyamar sebagai angka nol. Analitik membaca database melalui layanan/query agregasi yang dapat diuji.
 

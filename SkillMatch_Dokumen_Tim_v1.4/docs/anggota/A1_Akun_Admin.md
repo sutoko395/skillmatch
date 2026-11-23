@@ -36,7 +36,7 @@ Fondasi kini dikerjakan kamu melalui SF sebelum kembali ke A4. A1 tidak perlu me
 | Urutan | Deliverable | Kriteria selesai |
 |---|---|---|
 | 1 | Review serah-terima SF | Jalankan README awal, pahami interface, catat blocker; lanjutkan pada branch A1 dari fondasi yang telah diintegrasikan. |
-| 2 | Verifikasi organisasi | Review dokumen privat, approve/reject dengan catatan, revisi dan verifikasi ulang terkontrol. Edit kontak biasa tidak meminta ulang semua berkas. Pakai DocumentStorageService A3; tidak membuat layanan duplikat. |
+| 2 | Verifikasi organisasi | Review satu dokumen privat NIB atau KTP, approve/reject dengan catatan, revisi dan verifikasi ulang terkontrol. Edit kontak biasa tidak meminta ulang berkas. Pakai DocumentStorageService A3; tidak membuat layanan duplikat. |
 | 3 | Moderasi event | Daftar/detail, relasi positions.positionSkills.skill benar, approve/reject/revisi; publikasi melalui service A2 dan tidak menyamakan approved dengan published. |
 | 4 | Pengguna | Pencarian/filter/pagination, suspend/reactivate dengan alasan dan audit. Middleware SF menegakkan status di semua request. Tutup hard delete yang merusak histori. |
 | 5 | Master data | CRUD/nonaktifkan kota, skill dan kategori menggunakan schema/seed SF; data referensi lama tetap terbaca. |

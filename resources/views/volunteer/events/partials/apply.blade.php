@@ -3,11 +3,11 @@
 @elseif($event->entitlement->submitted_applications >= $event->entitlement->max_applications)<p>Batas lamaran kegiatan sudah tercapai.</p>
 @elseif(!Route::has('volunteer.applications.store'))<p class="text-slate-600">Pengajuan lamaran belum tersedia.</p>
 @else
-@guest<a class="text-indigo-700 underline" href="{{ route('events.join',$event) }}">Masuk untuk melamar</a>@else
+@guest<a class="ve-apply-link text-indigo-700 underline" href="{{ route('events.join',$event) }}">Masuk untuk melamar</a>@else
 @if(auth()->user()->role==='volunteer')
 @if(!auth()->user()->hasVerifiedEmail())
 <p class="mb-3 text-sm text-slate-600">Verifikasi email Anda sebelum mulai melamar.</p>
-<a class="text-indigo-700 underline" href="{{ route('events.join', $event) }}">Verifikasi email untuk melamar</a>
+<a class="ve-apply-link text-indigo-700 underline" href="{{ route('events.join', $event) }}">Verifikasi email untuk melamar</a>
 @else
 <form method="POST" action="{{ route('volunteer.applications.store',$position) }}">@csrf<x-button>Pilih posisi dan mulai lamaran</x-button></form>
 @endif

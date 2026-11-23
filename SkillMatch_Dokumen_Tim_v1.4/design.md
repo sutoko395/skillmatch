@@ -1120,17 +1120,28 @@ Satu kartu login berisi email, password, ingat saya bila tersedia, lupa password
 
 ### 4.1 Katalog dan detail event — A2
 
+Detail publik mempertahankan poster dan kartu existing. Ringkasan pelaksanaan
+dalam satu hari memakai satu tanggal dengan rentang jam WIB. Pada bagian posisi, tampilkan satu kali
+deskripsi yang persis mengulang paragraf Tentang kegiatan dan tonjolkan tombol
+masuk atau verifikasi saat lamaran bisa dimulai.
+
 Katalog: judul "Temukan kegiatan yang sesuai denganmu", pencarian, filter kategori/kota/tanggal, jumlah hasil, grid 1/2/3 kolom sesuai lebar, pagination. Kartu berisi judul, Organizer, kota, jadwal WIB, deadline, posisi tersedia dan tombol Lihat Detail. Poster opsional dengan rasio tetap 16:9; fallback brand rapi jika tidak ada.
 
 Detail: judul dan metadata, deskripsi, daftar posisi beserta skill/jadwal/kuota/persyaratan, panel tindakan. CTA "Lamar posisi" hanya jika eligibility publik terpenuhi; pengunjung diarahkan login lalu kembali ke detail. Event tutup menampilkan alasannya. Kontak privat pelamar tidak pernah muncul di katalog.
 
 ### 4.2 Form event — A2, tab assessment A4
 
+Form tambah/edit posisi Organizer tidak menampilkan pilihan wajib berdomisili
+di kota kegiatan atau wajib tersedia sepanjang jadwal tugas.
+
 Gunakan langkah: Pilih Paket → Informasi Event → Posisi & Jadwal → Assessment → Tinjau & Ajukan. Form popup dan halaman buat/edit sama-sama menempatkan paket di awal, dengan harga/limit per event dari server. Tampilkan warning dekat input jadwal jika durasi pendaftaran melebihi paket; simpan diblokir sampai paket/durasi sesuai. Pilihan paket dan tanggal menggunakan old input sesudah gagal. Simpan draft memerlukan paket dan informasi/jadwal valid, sementara posisi/assessment bisa dilengkapi berikutnya. Tampilkan progres langkah sebagai teks/stepper pendek, bukan persentase palsu.
 
 Posisi berulang berupa kartu dengan nama, kuota, skill+minimum level, interval tugas, dokumen wajib, dan syarat wajib/preferensi. Form bertingkat panjang dibagi section, bukan satu modal besar. Tinjau menampilkan seluruh syarat publikasi dan tautan perbaikan. Status moderasi, publikasi, dan pelaksanaan ditampilkan dengan label terpisah agar approved tidak disalahartikan sebagai published.
 
 ### 4.3 Profil — SF dasar, A1 verifikasi organisasi
+
+Form Organizer menampilkan satu input dokumen verifikasi dengan pilihan berkas
+NIB atau KTP. Preview Organizer dan Admin memakai label umum dokumen verifikasi.
 
 Volunteer: Identitas → Kota & Kontak → Skill dan Level → Ketersediaan. Availability menggunakan tanggal dan waktu mulai/akhir berulang, label WIB. Jangan hanya menawarkan Weekend/Weekday karena tidak mencukupi perhitungan jam. Tampilkan pesan migrasi "Lengkapi tanggal dan jam ketersediaan" pada akun lama.
 
@@ -1181,6 +1192,11 @@ Status page menampilkan order ref, nominal, paket, pending/paid/failed/expired, 
 Volunteer: sambutan singkat; prioritas tindakan (profil belum lengkap, assessment); lamaran terbaru; jadwal accepted; notifikasi. Organizer: event sendiri; moderasi/revisi/payment tertunda; kandidat perlu review; tugas attendance. Hindari empat kartu angka kosong seperti organizer dashboard ZIP. Bila belum ada data, tampilkan CTA konkret "Buat event pertama" atau "Jelajahi event".
 
 ### 4.10 Admin analitik — A1
+
+Di bawah grafik Admin gunakan tiga kartu putih dengan grid responsif seperti
+kartu dashboard. Lamaran mengikuti periode yang dipilih dengan tanggal WIB
+yang terlihat. Pelaksanaan dan kehadiran menampilkan rekap terkini dengan
+label yang memperjelas cakupan masing-masing.
 
 Baris filter periode dan waktu hitung data; kartu kondisi saat ini terpisah dari angka periode; grafik tren sederhana dan tabel alternatif; antrean moderasi/organisasi/transaksi. Semua angka berasal query. Nilai payment berlabel "Nilai transaksi sandbox". Error query ditampilkan sebagai gagal memuat dengan Coba Lagi, bukan nol.
 
@@ -1482,3 +1498,18 @@ Revisi navigasi publik sesuai persetujuan pengguna: katalog tidak lagi memuat to
 Palet publik diperhalus sesuai keluhan tampilan HP: biru netral #3566a8 (hover #294f83), hijau sage #c4d8bd (hover #aec8a5), dengan turunan biru pucat untuk teks pendukung dan hover. Ilustrasi diselaraskan, kulit tetap alami. Browser live pada lebar 390/1440px memastikan token baru termuat, tidak ada overflow, header 57/62px, CTA tidak ganda. Screenshot halaman penuh mobile diperiksa. Build dan diff --check lulus; perbedaan kalibrasi layar perangkat fisik tidak diuji.
 
 Arahan palet terbaru: biru publik disamakan dengan panel #2563eb/hover #1d4ed8. Aksen sage diganti aprikot pucat #f6d2aa/hover #edbd86 agar lebih lembut; teks di aksen tetap navy. Ilustrasi dan semua turunan warna ikut diselaraskan; kulit tetap alami. Build dan diff --check lulus.
+## Notifikasi terbaru pada Ringkasan Aktivitas Volunteer
+
+Daftar memakai satu panel membulat dengan pemisah tipis dan mengikuti lebar
+panel Ringkasan Aktivitas di atasnya. Ikon berukuran sama
+sejajar dengan judul. Isi menghubungkan notifikasi dengan kegiatan dan posisi
+yang dapat diakses Volunteer, memberi arahan sesuai jenis notifikasi, dan
+menampilkan waktu WIB serta indikator belum dibaca. Untuk asesmen yang masih
+tersedia, tampilkan tenggat dan tautan tindakan. Setelah kesempatan berakhir,
+arahkan ke detail lamaran untuk melihat status terbaru.
+
+Gunakan panel dan baris yang sama untuk Admin dan Organizer, termasuk Organizer
+yang menunggu verifikasi, serta di halaman Semua notifikasi ketiga peran.
+Organizer melihat konteks lamaran, kegiatan atau transaksi yang dimilikinya dan
+tindakan yang sesuai. Admin dapat membuka antrean verifikasi organisasi dari
+notifikasi pengajuan. Status baca dan waktu WIB berada dalam satu kelompok.

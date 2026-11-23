@@ -845,6 +845,11 @@ Uji draft tanpa soal/durasi dan draft parsial berhasil tetapi tidak membuka read
 
 ## Tambahan UAT jadwal posisi — 10 Oktober 2026
 
+Periksa bahwa form tambah/edit posisi tidak menampilkan pilihan wajib
+berdomisili atau wajib tersedia sepanjang jadwal. Posisi baru dari form dapat
+disimpan tanpa kedua syarat tersebut. Penyimpanan posisi lama
+mempertahankan aturan yang sebelumnya tercatat, termasuk snapshot lamaran.
+
 Untuk UAT-07/10/19/32/34: pastikan posisi baru default mengikuti event dengan interval dari server; interval request palsu diabaikan pada mode ini. Mode khusus harus berdurasi positif, dalam rentang event dan setelah deadline. Uji event satu hari (input jam) dan beberapa hari (input tanggal/jam), kegagalan simpan mempertahankan pilihan, serta endpoint lintas pemilik/role. Perubahan event editable menyelaraskan hanya posisi mengikuti event; bila jadwal khusus tidak valid, seluruh transaksi rollback. Migration mempertahankan interval existing sebagai khusus. Published tetap terkunci dan snapshot submitted tidak berubah. Bukti otomatis dan visual harus dicatat terpisah; penambahan ini tidak berarti UAT sudah lulus.
 
 Versi 1.4.2 • ID di bawah khusus paket ini; menggantikan daftar penerimaan lama bila ada perbedaan scanner/DB. P0 wajib lulus. Kolom hasil awal semuanya **Belum diuji** karena paket ini hanya spesifikasi.
@@ -857,7 +862,7 @@ Siapkan fixture pada kontrak integrasi. Bukti tiap kasus: tanggal, environment/D
 | UAT-02 | Login bersama semua role dan intended URL | Satu /login, guard web, tanpa pemilih role; redirect sesuai role/status; intended eksternal/tidak berizin dibuang; non-admin ditolak 403 dari /admin/*; semua keluar melalui POST /logout dengan sesi tidak berlaku lagi. | SF | Belum diuji |
 | UAT-03 | Akun dinonaktifkan saat masih memiliki sesi | Request berikutnya terproteksi ditolak; pending organisasi masih bisa melengkapi profil jika akun aktif. | SF middleware; A1 UI | Belum diuji |
 | UAT-04 | Profil lama hanya Weekend, skill duplikat, kota tak dikenal | Butuh interval nyata; skill duplikat ditolak; city mapping tidak menebak; form membantu koreksi. | SF | Belum diuji |
-| UAT-05 | Upload organisasi dan edit profil | Berkas privat bisa ditinjau Admin; perubahan kontak biasa tidak wajib upload semua atau reset tanpa alasan. | A1/A3 | Belum diuji |
+| UAT-05 | Upload organisasi dan edit profil | Pengajuan pertama menerima satu berkas NIB atau KTP dan menolak pengajuan tanpa dokumen. Berkas privat bisa ditinjau pemilik dan Admin. Edit kontak biasa dapat disimpan tanpa unggah ulang. | A1/A3 | Belum diuji |
 | UAT-06 | Master direferensikan dinonaktifkan | Riwayat tetap dapat dibaca, tidak dapat dipilih untuk konfigurasi baru; hard delete berbahaya ditutup. | A1 | Belum diuji |
 | UAT-07 | Event draft/revisi/approve | Data tanggal/kuota/assessment valid; catatan revisi tersimpan; detail relasi posisi bekerja. | A2/A1/A4 | Belum diuji |
 | UAT-08 | Event approved belum memiliki entitlement | Tidak publik; free aktivasi sekali setelah approval; paid butuh verifikasi pembayaran. | A2 | Belum diuji |
@@ -889,6 +894,31 @@ Siapkan fixture pada kontrak integrasi. Bukti tiap kasus: tanggal, environment/D
 | UAT-34 | Desktop/mobile, keyboard, build, font/Alpine | 360/768/1280 px berfungsi; no body blank; Alpine sekali; npm build dan PHPUnit/Pint sesuai scope. | Semua | Belum diuji |
 
 | UAT-35 | Anggota lain menjalankan aplikasi dari README pada lingkungan baru | Setup MySQL, .env, migration/seeder, frontend, server, worker/scheduler dan login demo berhasil; database test terpisah; semua langkah terdokumentasi. | A1 + semua | Belum diuji |
+
+## Penolakan hapus akun yang memiliki riwayat
+
+Dari daftar Volunteer atau Organizer, coba hapus akun yang masih punya data
+terkait. Admin kembali ke daftar dengan pesan penolakan. Akun dan riwayatnya
+tetap tersimpan. Akun yang memenuhi syarat dapat dihapus dan memunculkan
+pesan berhasil hanya setelah penghapusan berhasil.
+
+## Rekap analitik kegiatan Admin
+
+- Pilih bulan dan verifikasi bahwa batas periode rekap lamaran mengikuti WIB.
+  Draf tidak dihitung. Status seleksi pada rekap mengikuti status terkini
+  dari lamaran yang dikirim dalam periode itu.
+- Cocokkan kegiatan berlangsung, menunggu penyelesaian dan selesai dengan
+  jadwal serta status kegiatan. Cocokkan kehadiran berdasarkan rekap peserta
+  diterima pada kegiatan yang sudah dimulai dan tidak dibatalkan.
+- Periksa tiga kartu di desktop dan seluler. Pastikan akses langsung oleh
+  Organizer atau Volunteer ditolak.
+
+## Perapian detail kegiatan publik
+
+Pada detail publik, pastikan daftar posisi tetap tampil setelah informasi
+kegiatan, deskripsi identik tidak diulang dan deskripsi unik tetap tampil.
+Periksa jadwal satu hari dan lintas hari dalam WIB. Cocokkan tombol melamar
+dengan status pendaftaran dan alur login atau verifikasi yang tersedia.
 
 ## Uji kinerja
 
@@ -1045,3 +1075,19 @@ Bukti otomatis/visual dan bagian browser end-to-end yang belum diuji dicatat di
 
 ### Regresi volunteer - 16 November 2026
 Periksa petunjuk langkah pada daftar lamaran sesuai status; asesmen baru pada kegiatan suspended tidak menawarkan tombol mulai; attempt berjalan tetap menawarkan lanjutkan sesuai AssessmentService. Tenggat ditampilkan WIB. Di riwayat/detail kehadiran, buka/tutup Rincian sesi dan periksa status, catatan panitia, arsip, serta waktu pencatatan. Cek 390/768/1440px tanpa scroll horizontal. Browser dengan fixture HTML lama/aset terbaru lulus 30 kombinasi; Blade terbaru dan endpoint regresi belum diuji karena PHP lokal belum memenuhi >=8.4.1. Rincian bukti dan batas pemeriksaan ada di handoff volunteer.
+## Notifikasi terbaru pada Ringkasan Aktivitas Volunteer
+
+- Periksa nama kegiatan dan posisi, waktu WIB, dan tujuan tindakan pada
+  notifikasi lamaran diterima dan asesmen. Asesmen yang telah berakhir kembali
+  mengarah ke detail lamaran.
+- Tandai notifikasi telah dibaca, lalu kembali dari Semua notifikasi ke
+  Ringkasan Aktivitas. Indikator dan tombol baca hilang. Akun Volunteer lain
+  hanya melihat notifikasinya sendiri.
+- Pada desktop dan seluler, pastikan tepi panel sejajar dengan Langkah
+  berikutnya, ikon sejajar dengan judul, dan nama kegiatan atau posisi yang
+  panjang dapat membungkus.
+
+Periksa Notifikasi terbaru dan Semua notifikasi untuk ketiga peran. Organizer
+membuka detail objek miliknya, Organizer pending dapat membuka profil, dan
+Admin membuka antrean verifikasi. Akun lain tidak mendapat konteks atau tautan
+ke detail objek yang tidak dimilikinya. Penandaan baca dan paginasi tetap tersedia.

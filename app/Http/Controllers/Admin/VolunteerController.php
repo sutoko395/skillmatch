@@ -92,7 +92,14 @@ class VolunteerController extends Controller
 
         Gate::authorize('manageVolunteer', $user);
 
-        app(AccountManagementService::class)->delete($user, auth()->user());
+        $deleted = app(AccountManagementService::class)->delete($user, auth()->user());
+
+        if (! $deleted) {
+            return back()->with(
+                'error',
+                'Akun Volunteer tidak dapat dihapus karena masih memiliki data terkait. Silakan nonaktifkan akun untuk mempertahankan riwayat.'
+            );
+        }
 
         return back()->with(
             'success',

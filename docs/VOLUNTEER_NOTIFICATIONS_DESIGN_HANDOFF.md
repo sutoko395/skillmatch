@@ -1,5 +1,40 @@
 # Notifikasi Volunteer
 
+## Penerapan pada tiga peran
+
+Pada branch `feature/skillmatch-ui-and-features`, panel terbaru dan daftar
+berpaginasi memakai komponen `notifications.list` bersama. Layanan
+`NotificationReadService` menyiapkan konteks dan tujuan berdasarkan penerima.
+Organizer aktif mendapat tautan ke objek miliknya, Organizer pending mendapat
+tautan profil, dan Admin dapat membuka antrean verifikasi. Volunteer tetap
+mendapat tindakan sesuai status mutakhir asesmen atau lamaran. Route,
+aturan bisnis, dan schema yang sudah berlaku tetap dipakai.
+
+Build Vite, kompilasi Blade, dan 9 tes terkait notifikasi lulus (88 asersi).
+Tes mencakup panel terbaru dan Semua notifikasi, tautan berdasarkan role,
+status baca, serta pembatasan penerima dan kepemilikan. Pemeriksaan visual di
+browser untuk penerapan lintas role belum dilakukan.
+
+## Panel Notifikasi terbaru
+
+Branch `design/notification-context`, basis `2a02e69`. Rancangan yang disetujui
+memakai satu panel membulat pada Ringkasan Aktivitas, dengan ikon yang sejajar
+dengan judul. Lima notifikasi terbaru menampilkan konteks yang dapat diakses
+Volunteer, tindakan yang sesuai, dan status baca. Tujuan asesmen mengikuti status
+terkini dan versi pada snapshot lamaran. Notifikasi lama dapat membuka detail
+lamaran untuk melihat perkembangan. Penandaan baca memakai endpoint existing dan
+kembali ke Semua notifikasi.
+
+Buka Ringkasan Aktivitas sebagai Alya Demo untuk contoh lamaran diterima. Render
+dengan data localhost menampilkan kegiatan, posisi, tautan, dan status baca.
+Vite, kompilasi Blade dan FoundationAccessTest lulus. IntegratedFlowsTest lulus
+9 dari 10, termasuk regresi notifikasi. Pemeriksaan hapus akun berhistori pada
+suite tersebut menerima 302 ketika mengharapkan 403. Pemeriksaan visual desktop
+dan seluler pada browser untuk implementasi belum dijalankan.
+
+Perubahan berupa presentasi dan konteks pembacaan daftar. Aturan bisnis dalam
+PRD dan kontrak, schema, setup README, serta mekanisme pengiriman tetap berlaku.
+
 11 November 2026. Branch feature/volunteer-design, dasar 7d1bb12.
 Pengguna meminta halaman Semua notifikasi dari dashboard konsisten dengan panel.
 Sebelumnya shell oranye, konten sempit dan keadaan kosong berupa garis putus.

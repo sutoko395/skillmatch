@@ -54,12 +54,17 @@ class PositionScheduleModeTest extends DatabaseTestCase
         $url = "/organizer/events/{$event->id}/positions";
         $this->actingAs($owner)->get($url.'/create')->assertOk()
             ->assertSee('Jadwal kegiatan')->assertSee('Ikuti jadwal kegiatan')->assertSee('Atur jadwal tugas khusus')
+            ->assertDontSee('required_same_city')->assertDontSee('required_full_availability')
             ->assertSee('type="time"', false);
         $input = $this->positionInput();
+        $input['required_full_availability'] = true;
+        $input['required_same_city'] = true;
         // Forged schedules are ignored in automatic mode.
         $this->post($url, $input + ['follows_event_schedule' => 1, 'schedules' => [['starts_at' => 'invalid']]])->assertRedirect();
         $position = $event->positions()->firstOrFail();
         $schedule = $position->schedules()->sole();
+        $this->assertFalse($position->required_full_availability);
+        $this->assertFalse($position->required_same_city);
         $this->assertTrue($position->follows_event_schedule);
         $this->assertTrue($schedule->starts_at->equalTo($event->starts_at));
         $this->assertTrue($schedule->ends_at->equalTo($event->ends_at));
@@ -112,12 +117,17 @@ class PositionScheduleModeTest extends DatabaseTestCase
     {
         [$owner, $event, $input] = $this->setupEvent();
         $payload = $this->positionInput();
+        $payload['required_full_availability'] = true;
+        $payload['required_same_city'] = true;
         $position = app(EventService::class)->position($event, $owner, $payload + ['schedules' => [[
             'starts_at' => $input['starts_at'], 'ends_at' => $input['ends_at'],
         ]]]);
         $url = "/organizer/events/{$event->id}/positions/{$position->id}";
+        unset($payload['required_full_availability'], $payload['required_same_city']);
         $this->actingAs($owner)->put($url, $payload + ['follows_event_schedule' => 1])->assertRedirect();
         $this->assertTrue($position->fresh()->follows_event_schedule);
+        $this->assertTrue($position->fresh()->required_full_availability);
+        $this->assertTrue($position->fresh()->required_same_city);
         $other = User::factory()->create(['role' => 'organizer', 'organizer_status' => 'active']);
         $this->actingAs($other)->putJson($url, $payload)->assertForbidden();
         $this->actingAs(User::factory()->create(['role' => 'volunteer']))->putJson($url, $payload)->assertForbidden();

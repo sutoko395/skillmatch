@@ -421,6 +421,9 @@ class EventService
                     ->findOrFail($position->id);
             }
 
+            $input['required_full_availability'] ??= $position?->required_full_availability ?? false;
+            $input['required_same_city'] ??= $position?->required_same_city ?? false;
+
             // Legacy callers supplying schedules retain custom mode.
             $input['follows_event_schedule'] ??= $position?->follows_event_schedule
                 ?? ! array_key_exists('schedules', $input);

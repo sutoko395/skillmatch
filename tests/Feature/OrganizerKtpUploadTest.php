@@ -12,17 +12,29 @@ use Tests\DatabaseTestCase;
 
 class OrganizerKtpUploadTest extends DatabaseTestCase
 {
-    public function test_ktp_under_two_megabytes_is_saved_and_previewed_only_by_owner_or_admin(): void
+    public static function verificationDocuments(): array
+    {
+        return [
+            'NIB from current form' => ['nib', 'nib-test.pdf'],
+            'KTP from current form' => ['nib', 'ktp-test.pdf'],
+            'KTP from legacy field' => ['ktp', 'ktp-legacy-test.pdf'],
+        ];
+    }
+
+    #[DataProvider('verificationDocuments')]
+    public function test_verification_document_is_saved_and_previewed_only_by_owner_or_admin(string $field, string $filename): void
     {
         Storage::fake('local');
         $owner = User::factory()->unverified()->create(['role' => 'organizer']);
         $bytes = "%PDF-1.4\n% synthetic upload fixture\n".str_repeat('x', 300 * 1024)."\n%%EOF";
-        $file = UploadedFile::fake()->createWithContent('identity-test.pdf', $bytes);
+        $file = UploadedFile::fake()->createWithContent($filename, $bytes);
 
-        $this->actingAs($owner)->post('/organizer/profile', $this->profileData() + ['ktp' => $file])
+        $this->actingAs($owner)->get('/organizer/profile')->assertOk()->assertSee('Dokumen verifikasi (NIB atau KTP)');
+        $this->post('/organizer/profile', $this->profileData() + [$field => $file])
             ->assertSessionHasNoErrors()->assertRedirect(route('organizer.profile.pending'));
         $document = OrganizerDocument::where('user_id', $owner->id)->sole();
         $this->assertSame('ktp', $document->document_type);
+        $this->assertSame($filename, $document->document_name);
         $this->assertDatabaseHas('organizer_profiles', ['user_id' => $owner->id, 'organization_name' => 'Organisasi uji upload']);
         Storage::disk('local')->assertExists($document->file_path);
         $this->assertSame($bytes, Storage::disk('local')->get($document->file_path));
@@ -40,6 +52,14 @@ class OrganizerKtpUploadTest extends DatabaseTestCase
             ->get(route('admin.organizers.documents.view', $document))->assertOk()->assertStreamedContent($bytes);
         $this->post('/logout');
         $this->get($preview)->assertRedirect('/login');
+    }
+
+    public function test_first_submission_requires_a_verification_document(): void
+    {
+        $owner = User::factory()->create(['role' => 'organizer']);
+        $this->actingAs($owner)->post('/organizer/profile', $this->profileData())
+            ->assertSessionHasErrors(['nib' => 'Unggah satu dokumen verifikasi, NIB atau KTP, untuk pengajuan pertama.']);
+        $this->assertDatabaseMissing('organizer_profiles', ['user_id' => $owner->id]);
     }
 
     public static function failedUploads(): array

@@ -1,8 +1,8 @@
-@php($notificationRows = \App\Models\NotificationOutbox::where('recipient_id', auth()->id())->where('channel', 'database')->latest('id')->limit(5)->get())
-<section class="mt-6 space-y-4" aria-label="Notifikasi terbaru">
-    <div class="flex items-center justify-between gap-4">
-        <h2 class="text-lg font-bold text-slate-900">Notifikasi terbaru</h2>
-        <a href="{{ route('notifications.index') }}" class="text-sm font-semibold text-indigo-600">Semua notifikasi</a>
+@php($notificationItems = app(\App\Services\NotificationReadService::class)->recent(auth()->user()))
+<section class="mt-6 space-y-2.5" aria-labelledby="recent-notifications-heading">
+    <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+        <h2 id="recent-notifications-heading" class="text-lg font-bold text-slate-900">Notifikasi terbaru</h2>
+        <a href="{{ route('notifications.index') }}" class="rounded text-xs font-semibold text-blue-700 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700">Semua notifikasi</a>
     </div>
     @include('notifications.list')
 </section>
