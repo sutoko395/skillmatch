@@ -199,7 +199,7 @@
         </div>
     </div>
 
-
+    @include('admin.partials.activity-analytics')
 
 </div>
 

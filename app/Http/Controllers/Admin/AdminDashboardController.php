@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Application;
 use App\Models\Category;
 use App\Models\Event;
 use App\Models\Order;
 use App\Models\Skill;
 use App\Models\User;
+use App\Services\AdminActivityAnalytics;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AdminDashboardController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, AdminActivityAnalytics $analytics)
     {
         $totalVolunteers = User::where('role', 'volunteer')->count();
         $totalOrganizers = User::where('role', 'organizer')->count();
@@ -28,6 +30,7 @@ class AdminDashboardController extends Controller
         $firstDates = collect([
             User::min('created_at'),
             Order::min('created_at'),
+            Application::min('submitted_at'),
         ])->filter()->map(fn ($date) => Carbon::parse($date));
 
         $firstDate = $firstDates->isEmpty()
@@ -142,6 +145,11 @@ class AdminDashboardController extends Controller
             'transactions' => $buildSeries($transactionCounts),
         ];
 
+        $activityStart = $startDate->copy()->shiftTimezone('Asia/Jakarta');
+        $activityEnd = $endDate->copy()->shiftTimezone('Asia/Jakarta');
+        $activityPeriod = $activityStart->format('d/m/Y').' - '.$activityEnd->format('d/m/Y').' WIB';
+        $activityStats = $analytics->summarize($activityStart->utc(), $activityEnd->utc());
+
         return view('admin.dashboard', compact(
             'totalVolunteers',
             'totalOrganizers',
@@ -156,7 +164,9 @@ class AdminDashboardController extends Controller
             'range',
             'year',
             'month',
-            'years'
+            'years',
+            'activityStats',
+            'activityPeriod'
         ));
     }
 }

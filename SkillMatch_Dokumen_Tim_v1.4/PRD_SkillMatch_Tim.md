@@ -325,6 +325,12 @@ Dashboard hanya di /admin/dashboard. /volunteer/aktivitas dan /organizer/aktivit
 
 Analitik Admin: total akun saat ini; akun baru menurut created_at; event dibuat menurut created_at; event aktif published/noncancelled/noncompleted; lamaran submitted menurut submitted_at; jumlah order paid dan nominal snapshot menurut paid_at; aktivasi paket menurut activated_at. Filter 7/30 hari/rentang dalam WIB. Bedakan kartu kondisi saat ini dari indikator periode. Paid dan activated_at hanya dicatat pada perubahan pertama yang sah.
 
+Rekap rekrutmen menampilkan lamaran terkirim menurut waktu pengiriman dan
+hasil seleksi terkininya. Rekap pelaksanaan menampilkan kegiatan aktif,
+sedang berlangsung, menunggu penyelesaian, serta selesai. Rekap kehadiran
+menghitung penerimaan per lamaran untuk kegiatan yang sudah dimulai dan
+tidak dibatalkan, menggunakan status rekap kehadiran peserta.
+
 Antrean tindakan: organisasi pending, event pending, transaksi perlu diperiksa. Tidak ada antrean scan dokumen. UI kegagalan query tidak menyamar sebagai angka nol. Analitik membaca database melalui layanan/query agregasi yang dapat diuji.
 
 ## 9. Nonfungsional dan keamanan

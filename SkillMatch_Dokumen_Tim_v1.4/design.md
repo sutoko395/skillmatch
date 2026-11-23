@@ -1182,6 +1182,11 @@ Volunteer: sambutan singkat; prioritas tindakan (profil belum lengkap, assessmen
 
 ### 4.10 Admin analitik — A1
 
+Di bawah grafik Admin gunakan tiga kartu putih dengan grid responsif seperti
+kartu dashboard. Lamaran mengikuti periode yang dipilih dengan tanggal WIB
+yang terlihat. Pelaksanaan dan kehadiran menampilkan rekap terkini dengan
+label yang memperjelas cakupan masing-masing.
+
 Baris filter periode dan waktu hitung data; kartu kondisi saat ini terpisah dari angka periode; grafik tren sederhana dan tabel alternatif; antrean moderasi/organisasi/transaksi. Semua angka berasal query. Nilai payment berlabel "Nilai transaksi sandbox". Error query ditampilkan sebagai gagal memuat dengan Coba Lagi, bukan nol.
 
 ## 5. Komponen bersama dan PIC

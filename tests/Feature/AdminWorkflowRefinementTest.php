@@ -1,9 +1,13 @@
 <?php
 namespace Tests\Feature;
 
+use App\Models\Application;
+use App\Models\Attendance;
 use App\Models\Order;
 use App\Models\User;
+use App\Services\AdminActivityAnalytics;
 use App\Services\EventService;
+use Carbon\CarbonImmutable;
 use Tests\DatabaseTestCase;
 use Tests\Support\A2Fixture;
 
@@ -63,5 +67,51 @@ class AdminWorkflowRefinementTest extends DatabaseTestCase
         $this->get(route('admin.organizers.index', ['status' => 'pending']))->assertOk()
             ->assertViewHas('organizers', fn ($rows) => $rows->contains('id', $pending->id) && $rows->every(fn ($row) => $row->organizer_status === 'pending'));
         $this->get(route('admin.packages.index'))->assertOk()->assertSee('Hak dan manfaat dari pembelian sebelumnya tetap berlaku.');
+    }
+
+    public function test_dashboard_activity_counts_submissions_in_wib_and_reports_execution_separately(): void
+    {
+        $this->travelTo(CarbonImmutable::parse('2026-11-15 10:00:00', 'UTC'));
+        $start = CarbonImmutable::parse('2026-11-01', 'Asia/Jakarta')->utc();
+        $end = CarbonImmutable::parse('2026-11-30', 'Asia/Jakarta')->endOfDay()->utc();
+        $baseline = app(AdminActivityAnalytics::class)->summarize($start, $end);
+        [$owner, $event, $position] = $this->fixture();
+        $event->forceFill([
+            'status' => 'approved', 'publication_status' => 'published', 'published_at' => now()->subWeek(),
+            'starts_at' => now()->subHour(), 'ends_at' => now()->addHour(),
+        ])->save();
+        foreach ([
+            ['accepted', $start, 'present'],
+            ['accepted', $end->startOfSecond(), 'absent'],
+            ['accepted', now(), null],
+            ['rejected', now(), null],
+            ['under_review', now(), null],
+            ['screening_failed', now(), null],
+            ['rejected', $start->subSecond(), null],
+            ['rejected', $end->addSecond()->startOfSecond(), null],
+            ['draft', null, null],
+        ] as [$status, $submittedAt, $attendanceStatus]) {
+            $application = Application::create([
+                'event_id' => $event->id, 'event_position_id' => $position->id,
+                'volunteer_id' => User::factory()->create(['role' => 'volunteer'])->id,
+                'status' => $status, 'submitted_at' => $submittedAt,
+            ]);
+            if ($attendanceStatus) {
+                Attendance::create(['application_id' => $application->id, 'status' => $attendanceStatus]);
+            }
+        }
+
+        $url = route('admin.dashboard', ['range' => 'month', 'year' => 2026, 'month' => 11]);
+        $response = $this->actingAs(User::factory()->create(['role' => 'admin']))->get($url)
+            ->assertOk()->assertSee('01/11/2026 - 30/11/2026 WIB')->assertSee('Kehadiran peserta');
+        $stats = $response->viewData('activityStats');
+        foreach (['submitted' => 6, 'accepted' => 3, 'rejected' => 1, 'pending' => 1, 'other' => 1] as $key => $increase) {
+            $this->assertSame($baseline['applications'][$key] + $increase, $stats['applications'][$key]);
+        }
+        $this->assertSame($baseline['events']['ongoing'] + 1, $stats['events']['ongoing']);
+        foreach (['present', 'absent', 'unrecorded'] as $key) {
+            $this->assertSame($baseline['attendance'][$key] + 1, $stats['attendance'][$key]);
+        }
+        $this->actingAs($owner)->get($url)->assertForbidden();
     }
 }

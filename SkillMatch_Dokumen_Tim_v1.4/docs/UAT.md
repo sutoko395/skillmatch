@@ -890,6 +890,17 @@ Siapkan fixture pada kontrak integrasi. Bukti tiap kasus: tanggal, environment/D
 
 | UAT-35 | Anggota lain menjalankan aplikasi dari README pada lingkungan baru | Setup MySQL, .env, migration/seeder, frontend, server, worker/scheduler dan login demo berhasil; database test terpisah; semua langkah terdokumentasi. | A1 + semua | Belum diuji |
 
+## Rekap analitik kegiatan Admin
+
+- Pilih bulan dan verifikasi bahwa batas periode rekap lamaran mengikuti WIB.
+  Draf tidak dihitung. Status seleksi pada rekap mengikuti status terkini
+  dari lamaran yang dikirim dalam periode itu.
+- Cocokkan kegiatan berlangsung, menunggu penyelesaian dan selesai dengan
+  jadwal serta status kegiatan. Cocokkan kehadiran berdasarkan rekap peserta
+  diterima pada kegiatan yang sudah dimulai dan tidak dibatalkan.
+- Periksa tiga kartu di desktop dan seluler. Pastikan akses langsung oleh
+  Organizer atau Volunteer ditolak.
+
 ## Uji kinerja
 
 Catat p95 endpoint katalog, aktivitas dan kandidat pada fixture 100 event/1.000 lamaran/20 pengguna. Target <=2 detik di lingkungan yang dicatat, tidak termasuk gateway. Jika belum diuji tulis Belum diuji, bukan mengklaim lulus.

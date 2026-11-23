@@ -1,4 +1,25 @@
 
+## Rekap analitik kegiatan Admin
+
+Branch `feature/skillmatch-ui-and-features`, basis `2a02e69`. Bagian Analitik
+kegiatan pada `/admin/dashboard` menambah tiga kartu setelah grafik.
+`AdminActivityAnalytics::summarize` membaca agregat lamaran, kegiatan, dan
+kehadiran tanpa migration atau perubahan route dan hak akses. Periode lamaran
+memakai pilihan periode yang sudah ada dengan batas tanggal WIB. Pelaksanaan
+dan kehadiran menghitung kondisi sekarang. Draf tidak dihitung sebagai lamaran
+terkirim. Rekap kehadiran menghitung peserta per lamaran yang diterima, termasuk
+belum tercatat, pada kegiatan nonbatal yang sudah dimulai.
+
+Buka Dashboard sebagai Admin aktif, pilih periode, lalu gulir ke Analitik
+kegiatan. Bagian ini menerapkan rekap operasional, sementara backlog analitik
+A1 yang lain tetap mengikuti PRD. Kontrak status, hak akses, dan setup README
+tetap berlaku.
+
+Vite, kompilasi Blade, pemeriksaan sintaks, `git diff --check`,
+`AdminWorkflowRefinementTest` (4 tes/55 asersi), dan `FoundationAccessTest`
+(22 tes/160 asersi) lulus. Tampilan yang dirender dengan data Laragon diperiksa
+di Chrome headless pada viewport 1410, 738, dan 504 px. Grid menjadi 3, 2, dan
+1 kolom tanpa luapan kartu. Pemeriksaan browser memakai render lokal statis.
 
 ## Penyelarasan tampilan Admin dengan EO ? 15 November 2026
 Persetujuan pengguna: ubah sisi admin dengan gaya EO untuk ditinjau. Dasar feature/organizer-ui-refinement @4503a04, working tree awal bersih. Existing Admin FigCraft (d984b27) sudah memiliki dashboard, tabel, grafik, modal, filter dan endpoint; semua dipertahankan. Ini penyempurnaan tampilan existing, bukan penggantian modul.
