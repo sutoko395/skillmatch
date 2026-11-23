@@ -289,6 +289,11 @@ keputusan penerimaan. Pengerjaan assessment peserta tetap tahap berikutnya.
 
 Screening adalah pemeriksaan syarat wajib, bukan keputusan penerimaan. Minimal meliputi profil, dokumen wajib ready, skill wajib dan level minimum, serta cakupan jadwal penuh hanya jika posisi mensyaratkannya. Kota berbeda hanya menggagalkan jika ditandai wajib. Pengalaman dalam teks CV tetap ditinjau manusia.
 
+Posisi baru yang dibuat lewat form Organizer tidak menetapkan ketersediaan penuh
+atau domisili satu kota sebagai syarat wajib. Posisi yang sudah menyimpan syarat
+tersebut dan snapshot lamaran yang sudah ada tetap mengikuti ketentuan yang
+tercatat. Ketersediaan dan lokasi tetap digunakan pada skor kecocokan.
+
 `Match Score = 0,50 × S + 0,30 × A + 0,20 × L`.
 
 - S = 100 × jumlah skill posisi yang cocok / jumlah skill posisi. Penyesuaian eksplisit v1.4 untuk ZIP: cocok jika ID sama dan level Volunteer memenuhi minimum_level; urutan beginner < intermediate < advanced < expert. Requirement level tunggal lama pada posisi menjadi fallback migrasi, lalu minimum per skill adalah sumber otoritatif.

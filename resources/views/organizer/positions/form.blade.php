@@ -115,32 +115,6 @@
                 :value="$position->description"
             />
 
-            <div class="grid gap-6 md:grid-cols-2">
-                @foreach([
-                    'required_full_availability' => 'Wajib tersedia selama jadwal tugas posisi',
-                    'required_same_city' => 'Wajib berdomisili di kota kegiatan',
-                ] as $field => $label)
-                    <x-form-field
-                        :name="$field"
-                        :label="$label"
-                        :helper="$field === 'required_full_availability' ? 'Jika wajib, ketersediaan pelamar harus mencakup seluruh jadwal posisi agar lolos penyaringan.' : null"
-                    >
-                        <select
-                            id="{{ $field }}"
-                            name="{{ $field }}"
-                            class="w-full rounded-xl border-slate-300"
-                        >
-                            <option value="0" @selected(! old($field, $position->$field))>
-                                Tidak wajib
-                            </option>
-                            <option value="1" @selected(old($field, $position->$field))>
-                                Wajib
-                            </option>
-                        </select>
-                    </x-form-field>
-                @endforeach
-            </div>
-
             <fieldset class="space-y-4">
                 <legend class="text-base font-semibold text-slate-900">
                     Keahlian dan level minimum

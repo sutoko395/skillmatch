@@ -1131,6 +1131,9 @@ Detail: judul dan metadata, deskripsi, daftar posisi beserta skill/jadwal/kuota/
 
 ### 4.2 Form event — A2, tab assessment A4
 
+Form tambah/edit posisi Organizer tidak menampilkan pilihan wajib berdomisili
+di kota kegiatan atau wajib tersedia sepanjang jadwal tugas.
+
 Gunakan langkah: Pilih Paket → Informasi Event → Posisi & Jadwal → Assessment → Tinjau & Ajukan. Form popup dan halaman buat/edit sama-sama menempatkan paket di awal, dengan harga/limit per event dari server. Tampilkan warning dekat input jadwal jika durasi pendaftaran melebihi paket; simpan diblokir sampai paket/durasi sesuai. Pilihan paket dan tanggal menggunakan old input sesudah gagal. Simpan draft memerlukan paket dan informasi/jadwal valid, sementara posisi/assessment bisa dilengkapi berikutnya. Tampilkan progres langkah sebagai teks/stepper pendek, bukan persentase palsu.
 
 Posisi berulang berupa kartu dengan nama, kuota, skill+minimum level, interval tugas, dokumen wajib, dan syarat wajib/preferensi. Form bertingkat panjang dibagi section, bukan satu modal besar. Tinjau menampilkan seluruh syarat publikasi dan tautan perbaikan. Status moderasi, publikasi, dan pelaksanaan ditampilkan dengan label terpisah agar approved tidak disalahartikan sebagai published.

@@ -51,14 +51,14 @@ class PositionController extends Controller
 
     public function store(Request $r, Event $event, EventService $service)
     {
-        $service->position($event, $r->user(), $r->all());
+        $service->position($event, $r->user(), $r->except(['required_full_availability', 'required_same_city']));
 
         return redirect()->route('organizer.events.show', $event)->with('success', 'Posisi tersimpan.');
     }
 
     public function update(Request $r, Event $event, EventPosition $position, EventService $service)
     {
-        $service->position($event, $r->user(), $r->all(), $position);
+        $service->position($event, $r->user(), $r->except(['required_full_availability', 'required_same_city']), $position);
 
         return redirect()->route('organizer.events.show', $event)->with('success', 'Posisi diperbarui.');
     }

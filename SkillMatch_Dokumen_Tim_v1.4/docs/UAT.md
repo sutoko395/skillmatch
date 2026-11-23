@@ -845,6 +845,11 @@ Uji draft tanpa soal/durasi dan draft parsial berhasil tetapi tidak membuka read
 
 ## Tambahan UAT jadwal posisi — 10 Oktober 2026
 
+Periksa bahwa form tambah/edit posisi tidak menampilkan pilihan wajib
+berdomisili atau wajib tersedia sepanjang jadwal. Posisi baru dari form dapat
+disimpan tanpa kedua syarat tersebut. Penyimpanan posisi lama
+mempertahankan aturan yang sebelumnya tercatat, termasuk snapshot lamaran.
+
 Untuk UAT-07/10/19/32/34: pastikan posisi baru default mengikuti event dengan interval dari server; interval request palsu diabaikan pada mode ini. Mode khusus harus berdurasi positif, dalam rentang event dan setelah deadline. Uji event satu hari (input jam) dan beberapa hari (input tanggal/jam), kegagalan simpan mempertahankan pilihan, serta endpoint lintas pemilik/role. Perubahan event editable menyelaraskan hanya posisi mengikuti event; bila jadwal khusus tidak valid, seluruh transaksi rollback. Migration mempertahankan interval existing sebagai khusus. Published tetap terkunci dan snapshot submitted tidak berubah. Bukti otomatis dan visual harus dicatat terpisah; penambahan ini tidak berarti UAT sudah lulus.
 
 Versi 1.4.2 • ID di bawah khusus paket ini; menggantikan daftar penerimaan lama bila ada perbedaan scanner/DB. P0 wajib lulus. Kolom hasil awal semuanya **Belum diuji** karena paket ini hanya spesifikasi.

@@ -287,7 +287,7 @@ Versi 1.4.2 • Pasangan [PRD induk](../PRD_SkillMatch_Tim.md). Nama di bawah me
 | skills, categories | Ada | SF schema/seed dan proteksi referensi; A1 halaman CRUD/nonaktifkan. |
 | cities, availability_slots | Baru | SF; master kota dan interval UTC milik user. |
 | events / Event | Ada, status draft/pending/approved/rejected | A2; pertahankan status untuk moderasi; tambahkan publication_status, lifecycle_status, city_id, published_at, completed_at, cancelled_at, ends_at/starts_at kanonik. |
-| event_positions / EventPosition | Ada | A2; jangan membuat tabel positions baru; tambah aturan required_full_availability, required_same_city bila dipakai. |
+| event_positions / EventPosition | Ada | A2. Posisi baru dari form Organizer memakai `required_full_availability=false` dan `required_same_city=false`; penyuntingan mempertahankan nilai lama dan snapshot yang sudah dibuat. |
 | position_skills / PositionSkill | Ada, event_position_id, minimum_level | A2; tambah is_required; unique posisi/skill. |
 | position_requirements / PositionRequirement | Ada, nama/deskripsi/is_required | A2; tambah kind dan document_type untuk syarat yang dapat diproses. Teks deskripsi saja bukan aturan otomatis. |
 | position_schedules | Baru | A2; event_position_id, starts_at, ends_at. |
