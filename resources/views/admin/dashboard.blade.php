@@ -250,14 +250,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     label: config.label,
                     data: chartData[type],
                     borderColor: config.color,
-                    backgroundColor: config.color + '20',
-                    fill: false,
-                    tension: 0,
-                    borderWidth: 3,
-                    pointBackgroundColor: config.color,
+                    backgroundColor({chart}) {
+                        if (!chart.chartArea) return config.color + '18';
+
+                        const gradient = chart.ctx.createLinearGradient(0, chart.chartArea.top, 0, chart.chartArea.bottom);
+                        gradient.addColorStop(0, config.color + '35');
+                        gradient.addColorStop(1, config.color + '04');
+
+                        return gradient;
+                    },
+                    fill: 'origin',
+                    cubicInterpolationMode: 'monotone',
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#ffffff',
                     pointBorderColor: config.color,
-                    pointRadius: 4,
-                    pointHoverRadius: 6
+                    pointBorderWidth: 2,
+                    pointRadius: chartData[type].map(value => value > 0 ? 3.5 : 0),
+                    pointHoverRadius: 5
                 }]
             },
             options: {
@@ -271,19 +280,25 @@ document.addEventListener('DOMContentLoaded', function () {
                     x: {
                         grid: { display: false },
                         border: { display: false },
-                        ticks: { color: '#64748b' }
+                        ticks: { color: '#64748b', padding: 8, maxRotation: 0 }
                     },
                     y: {
                         beginAtZero: true,
-                        grid: { color: '#e2e8f0' },
+                        grid: { color: '#e8eef6', drawTicks: false },
                         border: { display: false },
-                        ticks: { precision: 0, color: '#64748b' }
+                        ticks: { precision: 0, color: '#64748b', padding: 8, maxTicksLimit: 6 }
                     }
                 },
                 plugins: {
                     legend: {
                         display: false,
                         position: 'bottom'
+                    },
+                    tooltip: {
+                        backgroundColor: '#0f172a',
+                        padding: 10,
+                        cornerRadius: 8,
+                        displayColors: false
                     }
                 }
             }
