@@ -1,3 +1,15 @@
+## Penolakan hapus akun berelasi
+
+Branch `feature/skillmatch-ui-and-features`, basis `2a02e69`. Controller
+Volunteer menampilkan toast penolakan jika layanan penghapusan mengembalikan
+`false`. Admin tetap kembali ke daftar. Organizer tetap memakai pesan penolakan
+pada dialog existing. Tes memeriksa pesan yang terlihat di halaman, keberadaan
+akun dan riwayat, serta keberhasilan penghapusan akun tanpa data terkait.
+Tidak ada perubahan pada Policy, aturan penghapusan, schema, atau setup.
+
+Verifikasi 23 November 2026: 379 tes PHPUnit (3.099 asersi) pada MySQL
+`skillmatch_testing`, 22 tes JavaScript, build Vite, dan `git diff --check`
+lulus. Uji visual browser tidak dijalankan untuk perbaikan ini.
 
 ## Rekap analitik kegiatan Admin
 

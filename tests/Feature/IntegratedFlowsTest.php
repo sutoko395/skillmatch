@@ -45,12 +45,19 @@ class IntegratedFlowsTest extends DatabaseTestCase
         $owner = $this->organizer();
         app(AuditService::class)->record($owner, 'organizer.test', $owner);
         $admin = User::factory()->create(['role' => 'admin']);
-        $this->actingAs($admin)->delete(route('admin.organizers.destroy', $owner))->assertForbidden();
+        $organizers = route('admin.organizers.index');
+        $this->actingAs($admin)->from($organizers)->delete(route('admin.organizers.destroy', $owner))
+            ->assertRedirect($organizers)
+            ->assertSessionHas('delete_error')
+            ->assertSessionMissing('success');
+        $this->get($organizers)->assertOk()
+            ->assertSee('Organizer ini memiliki data terkait.');
         $this->assertNotNull($owner->fresh()->organizerProfile);
         $this->assertSame(1, $owner->organizerDocuments()->count());
         Storage::disk('local')->assertExists('organizers/fixture.pdf');
         $empty = User::factory()->create();
-        $this->delete(route('admin.volunteers.destroy', $empty))->assertRedirect();
+        $this->delete(route('admin.volunteers.destroy', $empty))->assertRedirect()
+            ->assertSessionHas('success', 'Akun Volunteer berhasil dihapus.');
         $this->assertNull($empty->fresh());
         $this->assertDatabaseHas('audit_logs', ['action' => 'account.deleted', 'subject_id' => $empty->id]);
     }

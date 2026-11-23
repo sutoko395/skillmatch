@@ -895,6 +895,13 @@ Siapkan fixture pada kontrak integrasi. Bukti tiap kasus: tanggal, environment/D
 
 | UAT-35 | Anggota lain menjalankan aplikasi dari README pada lingkungan baru | Setup MySQL, .env, migration/seeder, frontend, server, worker/scheduler dan login demo berhasil; database test terpisah; semua langkah terdokumentasi. | A1 + semua | Belum diuji |
 
+## Penolakan hapus akun yang memiliki riwayat
+
+Dari daftar Volunteer atau Organizer, coba hapus akun yang masih punya data
+terkait. Admin kembali ke daftar dengan pesan penolakan. Akun dan riwayatnya
+tetap tersimpan. Akun yang memenuhi syarat dapat dihapus dan memunculkan
+pesan berhasil hanya setelah penghapusan berhasil.
+
 ## Rekap analitik kegiatan Admin
 
 - Pilih bulan dan verifikasi bahwa batas periode rekap lamaran mengikuti WIB.

@@ -34,7 +34,14 @@ class FoundationIntegrityTest extends DatabaseTestCase
         $skill = Skill::create(['name' => 'Referenced']);
         $volunteer->volunteerSkills()->create(['skill_id' => $skill->id, 'level' => 'beginner']);
         $this->actingAs($admin)->delete('/admin/master-data/skills/'.$skill->id)->assertSessionHasErrors('master');
-        $this->delete('/admin/volunteers/'.$volunteer->id)->assertForbidden();
+        $volunteers = route('admin.volunteers.index');
+        $this->from($volunteers)->delete('/admin/volunteers/'.$volunteer->id)
+            ->assertRedirect($volunteers)
+            ->assertSessionHas('error')
+            ->assertSessionMissing('success');
+        $this->get($volunteers)->assertOk()
+            ->assertSee('Akun Volunteer tidak dapat dihapus karena masih memiliki data terkait.');
+        $this->assertDatabaseHas('users', ['id' => $volunteer->id]);
         $this->assertDatabaseHas('volunteer_skills', ['user_id' => $volunteer->id, 'skill_id' => $skill->id]);
         try {
             DB::table('skills')->where('id', $skill->id)->delete();
