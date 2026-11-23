@@ -1056,3 +1056,19 @@ Bukti otomatis/visual dan bagian browser end-to-end yang belum diuji dicatat di
 
 ### Regresi volunteer - 16 November 2026
 Periksa petunjuk langkah pada daftar lamaran sesuai status; asesmen baru pada kegiatan suspended tidak menawarkan tombol mulai; attempt berjalan tetap menawarkan lanjutkan sesuai AssessmentService. Tenggat ditampilkan WIB. Di riwayat/detail kehadiran, buka/tutup Rincian sesi dan periksa status, catatan panitia, arsip, serta waktu pencatatan. Cek 390/768/1440px tanpa scroll horizontal. Browser dengan fixture HTML lama/aset terbaru lulus 30 kombinasi; Blade terbaru dan endpoint regresi belum diuji karena PHP lokal belum memenuhi >=8.4.1. Rincian bukti dan batas pemeriksaan ada di handoff volunteer.
+## Notifikasi terbaru pada Ringkasan Aktivitas Volunteer
+
+- Periksa nama kegiatan dan posisi, waktu WIB, dan tujuan tindakan pada
+  notifikasi lamaran diterima dan asesmen. Asesmen yang telah berakhir kembali
+  mengarah ke detail lamaran.
+- Tandai notifikasi telah dibaca, lalu kembali dari Semua notifikasi ke
+  Ringkasan Aktivitas. Indikator dan tombol baca hilang. Akun Volunteer lain
+  hanya melihat notifikasinya sendiri.
+- Pada desktop dan seluler, pastikan tepi panel sejajar dengan Langkah
+  berikutnya, ikon sejajar dengan judul, dan nama kegiatan atau posisi yang
+  panjang dapat membungkus.
+
+Periksa Notifikasi terbaru dan Semua notifikasi untuk ketiga peran. Organizer
+membuka detail objek miliknya, Organizer pending dapat membuka profil, dan
+Admin membuka antrean verifikasi. Akun lain tidak mendapat konteks atau tautan
+ke detail objek yang tidak dimilikinya. Penandaan baca dan paginasi tetap tersedia.

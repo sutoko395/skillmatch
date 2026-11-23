@@ -56,7 +56,6 @@
 .admin-panel .admin-event-review button.bg-red-50:hover { background: #dbeafe; }
 .admin-panel .admin-users :is(button.bg-amber-50, button.bg-red-50) svg { color: #fb923c; }
 .admin-panel .admin-event-review span.bg-amber-50 { background: #fff7ed; color: #0f172a; }
-.admin-panel section[aria-label="Notifikasi terbaru"] .border-dashed { border-style: solid; }
 
 /* The chart series and counters still come from the existing controller. */
 .admin-panel .admin-dashboard .bg-indigo-500\/10 { background: #e9efff; filter: none; }

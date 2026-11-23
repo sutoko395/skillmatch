@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\NotificationOutbox;
+use App\Services\NotificationReadService;
 use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, NotificationReadService $reader)
     {
         $notifications = NotificationOutbox::where('recipient_id', $request->user()->id)
             ->where('channel', 'database')->latest('id')->paginate(20);
 
-        return view('notifications.index', compact('notifications'));
+        $notificationItems = $reader->items($notifications->getCollection(), $request->user());
+
+        return view('notifications.index', compact('notifications', 'notificationItems'));
     }
 
     public function read(Request $request, NotificationOutbox $notification)

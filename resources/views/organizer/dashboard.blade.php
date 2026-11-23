@@ -75,7 +75,7 @@
     </div>
 
     @include('activity.organizer')
+    @include('notifications.summary')
 
 </div>
-@include('notifications.summary')
 @endsection

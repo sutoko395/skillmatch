@@ -200,6 +200,7 @@
     </div>
 
     @include('admin.partials.activity-analytics')
+    @include('notifications.summary')
 
 </div>
 
@@ -320,5 +321,4 @@ document.addEventListener('DOMContentLoaded', function () {
     renderChart('volunteers');
 });
 </script>
-@include('notifications.summary')
 @endsection

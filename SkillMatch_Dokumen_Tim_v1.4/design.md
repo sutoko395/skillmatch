@@ -1487,3 +1487,18 @@ Revisi navigasi publik sesuai persetujuan pengguna: katalog tidak lagi memuat to
 Palet publik diperhalus sesuai keluhan tampilan HP: biru netral #3566a8 (hover #294f83), hijau sage #c4d8bd (hover #aec8a5), dengan turunan biru pucat untuk teks pendukung dan hover. Ilustrasi diselaraskan, kulit tetap alami. Browser live pada lebar 390/1440px memastikan token baru termuat, tidak ada overflow, header 57/62px, CTA tidak ganda. Screenshot halaman penuh mobile diperiksa. Build dan diff --check lulus; perbedaan kalibrasi layar perangkat fisik tidak diuji.
 
 Arahan palet terbaru: biru publik disamakan dengan panel #2563eb/hover #1d4ed8. Aksen sage diganti aprikot pucat #f6d2aa/hover #edbd86 agar lebih lembut; teks di aksen tetap navy. Ilustrasi dan semua turunan warna ikut diselaraskan; kulit tetap alami. Build dan diff --check lulus.
+## Notifikasi terbaru pada Ringkasan Aktivitas Volunteer
+
+Daftar memakai satu panel membulat dengan pemisah tipis dan mengikuti lebar
+panel Ringkasan Aktivitas di atasnya. Ikon berukuran sama
+sejajar dengan judul. Isi menghubungkan notifikasi dengan kegiatan dan posisi
+yang dapat diakses Volunteer, memberi arahan sesuai jenis notifikasi, dan
+menampilkan waktu WIB serta indikator belum dibaca. Untuk asesmen yang masih
+tersedia, tampilkan tenggat dan tautan tindakan. Setelah kesempatan berakhir,
+arahkan ke detail lamaran untuk melihat status terbaru.
+
+Gunakan panel dan baris yang sama untuk Admin dan Organizer, termasuk Organizer
+yang menunggu verifikasi, serta di halaman Semua notifikasi ketiga peran.
+Organizer melihat konteks lamaran, kegiatan atau transaksi yang dimilikinya dan
+tindakan yang sesuai. Admin dapat membuka antrean verifikasi organisasi dari
+notifikasi pengajuan. Status baca dan waktu WIB berada dalam satu kelompok.

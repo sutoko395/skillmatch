@@ -126,18 +126,12 @@
 .volunteer-panel .volunteer-main .vaa-question { padding:16px 20px; }
 .volunteer-panel .volunteer-main .vaa-question legend { font-size:14px; line-height:1.6; }
 .volunteer-panel .volunteer-main .vaa-question label { min-height:44px; padding:10px 12px; font-size:13px; }
-.volunteer-panel .volunteer-main .vn-notifications .vn-heading,
-.volunteer-panel .volunteer-main .vn-notifications .vn-item { padding:16px 20px; }
-.volunteer-panel .volunteer-main .vn-notifications .vn-item h3 { font-size:13px; }
-.volunteer-panel .volunteer-main .vn-item time { margin-top:4px; font-size:11px; }
-.volunteer-panel .volunteer-main .vn-item .vn-actions { margin-top:10px; gap:8px; }
 @media(max-width:639px) {
     .volunteer-panel .volunteer-main :is(.va-dashboard,.vp-profile,.vd-detail,.ve-detail,.vac-confirm,.vaa-attempt) section,
     .volunteer-panel .volunteer-main .va-profile-grid > .rounded-2xl,
     .volunteer-panel .volunteer-main :is(.vh-card,.vac-card,.vaa-question),
     .volunteer-panel .volunteer-main .vp-profile [data-saving-form] > section,
-    .volunteer-panel .volunteer-main .ve-detail section.bg-white,
-    .volunteer-panel .volunteer-main .vn-notifications :is(.vn-heading,.vn-item) { padding:14px 16px; }
+    .volunteer-panel .volunteer-main .ve-detail section.bg-white { padding:14px 16px; }
     .volunteer-panel .volunteer-main .vh-card-heading { gap:8px; }
     .volunteer-panel .volunteer-main .va-action-row { align-items:stretch; }
     .volunteer-panel .volunteer-main .va-action-row .va-button { width:100%; }
