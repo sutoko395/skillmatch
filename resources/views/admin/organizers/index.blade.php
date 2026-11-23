@@ -551,7 +551,7 @@
                                             </p>
 
                                             <p class="mt-1 text-xs uppercase text-slate-500">
-                                                {{ $document->document_type === 'ktp' ? 'NIB' : strtoupper($document->document_type) }}
+                                                {{ $document->document_type === 'ktp' ? 'Dokumen verifikasi' : strtoupper($document->document_type) }}
                                             </p>
                                         </div>
 

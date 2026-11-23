@@ -272,14 +272,15 @@ Registrasi Volunteer mengirim notifikasi verifikasi dan menuju `/verify-email`. 
 
 Organizer tetap mengikuti onboarding profil dan persetujuan organisasi existing, tanpa tambahan gate email di seleksi/pelaksanaan A3. Login Admin tetap menuju panel. Login/registrasi meregenerasi sesi; logout POST ber-CSRF menginvalidasi sesi dan token. Password reset memakai token framework, masa berlaku 60 menit, throttle broker 60 detik, serta throttle route. Login gagal dibatasi lima percobaan per email/IP. Pengiriman SMTP nyata belum diuji.
 
-## Penyimpanan dan preview KTP
+## Penyimpanan dan preview dokumen verifikasi Organizer
 
-Upload memakai PHP dan Laravel UploadedFile/Storage. Dengan `FILESYSTEM_DISK=local`,
-berkas KTP disimpan di `storage/app/private/organizers/{user_id}/documents`;
+Untuk pengajuan pertama, unggah satu berkas NIB atau KTP. Upload memakai PHP
+dan Laravel UploadedFile/Storage. Dengan `FILESYSTEM_DISK=local`,
+berkas disimpan di `storage/app/private/organizers/{user_id}/documents`;
 metadata tersimpan di tabel `organizer_documents`. Pemilik dan Admin melihat
 JPG/PNG/PDF melalui endpoint preview yang memeriksa akses. Tidak perlu Dompdf,
 layanan cloud atau `storage:link` untuk alur ini. Dompdf adalah pembuat PDF,
-bukan penerima upload. Pertahankan disk privat; jangan membuka KTP lewat URL publik.
+bukan penerima upload. Berkas verifikasi hanya dapat dibuka melalui preview privat.
 
 Sebelum menyimpan ke Laravel, PHP membutuhkan folder sementara yang sudah ada dan
 bisa ditulis oleh proses server. Pesan **Folder sementara upload pada server tidak
@@ -348,7 +349,7 @@ Backup database dan berkas terlebih dahulu, periksa database tujuan, lalu ikuti 
 - **APP_KEY kosong:** jalankan `key:generate` hanya untuk instalasi baru. Jangan mengganti key instalasi existing.
 - **Vite manifest hilang:** jalankan `npm ci --ignore-scripts` lalu `npm run build`. Hapus `public/hot` hanya jika itu penanda dev server milik Anda yang sudah berhenti.
 - **Tautan verifikasi gagal:** periksa APP_URL, waktu server dan akun yang sedang login. Mailer log tidak mengirim email ke inbox.
-- **KTP gagal diunggah:** baca pesan spesifik pada form dan entri `organizer.ktp.upload_failed` di log (kode error PHP saja, tanpa isi/nama KTP). Kegagalan menerima file sementara berbeda dari kegagalan menyimpan file. Periksa konfigurasi PHP proses server, `upload_tmp_dir`/folder sementara sistem, izin tulis dan ruang disk. KTP existing memakai Laravel Storage disk `local` di `storage/app/private`; metadata di `organizer_documents` dan preview melalui endpoint terotorisasi. Pertahankan `FILESYSTEM_DISK=local` untuk alur existing ini; `storage:link` tidak diperlukan untuk preview KTP. Jangan memindahkan dokumen identitas ke disk publik.
+- **Dokumen verifikasi gagal diunggah**. Baca pesan di form serta entri `organizer.nib.upload_failed` atau `organizer.ktp.upload_failed` di log. Jika PHP menolak file sementara, periksa konfigurasi PHP proses server, `upload_tmp_dir`, dan izin tulis. Jika penyimpanan Laravel gagal, periksa izin dan ruang disk `local`. Preview memakai endpoint terotorisasi dan tidak memerlukan `storage:link`.
 - **Trigger audit ditolak saat migration:** akun migration memerlukan izin TRIGGER. Jangan menghapus proteksi audit untuk mengatasi kesalahan izin.
 - **Akun nonaktif tidak bisa login:** periksa status dan alasan penonaktifan; jangan mengaktifkan semua akun secara massal.
 

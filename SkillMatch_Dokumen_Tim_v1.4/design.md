@@ -1140,6 +1140,9 @@ Posisi berulang berupa kartu dengan nama, kuota, skill+minimum level, interval t
 
 ### 4.3 Profil — SF dasar, A1 verifikasi organisasi
 
+Form Organizer menampilkan satu input dokumen verifikasi dengan pilihan berkas
+NIB atau KTP. Preview Organizer dan Admin memakai label umum dokumen verifikasi.
+
 Volunteer: Identitas → Kota & Kontak → Skill dan Level → Ketersediaan. Availability menggunakan tanggal dan waktu mulai/akhir berulang, label WIB. Jangan hanya menawarkan Weekend/Weekday karena tidak mencukupi perhitungan jam. Tampilkan pesan migrasi "Lengkapi tanggal dan jam ketersediaan" pada akun lama.
 
 Organizer: identitas/kontak/deskripsi, status verifikasi, dokumen organisasi privat. Simpan perubahan biasa tidak meminta semua berkas ulang. Perubahan yang memerlukan verifikasi ulang menjelaskan dampaknya sebelum konfirmasi. Catatan revisi admin terlihat dekat form.

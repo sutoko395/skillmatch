@@ -128,7 +128,7 @@
                             for="nib"
                             class="block text-sm font-semibold text-slate-700"
                         >
-                            NIB (Nomor Induk Perusahaan)/ Dokumen Identitas
+                            Dokumen verifikasi (NIB atau KTP)
                         </label>
 
                         <input
@@ -141,7 +141,7 @@
                         >
 
                         <p class="mt-2 text-xs text-slate-500">
-                            NIB wajib diupload untuk proses verifikasi.
+                            Unggah salah satu berkas untuk pengajuan pertama.
                             Format JPG, JPEG, PNG, atau PDF. Maksimal 5 MB.
                         </p>
 
@@ -224,10 +224,10 @@
                     <span class="organizer-profile-field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z M14 2v6h6M8 13h8M8 17h5"/></svg></span>
                     <div class="min-w-0 flex-1">
                         <p class="organizer-profile-document-name">{{ $document->document_name }}</p>
-                        <p class="organizer-profile-document-type">{{ $document->document_type === 'ktp' ? 'NIB' : strtoupper($document->document_type) }}</p>
+                        <p class="organizer-profile-document-type">{{ $document->document_type === 'ktp' ? 'Dokumen verifikasi' : strtoupper($document->document_type) }}</p>
                     </div>
                     <button type="button" @click="viewNib = true" class="organizer-secondary-button organizer-info-edit">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg> Lihat NIB
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg> Lihat dokumen
                     </button>
                 </div>
             @empty
@@ -301,7 +301,7 @@
                             @if($user->organizer_status === 'active')
                                 <label class="m-6 flex gap-3 rounded-xl bg-amber-50 p-4 text-sm text-amber-900">
                                     <input type="checkbox" name="confirm_reverification" value="1" @checked(old('confirm_reverification'))>
-                                    Saya memahami perubahan nama organisasi, alamat, kota atau NIB akan meminta persetujuan ulang Admin. Kegiatan sementara tidak tampil publik dan pengelolaannya tertunda sampai disetujui kembali. Perubahan kontak biasa tetap dapat disimpan tanpa persetujuan ulang.
+                                    Saya memahami perubahan nama organisasi, alamat, kota atau dokumen verifikasi akan meminta persetujuan ulang Admin. Kegiatan sementara tidak tampil publik dan pengelolaannya tertunda sampai disetujui kembali. Perubahan kontak biasa tetap dapat disimpan tanpa persetujuan ulang.
                                 </label>
                                 @error('confirm_reverification')<p class="px-6 text-sm text-red-600">{{ $message }}</p>@enderror
                             @endif
@@ -379,7 +379,7 @@
                                         for="nib"
                                         class="block text-sm font-semibold text-slate-700"
                                     >
-                                        Ganti NIB (Nomor Induk Berusaha)/ Dokumen Identitas
+                                        Ganti dokumen verifikasi (NIB atau KTP)
                                     </label>
 
                                     <input
@@ -447,7 +447,7 @@
                     <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
                         <div>
                             <h2 class="text-lg font-bold text-slate-800">
-                                Dokumen NIB
+                                Dokumen verifikasi
                             </h2>
 
                             <p class="mt-1 text-sm text-slate-500">
@@ -478,26 +478,26 @@
                     </div>
 
                     @php
-                        $nibDocument = $documents->firstWhere('document_type', 'ktp');
+                        $verificationDocument = $documents->firstWhere('document_type', 'ktp');
 
-                        $nibExtension = $nibDocument
-                            ? strtolower(pathinfo($nibDocument->file_path, PATHINFO_EXTENSION))
+                        $documentExtension = $verificationDocument
+                            ? strtolower(pathinfo($verificationDocument->file_path, PATHINFO_EXTENSION))
                             : null;
                     @endphp
 
                     <div class="flex-1 overflow-auto bg-slate-100 p-4 md:p-6">
-                        @if ($nibDocument)
-                            @if (in_array($nibExtension, ['jpg', 'jpeg', 'png']))
+                        @if ($verificationDocument)
+                            @if (in_array($documentExtension, ['jpg', 'jpeg', 'png']))
                                 <div class="flex min-h-[60vh] items-center justify-center">
                                     <img
-                                        src="{{ route('organizer.profile.documents.view', $nibDocument) }}"
-                                        alt="NIB Organizer"
+                                        src="{{ route('organizer.profile.documents.view', $verificationDocument) }}"
+                                        alt="Dokumen verifikasi Organizer"
                                         class="max-h-[75vh] max-w-full rounded-xl object-contain shadow-lg"
                                     >
                                 </div>
-                            @elseif ($nibExtension === 'pdf')
+                            @elseif ($documentExtension === 'pdf')
                                 <iframe
-                                    src="{{ route('organizer.profile.documents.view', $nibDocument) }}"
+                                    src="{{ route('organizer.profile.documents.view', $verificationDocument) }}"
                                     class="h-[75vh] w-full rounded-xl border-0 bg-white"
                                 ></iframe>
                             @else
@@ -510,7 +510,7 @@
                         @else
                             <div class="flex min-h-[60vh] items-center justify-center">
                                 <p class="text-sm text-slate-500">
-                                    Dokumen NIB belum tersedia.
+                                    Dokumen verifikasi belum tersedia.
                                 </p>
                             </div>
                         @endif

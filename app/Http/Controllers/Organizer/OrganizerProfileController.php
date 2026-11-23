@@ -12,6 +12,7 @@ use App\Services\AuditService;
 use App\Services\NotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
@@ -50,25 +51,27 @@ class OrganizerProfileController extends Controller
 
         $profileExists = OrganizerProfile::where('user_id', $user->id)->exists();
 
-        $nib = $request->file('nib');
+        $documentField = ! $request->has('nib') && $request->has('ktp') ? 'ktp' : 'nib';
+        $documentLabel = $documentField === 'ktp' ? 'KTP' : 'Dokumen verifikasi';
+        $document = $request->file($documentField);
 
-        if ($nib && ! $nib->isValid()) {
-            $error = $nib->getError();
+        if ($document instanceof UploadedFile && ! $document->isValid()) {
+            $error = $document->getError();
 
-            Log::warning('organizer.nib.upload_failed', [
+            Log::warning('organizer.'.$documentField.'.upload_failed', [
                 'php_upload_error' => $error,
                 'upload_max_filesize' => ini_get('upload_max_filesize'),
                 'post_max_size' => ini_get('post_max_size'),
             ]);
 
             throw ValidationException::withMessages([
-                'nib' => match ($error) {
-                    UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE => 'NIB ditolak oleh batas upload PHP server ('.ini_get('upload_max_filesize').'). Pilih berkas lebih kecil atau hubungi pengelola.',
-                    UPLOAD_ERR_PARTIAL => 'Upload NIB terputus sebelum seluruh berkas diterima. Pilih ulang berkas dan coba kembali.',
-                    UPLOAD_ERR_NO_TMP_DIR => 'Folder sementara upload pada server tidak tersedia.',
-                    UPLOAD_ERR_CANT_WRITE => 'Server gagal menulis berkas sementara NIB.',
-                    UPLOAD_ERR_EXTENSION => 'Upload NIB dihentikan oleh ekstensi PHP pada server.',
-                    default => 'Server belum menerima berkas NIB yang valid.',
+                $documentField => match ($error) {
+                    UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE => $documentLabel.' ditolak oleh batas upload PHP server ('.ini_get('upload_max_filesize').'). Pilih berkas lebih kecil atau hubungi pengelola.',
+                    UPLOAD_ERR_PARTIAL => 'Upload '.$documentLabel.' terputus sebelum seluruh berkas diterima. Pilih ulang berkas dan coba kembali.',
+                    UPLOAD_ERR_NO_TMP_DIR => 'Folder sementara upload pada server tidak tersedia. Hubungi pengelola untuk memperbaiki konfigurasi PHP.',
+                    UPLOAD_ERR_CANT_WRITE => 'Server gagal menulis berkas sementara '.$documentLabel.'. Hubungi pengelola untuk memeriksa izin folder dan ruang penyimpanan.',
+                    UPLOAD_ERR_EXTENSION => 'Upload '.$documentLabel.' dihentikan oleh ekstensi PHP pada server. Hubungi pengelola.',
+                    default => 'Server belum menerima berkas verifikasi yang valid.',
                 },
             ]);
         }
@@ -81,7 +84,7 @@ class OrganizerProfileController extends Controller
             'city_id' => ['required', 'integer', Rule::exists('cities', 'id')->where('is_active', true)],
             'website' => ['nullable', 'url:http,https', 'max:255'],
             'description' => ['required', 'string', 'max:1000'],
-            'nib' => [
+            $documentField => [
                 $profileExists ? 'nullable' : 'required',
                 'file',
                 'mimes:jpg,jpeg,png,pdf',
@@ -89,21 +92,24 @@ class OrganizerProfileController extends Controller
             ],
         ], [
             'city_id.exists' => 'Pilih kota/kabupaten aktif dari daftar.',
-            'nib.required' => 'NIB wajib diupload untuk pengajuan profil pertama kali.',
+            $documentField.'.required' => 'Unggah satu dokumen verifikasi, NIB atau KTP, untuk pengajuan pertama.',
+        ], [
+            $documentField => 'dokumen verifikasi',
         ]);
 
         $newPath = null;
         $oldPaths = [];
 
-        if ($request->hasFile('nib')) {
-            $newPath = $request->file('nib')->store(
+        $document = $validated[$documentField] ?? null;
+        if ($document) {
+            $newPath = $document->store(
                 'organizers/'.$user->id.'/documents',
                 'local'
             );
 
             if (! $newPath) {
                 throw ValidationException::withMessages([
-                    'nib' => 'NIB baru gagal disimpan. Silakan coba kembali.',
+                    $documentField => 'Dokumen verifikasi gagal disimpan. Silakan coba kembali.',
                 ]);
             }
         }
@@ -113,6 +119,7 @@ class OrganizerProfileController extends Controller
                 $user,
                 $validated,
                 $request,
+                $document,
                 $newPath,
                 &$oldPaths
             ) {
@@ -175,7 +182,7 @@ class OrganizerProfileController extends Controller
 
                     $locked->organizerDocuments()->create([
                         'document_type' => 'ktp',
-                        'document_name' => $request->file('nib')->getClientOriginalName(),
+                        'document_name' => $document->getClientOriginalName(),
                         'file_path' => $newPath,
                     ]);
                 }

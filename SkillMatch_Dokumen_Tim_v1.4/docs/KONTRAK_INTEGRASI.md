@@ -283,7 +283,7 @@ Versi 1.4.2 • Pasangan [PRD induk](../PRD_SkillMatch_Tim.md). Nama di bawah me
 | volunteer_profiles / VolunteerProfile | Ada, city teks, availability label | SF; tambah city_id dan availability_slots; field lama untuk transisi. |
 | volunteer_skills / VolunteerSkill | Ada, level dan unique(user_id,skill_id) | SF; pertahankan nama ini, bukan user_skills. Validasi distinct skill. |
 | organizer_profiles / OrganizerProfile | Ada | SF struktur/edit kontak dasar; A1 alur dokumen dan verifikasi ulang terkontrol. |
-| organizer_documents / OrganizerDocument | Ada, file_path publik | A1 schema, utilitas file A3; tambah disk/storage_key/metadata/status. Migrasi berkas lama sesudah backup. |
+| organizer_documents / OrganizerDocument | Ada | Dokumen verifikasi privat menggunakan satu berkas NIB atau KTP. Field form `nib` dan alias request lama `ktp` menyimpan berkas dengan kode dokumen existing `ktp`. Preview memakai aturan akses pemilik dan Admin. |
 | skills, categories | Ada | SF schema/seed dan proteksi referensi; A1 halaman CRUD/nonaktifkan. |
 | cities, availability_slots | Baru | SF; master kota dan interval UTC milik user. |
 | events / Event | Ada, status draft/pending/approved/rejected | A2; pertahankan status untuk moderasi; tambahkan publication_status, lifecycle_status, city_id, published_at, completed_at, cancelled_at, ends_at/starts_at kanonik. |

@@ -266,7 +266,7 @@ ID FR-01–22 mempertahankan padanan PRD v1.3; FR-23 ditambahkan untuk memperjel
 ### 7.2 Upload tanpa ClamAV
 
 1. Volunteer membuat draft miliknya; server memastikan posisi dan event valid.
-2. Upload melalui form Laravel. CV hanya PDF; lampiran pendukung PDF/JPG/PNG, tiap file maksimal 5 MB, total lima file per lamaran. Dokumen organisasi maksimal lima file/pengajuan dengan format dan ukuran yang sama.
+2. Upload melalui form Laravel. CV hanya PDF; lampiran pendukung PDF/JPG/PNG, tiap file maksimal 5 MB, total lima file per lamaran. Pengajuan pertama Organizer memerlukan satu berkas NIB atau KTP dalam format PDF, JPG, JPEG, atau PNG, maksimal 5 MB.
 3. Server memeriksa ekstensi allowlist dan MIME berdasarkan isi; file kosong, tipe tidak cocok, executable, HTML/SVG/ZIP dan file terlalu besar ditolak. Pemeriksaan format tidak membuktikan file bebas malware.
 4. Nama internal acak; file di disk `private_documents` tanpa public URL/symlink. Metadata menyimpan pemilik, jenis, ukuran, MIME, checksum, lokasi internal dan waktu.
 5. Setelah file dan metadata tersimpan konsisten, status `ready`. Kegagalan simpan menghasilkan pesan gagal, cleanup file sementara, dan tidak menghasilkan ready palsu.

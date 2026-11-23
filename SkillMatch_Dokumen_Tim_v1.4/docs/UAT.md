@@ -862,7 +862,7 @@ Siapkan fixture pada kontrak integrasi. Bukti tiap kasus: tanggal, environment/D
 | UAT-02 | Login bersama semua role dan intended URL | Satu /login, guard web, tanpa pemilih role; redirect sesuai role/status; intended eksternal/tidak berizin dibuang; non-admin ditolak 403 dari /admin/*; semua keluar melalui POST /logout dengan sesi tidak berlaku lagi. | SF | Belum diuji |
 | UAT-03 | Akun dinonaktifkan saat masih memiliki sesi | Request berikutnya terproteksi ditolak; pending organisasi masih bisa melengkapi profil jika akun aktif. | SF middleware; A1 UI | Belum diuji |
 | UAT-04 | Profil lama hanya Weekend, skill duplikat, kota tak dikenal | Butuh interval nyata; skill duplikat ditolak; city mapping tidak menebak; form membantu koreksi. | SF | Belum diuji |
-| UAT-05 | Upload organisasi dan edit profil | Berkas privat bisa ditinjau Admin; perubahan kontak biasa tidak wajib upload semua atau reset tanpa alasan. | A1/A3 | Belum diuji |
+| UAT-05 | Upload organisasi dan edit profil | Pengajuan pertama menerima satu berkas NIB atau KTP dan menolak pengajuan tanpa dokumen. Berkas privat bisa ditinjau pemilik dan Admin. Edit kontak biasa dapat disimpan tanpa unggah ulang. | A1/A3 | Belum diuji |
 | UAT-06 | Master direferensikan dinonaktifkan | Riwayat tetap dapat dibaca, tidak dapat dipilih untuk konfigurasi baru; hard delete berbahaya ditutup. | A1 | Belum diuji |
 | UAT-07 | Event draft/revisi/approve | Data tanggal/kuota/assessment valid; catatan revisi tersimpan; detail relasi posisi bekerja. | A2/A1/A4 | Belum diuji |
 | UAT-08 | Event approved belum memiliki entitlement | Tidak publik; free aktivasi sekali setelah approval; paid butuh verifikasi pembayaran. | A2 | Belum diuji |
