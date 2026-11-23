@@ -1,5 +1,20 @@
 # Samakan desain detail event publik
 
+## Perapian detail publik
+
+Pada branch `feature/skillmatch-ui-and-features`, poster dan susunan kartu
+existing dipertahankan. Ringkasan waktu satu hari diringkas dan jarak dalam
+kartu informasi dan posisi dipadatkan. Tombol
+masuk atau verifikasi diberi gaya aksi utama. Deskripsi posisi yang sama
+persis dengan seluruh deskripsi event atau satu paragraf utuh tidak diulang
+di detail publik. Panel Volunteer tetap menampilkan deskripsi posisi seperti
+sebelumnya. Data, route, hak akses, dan aturan pendaftaran tidak berubah.
+
+Vite dan kompilasi Blade lulus. `VolunteerCatalogTest` (2 tes/32 asersi)
+dan `A2EventTest` (17 tes/118 asersi) mencakup render detail dan alur
+pendaftaran pada database tes terpisah. Pemeriksaan visual langsung di
+browser belum dilakukan.
+
 11 November 2026, branch feature/volunteer-design, dasar b57112a.
 Persetujuan pengguna: detail event website utama mengikuti detail panel Volunteer
 yang baru dirapikan. Perubahan lokal tanpa commit/push; perubahan lain dipertahankan.

@@ -13,7 +13,10 @@ class VolunteerCatalogTest extends TestCase
 
     public function test_event_detail_keeps_panel_and_rejects_unpublished_events(): void
     {
-        [$owner, $event] = $this->fixture();
+        [$owner, $event, $position] = $this->fixture();
+        $description = 'Ringkasan kegiatan yang juga dicantumkan pada posisi.';
+        $event->forceFill(['description' => $description."\n\nInformasi tambahan kegiatan."])->save();
+        $position->forceFill(['description' => $description])->save();
         $volunteer = User::factory()->create(['role' => 'volunteer', 'is_active' => true]);
         $this->get(route('volunteer.events.show', $event))->assertRedirect(route('login'));
         $this->actingAs($volunteer)->get(route('volunteer.events.show', $event))->assertNotFound();
@@ -26,10 +29,16 @@ class VolunteerCatalogTest extends TestCase
         $this->get(route('volunteer.events.index'))->assertOk()->assertSee(route('volunteer.events.show', $event));
         $this->get(route('events.show', $event))->assertOk()->assertDontSee('volunteer-sidebar');
         auth()->forgetGuards();
-        $this->get(route('events.show', $event))->assertOk()
+        $public = $this->get(route('events.show', $event))->assertOk()
             ->assertSee('Tentang kegiatan')->assertSee('Informasi kegiatan')
             ->assertSee('Persyaratan dan dokumen')->assertSee('Masuk untuk melamar')
+            ->assertDontSee('Lihat posisi volunteer')
             ->assertSee(route('events.index'))->assertDontSee('volunteer-sidebar');
+        $this->assertSame(1, substr_count($public->getContent(), $description));
+
+        $event->forceFill(['registration_deadline' => now()->subMinute()])->save();
+        $this->get(route('events.show', $event))->assertOk()
+            ->assertSee('Pendaftaran sudah ditutup.')->assertDontSee('Masuk untuk melamar');
     }
 
     public function test_catalog_stays_in_volunteer_panel_and_public_catalog_remains_public(): void

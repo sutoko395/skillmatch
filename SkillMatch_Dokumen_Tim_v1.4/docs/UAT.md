@@ -901,6 +901,13 @@ Siapkan fixture pada kontrak integrasi. Bukti tiap kasus: tanggal, environment/D
 - Periksa tiga kartu di desktop dan seluler. Pastikan akses langsung oleh
   Organizer atau Volunteer ditolak.
 
+## Perapian detail kegiatan publik
+
+Pada detail publik, pastikan daftar posisi tetap tampil setelah informasi
+kegiatan, deskripsi identik tidak diulang dan deskripsi unik tetap tampil.
+Periksa jadwal satu hari dan lintas hari dalam WIB. Cocokkan tombol melamar
+dengan status pendaftaran dan alur login atau verifikasi yang tersedia.
+
 ## Uji kinerja
 
 Catat p95 endpoint katalog, aktivitas dan kandidat pada fixture 100 event/1.000 lamaran/20 pengguna. Target <=2 detik di lingkungan yang dicatat, tidak termasuk gateway. Jika belum diuji tulis Belum diuji, bukan mengklaim lulus.

@@ -1120,6 +1120,11 @@ Satu kartu login berisi email, password, ingat saya bila tersedia, lupa password
 
 ### 4.1 Katalog dan detail event — A2
 
+Detail publik mempertahankan poster dan kartu existing. Ringkasan pelaksanaan
+dalam satu hari memakai satu tanggal dengan rentang jam WIB. Pada bagian posisi, tampilkan satu kali
+deskripsi yang persis mengulang paragraf Tentang kegiatan dan tonjolkan tombol
+masuk atau verifikasi saat lamaran bisa dimulai.
+
 Katalog: judul "Temukan kegiatan yang sesuai denganmu", pencarian, filter kategori/kota/tanggal, jumlah hasil, grid 1/2/3 kolom sesuai lebar, pagination. Kartu berisi judul, Organizer, kota, jadwal WIB, deadline, posisi tersedia dan tombol Lihat Detail. Poster opsional dengan rasio tetap 16:9; fallback brand rapi jika tidak ada.
 
 Detail: judul dan metadata, deskripsi, daftar posisi beserta skill/jadwal/kuota/persyaratan, panel tindakan. CTA "Lamar posisi" hanya jika eligibility publik terpenuhi; pengunjung diarahkan login lalu kembali ke detail. Event tutup menampilkan alasannya. Kontak privat pelamar tidak pernah muncul di katalog.

@@ -1,10 +1,18 @@
-<x-section-card class="space-y-5">
+<x-section-card class="ve-position space-y-5">
     <header class="flex flex-wrap items-start justify-between gap-3">
         <h3 class="min-w-0 break-words text-xl font-bold text-slate-900">{{ $position->name }}</h3>
         <span class="shrink-0 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">Kuota: {{ $position->quota }}</span>
     </header>
     <x-position-suggested-age :position="$position" :for-volunteer="true" />
-    @if($position->description)<p class="whitespace-pre-line break-words text-sm leading-relaxed text-slate-600">{{ $position->description }}</p>@endif
+    @php
+        $description = trim($position->description ?? '');
+        $eventDescription = trim($event->description ?? '');
+        $repeatsEventDescription = $description === $eventDescription
+            || in_array($description, preg_split('/\R[ \t]*\R/u', $eventDescription), true);
+    @endphp
+    @if($description !== '' && (($volunteerPanel ?? false) || !$repeatsEventDescription))
+        <p class="whitespace-pre-line break-words text-sm leading-relaxed text-slate-600">{{ $position->description }}</p>
+    @endif
     <div class="border-t border-slate-100 pt-5">
         <h4 class="text-sm font-semibold text-slate-900">Keahlian yang dibutuhkan</h4>
         <ul class="mt-3 flex flex-wrap gap-2">
